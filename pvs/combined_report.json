@@ -1,0 +1,1153 @@
+{
+  "V3148": {
+    "details": {
+      "code": "V3148",
+      "cwe": 476,
+      "sastId": null,
+      "level": 2
+    },
+    "total_count": 277,
+    "projects": [
+      "GifRecorder"
+    ],
+    "pattern": "Casting potential 'null' value of 'GetValue()' to a value type can lead to NullReferenceException.",
+    "example": "Casting potential 'null' value of 'GetValue()' to a value type can lead to NullReferenceException."
+  },
+  "V3024": {
+    "details": {
+      "code": "V3024",
+      "cwe": 682,
+      "sastId": null,
+      "level": 3
+    },
+    "total_count": 80,
+    "projects": [
+      "LunrCore",
+      "GifRecorder",
+      "SoundFlow",
+      "Foster_issues",
+      "Foster"
+    ],
+    "pattern": "An odd precise comparison:  . Consider using a comparison with defined precision: Math.Abs(A - B)   Epsilon.",
+    "example": "An odd precise comparison: vector.X == 0. Consider using a comparison with defined precision: Math.Abs(A - B) < Epsilon."
+  },
+  "V3022": {
+    "details": {
+      "code": "V3022",
+      "cwe": 571,
+      "sastId": null,
+      "level": 3
+    },
+    "total_count": 58,
+    "projects": [
+      "LunrCore",
+      "GifRecorder",
+      "RestSharp",
+      "Chloe",
+      "Lynx",
+      "SpreadCheetah"
+    ],
+    "pattern": "Expression 'paramValue != null' is always true.",
+    "example": "Expression 'paramValue != null' is always true."
+  },
+  "V3062": {
+    "details": {
+      "code": "V3062",
+      "cwe": 0,
+      "sastId": null,
+      "level": 2
+    },
+    "total_count": 57,
+    "projects": [
+      "Chloe",
+      "GifRecorder"
+    ],
+    "pattern": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the ' ' method.",
+    "example": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Max' method."
+  },
+  "V3111": {
+    "details": {
+      "code": "V3111",
+      "cwe": 0,
+      "sastId": null,
+      "level": 3
+    },
+    "total_count": 48,
+    "projects": [
+      "Chloe",
+      "SpreadCheetah",
+      "GifRecorder"
+    ],
+    "pattern": "Checking value of ' ' for null will always return false when generic type is instantiated with a value type.",
+    "example": "Checking value of 'value' for null will always return false when generic type is instantiated with a value type."
+  },
+  "V5606": {
+    "details": {
+      "code": "V5606",
+      "cwe": 1069,
+      "sastId": "OWASP-7.4.2",
+      "level": 3
+    },
+    "total_count": 45,
+    "projects": [
+      "RestSharp",
+      "GifRecorder",
+      "Riter",
+      "SoundFlow",
+      "Chloe",
+      "Foster_issues",
+      "Foster"
+    ],
+    "pattern": "An empty exception handler. Silent suppression of exceptions may hide the presence of bugs or vulnerabilities.",
+    "example": "An empty exception handler. Silent suppression of exceptions may hide the presence of bugs or vulnerabilities."
+  },
+  "V3114": {
+    "details": {
+      "code": "V3114",
+      "cwe": 404,
+      "sastId": null,
+      "level": 2
+    },
+    "total_count": 29,
+    "projects": [
+      "Lynx",
+      "SoundFlow"
+    ],
+    "pattern": "IDisposable object ' ' is not disposed before method returns.",
+    "example": "IDisposable object 'position' is not disposed before method returns."
+  },
+  "V3150": {
+    "details": {
+      "code": "V3150",
+      "cwe": 0,
+      "sastId": null,
+      "level": 2
+    },
+    "total_count": 28,
+    "projects": [
+      "Lynx"
+    ],
+    "pattern": "Loop break conditions do not depend on the number of iterations.",
+    "example": "Loop break conditions do not depend on the number of iterations."
+  },
+  "V3149": {
+    "details": {
+      "code": "V3149",
+      "cwe": 476,
+      "sastId": null,
+      "level": 3
+    },
+    "total_count": 27,
+    "projects": [
+      "Chloe",
+      "GifRecorder"
+    ],
+    "pattern": "Dereferencing the result of 'as' operator  can lead to NullReferenceException. Consider inspecting ",
+    "example": "Dereferencing the result of 'as' operator can lead to NullReferenceException. Consider inspecting 'prevIncludeExpression'."
+  },
+  "V3095": {
+    "details": {
+      "code": "V3095",
+      "cwe": 476,
+      "sastId": null,
+      "level": 2
+    },
+    "total_count": 25,
+    "projects": [
+      "Chloe",
+      "GifRecorder"
+    ],
+    "pattern": "The 'a ' object was used before it was verified against null. Check lines: ",
+    "example": "The 'a.Name' object was used before it was verified against null. Check lines: 56, 57."
+  },
+  "V5609": {
+    "details": {
+      "code": "V5609",
+      "cwe": 22,
+      "sastId": "OWASP-12.3.1",
+      "level": 3
+    },
+    "total_count": 21,
+    "projects": [
+      "Foster_issues",
+      "Foster",
+      "GifRecorder"
+    ],
+    "pattern": "Possible path traversal vulnerability. Potentially tainted data from the ' ' variable is used as path.",
+    "example": "Possible path traversal vulnerability. Potentially tainted data from the 'file' variable is used as path."
+  },
+  "V3002": {
+    "details": {
+      "code": "V3002",
+      "cwe": 0,
+      "sastId": null,
+      "level": 2
+    },
+    "total_count": 21,
+    "projects": [
+      "Lynx",
+      "GifRecorder"
+    ],
+    "pattern": "The switch statement does not cover all values of the 'SpecialMoveType' enum: DoublePawnPush.",
+    "example": "The switch statement does not cover all values of the 'SpecialMoveType' enum: DoublePawnPush."
+  },
+  "V3125": {
+    "details": {
+      "code": "V3125",
+      "cwe": 476,
+      "sastId": null,
+      "level": 2
+    },
+    "total_count": 20,
+    "projects": [
+      "Chloe",
+      "Riter",
+      "GifRecorder"
+    ],
+    "pattern": "The ' ' object was used after it was verified against null. Check lines: ",
+    "example": "The 'model' object was used after it was verified against null. Check lines: 196, 188."
+  },
+  "V3120": {
+    "details": {
+      "code": "V3120",
+      "cwe": 835,
+      "sastId": null,
+      "level": 1
+    },
+    "total_count": 20,
+    "projects": [
+      "Lynx"
+    ],
+    "pattern": "Potentially infinite loop. The ' ' variable from the loop exit condition does not change its value between iterations.",
+    "example": "Potentially infinite loop. The 'pawns' variable from the loop exit condition does not change its value between iterations."
+  },
+  "V3080": {
+    "details": {
+      "code": "V3080",
+      "cwe": 476,
+      "sastId": null,
+      "level": 2
+    },
+    "total_count": 17,
+    "projects": [
+      "Chloe",
+      "Riter",
+      "GifRecorder"
+    ],
+    "pattern": "Possible null dereference . Consider inspecting ",
+    "example": "Possible null dereference. Consider inspecting 'dbJoinTable'."
+  },
+  "V3013": {
+    "details": {
+      "code": "V3013",
+      "cwe": 0,
+      "sastId": null,
+      "level": 3
+    },
+    "total_count": 17,
+    "projects": [
+      "LunrCore",
+      "GifRecorder",
+      "RestSharp",
+      "Chloe",
+      "Lynx"
+    ],
+    "pattern": "It is odd that the body of 'For Than' function is fully equivalent to the body of 'For ThanOrEqual' function ( , line ",
+    "example": "It is odd that the body of 'ForGreaterThan' function is fully equivalent to the body of 'ForGreaterThanOrEqual' function (234, line 244)."
+  },
+  "V3063": {
+    "details": {
+      "code": "V3063",
+      "cwe": 570,
+      "sastId": null,
+      "level": 2
+    },
+    "total_count": 17,
+    "projects": [
+      "GifRecorder",
+      "RestSharp",
+      "Foster_issues",
+      "Lynx",
+      "Foster"
+    ],
+    "pattern": "A part of conditional expression is always false if it is evaluated: other.Controllers[i].Connected.",
+    "example": "A part of conditional expression is always false if it is evaluated: other.Controllers[i].Connected."
+  },
+  "V3117": {
+    "details": {
+      "code": "V3117",
+      "cwe": 0,
+      "sastId": null,
+      "level": 2
+    },
+    "total_count": 16,
+    "projects": [
+      "Lynx",
+      "SpreadCheetah",
+      "GifRecorder"
+    ],
+    "pattern": "Constructor parameter ' ' is not used.",
+    "example": "Constructor parameter 'calculateFen' is not used."
+  },
+  "V3156": {
+    "details": {
+      "code": "V3156",
+      "cwe": 628,
+      "sastId": null,
+      "level": 2
+    },
+    "total_count": 16,
+    "projects": [
+      "GifRecorder"
+    ],
+    "pattern": "The f  argument of the ' ' metho d is not expected to be null.",
+    "example": "The first argument of the 'Format' method is not expected to be null."
+  },
+  "V3010": {
+    "details": {
+      "code": "V3010",
+      "cwe": 252,
+      "sastId": null,
+      "level": 2
+    },
+    "total_count": 14,
+    "projects": [
+      "Foster_issues",
+      "Lynx",
+      "Foster"
+    ],
+    "pattern": "The return value of function 'Advance' is required to be utilized.",
+    "example": "The return value of function 'Advance' is required to be utilized."
+  },
+  "V3072": {
+    "details": {
+      "code": "V3072",
+      "cwe": 0,
+      "sastId": null,
+      "level": 2
+    },
+    "total_count": 13,
+    "projects": [
+      "LunrCore",
+      "RestSharp",
+      "GifRecorder",
+      "SoundFlow",
+      "Foster_issues",
+      "Lynx",
+      "Foster"
+    ],
+    "pattern": "The 'Page' class containing IDisposable members does not itself implement IDisposable. Inspect: image, atlas.",
+    "example": "The 'Page' class containing IDisposable members does not itself implement IDisposable. Inspect: image, atlas."
+  },
+  "V5621": {
+    "details": {
+      "code": "V5621",
+      "cwe": 535,
+      "sastId": "OWASP-8.3.5",
+      "level": 3
+    },
+    "total_count": 11,
+    "projects": [
+      "GifRecorder",
+      "Lynx",
+      "SoundFlow",
+      "RestSharp"
+    ],
+    "pattern": "Error message contains potentially sensitive data, in ' Message', that may be exposed.",
+    "example": "Error message contains potentially sensitive data, in 'errorMessage', that may be exposed."
+  },
+  "V3139": {
+    "details": {
+      "code": "V3139",
+      "cwe": 0,
+      "sastId": null,
+      "level": 2
+    },
+    "total_count": 9,
+    "projects": [
+      "Foster_issues",
+      "Foster",
+      "GifRecorder"
+    ],
+    "pattern": "Two or more case-branches perform the same actions.",
+    "example": "Two or more case-branches perform the same actions."
+  },
+  "Renew": {
+    "details": {
+      "code": "Renew",
+      "cwe": 0,
+      "sastId": null,
+      "level": 1
+    },
+    "total_count": 8,
+    "projects": [
+      "LunrCore",
+      "RestSharp",
+      "GifRecorder",
+      "Riter",
+      "SoundFlow",
+      "Lynx",
+      "Foster",
+      "SpreadCheetah"
+    ],
+    "pattern": "Your license will expire in 29 days. Click 'Renew' to learn more or contact us via Feedback form on our website. This is an information message. You can continue using the analyzer with your current license. To hide this message, use the '--disableLicenseExpirationCheck' flag.",
+    "example": "Your license will expire in 29 days. Click 'Renew' to learn more or contact us via Feedback form on our website. This is an information message. You can continue using the analyzer with your current license. To hide this message, use the '--disableLicenseExpirationCheck' flag."
+  },
+  "V3060": {
+    "details": {
+      "code": "V3060",
+      "cwe": 682,
+      "sastId": null,
+      "level": 3
+    },
+    "total_count": 8,
+    "projects": [
+      "Lynx"
+    ],
+    "pattern": "A value of variable is not modified. Consider inspecting the expression. It is possible that other value should be present instead of '0'.",
+    "example": "A value of variable is not modified. Consider inspecting the expression. It is possible that other value should be present instead of '0'."
+  },
+  "V3144": {
+    "details": {
+      "code": "V3144",
+      "cwe": 0,
+      "sastId": null,
+      "level": 1
+    },
+    "total_count": 8,
+    "projects": [
+      "GifRecorder"
+    ],
+    "pattern": "This file is marked with copyleft license, which requires you to open the derived source code.",
+    "example": "This file is marked with copyleft license, which requires you to open the derived source code."
+  },
+  "V3073": {
+    "details": {
+      "code": "V3073",
+      "cwe": 0,
+      "sastId": null,
+      "level": 2
+    },
+    "total_count": 7,
+    "projects": [
+      "GifRecorder",
+      "Chloe",
+      "Foster_issues",
+      "Lynx",
+      "Foster"
+    ],
+    "pattern": "Not all IDisposable members are properly disposed. Call 'Dispose' when disposing ' ' class. Inspect: _",
+    "example": "Not all IDisposable members are properly disposed. Call 'Dispose' when disposing 'InnerAdoSession' class. Inspect: _externalAdoSession."
+  },
+  "V3083": {
+    "details": {
+      "code": "V3083",
+      "cwe": 367,
+      "sastId": null,
+      "level": 2
+    },
+    "total_count": 7,
+    "projects": [
+      "Chloe",
+      "GifRecorder"
+    ],
+    "pattern": "Unsafe invocation of event  , NullReferenceException is possible. Consider assigning event to a local variable before invoking it.",
+    "example": "Unsafe invocation of event 'OnReaderExecuting', NullReferenceException is possible. Consider assigning event to a local variable before invoking it."
+  },
+  "V5605": {
+    "details": {
+      "code": "V5605",
+      "cwe": 367,
+      "sastId": "OWASP-1.11.3, OWASP-11.1.6",
+      "level": 2
+    },
+    "total_count": 7,
+    "projects": [
+      "Chloe",
+      "GifRecorder"
+    ],
+    "pattern": "Unsafe invocation of event  , NullReferenceException is possible. Consider assigning event to a local variable before invoking it.",
+    "example": "Unsafe invocation of event 'OnReaderExecuting', NullReferenceException is possible. Consider assigning event to a local variable before invoking it."
+  },
+  "V3090": {
+    "details": {
+      "code": "V3090",
+      "cwe": 833,
+      "sastId": null,
+      "level": 2
+    },
+    "total_count": 7,
+    "projects": [
+      "Chloe",
+      "SpreadCheetah",
+      "GifRecorder"
+    ],
+    "pattern": "Unsafe locking on a type. All instances of a type will have the same 'Type' object.",
+    "example": "Unsafe locking on a type. All instances of a type will have the same 'Type' object."
+  },
+  "V3146": {
+    "details": {
+      "code": "V3146",
+      "cwe": 476,
+      "sastId": null,
+      "level": 2
+    },
+    "total_count": 7,
+    "projects": [
+      "Chloe",
+      "GifRecorder",
+      "Riter",
+      "RestSharp"
+    ],
+    "pattern": "Possible null dereference of 'complexPropertyDescriptor'. The 'FirstOrDefault' can return default null value.",
+    "example": "Possible null dereference of 'complexPropertyDescriptor'. The 'FirstOrDefault' can return default null value."
+  },
+  "V3203": {
+    "details": {
+      "code": "V3203",
+      "cwe": 0,
+      "sastId": null,
+      "level": 3
+    },
+    "total_count": 7,
+    "projects": [
+      "SoundFlow",
+      "GifRecorder"
+    ],
+    "pattern": "Method parameter is not used: ",
+    "example": "Method parameter is not used: pasteIndex."
+  },
+  "V3008": {
+    "details": {
+      "code": "V3008",
+      "cwe": 563,
+      "sastId": null,
+      "level": 2
+    },
+    "total_count": 6,
+    "projects": [
+      "Chloe",
+      "Riter",
+      "GifRecorder"
+    ],
+    "pattern": "The ' ' variable is assigned values twice successively. Perhaps this is a mistake. Check lines: ",
+    "example": "The 'dataList' variable is assigned values twice successively. Perhaps this is a mistake. Check lines: 306, 292."
+  },
+  "V3106": {
+    "details": {
+      "code": "V3106",
+      "cwe": 125,
+      "sastId": null,
+      "level": 2
+    },
+    "total_count": 5,
+    "projects": [
+      "Lynx",
+      "GifRecorder"
+    ],
+    "pattern": "Possibly index is out of bound. The value of 'promotedPiece' index could reach 15.",
+    "example": "Possibly index is out of bound. The value of 'promotedPiece' index could reach 15."
+  },
+  "V3130": {
+    "details": {
+      "code": "V3130",
+      "cwe": 0,
+      "sastId": null,
+      "level": 3
+    },
+    "total_count": 5,
+    "projects": [
+      "GifRecorder"
+    ],
+    "pattern": "Priority of the '&&' operator is higher than that of the '||' operator. Possible missing parentheses.",
+    "example": "Priority of the '&&' operator is higher than that of the '||' operator. Possible missing parentheses."
+  },
+  "V3064": {
+    "details": {
+      "code": "V3064",
+      "cwe": 369,
+      "sastId": null,
+      "level": 2
+    },
+    "total_count": 5,
+    "projects": [
+      "SoundFlow",
+      "GifRecorder"
+    ],
+    "pattern": "Potential division by zero. Consider inspecting denominator '",
+    "example": "Potential division by zero. Consider inspecting denominator '(MaxColorsWithTransparency - 1)'."
+  },
+  "V3051": {
+    "details": {
+      "code": "V3051",
+      "cwe": 704,
+      "sastId": null,
+      "level": 2
+    },
+    "total_count": 4,
+    "projects": [
+      "Chloe"
+    ],
+    "pattern": "An excessive type cast. The object is already of the ' ' type.",
+    "example": "An excessive type cast. The object is already of the 'ComplexObjectModel' type."
+  },
+  "V3137": {
+    "details": {
+      "code": "V3137",
+      "cwe": 563,
+      "sastId": null,
+      "level": 2
+    },
+    "total_count": 4,
+    "projects": [
+      "Chloe",
+      "GifRecorder"
+    ],
+    "pattern": "The ' s' variable is assigned but is not used by the end of the function.",
+    "example": "The 'provinces' variable is assigned but is not used by the end of the function."
+  },
+  "V3100": {
+    "details": {
+      "code": "V3100",
+      "cwe": 476,
+      "sastId": null,
+      "level": 3
+    },
+    "total_count": 4,
+    "projects": [
+      "Foster_issues",
+      "Foster"
+    ],
+    "pattern": "NullReferenceException is possi ble. Unhandled exceptions in destructor lead to termination of runtime.",
+    "example": "NullReferenceException is possible when dereferencing 'GraphicsDevice' variable. Unhandled exceptions in destructor lead to termination of runtime."
+  },
+  "V3167": {
+    "details": {
+      "code": "V3167",
+      "cwe": 0,
+      "sastId": null,
+      "level": 3
+    },
+    "total_count": 4,
+    "projects": [
+      "LunrCore",
+      "SpreadCheetah",
+      "RestSharp"
+    ],
+    "pattern": "Parameter of the 'CancellationToken' type is not utilized inside a method. Ignoring the parameter can cause application to be unresponsive to cancellation events.",
+    "example": "Parameter of the 'CancellationToken' type is not utilized inside a method. Ignoring the parameter can cause application to be unresponsive to cancellation events."
+  },
+  "V3032": {
+    "details": {
+      "code": "V3032",
+      "cwe": 835,
+      "sastId": null,
+      "level": 2
+    },
+    "total_count": 4,
+    "projects": [
+      "SoundFlow",
+      "GifRecorder"
+    ],
+    "pattern": "Waiting on this expression is unreliable, as compiler may optimize some of the variables. Use volatile variable(s) or synchronization primitives to avoid this.",
+    "example": "Waiting on this expression is unreliable, as compiler may optimize some of the variables. Use volatile variable(s) or synchronization primitives to avoid this."
+  },
+  "V3043": {
+    "details": {
+      "code": "V3043",
+      "cwe": 483,
+      "sastId": null,
+      "level": 1
+    },
+    "total_count": 4,
+    "projects": [
+      "GifRecorder"
+    ],
+    "pattern": "The code's operational logic does not correspond with its formatting. The statement is indented to the right, but it is always executed. It is possible that curly brackets are missing.",
+    "example": "The code's operational logic does not correspond with its formatting. The statement is indented to the right, but it is always executed. It is possible that curly brackets are missing."
+  },
+  "V5616": {
+    "details": {
+      "code": "V5616",
+      "cwe": 77,
+      "sastId": "OWASP-5.3.8",
+      "level": 3
+    },
+    "total_count": 4,
+    "projects": [
+      "GifRecorder"
+    ],
+    "pattern": "Possible command injection. Potentially tainted data in the 'info' variable is used to create an OS command.",
+    "example": "Possible command injection. Potentially tainted data in the 'info' variable is used to create an OS command."
+  },
+  "V3074": {
+    "details": {
+      "code": "V3074",
+      "cwe": 0,
+      "sastId": null,
+      "level": 3
+    },
+    "total_count": 3,
+    "projects": [
+      "Chloe"
+    ],
+    "pattern": "The ' DbSession ' class contains 'Dispose' method. Consider making it implement 'IDisposable' interface.",
+    "example": "The 'DbSession' class contains 'Dispose' method. Consider making it implement 'IDisposable' interface."
+  },
+  "V3056": {
+    "details": {
+      "code": "V3056",
+      "cwe": 682,
+      "sastId": null,
+      "level": 3
+    },
+    "total_count": 3,
+    "projects": [
+      "Chloe",
+      "SoundFlow",
+      "SpreadCheetah"
+    ],
+    "pattern": "Consider reviewing the correctness of 'Prime2' item's usage.",
+    "example": "Consider reviewing the correctness of 'Prime2' item's usage."
+  },
+  "V3041": {
+    "details": {
+      "code": "V3041",
+      "cwe": 682,
+      "sastId": null,
+      "level": 1
+    },
+    "total_count": 3,
+    "projects": [
+      "Foster_issues",
+      "Foster"
+    ],
+    "pattern": "The expression was implicitly cast from 'int' type to 'float' type. Consider utilizing an explicit type cast to avoid the loss of a fractional part. An example: double A = (double)(X) / Y;.",
+    "example": "The expression was implicitly cast from 'int' type to 'float' type. Consider utilizing an explicit type cast to avoid the loss of a fractional part. An example: double A = (double)(X) / Y;."
+  },
+  "V3109": {
+    "details": {
+      "code": "V3109",
+      "cwe": 0,
+      "sastId": null,
+      "level": 2
+    },
+    "total_count": 3,
+    "projects": [
+      "Foster_issues",
+      "SoundFlow",
+      "Foster"
+    ],
+    "pattern": "The 'interval' sub-expression is present on both sides of the operator. The expression is incorrect or it can be simplified.",
+    "example": "The 'interval' sub-expression is present on both sides of the operator. The expression is incorrect or it can be simplified."
+  },
+  "V3155": {
+    "details": {
+      "code": "V3155",
+      "cwe": 682,
+      "sastId": null,
+      "level": 3
+    },
+    "total_count": 3,
+    "projects": [
+      "Lynx",
+      "SoundFlow"
+    ],
+    "pattern": "The expression is incorrect or it can be simplified. The 'SetFileRankMask(-1, rank)' expression always evaluates to '0'.",
+    "example": "The expression is incorrect or it can be simplified. The 'SetFileRankMask(-1, rank)' expression always evaluates to '0'."
+  },
+  "V3047": {
+    "details": {
+      "code": "V3047",
+      "cwe": 0,
+      "sastId": null,
+      "level": 1
+    },
+    "total_count": 3,
+    "projects": [
+      "GifRecorder"
+    ],
+    "pattern": "WPF: a class containing registered property does not correspond with a type that is passed as the ownerType.",
+    "example": "WPF: a class containing registered property does not correspond with a type that is passed as the ownerType."
+  },
+  "V5625": {
+    "details": {
+      "code": "V5625",
+      "cwe": 0,
+      "sastId": null,
+      "level": 2
+    },
+    "total_count": 2,
+    "projects": [
+      "Chloe",
+      "RestSharp"
+    ],
+    "pattern": "Referenced package Npgsql 8.0.3 depends on assembly System.Text.Json 8.0.0.0 from the System.Text.Json package which contains vulnerabilities according to CVE-2024-30105, CVE-2024-43485.",
+    "example": "Referenced package Npgsql 8.0.3 depends on assembly System.Text.Json 8.0.0.0 from the System.Text.Json package which contains vulnerabilities according to CVE-2024-30105, CVE-2024-43485."
+  },
+  "V5611": {
+    "details": {
+      "code": "V5611",
+      "cwe": 502,
+      "sastId": "OWASP-1.5.2, OWASP-5.5.3",
+      "level": 3
+    },
+    "total_count": 2,
+    "projects": [
+      "LunrCore"
+    ],
+    "pattern": "Possible insecure deserialization. Potentially tainted data in the ' json' variable is used to deserialize an object.",
+    "example": "Possible insecure deserialization. Potentially tainted data in the 'utf8json' variable is used to deserialize an object."
+  },
+  "V3198": {
+    "details": {
+      "code": "V3198",
+      "cwe": 1164,
+      "sastId": null,
+      "level": 3
+    },
+    "total_count": 2,
+    "projects": [
+      "Lynx"
+    ],
+    "pattern": "The 'occupancy' variable is assigned the '0' value that it already holds.",
+    "example": "The 'occupancy' variable is assigned the '0' value that it already holds."
+  },
+  "V3134": {
+    "details": {
+      "code": "V3134",
+      "cwe": 128,
+      "sastId": null,
+      "level": 2
+    },
+    "total_count": 2,
+    "projects": [
+      "Lynx"
+    ],
+    "pattern": "Shift by a possibly negative number -1 will result in shifting the first operand by 6 low-order bits of the second operand.",
+    "example": "Shift by a possibly negative number -1 will result in shifting the first operand by 6 low-order bits of the second operand."
+  },
+  "V5613": {
+    "details": {
+      "code": "V5613",
+      "cwe": 328,
+      "sastId": null,
+      "level": 2
+    },
+    "total_count": 2,
+    "projects": [
+      "RestSharp"
+    ],
+    "pattern": "Use of ' SHA1' hash algorithm is not recommended. Such code may cause the exposure of sensitive data.",
+    "example": "Use of 'HMACSHA1' hash algorithm is not recommended. Such code may cause the exposure of sensitive data."
+  },
+  "V3142": {
+    "details": {
+      "code": "V3142",
+      "cwe": 561,
+      "sastId": null,
+      "level": 2
+    },
+    "total_count": 2,
+    "projects": [
+      "GifRecorder"
+    ],
+    "pattern": "Unreachable code detected. It is possible that an error is present.",
+    "example": "Unreachable code detected. It is possible that an error is present."
+  },
+  "V3057": {
+    "details": {
+      "code": "V3057",
+      "cwe": 628,
+      "sastId": null,
+      "level": 2
+    },
+    "total_count": 2,
+    "projects": [
+      "SpreadCheetah",
+      "GifRecorder"
+    ],
+    "pattern": "The 1st argument 'length - 4' has a possibly negative value, but is expected to be non-negative inside method, in 'ms.Read(buffer, 0, (int)count)'.",
+    "example": "The 1st argument 'length - 4' has a possibly negative value, but is expected to be non-negative inside method, in 'ms.Read(buffer, 0, (int)count)'."
+  },
+  "V3020": {
+    "details": {
+      "code": "V3020",
+      "cwe": 670,
+      "sastId": null,
+      "level": 2
+    },
+    "total_count": 2,
+    "projects": [
+      "GifRecorder"
+    ],
+    "pattern": "An unconditional 'break' within a loop.",
+    "example": "An unconditional 'break' within a loop."
+  },
+  "V3023": {
+    "details": {
+      "code": "V3023",
+      "cwe": 571,
+      "sastId": null,
+      "level": 1
+    },
+    "total_count": 2,
+    "projects": [
+      "GifRecorder"
+    ],
+    "pattern": "Consider inspecting this expression. The expression is excessive or contains a misprint.",
+    "example": "Consider inspecting this expression. The expression is excessive or contains a misprint."
+  },
+  "V3068": {
+    "details": {
+      "code": "V3068",
+      "cwe": 0,
+      "sastId": null,
+      "level": 2
+    },
+    "total_count": 1,
+    "projects": [
+      "Chloe"
+    ],
+    "pattern": "Calling overrideable class member 'CreateDbContext' from constructor is dangerous.",
+    "example": "Calling overrideable class member 'CreateDbContext' from constructor is dangerous."
+  },
+  "V3127": {
+    "details": {
+      "code": "V3127",
+      "cwe": 682,
+      "sastId": null,
+      "level": 2
+    },
+    "total_count": 1,
+    "projects": [
+      "Chloe"
+    ],
+    "pattern": "Two similar code fragments were found. Perhaps, this is a typo and 'person1' variable should be used instead of 'person2'",
+    "example": "Two similar code fragments were found. Perhaps, this is a typo and 'person1' variable should be used instead of 'person2'"
+  },
+  "V3202": {
+    "details": {
+      "code": "V3202",
+      "cwe": 561,
+      "sastId": null,
+      "level": 2
+    },
+    "total_count": 1,
+    "projects": [
+      "Lynx"
+    ],
+    "pattern": "Unreachable code detected. The 'case' value 'TablebaseEvaluationCategory.Unknown' is out of range of the match expression 'tablebaseEval.Category'.",
+    "example": "Unreachable code detected. The 'case' value 'TablebaseEvaluationCategory.Unknown' is out of range of the match expression 'tablebaseEval.Category'."
+  },
+  "V3001": {
+    "details": {
+      "code": "V3001",
+      "cwe": 0,
+      "sastId": null,
+      "level": 1
+    },
+    "total_count": 1,
+    "projects": [
+      "Lynx"
+    ],
+    "pattern": "There are identical sub-expressions 'zobristTable[piece, targetSquare]' to the left and to the right of the '^' operator.",
+    "example": "There are identical sub-expressions 'zobristTable[piece, targetSquare]' to the left and to the right of the '^' operator."
+  },
+  "V5601": {
+    "details": {
+      "code": "V5601",
+      "cwe": 798,
+      "sastId": "OWASP-2.10.4",
+      "level": 3
+    },
+    "total_count": 1,
+    "projects": [
+      "RestSharp"
+    ],
+    "pattern": "Suspicious string literal could be a password: 'ClientPassword'. Storing credentials inside source code can lead to security issues.",
+    "example": "Suspicious string literal could be a password: 'ClientPassword'. Storing credentials inside source code can lead to security issues."
+  },
+  "V3138": {
+    "details": {
+      "code": "V3138",
+      "cwe": 0,
+      "sastId": null,
+      "level": 3
+    },
+    "total_count": 1,
+    "projects": [
+      "RestSharp"
+    ],
+    "pattern": "String literal contains potential interpolated expression. Consider inspecting: user.",
+    "example": "String literal contains potential interpolated expression. Consider inspecting: user."
+  },
+  "V3012": {
+    "details": {
+      "code": "V3012",
+      "cwe": 783,
+      "sastId": null,
+      "level": 1
+    },
+    "total_count": 1,
+    "projects": [
+      "Riter"
+    ],
+    "pattern": "The '?:' operator, regardless of its conditional expression, always returns one and the same value.",
+    "example": "The '?:' operator, regardless of its conditional expression, always returns one and the same value."
+  },
+  "V3054": {
+    "details": {
+      "code": "V3054",
+      "cwe": 609,
+      "sastId": null,
+      "level": 2
+    },
+    "total_count": 1,
+    "projects": [
+      "GifRecorder"
+    ],
+    "pattern": "Potentially unsafe double-checked locking. Use volatile variable(s) or synchronization primitives to avoid this.",
+    "example": "Potentially unsafe double-checked locking. Use volatile variable(s) or synchronization primitives to avoid this."
+  },
+  "V5604": {
+    "details": {
+      "code": "V5604",
+      "cwe": 609,
+      "sastId": "OWASP-11.1.6, OWASP-1.11.3",
+      "level": 2
+    },
+    "total_count": 1,
+    "projects": [
+      "GifRecorder"
+    ],
+    "pattern": "Potentially unsafe double-checked locking. Use volatile variable(s) or synchronization primitives to avoid this.",
+    "example": "Potentially unsafe double-checked locking. Use volatile variable(s) or synchronization primitives to avoid this."
+  },
+  "V5612": {
+    "details": {
+      "code": "V5612",
+      "cwe": 326,
+      "sastId": null,
+      "level": 2
+    },
+    "total_count": 1,
+    "projects": [
+      "GifRecorder"
+    ],
+    "pattern": "Do not use old versions of SSL/TLS protocols as it may cause security issues. Insecure protocols: TLS 1.1.",
+    "example": "Do not use old versions of SSL/TLS protocols as it may cause security issues. Insecure protocols: TLS 1.1."
+  },
+  "V3097": {
+    "details": {
+      "code": "V3097",
+      "cwe": 0,
+      "sastId": null,
+      "level": 3
+    },
+    "total_count": 1,
+    "projects": [
+      "GifRecorder"
+    ],
+    "pattern": "Possible exception: the 'WindowPlacement' type marked by [Serializable] contains non-serializable members not marked by [NonSerialized].",
+    "example": "Possible exception: the 'WindowPlacement' type marked by [Serializable] contains non-serializable members not marked by [NonSerialized]."
+  },
+  "V3171": {
+    "details": {
+      "code": "V3171",
+      "cwe": 839,
+      "sastId": null,
+      "level": 2
+    },
+    "total_count": 1,
+    "projects": [
+      "GifRecorder"
+    ],
+    "pattern": "The parameter corresponding to the 1st argument 'length - 4' could reach the value of -4 inside method when used as the size of an array.",
+    "example": "The parameter corresponding to the 1st argument 'length - 4' could reach the value of -4 inside method when used as the size of an array."
+  },
+  "V3207": {
+    "details": {
+      "code": "V3207",
+      "cwe": 670,
+      "sastId": null,
+      "level": 1
+    },
+    "total_count": 1,
+    "projects": [
+      "GifRecorder"
+    ],
+    "pattern": "The 'not ExportFormats.Gif or ExportFormats.Apng' logical pattern may not work as expected. The 'not' pattern is matched only to the first expression from the 'or' pattern.",
+    "example": "The 'not ExportFormats.Gif or ExportFormats.Apng' logical pattern may not work as expected. The 'not' pattern is matched only to the first expression from the 'or' pattern."
+  },
+  "V3168": {
+    "details": {
+      "code": "V3168",
+      "cwe": 476,
+      "sastId": null,
+      "level": 2
+    },
+    "total_count": 1,
+    "projects": [
+      "GifRecorder"
+    ],
+    "pattern": "Awaiting on the 'GetResponse(HttpMethod.Get, url, headers)' expression with potential null value can lead to NullReferenceException.",
+    "example": "Awaiting on the 'GetResponse(HttpMethod.Get, url, headers)' expression with potential null value can lead to NullReferenceException."
+  },
+  "V3052": {
+    "details": {
+      "code": "V3052",
+      "cwe": 390,
+      "sastId": null,
+      "level": 2
+    },
+    "total_count": 1,
+    "projects": [
+      "GifRecorder"
+    ],
+    "pattern": "The original exception object 'u' was swallowed. Stack of original exception could be lost.",
+    "example": "The original exception object 'u' was swallowed. Stack of original exception could be lost."
+  },
+  "V5603": {
+    "details": {
+      "code": "V5603",
+      "cwe": 390,
+      "sastId": "OWASP-11.1.8",
+      "level": 2
+    },
+    "total_count": 1,
+    "projects": [
+      "GifRecorder"
+    ],
+    "pattern": "The original exception object 'u' was swallowed. Stack of original exception could be lost.",
+    "example": "The original exception object 'u' was swallowed. Stack of original exception could be lost."
+  },
+  "V5607": {
+    "details": {
+      "code": "V5607",
+      "cwe": 544,
+      "sastId": "OWASP-7.4.2",
+      "level": 3
+    },
+    "total_count": 1,
+    "projects": [
+      "SpreadCheetah"
+    ],
+    "pattern": "Exception classes should be publicly accessible.",
+    "example": "Exception classes should be publicly accessible."
+  },
+  "V3009": {
+    "details": {
+      "code": "V3009",
+      "cwe": 393,
+      "sastId": null,
+      "level": 2
+    },
+    "total_count": 1,
+    "projects": [
+      "SpreadCheetah"
+    ],
+    "pattern": "It's odd that this method always returns one and the same value of 'true'.",
+    "example": "It's odd that this method always returns one and the same value of 'true'."
+  }
+}

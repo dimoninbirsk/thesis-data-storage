@@ -1,0 +1,101 @@
+﻿[
+    {
+        "Status":  "Outdated",
+        "PackageID":  "KGySoft.Drawing",
+        "CurrentVersion":  "8.1.0",
+        "LatestVersion":  "9.1.0",
+        "Reason":  "New version available",
+        "Solution":  "ScreenToGif",
+        "Timestamp":  "20250416_175830"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "KGySoft.Drawing.Wpf",
+        "CurrentVersion":  "8.1.0",
+        "LatestVersion":  "9.0.0",
+        "Reason":  "New version available",
+        "Solution":  "ScreenToGif",
+        "Timestamp":  "20250416_175830"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Microsoft.Windows.Compatibility",
+        "CurrentVersion":  "8.0.0",
+        "LatestVersion":  "9.0.4",
+        "Reason":  "New version available",
+        "Solution":  "ScreenToGif",
+        "Timestamp":  "20250416_175830"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Microsoft.Windows.Compatibility",
+        "CurrentVersion":  "8.0.0",
+        "LatestVersion":  "9.0.4",
+        "Reason":  "New version available",
+        "Solution":  "ScreenToGif",
+        "Timestamp":  "20250416_175830"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "coverlet.collector",
+        "CurrentVersion":  "3.1.2",
+        "LatestVersion":  "6.0.4",
+        "Reason":  "New version available",
+        "Solution":  "ScreenToGif",
+        "Timestamp":  "20250416_175830"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Microsoft.NET.Test.Sdk",
+        "CurrentVersion":  "17.1.0",
+        "LatestVersion":  "17.13.0",
+        "Reason":  "New version available",
+        "Solution":  "ScreenToGif",
+        "Timestamp":  "20250416_175830"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "xunit",
+        "CurrentVersion":  "2.4.1",
+        "LatestVersion":  "2.9.3",
+        "Reason":  "New version available",
+        "Solution":  "ScreenToGif",
+        "Timestamp":  "20250416_175830"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "xunit.runner.visualstudio",
+        "CurrentVersion":  "2.4.3",
+        "LatestVersion":  "3.0.2",
+        "Reason":  "New version available",
+        "Solution":  "ScreenToGif",
+        "Timestamp":  "20250416_175830"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "KGySoft.CoreLibraries",
+        "CurrentVersion":  "8.1.0",
+        "LatestVersion":  "9.0.0",
+        "Reason":  "New version available",
+        "Solution":  "ScreenToGif",
+        "Timestamp":  "20250416_175830"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "System.Drawing.Common",
+        "CurrentVersion":  "8.0.0",
+        "LatestVersion":  "9.0.4",
+        "Reason":  "New version available",
+        "Solution":  "ScreenToGif",
+        "Timestamp":  "20250416_175830"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "KGySoft.Drawing.Core",
+        "CurrentVersion":  "8.1.0",
+        "LatestVersion":  "9.1.0",
+        "Reason":  "New version available",
+        "Solution":  "ScreenToGif",
+        "Timestamp":  "20250416_175830"
+    }
+]

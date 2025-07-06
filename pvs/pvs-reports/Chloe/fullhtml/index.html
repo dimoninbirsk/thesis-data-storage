@@ -1,0 +1,1658 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>PVS-Studio HTML Report</title>
+<style type="text/css">
+   TABLE {
+    width: 100%;
+   }
+   #col_group, #col_level, #col_code, #col_cwe, #col_sast {
+    text-align: center;
+    white-space: nowrap;
+    width: 0;
+   }
+   #col_file, #col_info, #col_projects {
+    white-space: nowrap;
+    text-align: left;
+    width: 0;
+   }
+   #col_info {
+    width: 120px;
+   }
+   #col_message {
+    text-align: left;
+   }
+  </style>
+<link rel="stylesheet" href="style.css" />
+<script type="text/javascript" src="script.js"></script>
+<script type="text/javascript" src="toggle-cell.js"></script>
+</head>
+<body>
+  <div class="header">
+    <img src="images/logo.png" alt=""/>
+    <h1>PVS-Studio Analysis Results</h1>
+    <br class="clear">
+  </div>
+  <table cellpadding="0" cellspacing="0" border="0" class="infotopic">
+     <tr><th id="col_info">Date:</th><td>04/16/25 21:41:03</td></tr>
+     <tr><th id="col_info">PVS-Studio Version:</th><td>7.36.91321.1771</td></tr>
+     <tr><th id="col_info">Total Warnings (GA):</th><td>166</td></tr>
+     <tr><th id="col_info">Total Warnings (OWASP):</th><td>11</td></tr>
+  </table>
+  <div class="toggle-box">
+    <label>
+      Show full paths
+    <input class="path-toggle toggle-button" type="checkbox" name="toggle-path" onclick="togglePathView()" />
+    </label>
+  </div>
+  <table cellpadding="0" cellspacing="0" border="0" class="sortable" id="sorter">
+    <tr>
+      <th class="gsort">Group</th>
+      <th class="psort">Projects</th>
+      <th>Location</th>
+      <th class="lsort">Level</th>
+      <th class="vsort">Code</th>
+      <th class="rsort">SAST</th>
+      <th>Message</th>
+    </tr>
+    <tr>
+      <td id="col_group">OWASP</td>
+      <td id="col_projects"><p>ChloeDemo</p></td>
+      <td id="col_file"></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v5625/">V5625</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Referenced package Npgsql 8.0.3 depends on assembly System.Text.Json 8.0.0.0 from the System.Text.Json package which contains vulnerabilities according to CVE-2024-30105, CVE-2024-43485.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe.Extension</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/DbContextExtension_NETCORE.cs_0.html#ln69">DbContextExtension_NETCORE.cs:69</a><a target="_blank" class="file-link display-none" href="sources/DbContextExtension_NETCORE.cs_0.html#ln69">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe.Extension\DbContextExtension_NETCORE.cs:69</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3095/">V3095</td>
+      <td id="col_sast"></td>
+      <td id="col_message">The 'arg' object was used before it was verified against null. Check lines: 69, 74.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe.Extension</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/DbContextExtension_NETCORE.cs_0.html#ln74">DbContextExtension_NETCORE.cs:74</a><a target="_blank" class="file-link display-none" href="sources/DbContextExtension_NETCORE.cs_0.html#ln74">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe.Extension\DbContextExtension_NETCORE.cs:74</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3022/">V3022</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Expression 'paramValue != null' is always true.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe.Extension</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/DbContextExtension_NETCORE.cs_0.html#ln57">DbContextExtension_NETCORE.cs:57</a><a target="_blank" class="file-link display-none" href="sources/DbContextExtension_NETCORE.cs_0.html#ln57">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe.Extension\DbContextExtension_NETCORE.cs:57</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3149/">V3149</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Dereferencing the result of 'as' operator can lead to NullReferenceException. Consider inspecting 'dbContext1'.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe.Extension</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/QueryExtension.cs_1.html#ln38">QueryExtension.cs:38</a><a target="_blank" class="file-link display-none" href="sources/QueryExtension.cs_1.html#ln38">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe.Extension\QueryExtension.cs:38</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3111/">V3111</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Checking value of 'val' for null will always return false when generic type is instantiated with a value type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe.Extension</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Utils.cs_2.html#ln26">Utils.cs:26</a><a target="_blank" class="file-link display-none" href="sources/Utils.cs_2.html#ln26">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe.Extension\Utils.cs:26</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3125/">V3125</td>
+      <td id="col_sast"></td>
+      <td id="col_message">The 'dbContext1' object was used after it was verified against null. Check lines: 26, 8.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe.Extension</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Utils.cs_2.html#ln26">Utils.cs:26</a><a target="_blank" class="file-link display-none" href="sources/Utils.cs_2.html#ln26">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe.Extension\Utils.cs:26</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3149/">V3149</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Dereferencing the result of 'as' operator can lead to NullReferenceException. Consider inspecting 'dbContext1'.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe.Extension</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Utils.cs_2.html#ln27">Utils.cs:27</a><a target="_blank" class="file-link display-none" href="sources/Utils.cs_2.html#ln27">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe.Extension\Utils.cs:27</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3149/">V3149</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Dereferencing the result of 'as' operator inside method can lead to NullReferenceException. Consider inspecting 1st argument: dbContextProvider.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe.Oracle</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/OracleTableGenerator.cs_3.html#ln112">OracleTableGenerator.cs:112</a><a target="_blank" class="file-link display-none" href="sources/OracleTableGenerator.cs_3.html#ln112">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe.Oracle\DDL\OracleTableGenerator.cs:112</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3149/">V3149</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Dereferencing the result of 'as' operator can lead to NullReferenceException. Consider inspecting 'dbContext'.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe.Oracle</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/OracleTableGenerator.cs_3.html#ln121">OracleTableGenerator.cs:121</a><a target="_blank" class="file-link display-none" href="sources/OracleTableGenerator.cs_3.html#ln121">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe.Oracle\DDL\OracleTableGenerator.cs:121</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3149/">V3149</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Dereferencing the result of 'as' operator can lead to NullReferenceException. Consider inspecting 'dbContext'.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe.PostgreSQL</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/PostgreSQLTableGenerator.cs_4.html#ln21">PostgreSQLTableGenerator.cs:21</a><a target="_blank" class="file-link display-none" href="sources/PostgreSQLTableGenerator.cs_4.html#ln21">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe.PostgreSQL\DDL\PostgreSQLTableGenerator.cs:21</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3149/">V3149</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Dereferencing the result of 'as' operator can lead to NullReferenceException. Consider inspecting 'dbContext'.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>ChloeDemo</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/DamengDemo.cs_5.html#ln51">DamengDemo.cs:51</a><a target="_blank" class="file-link display-none" href="sources/DamengDemo.cs_5.html#ln51">C:\Users\dimoninbirsk\source\thesis\Chloe\src\ChloeDemo\DamengDemo.cs:51</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3095/">V3095</td>
+      <td id="col_sast"></td>
+      <td id="col_message">The 'a.Name' object was used before it was verified against null. Check lines: 51, 52.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>ChloeDemo</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/DbBulkInsertExtension.cs_6.html#ln226">DbBulkInsertExtension.cs:226</a><a target="_blank" class="file-link display-none" href="sources/DbBulkInsertExtension.cs_6.html#ln226">C:\Users\dimoninbirsk\source\thesis\Chloe\src\ChloeDemo\DbBulkInsertExtension.cs:226</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3149/">V3149</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Dereferencing the result of 'as' operator can lead to NullReferenceException. Consider inspecting 'connection'.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>ChloeDemo</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/DbBulkInsertExtension.cs_6.html#ln274">DbBulkInsertExtension.cs:274</a><a target="_blank" class="file-link display-none" href="sources/DbBulkInsertExtension.cs_6.html#ln274">C:\Users\dimoninbirsk\source\thesis\Chloe\src\ChloeDemo\DbBulkInsertExtension.cs:274</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3149/">V3149</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Dereferencing the result of 'as' operator can lead to NullReferenceException. Consider inspecting 'connection'.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>ChloeDemo</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/DemoBase.cs_7.html#ln269">DemoBase.cs:269</a><a target="_blank" class="file-link display-none" href="sources/DemoBase.cs_7.html#ln269">C:\Users\dimoninbirsk\source\thesis\Chloe\src\ChloeDemo\DemoBase.cs:269</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3008/">V3008</td>
+      <td id="col_sast"></td>
+      <td id="col_message">The 'persons' variable is assigned values twice successively. Perhaps this is a mistake. Check lines: 269, 259.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>ChloeDemo</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/DemoBase.cs_7.html#ln15">DemoBase.cs:15</a><a target="_blank" class="file-link display-none" href="sources/DemoBase.cs_7.html#ln15">C:\Users\dimoninbirsk\source\thesis\Chloe\src\ChloeDemo\DemoBase.cs:15</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3068/">V3068</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Calling overrideable class member 'CreateDbContext' from constructor is dangerous.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>ChloeDemo</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/DemoBase.cs_7.html#ln1114">DemoBase.cs:1114</a><a target="_blank" class="file-link display-none" href="sources/DemoBase.cs_7.html#ln1114">C:\Users\dimoninbirsk\source\thesis\Chloe\src\ChloeDemo\DemoBase.cs:1114</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3095/">V3095</td>
+      <td id="col_sast"></td>
+      <td id="col_message">The 'a.Name' object was used before it was verified against null. Check lines: 1114, 1115.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>ChloeDemo</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/DemoBase.cs_7.html#ln791">DemoBase.cs:791</a><a target="_blank" class="file-link display-none" href="sources/DemoBase.cs_7.html#ln791">C:\Users\dimoninbirsk\source\thesis\Chloe\src\ChloeDemo\DemoBase.cs:791</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3127/">V3127</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Two similar code fragments were found. Perhaps, this is a typo and 'person1' variable should be used instead of 'person2'</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>ChloeDemo</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/DemoBase.cs_7.html#ln77">DemoBase.cs:77</a><a target="_blank" class="file-link display-none" href="sources/DemoBase.cs_7.html#ln77">C:\Users\dimoninbirsk\source\thesis\Chloe\src\ChloeDemo\DemoBase.cs:77</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3137/">V3137</td>
+      <td id="col_sast"></td>
+      <td id="col_message">The 'provinces' variable is assigned but is not used by the end of the function.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>ChloeDemo</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/DemoBase.cs_7.html#ln106">DemoBase.cs:106</a><a target="_blank" class="file-link display-none" href="sources/DemoBase.cs_7.html#ln106">C:\Users\dimoninbirsk\source\thesis\Chloe\src\ChloeDemo\DemoBase.cs:106</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3137/">V3137</td>
+      <td id="col_sast"></td>
+      <td id="col_message">The 'testEntities' variable is assigned but is not used by the end of the function.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>ChloeDemo</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/DemoBase.cs_7.html#ln581">DemoBase.cs:581</a><a target="_blank" class="file-link display-none" href="sources/DemoBase.cs_7.html#ln581">C:\Users\dimoninbirsk\source\thesis\Chloe\src\ChloeDemo\DemoBase.cs:581</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3137/">V3137</td>
+      <td id="col_sast"></td>
+      <td id="col_message">The 'persons' variable is assigned but is not used by the end of the function.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>ChloeDemo</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/KingbaseESDemo.cs_8.html#ln48">KingbaseESDemo.cs:48</a><a target="_blank" class="file-link display-none" href="sources/KingbaseESDemo.cs_8.html#ln48">C:\Users\dimoninbirsk\source\thesis\Chloe\src\ChloeDemo\KingbaseESDemo.cs:48</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3095/">V3095</td>
+      <td id="col_sast"></td>
+      <td id="col_message">The 'a.Name' object was used before it was verified against null. Check lines: 48, 49.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>ChloeDemo</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/MsSqlDemo.cs_9.html#ln58">MsSqlDemo.cs:58</a><a target="_blank" class="file-link display-none" href="sources/MsSqlDemo.cs_9.html#ln58">C:\Users\dimoninbirsk\source\thesis\Chloe\src\ChloeDemo\MsSqlDemo.cs:58</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3095/">V3095</td>
+      <td id="col_sast"></td>
+      <td id="col_message">The 'a.Name' object was used before it was verified against null. Check lines: 58, 59.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>ChloeDemo</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/MsSqlDemo.cs_9.html#ln60">MsSqlDemo.cs:60</a><a target="_blank" class="file-link display-none" href="sources/MsSqlDemo.cs_9.html#ln60">C:\Users\dimoninbirsk\source\thesis\Chloe\src\ChloeDemo\MsSqlDemo.cs:60</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3125/">V3125</td>
+      <td id="col_sast"></td>
+      <td id="col_message">The 'a.Name' object was used after it was verified against null. Check lines: 60, 59.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>ChloeDemo</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/OracleDemo.cs_10.html#ln56">OracleDemo.cs:56</a><a target="_blank" class="file-link display-none" href="sources/OracleDemo.cs_10.html#ln56">C:\Users\dimoninbirsk\source\thesis\Chloe\src\ChloeDemo\OracleDemo.cs:56</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3095/">V3095</td>
+      <td id="col_sast"></td>
+      <td id="col_message">The 'a.Name' object was used before it was verified against null. Check lines: 56, 57.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>ChloeDemo</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/PostgreSQLDemo.cs_11.html#ln55">PostgreSQLDemo.cs:55</a><a target="_blank" class="file-link display-none" href="sources/PostgreSQLDemo.cs_11.html#ln55">C:\Users\dimoninbirsk\source\thesis\Chloe\src\ChloeDemo\PostgreSQLDemo.cs:55</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3095/">V3095</td>
+      <td id="col_sast"></td>
+      <td id="col_message">The 'a.Name' object was used before it was verified against null. Check lines: 55, 56.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>ChloeDemo</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/OrderShardingRoute.cs_12.html#ln234">OrderShardingRoute.cs:234</a><a target="_blank" class="file-link display-none" href="sources/OrderShardingRoute.cs_12.html#ln234">C:\Users\dimoninbirsk\source\thesis\Chloe\src\ChloeDemo\Sharding\OrderShardingRoute.cs:234</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3013/">V3013</td>
+      <td id="col_sast"></td>
+      <td id="col_message">It is odd that the body of 'ForGreaterThan' function is fully equivalent to the body of 'ForGreaterThanOrEqual' function (234, line 244).</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>ChloeDemo</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/OrderShardingRoute.cs_12.html#ln254">OrderShardingRoute.cs:254</a><a target="_blank" class="file-link display-none" href="sources/OrderShardingRoute.cs_12.html#ln254">C:\Users\dimoninbirsk\source\thesis\Chloe\src\ChloeDemo\Sharding\OrderShardingRoute.cs:254</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3013/">V3013</td>
+      <td id="col_sast"></td>
+      <td id="col_message">It is odd that the body of 'ForLessThan' function is fully equivalent to the body of 'ForLessThanOrEqual' function (254, line 264).</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>ChloeDemo</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/OrderShardingRoute.cs_12.html#ln300">OrderShardingRoute.cs:300</a><a target="_blank" class="file-link display-none" href="sources/OrderShardingRoute.cs_12.html#ln300">C:\Users\dimoninbirsk\source\thesis\Chloe\src\ChloeDemo\Sharding\OrderShardingRoute.cs:300</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3013/">V3013</td>
+      <td id="col_sast"></td>
+      <td id="col_message">It is odd that the body of 'ForGreaterThan' function is fully equivalent to the body of 'ForGreaterThanOrEqual' function (300, line 305).</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>ChloeDemo</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/OrderShardingRoute.cs_12.html#ln310">OrderShardingRoute.cs:310</a><a target="_blank" class="file-link display-none" href="sources/OrderShardingRoute.cs_12.html#ln310">C:\Users\dimoninbirsk\source\thesis\Chloe\src\ChloeDemo\Sharding\OrderShardingRoute.cs:310</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3013/">V3013</td>
+      <td id="col_sast"></td>
+      <td id="col_message">It is odd that the body of 'ForLessThan' function is fully equivalent to the body of 'ForLessThanOrEqual' function (310, line 315).</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>ChloeDemo</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/ShardingQueryTest.cs_13.html#ln306">ShardingQueryTest.cs:306</a><a target="_blank" class="file-link display-none" href="sources/ShardingQueryTest.cs_13.html#ln306">C:\Users\dimoninbirsk\source\thesis\Chloe\src\ChloeDemo\Sharding\ShardingQueryTest.cs:306</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3008/">V3008</td>
+      <td id="col_sast"></td>
+      <td id="col_message">The 'dataList' variable is assigned values twice successively. Perhaps this is a mistake. Check lines: 306, 292.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>ChloeDemo</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/ShardingQueryTest.cs_13.html#ln402">ShardingQueryTest.cs:402</a><a target="_blank" class="file-link display-none" href="sources/ShardingQueryTest.cs_13.html#ln402">C:\Users\dimoninbirsk\source\thesis\Chloe\src\ChloeDemo\Sharding\ShardingQueryTest.cs:402</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3008/">V3008</td>
+      <td id="col_sast"></td>
+      <td id="col_message">The 'orders' variable is assigned values twice successively. Perhaps this is a mistake. Check lines: 402, 395.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/AdoSession.cs_14.html#ln128">AdoSession.cs:128</a><a target="_blank" class="file-link display-none" href="sources/AdoSession.cs_14.html#ln128">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Data\AdoSession.cs:128</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3083/">V3083</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Unsafe invocation of event 'OnReaderExecuting', NullReferenceException is possible. Consider assigning event to a local variable before invoking it.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/AdoSession.cs_14.html#ln138">AdoSession.cs:138</a><a target="_blank" class="file-link display-none" href="sources/AdoSession.cs_14.html#ln138">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Data\AdoSession.cs:138</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3083/">V3083</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Unsafe invocation of event 'OnReaderExecuted', NullReferenceException is possible. Consider assigning event to a local variable before invoking it.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/AdoSession.cs_14.html#ln173">AdoSession.cs:173</a><a target="_blank" class="file-link display-none" href="sources/AdoSession.cs_14.html#ln173">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Data\AdoSession.cs:173</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3083/">V3083</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Unsafe invocation of event, NullReferenceException is possible. Consider assigning event to a local variable before invoking it.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/AdoSession.cs_14.html#ln183">AdoSession.cs:183</a><a target="_blank" class="file-link display-none" href="sources/AdoSession.cs_14.html#ln183">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Data\AdoSession.cs:183</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3083/">V3083</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Unsafe invocation of event 'OnNonQueryExecuted', NullReferenceException is possible. Consider assigning event to a local variable before invoking it.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/AdoSession.cs_14.html#ln223">AdoSession.cs:223</a><a target="_blank" class="file-link display-none" href="sources/AdoSession.cs_14.html#ln223">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Data\AdoSession.cs:223</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3083/">V3083</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Unsafe invocation of event 'OnScalarExecuting', NullReferenceException is possible. Consider assigning event to a local variable before invoking it.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/AdoSession.cs_14.html#ln233">AdoSession.cs:233</a><a target="_blank" class="file-link display-none" href="sources/AdoSession.cs_14.html#ln233">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Data\AdoSession.cs:233</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3083/">V3083</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Unsafe invocation of event 'OnScalarExecuted', NullReferenceException is possible. Consider assigning event to a local variable before invoking it.</td>
+    </tr>
+    <tr>
+      <td id="col_group">OWASP</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/AdoSession.cs_14.html#ln128">AdoSession.cs:128</a><a target="_blank" class="file-link display-none" href="sources/AdoSession.cs_14.html#ln128">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Data\AdoSession.cs:128</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v5605/">V5605</td>
+      <td id="col_sast">OWASP-1.11.3, OWASP-11.1.6</td>
+      <td id="col_message">Unsafe invocation of event 'OnReaderExecuting', NullReferenceException is possible. Consider assigning event to a local variable before invoking it.</td>
+    </tr>
+    <tr>
+      <td id="col_group">OWASP</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/AdoSession.cs_14.html#ln138">AdoSession.cs:138</a><a target="_blank" class="file-link display-none" href="sources/AdoSession.cs_14.html#ln138">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Data\AdoSession.cs:138</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v5605/">V5605</td>
+      <td id="col_sast">OWASP-1.11.3, OWASP-11.1.6</td>
+      <td id="col_message">Unsafe invocation of event 'OnReaderExecuted', NullReferenceException is possible. Consider assigning event to a local variable before invoking it.</td>
+    </tr>
+    <tr>
+      <td id="col_group">OWASP</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/AdoSession.cs_14.html#ln173">AdoSession.cs:173</a><a target="_blank" class="file-link display-none" href="sources/AdoSession.cs_14.html#ln173">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Data\AdoSession.cs:173</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v5605/">V5605</td>
+      <td id="col_sast">OWASP-1.11.3, OWASP-11.1.6</td>
+      <td id="col_message">Unsafe invocation of event, NullReferenceException is possible. Consider assigning event to a local variable before invoking it.</td>
+    </tr>
+    <tr>
+      <td id="col_group">OWASP</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/AdoSession.cs_14.html#ln183">AdoSession.cs:183</a><a target="_blank" class="file-link display-none" href="sources/AdoSession.cs_14.html#ln183">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Data\AdoSession.cs:183</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v5605/">V5605</td>
+      <td id="col_sast">OWASP-1.11.3, OWASP-11.1.6</td>
+      <td id="col_message">Unsafe invocation of event 'OnNonQueryExecuted', NullReferenceException is possible. Consider assigning event to a local variable before invoking it.</td>
+    </tr>
+    <tr>
+      <td id="col_group">OWASP</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/AdoSession.cs_14.html#ln223">AdoSession.cs:223</a><a target="_blank" class="file-link display-none" href="sources/AdoSession.cs_14.html#ln223">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Data\AdoSession.cs:223</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v5605/">V5605</td>
+      <td id="col_sast">OWASP-1.11.3, OWASP-11.1.6</td>
+      <td id="col_message">Unsafe invocation of event 'OnScalarExecuting', NullReferenceException is possible. Consider assigning event to a local variable before invoking it.</td>
+    </tr>
+    <tr>
+      <td id="col_group">OWASP</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/AdoSession.cs_14.html#ln233">AdoSession.cs:233</a><a target="_blank" class="file-link display-none" href="sources/AdoSession.cs_14.html#ln233">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Data\AdoSession.cs:233</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v5605/">V5605</td>
+      <td id="col_sast">OWASP-1.11.3, OWASP-11.1.6</td>
+      <td id="col_message">Unsafe invocation of event 'OnScalarExecuted', NullReferenceException is possible. Consider assigning event to a local variable before invoking it.</td>
+    </tr>
+    <tr>
+      <td id="col_group">OWASP</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/AdoSession.cs_14.html#ln271">AdoSession.cs:271</a><a target="_blank" class="file-link display-none" href="sources/AdoSession.cs_14.html#ln271">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Data\AdoSession.cs:271</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v5606/">V5606</td>
+      <td id="col_sast">OWASP-7.4.2</td>
+      <td id="col_message">An empty exception handler. Silent suppression of exceptions may hide the presence of bugs or vulnerabilities.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/InnerAdoSession.cs_15.html#ln6">InnerAdoSession.cs:6</a><a target="_blank" class="file-link display-none" href="sources/InnerAdoSession.cs_15.html#ln6">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Data\InnerAdoSession.cs:6</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3073/">V3073</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Not all IDisposable members are properly disposed. Call 'Dispose' when disposing 'InnerAdoSession' class. Inspect: _externalAdoSession.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/DbContextButler.cs_16.html#ln9">DbContextButler.cs:9</a><a target="_blank" class="file-link display-none" href="sources/DbContextButler.cs_16.html#ln9">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\DbContextButler.cs:9</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3073/">V3073</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Not all IDisposable members are properly disposed. Call 'Dispose' when disposing 'DbContextButler' class. Inspect: _defaultDbContextProvider...</td>
+    </tr>
+    <tr>
+      <td id="col_group">OWASP</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/DbContextButler.cs_16.html#ln67">DbContextButler.cs:67</a><a target="_blank" class="file-link display-none" href="sources/DbContextButler.cs_16.html#ln67">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\DbContextButler.cs:67</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v5606/">V5606</td>
+      <td id="col_sast">OWASP-7.4.2</td>
+      <td id="col_message">An empty exception handler. Silent suppression of exceptions may hide the presence of bugs or vulnerabilities.</td>
+    </tr>
+    <tr>
+      <td id="col_group">OWASP</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/DbContextButler.cs_16.html#ln133">DbContextButler.cs:133</a><a target="_blank" class="file-link display-none" href="sources/DbContextButler.cs_16.html#ln133">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\DbContextButler.cs:133</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v5606/">V5606</td>
+      <td id="col_sast">OWASP-7.4.2</td>
+      <td id="col_message">An empty exception handler. Silent suppression of exceptions may hide the presence of bugs or vulnerabilities.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/DbExpressionVisitor.cs_17.html#ln185">DbExpressionVisitor.cs:185</a><a target="_blank" class="file-link display-none" href="sources/DbExpressionVisitor.cs_17.html#ln185">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\DbExpressions\DbExpressionVisitor.cs:185</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3080/">V3080</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Possible null dereference. Consider inspecting 'dbJoinTable'.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/DbParam.cs_18.html#ln50">DbParam.cs:50</a><a target="_blank" class="file-link display-none" href="sources/DbParam.cs_18.html#ln50">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\DbParam.cs:50</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3111/">V3111</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Checking value of 'value' for null will always return false when generic type is instantiated with a value type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/DbSession.cs_19.html#ln6">DbSession.cs:6</a><a target="_blank" class="file-link display-none" href="sources/DbSession.cs_19.html#ln6">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\DbSession.cs:6</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3074/">V3074</td>
+      <td id="col_sast"></td>
+      <td id="col_message">The 'DbSession' class contains 'Dispose' method. Consider making it implement 'IDisposable' interface.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/DbSessionProvider.cs_20.html#ln6">DbSessionProvider.cs:6</a><a target="_blank" class="file-link display-none" href="sources/DbSessionProvider.cs_20.html#ln6">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\DbSessionProvider.cs:6</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3074/">V3074</td>
+      <td id="col_sast"></td>
+      <td id="col_message">The 'DbSessionProvider' class contains 'Dispose' method. Consider making it implement 'IDisposable' interface.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/HashCode.cs_21.html#ln273">HashCode.cs:273</a><a target="_blank" class="file-link display-none" href="sources/HashCode.cs_21.html#ln273">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Extensions\HashCode.cs:273</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3056/">V3056</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Consider reviewing the correctness of 'Prime2' item's usage.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/HashCode.cs_21.html#ln98">HashCode.cs:98</a><a target="_blank" class="file-link display-none" href="sources/HashCode.cs_21.html#ln98">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Extensions\HashCode.cs:98</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3111/">V3111</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Checking value of 'value1' for null will always return false when generic type is instantiated with a value type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/HashCode.cs_21.html#ln111">HashCode.cs:111</a><a target="_blank" class="file-link display-none" href="sources/HashCode.cs_21.html#ln111">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Extensions\HashCode.cs:111</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3111/">V3111</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Checking value of 'value1' for null will always return false when generic type is instantiated with a value type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/HashCode.cs_21.html#ln112">HashCode.cs:112</a><a target="_blank" class="file-link display-none" href="sources/HashCode.cs_21.html#ln112">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Extensions\HashCode.cs:112</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3111/">V3111</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Checking value of 'value2' for null will always return false when generic type is instantiated with a value type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/HashCode.cs_21.html#ln126">HashCode.cs:126</a><a target="_blank" class="file-link display-none" href="sources/HashCode.cs_21.html#ln126">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Extensions\HashCode.cs:126</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3111/">V3111</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Checking value of 'value1' for null will always return false when generic type is instantiated with a value type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/HashCode.cs_21.html#ln127">HashCode.cs:127</a><a target="_blank" class="file-link display-none" href="sources/HashCode.cs_21.html#ln127">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Extensions\HashCode.cs:127</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3111/">V3111</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Checking value of 'value2' for null will always return false when generic type is instantiated with a value type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/HashCode.cs_21.html#ln128">HashCode.cs:128</a><a target="_blank" class="file-link display-none" href="sources/HashCode.cs_21.html#ln128">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Extensions\HashCode.cs:128</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3111/">V3111</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Checking value of 'value3' for null will always return false when generic type is instantiated with a value type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/HashCode.cs_21.html#ln143">HashCode.cs:143</a><a target="_blank" class="file-link display-none" href="sources/HashCode.cs_21.html#ln143">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Extensions\HashCode.cs:143</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3111/">V3111</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Checking value of 'value1' for null will always return false when generic type is instantiated with a value type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/HashCode.cs_21.html#ln144">HashCode.cs:144</a><a target="_blank" class="file-link display-none" href="sources/HashCode.cs_21.html#ln144">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Extensions\HashCode.cs:144</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3111/">V3111</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Checking value of 'value2' for null will always return false when generic type is instantiated with a value type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/HashCode.cs_21.html#ln145">HashCode.cs:145</a><a target="_blank" class="file-link display-none" href="sources/HashCode.cs_21.html#ln145">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Extensions\HashCode.cs:145</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3111/">V3111</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Checking value of 'value3' for null will always return false when generic type is instantiated with a value type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/HashCode.cs_21.html#ln146">HashCode.cs:146</a><a target="_blank" class="file-link display-none" href="sources/HashCode.cs_21.html#ln146">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Extensions\HashCode.cs:146</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3111/">V3111</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Checking value of 'value4' for null will always return false when generic type is instantiated with a value type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/HashCode.cs_21.html#ln164">HashCode.cs:164</a><a target="_blank" class="file-link display-none" href="sources/HashCode.cs_21.html#ln164">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Extensions\HashCode.cs:164</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3111/">V3111</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Checking value of 'value1' for null will always return false when generic type is instantiated with a value type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/HashCode.cs_21.html#ln165">HashCode.cs:165</a><a target="_blank" class="file-link display-none" href="sources/HashCode.cs_21.html#ln165">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Extensions\HashCode.cs:165</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3111/">V3111</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Checking value of 'value2' for null will always return false when generic type is instantiated with a value type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/HashCode.cs_21.html#ln166">HashCode.cs:166</a><a target="_blank" class="file-link display-none" href="sources/HashCode.cs_21.html#ln166">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Extensions\HashCode.cs:166</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3111/">V3111</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Checking value of 'value3' for null will always return false when generic type is instantiated with a value type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/HashCode.cs_21.html#ln167">HashCode.cs:167</a><a target="_blank" class="file-link display-none" href="sources/HashCode.cs_21.html#ln167">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Extensions\HashCode.cs:167</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3111/">V3111</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Checking value of 'value4' for null will always return false when generic type is instantiated with a value type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/HashCode.cs_21.html#ln168">HashCode.cs:168</a><a target="_blank" class="file-link display-none" href="sources/HashCode.cs_21.html#ln168">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Extensions\HashCode.cs:168</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3111/">V3111</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Checking value of 'value5' for null will always return false when generic type is instantiated with a value type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/HashCode.cs_21.html#ln188">HashCode.cs:188</a><a target="_blank" class="file-link display-none" href="sources/HashCode.cs_21.html#ln188">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Extensions\HashCode.cs:188</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3111/">V3111</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Checking value of 'value1' for null will always return false when generic type is instantiated with a value type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/HashCode.cs_21.html#ln189">HashCode.cs:189</a><a target="_blank" class="file-link display-none" href="sources/HashCode.cs_21.html#ln189">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Extensions\HashCode.cs:189</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3111/">V3111</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Checking value of 'value2' for null will always return false when generic type is instantiated with a value type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/HashCode.cs_21.html#ln190">HashCode.cs:190</a><a target="_blank" class="file-link display-none" href="sources/HashCode.cs_21.html#ln190">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Extensions\HashCode.cs:190</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3111/">V3111</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Checking value of 'value3' for null will always return false when generic type is instantiated with a value type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/HashCode.cs_21.html#ln191">HashCode.cs:191</a><a target="_blank" class="file-link display-none" href="sources/HashCode.cs_21.html#ln191">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Extensions\HashCode.cs:191</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3111/">V3111</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Checking value of 'value4' for null will always return false when generic type is instantiated with a value type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/HashCode.cs_21.html#ln192">HashCode.cs:192</a><a target="_blank" class="file-link display-none" href="sources/HashCode.cs_21.html#ln192">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Extensions\HashCode.cs:192</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3111/">V3111</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Checking value of 'value5' for null will always return false when generic type is instantiated with a value type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/HashCode.cs_21.html#ln193">HashCode.cs:193</a><a target="_blank" class="file-link display-none" href="sources/HashCode.cs_21.html#ln193">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Extensions\HashCode.cs:193</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3111/">V3111</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Checking value of 'value6' for null will always return false when generic type is instantiated with a value type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/HashCode.cs_21.html#ln214">HashCode.cs:214</a><a target="_blank" class="file-link display-none" href="sources/HashCode.cs_21.html#ln214">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Extensions\HashCode.cs:214</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3111/">V3111</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Checking value of 'value1' for null will always return false when generic type is instantiated with a value type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/HashCode.cs_21.html#ln215">HashCode.cs:215</a><a target="_blank" class="file-link display-none" href="sources/HashCode.cs_21.html#ln215">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Extensions\HashCode.cs:215</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3111/">V3111</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Checking value of 'value2' for null will always return false when generic type is instantiated with a value type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/HashCode.cs_21.html#ln216">HashCode.cs:216</a><a target="_blank" class="file-link display-none" href="sources/HashCode.cs_21.html#ln216">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Extensions\HashCode.cs:216</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3111/">V3111</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Checking value of 'value3' for null will always return false when generic type is instantiated with a value type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/HashCode.cs_21.html#ln217">HashCode.cs:217</a><a target="_blank" class="file-link display-none" href="sources/HashCode.cs_21.html#ln217">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Extensions\HashCode.cs:217</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3111/">V3111</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Checking value of 'value4' for null will always return false when generic type is instantiated with a value type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/HashCode.cs_21.html#ln218">HashCode.cs:218</a><a target="_blank" class="file-link display-none" href="sources/HashCode.cs_21.html#ln218">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Extensions\HashCode.cs:218</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3111/">V3111</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Checking value of 'value5' for null will always return false when generic type is instantiated with a value type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/HashCode.cs_21.html#ln219">HashCode.cs:219</a><a target="_blank" class="file-link display-none" href="sources/HashCode.cs_21.html#ln219">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Extensions\HashCode.cs:219</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3111/">V3111</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Checking value of 'value6' for null will always return false when generic type is instantiated with a value type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/HashCode.cs_21.html#ln220">HashCode.cs:220</a><a target="_blank" class="file-link display-none" href="sources/HashCode.cs_21.html#ln220">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Extensions\HashCode.cs:220</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3111/">V3111</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Checking value of 'value7' for null will always return false when generic type is instantiated with a value type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/HashCode.cs_21.html#ln242">HashCode.cs:242</a><a target="_blank" class="file-link display-none" href="sources/HashCode.cs_21.html#ln242">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Extensions\HashCode.cs:242</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3111/">V3111</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Checking value of 'value1' for null will always return false when generic type is instantiated with a value type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/HashCode.cs_21.html#ln243">HashCode.cs:243</a><a target="_blank" class="file-link display-none" href="sources/HashCode.cs_21.html#ln243">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Extensions\HashCode.cs:243</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3111/">V3111</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Checking value of 'value2' for null will always return false when generic type is instantiated with a value type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/HashCode.cs_21.html#ln244">HashCode.cs:244</a><a target="_blank" class="file-link display-none" href="sources/HashCode.cs_21.html#ln244">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Extensions\HashCode.cs:244</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3111/">V3111</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Checking value of 'value3' for null will always return false when generic type is instantiated with a value type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/HashCode.cs_21.html#ln245">HashCode.cs:245</a><a target="_blank" class="file-link display-none" href="sources/HashCode.cs_21.html#ln245">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Extensions\HashCode.cs:245</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3111/">V3111</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Checking value of 'value4' for null will always return false when generic type is instantiated with a value type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/HashCode.cs_21.html#ln246">HashCode.cs:246</a><a target="_blank" class="file-link display-none" href="sources/HashCode.cs_21.html#ln246">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Extensions\HashCode.cs:246</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3111/">V3111</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Checking value of 'value5' for null will always return false when generic type is instantiated with a value type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/HashCode.cs_21.html#ln247">HashCode.cs:247</a><a target="_blank" class="file-link display-none" href="sources/HashCode.cs_21.html#ln247">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Extensions\HashCode.cs:247</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3111/">V3111</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Checking value of 'value6' for null will always return false when generic type is instantiated with a value type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/HashCode.cs_21.html#ln248">HashCode.cs:248</a><a target="_blank" class="file-link display-none" href="sources/HashCode.cs_21.html#ln248">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Extensions\HashCode.cs:248</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3111/">V3111</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Checking value of 'value7' for null will always return false when generic type is instantiated with a value type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/HashCode.cs_21.html#ln249">HashCode.cs:249</a><a target="_blank" class="file-link display-none" href="sources/HashCode.cs_21.html#ln249">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Extensions\HashCode.cs:249</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3111/">V3111</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Checking value of 'value8' for null will always return false when generic type is instantiated with a value type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/HashCode.cs_21.html#ln315">HashCode.cs:315</a><a target="_blank" class="file-link display-none" href="sources/HashCode.cs_21.html#ln315">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Extensions\HashCode.cs:315</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3111/">V3111</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Checking value of 'value' for null will always return false when generic type is instantiated with a value type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/ObjectMemberMapper.cs_22.html#ln78">ObjectMemberMapper.cs:78</a><a target="_blank" class="file-link display-none" href="sources/ObjectMemberMapper.cs_22.html#ln78">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Mapper\ObjectMemberMapper.cs:78</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3090/">V3090</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Unsafe locking on a type. All instances of a type will have the same 'Type' object.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/IncludeQueryBase.cs_23.html#ln32">IncludeQueryBase.cs:32</a><a target="_blank" class="file-link display-none" href="sources/IncludeQueryBase.cs_23.html#ln32">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\IncludeQueryBase.cs:32</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3149/">V3149</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Dereferencing the result of 'as' operator can lead to NullReferenceException. Consider inspecting 'prevIncludeExpression'.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/IncludeQueryBase.cs_23.html#ln42">IncludeQueryBase.cs:42</a><a target="_blank" class="file-link display-none" href="sources/IncludeQueryBase.cs_23.html#ln42">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\IncludeQueryBase.cs:42</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3149/">V3149</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Dereferencing the result of 'as' operator inside method can lead to NullReferenceException. Consider inspecting 1st argument: member.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/IncludeQueryBase.cs_23.html#ln55">IncludeQueryBase.cs:55</a><a target="_blank" class="file-link display-none" href="sources/IncludeQueryBase.cs_23.html#ln55">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\IncludeQueryBase.cs:55</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3149/">V3149</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Dereferencing the result of 'as' operator can lead to NullReferenceException. Consider inspecting 'prevIncludeExpression'.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/IncludeQueryBase.cs_23.html#ln73">IncludeQueryBase.cs:73</a><a target="_blank" class="file-link display-none" href="sources/IncludeQueryBase.cs_23.html#ln73">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\IncludeQueryBase.cs:73</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3149/">V3149</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Dereferencing the result of 'as' operator can lead to NullReferenceException. Consider inspecting 'member'.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/IncludeQueryBase.cs_23.html#ln94">IncludeQueryBase.cs:94</a><a target="_blank" class="file-link display-none" href="sources/IncludeQueryBase.cs_23.html#ln94">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\IncludeQueryBase.cs:94</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3149/">V3149</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Dereferencing the result of 'as' operator inside method can lead to NullReferenceException. Consider inspecting 1st argument: member.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/IncludedCollectionQuery.cs_24.html#ln22">IncludedCollectionQuery.cs:22</a><a target="_blank" class="file-link display-none" href="sources/IncludedCollectionQuery.cs_24.html#ln22">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\IncludedCollectionQuery.cs:22</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3149/">V3149</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Dereferencing the result of 'as' operator can lead to NullReferenceException. Consider inspecting 'prevIncludeExpression'.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/InternalSqlQuery.cs_25.html#ln84">InternalSqlQuery.cs:84</a><a target="_blank" class="file-link display-none" href="sources/InternalSqlQuery.cs_25.html#ln84">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\Internals\InternalSqlQuery.cs:84</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3090/">V3090</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Unsafe locking on a type. All instances of a type will have the same 'Type' object.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/ComplexObjectModel.cs_26.html#ln162">ComplexObjectModel.cs:162</a><a target="_blank" class="file-link display-none" href="sources/ComplexObjectModel.cs_26.html#ln162">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\Model\ComplexObjectModel.cs:162</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3051/">V3051</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An excessive type cast. The object is already of the 'ComplexObjectModel' type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/ComplexObjectModel.cs_26.html#ln500">ComplexObjectModel.cs:500</a><a target="_blank" class="file-link display-none" href="sources/ComplexObjectModel.cs_26.html#ln500">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\Model\ComplexObjectModel.cs:500</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3051/">V3051</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An excessive type cast. The object is already of the 'ComplexObjectModel' type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/ComplexObjectModel.cs_26.html#ln539">ComplexObjectModel.cs:539</a><a target="_blank" class="file-link display-none" href="sources/ComplexObjectModel.cs_26.html#ln539">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\Model\ComplexObjectModel.cs:539</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3051/">V3051</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An excessive type cast. The object is already of the 'ComplexObjectModel' type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/ComplexObjectModel.cs_26.html#ln196">ComplexObjectModel.cs:196</a><a target="_blank" class="file-link display-none" href="sources/ComplexObjectModel.cs_26.html#ln196">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\Model\ComplexObjectModel.cs:196</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3125/">V3125</td>
+      <td id="col_sast"></td>
+      <td id="col_message">The 'model' object was used after it was verified against null. Check lines: 196, 188.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/ComplexObjectModel.cs_26.html#ln436">ComplexObjectModel.cs:436</a><a target="_blank" class="file-link display-none" href="sources/ComplexObjectModel.cs_26.html#ln436">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\Model\ComplexObjectModel.cs:436</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3149/">V3149</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Dereferencing the result of 'as' operator inside method can lead to NullReferenceException. Consider inspecting 1st argument.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/ComplexObjectModel.cs_26.html#ln473">ComplexObjectModel.cs:473</a><a target="_blank" class="file-link display-none" href="sources/ComplexObjectModel.cs_26.html#ln473">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\Model\ComplexObjectModel.cs:473</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3149/">V3149</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Dereferencing the result of 'as' operator can lead to NullReferenceException. Consider inspecting 'joinTable'.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/ComplexObjectModel.cs_26.html#ln643">ComplexObjectModel.cs:643</a><a target="_blank" class="file-link display-none" href="sources/ComplexObjectModel.cs_26.html#ln643">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\Model\ComplexObjectModel.cs:643</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3149/">V3149</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Dereferencing the result of 'as' operator inside method can lead to NullReferenceException. Consider inspecting 1st argument.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Query.Async.cs_27.html#ln54">Query.Async.cs:54</a><a target="_blank" class="file-link display-none" href="sources/Query.Async.cs_27.html#ln54">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\Query.Async.cs:54</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3062/">V3062</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Max' method.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Query.Async.cs_27.html#ln58">Query.Async.cs:58</a><a target="_blank" class="file-link display-none" href="sources/Query.Async.cs_27.html#ln58">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\Query.Async.cs:58</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3062/">V3062</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Min' method.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Query.Async.cs_27.html#ln63">Query.Async.cs:63</a><a target="_blank" class="file-link display-none" href="sources/Query.Async.cs_27.html#ln63">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\Query.Async.cs:63</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3062/">V3062</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Sum' method.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Query.Async.cs_27.html#ln67">Query.Async.cs:67</a><a target="_blank" class="file-link display-none" href="sources/Query.Async.cs_27.html#ln67">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\Query.Async.cs:67</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3062/">V3062</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Sum' method.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Query.Async.cs_27.html#ln71">Query.Async.cs:71</a><a target="_blank" class="file-link display-none" href="sources/Query.Async.cs_27.html#ln71">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\Query.Async.cs:71</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3062/">V3062</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Sum' method.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Query.Async.cs_27.html#ln75">Query.Async.cs:75</a><a target="_blank" class="file-link display-none" href="sources/Query.Async.cs_27.html#ln75">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\Query.Async.cs:75</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3062/">V3062</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Sum' method.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Query.Async.cs_27.html#ln79">Query.Async.cs:79</a><a target="_blank" class="file-link display-none" href="sources/Query.Async.cs_27.html#ln79">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\Query.Async.cs:79</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3062/">V3062</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Sum' method.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Query.Async.cs_27.html#ln83">Query.Async.cs:83</a><a target="_blank" class="file-link display-none" href="sources/Query.Async.cs_27.html#ln83">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\Query.Async.cs:83</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3062/">V3062</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Sum' method.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Query.Async.cs_27.html#ln87">Query.Async.cs:87</a><a target="_blank" class="file-link display-none" href="sources/Query.Async.cs_27.html#ln87">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\Query.Async.cs:87</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3062/">V3062</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Sum' method.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Query.Async.cs_27.html#ln91">Query.Async.cs:91</a><a target="_blank" class="file-link display-none" href="sources/Query.Async.cs_27.html#ln91">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\Query.Async.cs:91</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3062/">V3062</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Sum' method.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Query.Async.cs_27.html#ln95">Query.Async.cs:95</a><a target="_blank" class="file-link display-none" href="sources/Query.Async.cs_27.html#ln95">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\Query.Async.cs:95</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3062/">V3062</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Sum' method.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Query.Async.cs_27.html#ln99">Query.Async.cs:99</a><a target="_blank" class="file-link display-none" href="sources/Query.Async.cs_27.html#ln99">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\Query.Async.cs:99</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3062/">V3062</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Sum' method.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Query.Async.cs_27.html#ln105">Query.Async.cs:105</a><a target="_blank" class="file-link display-none" href="sources/Query.Async.cs_27.html#ln105">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\Query.Async.cs:105</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3062/">V3062</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Query.Async.cs_27.html#ln109">Query.Async.cs:109</a><a target="_blank" class="file-link display-none" href="sources/Query.Async.cs_27.html#ln109">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\Query.Async.cs:109</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3062/">V3062</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Query.Async.cs_27.html#ln113">Query.Async.cs:113</a><a target="_blank" class="file-link display-none" href="sources/Query.Async.cs_27.html#ln113">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\Query.Async.cs:113</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3062/">V3062</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Query.Async.cs_27.html#ln117">Query.Async.cs:117</a><a target="_blank" class="file-link display-none" href="sources/Query.Async.cs_27.html#ln117">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\Query.Async.cs:117</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3062/">V3062</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Query.Async.cs_27.html#ln121">Query.Async.cs:121</a><a target="_blank" class="file-link display-none" href="sources/Query.Async.cs_27.html#ln121">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\Query.Async.cs:121</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3062/">V3062</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Query.Async.cs_27.html#ln125">Query.Async.cs:125</a><a target="_blank" class="file-link display-none" href="sources/Query.Async.cs_27.html#ln125">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\Query.Async.cs:125</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3062/">V3062</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Query.Async.cs_27.html#ln129">Query.Async.cs:129</a><a target="_blank" class="file-link display-none" href="sources/Query.Async.cs_27.html#ln129">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\Query.Async.cs:129</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3062/">V3062</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Query.Async.cs_27.html#ln133">Query.Async.cs:133</a><a target="_blank" class="file-link display-none" href="sources/Query.Async.cs_27.html#ln133">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\Query.Async.cs:133</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3062/">V3062</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Query.Async.cs_27.html#ln137">Query.Async.cs:137</a><a target="_blank" class="file-link display-none" href="sources/Query.Async.cs_27.html#ln137">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\Query.Async.cs:137</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3062/">V3062</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Query.Async.cs_27.html#ln141">Query.Async.cs:141</a><a target="_blank" class="file-link display-none" href="sources/Query.Async.cs_27.html#ln141">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\Query.Async.cs:141</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3062/">V3062</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Query`.cs_28.html#ln392">Query`.cs:392</a><a target="_blank" class="file-link display-none" href="sources/Query`.cs_28.html#ln392">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\Query`.cs:392</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3062/">V3062</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Max' method.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Query`.cs_28.html#ln396">Query`.cs:396</a><a target="_blank" class="file-link display-none" href="sources/Query`.cs_28.html#ln396">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\Query`.cs:396</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3062/">V3062</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Min' method.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Query`.cs_28.html#ln401">Query`.cs:401</a><a target="_blank" class="file-link display-none" href="sources/Query`.cs_28.html#ln401">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\Query`.cs:401</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3062/">V3062</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Sum' method.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Query`.cs_28.html#ln405">Query`.cs:405</a><a target="_blank" class="file-link display-none" href="sources/Query`.cs_28.html#ln405">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\Query`.cs:405</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3062/">V3062</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Sum' method.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Query`.cs_28.html#ln409">Query`.cs:409</a><a target="_blank" class="file-link display-none" href="sources/Query`.cs_28.html#ln409">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\Query`.cs:409</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3062/">V3062</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Sum' method.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Query`.cs_28.html#ln413">Query`.cs:413</a><a target="_blank" class="file-link display-none" href="sources/Query`.cs_28.html#ln413">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\Query`.cs:413</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3062/">V3062</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Sum' method.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Query`.cs_28.html#ln417">Query`.cs:417</a><a target="_blank" class="file-link display-none" href="sources/Query`.cs_28.html#ln417">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\Query`.cs:417</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3062/">V3062</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Sum' method.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Query`.cs_28.html#ln421">Query`.cs:421</a><a target="_blank" class="file-link display-none" href="sources/Query`.cs_28.html#ln421">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\Query`.cs:421</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3062/">V3062</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Sum' method.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Query`.cs_28.html#ln425">Query`.cs:425</a><a target="_blank" class="file-link display-none" href="sources/Query`.cs_28.html#ln425">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\Query`.cs:425</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3062/">V3062</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Sum' method.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Query`.cs_28.html#ln429">Query`.cs:429</a><a target="_blank" class="file-link display-none" href="sources/Query`.cs_28.html#ln429">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\Query`.cs:429</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3062/">V3062</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Sum' method.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Query`.cs_28.html#ln433">Query`.cs:433</a><a target="_blank" class="file-link display-none" href="sources/Query`.cs_28.html#ln433">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\Query`.cs:433</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3062/">V3062</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Sum' method.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Query`.cs_28.html#ln437">Query`.cs:437</a><a target="_blank" class="file-link display-none" href="sources/Query`.cs_28.html#ln437">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\Query`.cs:437</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3062/">V3062</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Sum' method.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Query`.cs_28.html#ln442">Query`.cs:442</a><a target="_blank" class="file-link display-none" href="sources/Query`.cs_28.html#ln442">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\Query`.cs:442</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3062/">V3062</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Query`.cs_28.html#ln446">Query`.cs:446</a><a target="_blank" class="file-link display-none" href="sources/Query`.cs_28.html#ln446">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\Query`.cs:446</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3062/">V3062</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Query`.cs_28.html#ln450">Query`.cs:450</a><a target="_blank" class="file-link display-none" href="sources/Query`.cs_28.html#ln450">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\Query`.cs:450</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3062/">V3062</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Query`.cs_28.html#ln454">Query`.cs:454</a><a target="_blank" class="file-link display-none" href="sources/Query`.cs_28.html#ln454">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\Query`.cs:454</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3062/">V3062</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Query`.cs_28.html#ln458">Query`.cs:458</a><a target="_blank" class="file-link display-none" href="sources/Query`.cs_28.html#ln458">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\Query`.cs:458</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3062/">V3062</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Query`.cs_28.html#ln462">Query`.cs:462</a><a target="_blank" class="file-link display-none" href="sources/Query`.cs_28.html#ln462">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\Query`.cs:462</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3062/">V3062</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Query`.cs_28.html#ln466">Query`.cs:466</a><a target="_blank" class="file-link display-none" href="sources/Query`.cs_28.html#ln466">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\Query`.cs:466</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3062/">V3062</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Query`.cs_28.html#ln470">Query`.cs:470</a><a target="_blank" class="file-link display-none" href="sources/Query`.cs_28.html#ln470">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\Query`.cs:470</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3062/">V3062</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Query`.cs_28.html#ln474">Query`.cs:474</a><a target="_blank" class="file-link display-none" href="sources/Query`.cs_28.html#ln474">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\Query`.cs:474</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3062/">V3062</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Query`.cs_28.html#ln478">Query`.cs:478</a><a target="_blank" class="file-link display-none" href="sources/Query`.cs_28.html#ln478">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\Query`.cs:478</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3062/">V3062</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/ComplexNavigationQueryExecutor.cs_29.html#ln61">ComplexNavigationQueryExecutor.cs:61</a><a target="_blank" class="file-link display-none" href="sources/ComplexNavigationQueryExecutor.cs_29.html#ln61">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\SplitQuery\ComplexNavigationQueryExecutor.cs:61</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3146/">V3146</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Possible null dereference of 'complexPropertyDescriptor'. The 'FirstOrDefault' can return default null value.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/RootQueryExecutor.cs_30.html#ln58">RootQueryExecutor.cs:58</a><a target="_blank" class="file-link display-none" href="sources/RootQueryExecutor.cs_30.html#ln58">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\SplitQuery\RootQueryExecutor.cs:58</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3146/">V3146</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Possible null dereference of 'complexPropertyDescriptor'. The 'FirstOrDefault' can return default null value.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/QueryExpressionResolver.cs_31.html#ln90">QueryExpressionResolver.cs:90</a><a target="_blank" class="file-link display-none" href="sources/QueryExpressionResolver.cs_31.html#ln90">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Query\Visitors\QueryExpressionResolver.cs:90</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3051/">V3051</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An excessive type cast. The object is already of the 'QueryStateBase' type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Else_HandlerBase.cs_32.html#ln15">Else_HandlerBase.cs:15</a><a target="_blank" class="file-link display-none" href="sources/Else_HandlerBase.cs_32.html#ln15">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\RDBMS\MethodHandlers\Else_HandlerBase.cs:15</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3149/">V3149</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Dereferencing the result of 'as' operator inside method can lead to NullReferenceException. Consider inspecting 1st argument.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Else_HandlerBase.cs_32.html#ln30">Else_HandlerBase.cs:30</a><a target="_blank" class="file-link display-none" href="sources/Else_HandlerBase.cs_32.html#ln30">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\RDBMS\MethodHandlers\Else_HandlerBase.cs:30</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3149/">V3149</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Dereferencing the result of 'as' operator can lead to NullReferenceException. Consider inspecting 'whenCall'.</td>
+    </tr>
+    <tr>
+      <td id="col_group">OWASP</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/DelegateFactory.cs_33.html#ln38">DelegateFactory.cs:38</a><a target="_blank" class="file-link display-none" href="sources/DelegateFactory.cs_33.html#ln38">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Reflection\DelegateFactory.cs:38</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v5606/">V5606</td>
+      <td id="col_sast">OWASP-7.4.2</td>
+      <td id="col_message">An empty exception handler. Silent suppression of exceptions may hide the presence of bugs or vulnerabilities.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/IShardingContext.cs_34.html#ln118">IShardingContext.cs:118</a><a target="_blank" class="file-link display-none" href="sources/IShardingContext.cs_34.html#ln118">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Sharding\IShardingContext.cs:118</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3080/">V3080</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Possible null dereference. Consider inspecting 'routeTables'.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/ShardingInternalQuery.cs_35.html#ln21">ShardingInternalQuery.cs:21</a><a target="_blank" class="file-link display-none" href="sources/ShardingInternalQuery.cs_35.html#ln21">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Sharding\Internals\ShardingInternalQuery.cs:21</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3149/">V3149</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Dereferencing the result of 'as' operator can lead to NullReferenceException. Consider inspecting 'queryState'.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/PriorityQueue.cs_36.html#ln113">PriorityQueue.cs:113</a><a target="_blank" class="file-link display-none" href="sources/PriorityQueue.cs_36.html#ln113">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Sharding\PriorityQueue.cs:113</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3111/">V3111</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Checking value of 'item' for null will always return false when generic type is instantiated with a value type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/ShardTableGroupAggregateQuery.cs_37.html#ln95">ShardTableGroupAggregateQuery.cs:95</a><a target="_blank" class="file-link display-none" href="sources/ShardTableGroupAggregateQuery.cs_37.html#ln95">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Sharding\Queries\ShardTableGroupAggregateQuery.cs:95</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3080/">V3080</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Possible null dereference. Consider inspecting 'groupQuery'.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/QueryEnumerator.cs_38.html#ln7">QueryEnumerator.cs:7</a><a target="_blank" class="file-link display-none" href="sources/QueryEnumerator.cs_38.html#ln7">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Sharding\QueryEnumerator.cs:7</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3073/">V3073</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Not all IDisposable members are properly disposed. Call 'Dispose' when disposing 'QueryEnumerator' class. Inspect: _enumerator.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/ShardingDbContextProvider.Helpers.cs_39.html#ln26">ShardingDbContextProvider.Helpers.cs:26</a><a target="_blank" class="file-link display-none" href="sources/ShardingDbContextProvider.Helpers.cs_39.html#ln26">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Sharding\ShardingDbContextProvider.Helpers.cs:26</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3080/">V3080</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Possible null dereference inside method at 'shardingConfig.RouteFactory'. Consider inspecting the 2nd argument: shardingConfig.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/ShardingDbSessionProvider.cs_40.html#ln6">ShardingDbSessionProvider.cs:6</a><a target="_blank" class="file-link display-none" href="sources/ShardingDbSessionProvider.cs_40.html#ln6">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Sharding\ShardingDbSessionProvider.cs:6</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3074/">V3074</td>
+      <td id="col_sast"></td>
+      <td id="col_message">The 'ShardingDbSessionProvider' class contains 'Dispose' method. Consider making it implement 'IDisposable' interface.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/ShardingHelpers.cs_41.html#ln52">ShardingHelpers.cs:52</a><a target="_blank" class="file-link display-none" href="sources/ShardingHelpers.cs_41.html#ln52">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Sharding\ShardingHelpers.cs:52</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3149/">V3149</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Dereferencing the result of 'as' operator can lead to NullReferenceException. Consider inspecting 'memberExp'.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/ShardingQuery.cs_42.html#ln235">ShardingQuery.cs:235</a><a target="_blank" class="file-link display-none" href="sources/ShardingQuery.cs_42.html#ln235">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Sharding\ShardingQuery.cs:235</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3062/">V3062</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Max' method.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/ShardingQuery.cs_42.html#ln244">ShardingQuery.cs:244</a><a target="_blank" class="file-link display-none" href="sources/ShardingQuery.cs_42.html#ln244">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Sharding\ShardingQuery.cs:244</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3062/">V3062</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Min' method.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/ShardingQuery.cs_42.html#ln300">ShardingQuery.cs:300</a><a target="_blank" class="file-link display-none" href="sources/ShardingQuery.cs_42.html#ln300">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Sharding\ShardingQuery.cs:300</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3062/">V3062</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/ShardingQuery.cs_42.html#ln305">ShardingQuery.cs:305</a><a target="_blank" class="file-link display-none" href="sources/ShardingQuery.cs_42.html#ln305">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Sharding\ShardingQuery.cs:305</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3062/">V3062</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/ShardingQuery.cs_42.html#ln310">ShardingQuery.cs:310</a><a target="_blank" class="file-link display-none" href="sources/ShardingQuery.cs_42.html#ln310">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Sharding\ShardingQuery.cs:310</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3062/">V3062</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/ShardingQuery.cs_42.html#ln315">ShardingQuery.cs:315</a><a target="_blank" class="file-link display-none" href="sources/ShardingQuery.cs_42.html#ln315">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Sharding\ShardingQuery.cs:315</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3062/">V3062</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/ShardingQuery.cs_42.html#ln320">ShardingQuery.cs:320</a><a target="_blank" class="file-link display-none" href="sources/ShardingQuery.cs_42.html#ln320">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Sharding\ShardingQuery.cs:320</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3062/">V3062</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/ShardingQuery.cs_42.html#ln325">ShardingQuery.cs:325</a><a target="_blank" class="file-link display-none" href="sources/ShardingQuery.cs_42.html#ln325">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Sharding\ShardingQuery.cs:325</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3062/">V3062</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/ShardingQuery.cs_42.html#ln330">ShardingQuery.cs:330</a><a target="_blank" class="file-link display-none" href="sources/ShardingQuery.cs_42.html#ln330">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Sharding\ShardingQuery.cs:330</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3062/">V3062</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/ShardingQuery.cs_42.html#ln335">ShardingQuery.cs:335</a><a target="_blank" class="file-link display-none" href="sources/ShardingQuery.cs_42.html#ln335">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Sharding\ShardingQuery.cs:335</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3062/">V3062</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/ShardingQuery.cs_42.html#ln340">ShardingQuery.cs:340</a><a target="_blank" class="file-link display-none" href="sources/ShardingQuery.cs_42.html#ln340">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Sharding\ShardingQuery.cs:340</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3062/">V3062</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/ShardingQuery.cs_42.html#ln345">ShardingQuery.cs:345</a><a target="_blank" class="file-link display-none" href="sources/ShardingQuery.cs_42.html#ln345">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Sharding\ShardingQuery.cs:345</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3062/">V3062</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Chloe</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/SharedObjectPool.cs_43.html#ln34">SharedObjectPool.cs:34</a><a target="_blank" class="file-link display-none" href="sources/SharedObjectPool.cs_43.html#ln34">C:\Users\dimoninbirsk\source\thesis\Chloe\src\Chloe\Sharding\SharedObjectPool.cs:34</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3090/">V3090</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Unsafe locking on 'this' instance in class 'SharedObjectPool'.</td>
+    </tr>
+  </table>
+<script type="text/javascript">
+var sorter=new table.sorter("sorter");
+sorter.init("sorter",0);
+</script>
+</body>
+</html>

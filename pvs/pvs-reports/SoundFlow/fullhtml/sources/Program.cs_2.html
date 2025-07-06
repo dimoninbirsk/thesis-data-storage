@@ -1,0 +1,496 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>Program.cs</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <script src="../jquery-3.5.1.min.js"></script>
+</head>
+<body>
+<pre><code class = "cs">
+<a name="ln1">﻿using System.Numerics;</a>
+<a name="ln2">using SoundFlow.Abstracts;</a>
+<a name="ln3">using SoundFlow.Backends.MiniAudio;</a>
+<a name="ln4">using SoundFlow.Components;</a>
+<a name="ln5">using SoundFlow.Enums;</a>
+<a name="ln6">using SoundFlow.Experimental;</a>
+<a name="ln7">using SoundFlow.Interfaces;</a>
+<a name="ln8">using SoundFlow.Modifiers;</a>
+<a name="ln9">using SoundFlow.Providers;</a>
+<a name="ln10">using SoundFlow.Visualization;</a>
+<a name="ln11">using VoiceActivityDetector = SoundFlow.Components.VoiceActivityDetector;</a>
+<a name="ln12"> </a>
+<a name="ln13">namespace SoundFlow.Samples.SimplePlayer;</a>
+<a name="ln14"> </a>
+<a name="ln15">/// &lt;summary&gt;</a>
+<a name="ln16">/// Example program to play audio, record, and apply effects using SoundFlow.</a>
+<a name="ln17">/// &lt;/summary&gt;</a>
+<a name="ln18">internal static class Program</a>
+<a name="ln19">{</a>
+<a name="ln20">    private static AudioEngine? _audioEngine;</a>
+<a name="ln21">    private static readonly string RecordedFilePath = Path.Combine(Directory.GetCurrentDirectory(), &quot;recorded.wav&quot;);</a>
+<a name="ln22">    </a>
+<a name="ln23">    private static void Main()</a>
+<a name="ln24">    {</a>
+<a name="ln25">        SetOrCreateEngine();</a>
+<a name="ln26"> </a>
+<a name="ln27">        while (true)</a>
+<a name="ln28">        {</a>
+<a name="ln29">            Console.WriteLine(&quot;\nChoose an option:&quot;);</a>
+<a name="ln30">            Console.WriteLine(&quot;1. Play audio from file&quot;);</a>
+<a name="ln31">            Console.WriteLine(&quot;2. Play audio from web stream&quot;);</a>
+<a name="ln32">            Console.WriteLine(&quot;3. Record and playback audio&quot;);</a>
+<a name="ln33">            Console.WriteLine(&quot;4. Play audio from microphone&quot;);</a>
+<a name="ln34">            Console.WriteLine(&quot;5. Play audio with visualization&quot;);</a>
+<a name="ln35">            Console.WriteLine(&quot;6. Play audio with noise reduction&quot;);</a>
+<a name="ln36">            Console.WriteLine(&quot;7. Play audio with equalizer&quot;);</a>
+<a name="ln37">            Console.WriteLine(&quot;8. Run component and modifier tests&quot;);</a>
+<a name="ln38">            Console.WriteLine(&quot;9. Run data provider tests&quot;);</a>
+<a name="ln39">            Console.WriteLine(&quot;Press any other key to exit.&quot;);</a>
+<a name="ln40"> </a>
+<a name="ln41">            var choice = Console.ReadKey().KeyChar;</a>
+<a name="ln42">            Console.WriteLine();</a>
+<a name="ln43"> </a>
+<a name="ln44">            switch (choice)</a>
+<a name="ln45">            {</a>
+<a name="ln46">                case '1':</a>
+<a name="ln47">                    PlayAudioFromFile();</a>
+<a name="ln48">                    break;</a>
+<a name="ln49">                case '2':</a>
+<a name="ln50">                    PlayAudioFromWeb();</a>
+<a name="ln51">                    break;</a>
+<a name="ln52">                case '3':</a>
+<a name="ln53">                    RecordAndPlaybackAudio();</a>
+<a name="ln54">                    break;</a>
+<a name="ln55">                case '4':</a>
+<a name="ln56">                    MixedRecordAndPlayback();</a>
+<a name="ln57">                    break;</a>
+<a name="ln58">                case '5':</a>
+<a name="ln59">                    PlayAudioVisualizer();</a>
+<a name="ln60">                    break;</a>
+<a name="ln61">                case '6':</a>
+<a name="ln62">                    PlayAudioWithNoiseReduction();</a>
+<a name="ln63">                    break;</a>
+<a name="ln64">                case '7':</a>
+<a name="ln65">                    PlayAudioWithEqualizer();</a>
+<a name="ln66">                    break;</a>
+<a name="ln67">                case '8':</a>
+<a name="ln68">                    ComponentTests.Run();</a>
+<a name="ln69">                    break;</a>
+<a name="ln70">                case '9':</a>
+<a name="ln71">                    DataProviderTests.Run();</a>
+<a name="ln72">                    break;</a>
+<a name="ln73">                default:</a>
+<a name="ln74">                    Console.WriteLine(&quot;Exiting.&quot;);</a>
+<a name="ln75">                    return;</a>
+<a name="ln76">            }</a>
+<a name="ln77"> </a>
+<a name="ln78">            Console.WriteLine(&quot;\nPress any key to continue or 'X' to exit.&quot;);</a>
+<a name="ln79">            if (Console.ReadKey().Key == ConsoleKey.X)</a>
+<a name="ln80">                break;</a>
+<a name="ln81">        }</a>
+<a name="ln82"> </a>
+<a name="ln83">        // Dispose audio engine on exit</a>
+<a name="ln84">        _audioEngine?.Dispose();</a>
+<a name="ln85">    }</a>
+<a name="ln86"> </a>
+<a name="ln87">    private static void SetOrCreateEngine(Capability capability = Capability.Playback, int sampleRate = 44100,</a>
+<a name="ln88">        SampleFormat sampleFormat = SampleFormat.F32, int channels = 2)</a>
+<a name="ln89">    {</a>
+<a name="ln90">        if (_audioEngine == null || _audioEngine.IsDisposed)</a>
+<a name="ln91">        {</a>
+<a name="ln92">            _audioEngine = new MiniAudioEngine(sampleRate, capability, sampleFormat, channels);</a>
+<a name="ln93">        }</a>
+<a name="ln94">        else if ((_audioEngine.Capability &amp; capability) != capability || _audioEngine.SampleRate != sampleRate ||</a>
+<a name="ln95">                 _audioEngine.SampleFormat != sampleFormat || AudioEngine.Channels != channels)</a>
+<a name="ln96">        {</a>
+<a name="ln97">            _audioEngine.Dispose();</a>
+<a name="ln98">            _audioEngine = new MiniAudioEngine(sampleRate, capability, sampleFormat, channels);</a>
+<a name="ln99">        }</a>
+<a name="ln100">    }</a>
+<a name="ln101"> </a>
+<a name="ln102">    private static void PlayAudio(ISoundDataProvider dataProvider, bool isSurround = false,</a>
+<a name="ln103">        Action&lt;ISoundPlayer&gt;? configurePlayer = null, List&lt;SoundModifier&gt;? modifiers = null)</a>
+<a name="ln104">    {</a>
+<a name="ln105">        SetOrCreateEngine();</a>
+<a name="ln106">        SoundPlayerBase soundPlayer = isSurround ? new SurroundPlayer(dataProvider) : new SoundPlayer(dataProvider);</a>
+<a name="ln107"> </a>
+<a name="ln108">        if (modifiers != null)</a>
+<a name="ln109">        {</a>
+<a name="ln110">            foreach (var modifier in modifiers)</a>
+<a name="ln111">            {</a>
+<a name="ln112">                soundPlayer.AddModifier(modifier);</a>
+<a name="ln113">            }</a>
+<a name="ln114">        }</a>
+<a name="ln115"> </a>
+<a name="ln116">        Mixer.Master.AddComponent(soundPlayer);</a>
+<a name="ln117">        configurePlayer?.Invoke(soundPlayer);</a>
+<a name="ln118"> </a>
+<a name="ln119">        soundPlayer.Play();</a>
+<a name="ln120"> </a>
+<a name="ln121">        PlaybackControls(soundPlayer);</a>
+<a name="ln122"> </a>
+<a name="ln123">        Mixer.Master.RemoveComponent(soundPlayer);</a>
+<a name="ln124">    }</a>
+<a name="ln125"> </a>
+<a name="ln126">    private static void PlaybackControls(ISoundPlayer player)</a>
+<a name="ln127">    {</a>
+<a name="ln128">        var timer = new System.Timers.Timer(500) { AutoReset = true };</a>
+<a name="ln129">        timer.Elapsed += (_, _) =&gt;</a>
+<a name="ln130">        {</a>
+<a name="ln131">            if (player.State != PlaybackState.Stopped)</a>
+<a name="ln132">            {</a>
+<a name="ln133">                Console.SetCursorPosition(0, Console.CursorTop);</a>
+<a name="ln134">                Console.Write(</a>
+<a name="ln135">                    $&quot;Time: {(int)player.Time / 60}:{player.Time % 60:00} / Duration: {(int)player.Duration / 60}:{player.Duration % 60:00}        &quot;);</a>
+<a name="ln136">            }</a>
+<a name="ln137">            else</a>
+<a name="ln138">            {</a>
+<a name="ln139">                timer.Stop();</a>
+<a name="ln140">            }</a>
+<a name="ln141">        };</a>
+<a name="ln142">        timer.Start();</a>
+<a name="ln143"> </a>
+<a name="ln144">        Console.WriteLine(</a>
+<a name="ln145">            &quot;\nPress 's' to seek, 'p' to pause/play, any other key to exit playback. '+' to increase speed, '-' to decrease speed, 'R' to reset speed to 1.0&quot;);</a>
+<a name="ln146"> </a>
+<a name="ln147"> </a>
+<a name="ln148">        while (player.State is PlaybackState.Playing or PlaybackState.Paused)</a>
+<a name="ln149">        {</a>
+<a name="ln150">            var keyInfo = Console.ReadKey(true);</a>
+<a name="ln151">            switch (keyInfo.Key)</a>
+<a name="ln152">            {</a>
+<a name="ln153">                case ConsoleKey.P:</a>
+<a name="ln154">                    if (player.State == PlaybackState.Playing)</a>
+<a name="ln155">                        player.Pause();</a>
+<a name="ln156">                    else</a>
+<a name="ln157">                        player.Play();</a>
+<a name="ln158">                    break;</a>
+<a name="ln159">                case ConsoleKey.S:</a>
+<a name="ln160">                    Console.WriteLine(&quot;Enter seek time in seconds (e.g., 5.0):&quot;);</a>
+<a name="ln161">                    if (float.TryParse(Console.ReadLine(), out var seekTime))</a>
+<a name="ln162">                        player.Seek(TimeSpan.FromSeconds(seekTime));</a>
+<a name="ln163">                    else</a>
+<a name="ln164">                        Console.WriteLine(&quot;Invalid seek time.&quot;);</a>
+<a name="ln165">                    break;</a>
+<a name="ln166">                case ConsoleKey.OemPlus:</a>
+<a name="ln167">                case ConsoleKey.Add:</a>
+<a name="ln168">                    if (player.PlaybackSpeed &lt; 2.0f)</a>
+<a name="ln169">                    {</a>
+<a name="ln170">                        player.PlaybackSpeed += 0.1f;</a>
+<a name="ln171">                        Console.WriteLine($&quot;Speed increased to: {player.PlaybackSpeed:F2}&quot;);</a>
+<a name="ln172">                    }</a>
+<a name="ln173"> </a>
+<a name="ln174">                    break;</a>
+<a name="ln175">                case ConsoleKey.OemMinus:</a>
+<a name="ln176">                case ConsoleKey.Subtract:</a>
+<a name="ln177">                    if (player.PlaybackSpeed &gt; 0.2f)</a>
+<a name="ln178">                    {</a>
+<a name="ln179">                        player.PlaybackSpeed -= 0.1f;</a>
+<a name="ln180">                        Console.WriteLine($&quot;Speed decreased to: {player.PlaybackSpeed:F2}&quot;);</a>
+<a name="ln181">                    }</a>
+<a name="ln182"> </a>
+<a name="ln183">                    break;</a>
+<a name="ln184">                case ConsoleKey.R:</a>
+<a name="ln185">                    player.PlaybackSpeed = 1.0f;</a>
+<a name="ln186">                    Console.WriteLine($&quot;Speed reset to: {player.PlaybackSpeed:F2}&quot;);</a>
+<a name="ln187">                    break;</a>
+<a name="ln188">                default:</a>
+<a name="ln189">                    player.Stop();</a>
+<a name="ln190">                    break;</a>
+<a name="ln191">            }</a>
+<a name="ln192">        }</a>
+<a name="ln193"> </a>
+<a name="ln194">        timer.Stop();</a>
+<a name="ln195">        timer.Dispose();</a>
+<a name="ln196">        Console.WriteLine(&quot;Playback stopped.&quot;);</a>
+<a name="ln197">    }</a>
+<a name="ln198"> </a>
+<a name="ln199">    private static void PlayAudioFromFile()</a>
+<a name="ln200">    {</a>
+<a name="ln201">        Console.Write(&quot;Enter file path: &quot;);</a>
+<a name="ln202">        var filePath = Console.ReadLine()?.Replace(&quot;\&quot;&quot;, &quot;&quot;) ?? string.Empty;</a>
+<a name="ln203"> </a>
+<a name="ln204">        if (!File.Exists(filePath))</a>
+<a name="ln205">        {</a>
+<a name="ln206">            Console.WriteLine(&quot;File not found.&quot;);</a>
+<a name="ln207">            return;</a>
+<a name="ln208">        }</a>
+<a name="ln209"> </a>
+<a name="ln210">        Console.Write(&quot;Would you like to use surround sound? (y/n): &quot;);</a>
+<a name="ln211">        var isSurround = Console.ReadKey().Key == ConsoleKey.Y;</a>
+<a name="ln212">        Console.WriteLine();</a>
+<a name="ln213"> </a>
+<a name="ln214">        PlayAudio(new StreamDataProvider(new FileStream(filePath, FileMode.Open, FileAccess.Read)), isSurround,</a>
+<a name="ln215">            player =&gt;</a>
+<a name="ln216">            {</a>
+<a name="ln217">                if (isSurround &amp;&amp; player is SurroundPlayer surroundPlayer)</a>
+<a name="ln218">                {</a>
+<a name="ln219">                    surroundPlayer.Panning = SurroundPlayer.PanningMethod.Vbap;</a>
+<a name="ln220">                    surroundPlayer.ListenerPosition = new Vector2(0.9f, 0.5f);</a>
+<a name="ln221">                    surroundPlayer.SpeakerConfig = SurroundPlayer.SpeakerConfiguration.Surround71;</a>
+<a name="ln222">                }</a>
+<a name="ln223">            }, []);</a>
+<a name="ln224">    }</a>
+<a name="ln225"> </a>
+<a name="ln226">    private static void PlayAudioFromWeb()</a>
+<a name="ln227">    {</a>
+<a name="ln228">        Console.Write(&quot;Enter web stream URL: &quot;);</a>
+<a name="ln229">        var url = Console.ReadLine() ?? string.Empty;</a>
+<a name="ln230"> </a>
+<a name="ln231">        try</a>
+<a name="ln232">        {</a>
+<a name="ln233">            var networkDataProvider = new NetworkDataProvider(url);</a>
+<a name="ln234">            PlayAudio(networkDataProvider);</a>
+<a name="ln235">        }</a>
+<a name="ln236">        catch (HttpRequestException e)</a>
+<a name="ln237">        {</a>
+<a name="ln238">            Console.WriteLine($&quot;Error accessing web stream: {e.Message}&quot;);</a>
+<a name="ln239">        }</a>
+<a name="ln240">        catch (InvalidOperationException e)</a>
+<a name="ln241">        {</a>
+<a name="ln242">            Console.WriteLine($&quot;Error initializing network stream: {e.Message}&quot;);</a>
+<a name="ln243">        }</a>
+<a name="ln244">    }</a>
+<a name="ln245"> </a>
+<a name="ln246">    private static void MixedRecordAndPlayback()</a>
+<a name="ln247">    {</a>
+<a name="ln248">        SetOrCreateEngine(Capability.Mixed);</a>
+<a name="ln249">        var microphoneDataProvider = new MicrophoneDataProvider();</a>
+<a name="ln250">        var soundPlayer = new SoundPlayer(microphoneDataProvider);</a>
+<a name="ln251">        Mixer.Master.AddComponent(soundPlayer);</a>
+<a name="ln252">        microphoneDataProvider.StartCapture();</a>
+<a name="ln253">        soundPlayer.Play();</a>
+<a name="ln254">        Console.WriteLine(&quot;Capturing and playing audio from the microphone. Press any key to stop.&quot;);</a>
+<a name="ln255">        Console.ReadKey();</a>
+<a name="ln256">        microphoneDataProvider.StopCapture();</a>
+<a name="ln257">        soundPlayer.Stop();</a>
+<a name="ln258">        Mixer.Master.RemoveComponent(soundPlayer);</a>
+<a name="ln259">        microphoneDataProvider.Dispose();</a>
+<a name="ln260">    }</a>
+<a name="ln261"> </a>
+<a name="ln262">    private static void RecordAndPlaybackAudio()</a>
+<a name="ln263">    {</a>
+<a name="ln264">        SetOrCreateEngine(Capability.Record, 48000);</a>
+<a name="ln265"> </a>
+<a name="ln266">        var vad = new VoiceActivityDetector(1024, 3f);</a>
+<a name="ln267"> </a>
+<a name="ln268">        vad.SpeechDetected += isDetected =&gt; Console.WriteLine(&quot;Speech detected: &quot; + isDetected);</a>
+<a name="ln269"> </a>
+<a name="ln270">        using var recorder = new Recorder(RecordedFilePath, SampleFormat.F32, EncodingFormat.Wav, 48000);</a>
+<a name="ln271">        recorder.AddAnalyzer(vad);</a>
+<a name="ln272"> </a>
+<a name="ln273">        Console.WriteLine(&quot;Recording started. Press 's' to stop, 'p' to pause/resume.&quot;);</a>
+<a name="ln274">        recorder.StartRecording();</a>
+<a name="ln275"> </a>
+<a name="ln276">        while (recorder.State != PlaybackState.Stopped)</a>
+<a name="ln277">        {</a>
+<a name="ln278">            var key = Console.ReadKey(true).Key;</a>
+<a name="ln279">            switch (key)</a>
+<a name="ln280">            {</a>
+<a name="ln281">                case ConsoleKey.S:</a>
+<a name="ln282">                    recorder.StopRecording();</a>
+<a name="ln283">                    break;</a>
+<a name="ln284">                case ConsoleKey.P:</a>
+<a name="ln285">                    if (recorder.State == PlaybackState.Paused)</a>
+<a name="ln286">                    {</a>
+<a name="ln287">                        recorder.ResumeRecording();</a>
+<a name="ln288">                        Console.WriteLine(&quot;Recording resumed.&quot;);</a>
+<a name="ln289">                    }</a>
+<a name="ln290">                    else</a>
+<a name="ln291">                    {</a>
+<a name="ln292">                        recorder.PauseRecording();</a>
+<a name="ln293">                        Console.WriteLine(&quot;Recording paused.&quot;);</a>
+<a name="ln294">                    }</a>
+<a name="ln295"> </a>
+<a name="ln296">                    break;</a>
+<a name="ln297">            }</a>
+<a name="ln298">        }</a>
+<a name="ln299"> </a>
+<a name="ln300">        Console.WriteLine(&quot;Recording finished. Press 'p' to playback or any other key to exit.&quot;);</a>
+<a name="ln301">        if (Console.ReadKey(true).Key != ConsoleKey.P)</a>
+<a name="ln302">            return;</a>
+<a name="ln303"> </a>
+<a name="ln304">        if (!File.Exists(RecordedFilePath))</a>
+<a name="ln305">        {</a>
+<a name="ln306">            Console.WriteLine(&quot;Recorded file not found.&quot;);</a>
+<a name="ln307">            return;</a>
+<a name="ln308">        }</a>
+<a name="ln309"> </a>
+<a name="ln310">        PlayAudio(new StreamDataProvider(new FileStream(RecordedFilePath, FileMode.Open, FileAccess.Read)));</a>
+<a name="ln311">    }</a>
+<a name="ln312"> </a>
+<a name="ln313">    private static void PlayAudioVisualizer()</a>
+<a name="ln314">    {</a>
+<a name="ln315">        Console.Write(&quot;Enter file path for visualization: &quot;);</a>
+<a name="ln316">        var filePath = Console.ReadLine() ?? string.Empty;</a>
+<a name="ln317"> </a>
+<a name="ln318">        if (!File.Exists(filePath))</a>
+<a name="ln319">        {</a>
+<a name="ln320">            Console.WriteLine(&quot;File not found.&quot;);</a>
+<a name="ln321">            return;</a>
+<a name="ln322">        }</a>
+<a name="ln323"> </a>
+<a name="ln324">        SetOrCreateEngine();</a>
+<a name="ln325">        var dataProvider = new StreamDataProvider(new FileStream(filePath, FileMode.Open, FileAccess.Read));</a>
+<a name="ln326">        var soundPlayer = new SoundPlayer(dataProvider);</a>
+<a name="ln327">        var waveformVisualizer = new WaveformVisualizer();</a>
+<a name="ln328"> </a>
+<a name="ln329">        waveformVisualizer.VisualizationUpdated += (_, _) =&gt;</a>
+<a name="ln330">            SaveWaveformAsText(&quot;waveform.txt&quot;, 80, 20, waveformVisualizer.Waveform);</a>
+<a name="ln331"> </a>
+<a name="ln332">        AudioEngine.OnAudioProcessed += ProcessOnAudioData;</a>
+<a name="ln333"> </a>
+<a name="ln334">        Mixer.Master.AddComponent(soundPlayer);</a>
+<a name="ln335">        soundPlayer.Play();</a>
+<a name="ln336"> </a>
+<a name="ln337">        PlaybackControls(soundPlayer);</a>
+<a name="ln338"> </a>
+<a name="ln339">        Mixer.Master.RemoveComponent(soundPlayer);</a>
+<a name="ln340">        AudioEngine.OnAudioProcessed -= ProcessOnAudioData;</a>
+<a name="ln341">        return;</a>
+<a name="ln342"> </a>
+<a name="ln343">        void ProcessOnAudioData(Span&lt;float&gt; samples, Capability _)</a>
+<a name="ln344">        {</a>
+<a name="ln345">            waveformVisualizer.ProcessOnAudioData(samples);</a>
+<a name="ln346">        }</a>
+<a name="ln347">    }</a>
+<a name="ln348"> </a>
+<a name="ln349">    private static void PlayAudioWithNoiseReduction()</a>
+<a name="ln350">    {</a>
+<a name="ln351">        Console.Write(&quot;Enter file path with noise: &quot;);</a>
+<a name="ln352">        var noisyFilePath = Console.ReadLine() ?? string.Empty;</a>
+<a name="ln353"> </a>
+<a name="ln354">        if (!File.Exists(noisyFilePath))</a>
+<a name="ln355">        {</a>
+<a name="ln356">            Console.WriteLine(&quot;File not found.&quot;);</a>
+<a name="ln357">            return;</a>
+<a name="ln358">        }</a>
+<a name="ln359"> </a>
+<a name="ln360"> </a>
+<a name="ln361">        var noiseReductionModifier = new NoiseReductionModifier(</a>
+<a name="ln362">            fftSize: 2048,</a>
+<a name="ln363">            alpha: 3f,</a>
+<a name="ln364">            beta: 0.001f,</a>
+<a name="ln365">            gain: 1.2f,</a>
+<a name="ln366">            noiseFrames: 50</a>
+<a name="ln367">        );</a>
+<a name="ln368"> </a>
+<a name="ln369">        PlayAudio(new StreamDataProvider(new FileStream(noisyFilePath, FileMode.Open, FileAccess.Read)),</a>
+<a name="ln370">            modifiers: new List&lt;SoundModifier&gt; { noiseReductionModifier });</a>
+<a name="ln371">    }</a>
+<a name="ln372"> </a>
+<a name="ln373">    private static void PlayAudioWithEqualizer()</a>
+<a name="ln374">    {</a>
+<a name="ln375">        Console.Write(&quot;Enter file path for equalizer: &quot;);</a>
+<a name="ln376">        var filePath = Console.ReadLine() ?? string.Empty;</a>
+<a name="ln377"> </a>
+<a name="ln378">        if (!File.Exists(filePath))</a>
+<a name="ln379">        {</a>
+<a name="ln380">            Console.WriteLine(&quot;File not found.&quot;);</a>
+<a name="ln381">            return;</a>
+<a name="ln382">        }</a>
+<a name="ln383"> </a>
+<a name="ln384">        SetOrCreateEngine(sampleRate: 44100, sampleFormat: SampleFormat.F32);</a>
+<a name="ln385">        var parametricEqualizer = new ParametricEqualizer();</a>
+<a name="ln386"> </a>
+<a name="ln387">        Console.WriteLine(&quot;\nChoose an equalizer preset:&quot;);</a>
+<a name="ln388">        var presets = EqualizerPresets.GetAllPresets();</a>
+<a name="ln389">        var presetNames = presets.Keys.ToList();</a>
+<a name="ln390">        for (var i = 0; i &lt; presetNames.Count; i++)</a>
+<a name="ln391">        {</a>
+<a name="ln392">            Console.WriteLine($&quot;{i + 1}. {presetNames[i]}&quot;);</a>
+<a name="ln393">        }</a>
+<a name="ln394"> </a>
+<a name="ln395">        if (int.TryParse(Console.ReadLine(), out var presetChoice) &amp;&amp; presetChoice &gt; 0 &amp;&amp;</a>
+<a name="ln396">            presetChoice &lt;= presetNames.Count)</a>
+<a name="ln397">        {</a>
+<a name="ln398">            parametricEqualizer.AddBands(presets[presetNames[presetChoice - 1]]);</a>
+<a name="ln399">            Console.WriteLine($&quot;\nApplied preset: {presetNames[presetChoice - 1]}&quot;);</a>
+<a name="ln400">        }</a>
+<a name="ln401">        else</a>
+<a name="ln402">        {</a>
+<a name="ln403">            Console.WriteLine(&quot;\nNo valid preset selected. Using default.&quot;);</a>
+<a name="ln404">            parametricEqualizer.AddBands(presets[&quot;Default&quot;]);</a>
+<a name="ln405">        }</a>
+<a name="ln406"> </a>
+<a name="ln407">        Console.WriteLine();</a>
+<a name="ln408"> </a>
+<a name="ln409">        PlayAudio(new StreamDataProvider(new FileStream(filePath, FileMode.Open, FileAccess.Read)),</a>
+<a name="ln410">            modifiers: new List&lt;SoundModifier&gt; { parametricEqualizer });</a>
+<a name="ln411">    }</a>
+<a name="ln412"> </a>
+<a name="ln413">    private static void SaveWaveformAsText(string filePath, int width, int height, List&lt;float&gt; waveform)</a>
+<a name="ln414">    {</a>
+<a name="ln415">        if (waveform.Count == 0)</a>
+<a name="ln416">        {</a>
+<a name="ln417">            return;</a>
+<a name="ln418">        }</a>
+<a name="ln419"> </a>
+<a name="ln420">        var yScale = height / 2.0f;</a>
+<a name="ln421">        var waveformChars = new char[height, width];</a>
+<a name="ln422">        for (var i = 0; i &lt; height; i++)</a>
+<a name="ln423">        {</a>
+<a name="ln424">            for (var j = 0; j &lt; width; j++)</a>
+<a name="ln425">            {</a>
+<a name="ln426">                waveformChars[i, j] = ' ';</a>
+<a name="ln427">            }</a>
+<a name="ln428">        }</a>
+<a name="ln429"> </a>
+<a name="ln430">        char[] charMap = [' ', '.', ':', '|', '#', '@'];</a>
+<a name="ln431">        var numChars = charMap.Length;</a>
+<a name="ln432"> </a>
+<a name="ln433">        for (var i = 0; i &lt; width; i++)</a>
+<a name="ln434">        {</a>
+<a name="ln435">            var sampleIndex = (int)(i * (waveform.Count / (float)width));</a>
+<a name="ln436">            var sampleValue = waveform[Math.Clamp(sampleIndex, 0, waveform.Count - 1)];</a>
+<a name="ln437">            var charIndex = (int)((sampleValue + 1) / 2 * (numChars - 1));</a>
+<a name="ln438">            charIndex = Math.Clamp(charIndex, 0, numChars - 1);</a>
+<a name="ln439">            var y = (int)((1 - sampleValue) * yScale);</a>
+<a name="ln440">            y = Math.Clamp(y, 0, height - 1);</a>
+<a name="ln441">            waveformChars[y, i] = charMap[charIndex];</a>
+<a name="ln442">        }</a>
+<a name="ln443"> </a>
+<a name="ln444">        using StreamWriter writer = new(filePath);</a>
+<a name="ln445">        for (var i = 0; i &lt; height; i++)</a>
+<a name="ln446">        {</a>
+<a name="ln447">            for (var j = 0; j &lt; width; j++)</a>
+<a name="ln448">            {</a>
+<a name="ln449">                writer.Write(waveformChars[i, j]);</a>
+<a name="ln450">            }</a>
+<a name="ln451"> </a>
+<a name="ln452">            writer.WriteLine();</a>
+<a name="ln453">        }</a>
+<a name="ln454">    }</a>
+<a name="ln455">}</a>
+</code></pre>
+<div class="balloon" rel="238"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v5621/" target="_blank">V5621</a> Error message contains potentially sensitive data, in 'e.Message', that may be exposed.</p></div>
+<div class="balloon" rel="242"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v5621/" target="_blank">V5621</a> Error message contains potentially sensitive data, in 'e.Message', that may be exposed.</p></div>
+<link rel="stylesheet" href="highlight.css">
+<script src="highlight.pack.js"></script>
+<script src="highlightjs-line-numbers.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script>hljs.initLineNumbersOnLoad();</script>
+<script>
+  $(document).ready(function() {
+      $('.balloon').each(function () {
+          var bl = $(this);
+          var line = bl.attr('rel');
+          var text = $('a[name="ln'+line+'"]').text();
+
+          var space_count = 0;
+          for(var i = 0; i<text.length; i++){
+              var char = text[i];
+              if((char !== ' ')&&(char !== '\t'))break;
+              if(char === '\t')space_count++;
+              space_count++;
+          }
+
+          bl.css('margin-left', space_count*8);
+          $('a[name="ln'+line+'"]').after(bl);
+      });
+
+      window.location = window.location;
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,1066 @@
+PVS-Studio Combined Report
+================================================================================
+
+┌─[ID: V3148]
+├─ CWE: 476
+├─ SAST: None
+├─ Level: 2
+└─ Total occurrences: 277 in projects: GifRecorder
+
+Pattern:
+Casting potential 'null' value of 'GetValue()' to a value type can lead to NullReferenceException.
+
+Example:
+• Casting potential 'null' value of 'GetValue()' to a value type can lead to NullReferenceException.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3024]
+├─ CWE: 682
+├─ SAST: None
+├─ Level: 3
+└─ Total occurrences: 80 in projects: LunrCore, GifRecorder, SoundFlow, Foster_issues, Foster
+
+Pattern:
+An odd precise comparison:  . Consider using a comparison with defined precision: Math.Abs(A - B)   Epsilon.
+
+Example:
+• An odd precise comparison: vector.X == 0. Consider using a comparison with defined precision: Math.Abs(A - B) < Epsilon.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3022]
+├─ CWE: 571
+├─ SAST: None
+├─ Level: 3
+└─ Total occurrences: 58 in projects: LunrCore, GifRecorder, RestSharp, Chloe, Lynx, SpreadCheetah
+
+Pattern:
+Expression 'paramValue != null' is always true.
+
+Example:
+• Expression 'paramValue != null' is always true.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3062]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 2
+└─ Total occurrences: 57 in projects: Chloe, GifRecorder
+
+Pattern:
+An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the ' ' method.
+
+Example:
+• An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Max' method.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3111]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 3
+└─ Total occurrences: 48 in projects: Chloe, SpreadCheetah, GifRecorder
+
+Pattern:
+Checking value of ' ' for null will always return false when generic type is instantiated with a value type.
+
+Example:
+• Checking value of 'value' for null will always return false when generic type is instantiated with a value type.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V5606]
+├─ CWE: 1069
+├─ SAST: OWASP-7.4.2
+├─ Level: 3
+└─ Total occurrences: 45 in projects: RestSharp, GifRecorder, Riter, SoundFlow, Chloe, Foster_issues, Foster
+
+Pattern:
+An empty exception handler. Silent suppression of exceptions may hide the presence of bugs or vulnerabilities.
+
+Example:
+• An empty exception handler. Silent suppression of exceptions may hide the presence of bugs or vulnerabilities.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3114]
+├─ CWE: 404
+├─ SAST: None
+├─ Level: 2
+└─ Total occurrences: 29 in projects: Lynx, SoundFlow
+
+Pattern:
+IDisposable object ' ' is not disposed before method returns.
+
+Example:
+• IDisposable object 'position' is not disposed before method returns.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3150]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 2
+└─ Total occurrences: 28 in projects: Lynx
+
+Pattern:
+Loop break conditions do not depend on the number of iterations.
+
+Example:
+• Loop break conditions do not depend on the number of iterations.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3149]
+├─ CWE: 476
+├─ SAST: None
+├─ Level: 3
+└─ Total occurrences: 27 in projects: Chloe, GifRecorder
+
+Pattern:
+Dereferencing the result of 'as' operator  can lead to NullReferenceException. Consider inspecting 
+
+Example:
+• Dereferencing the result of 'as' operator can lead to NullReferenceException. Consider inspecting 'prevIncludeExpression'.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3095]
+├─ CWE: 476
+├─ SAST: None
+├─ Level: 2
+└─ Total occurrences: 25 in projects: Chloe, GifRecorder
+
+Pattern:
+The 'a ' object was used before it was verified against null. Check lines: 
+
+Example:
+• The 'a.Name' object was used before it was verified against null. Check lines: 56, 57.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V5609]
+├─ CWE: 22
+├─ SAST: OWASP-12.3.1
+├─ Level: 3
+└─ Total occurrences: 21 in projects: Foster_issues, Foster, GifRecorder
+
+Pattern:
+Possible path traversal vulnerability. Potentially tainted data from the ' ' variable is used as path.
+
+Example:
+• Possible path traversal vulnerability. Potentially tainted data from the 'file' variable is used as path.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3002]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 2
+└─ Total occurrences: 21 in projects: Lynx, GifRecorder
+
+Pattern:
+The switch statement does not cover all values of the 'SpecialMoveType' enum: DoublePawnPush.
+
+Example:
+• The switch statement does not cover all values of the 'SpecialMoveType' enum: DoublePawnPush.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3125]
+├─ CWE: 476
+├─ SAST: None
+├─ Level: 2
+└─ Total occurrences: 20 in projects: Chloe, Riter, GifRecorder
+
+Pattern:
+The ' ' object was used after it was verified against null. Check lines: 
+
+Example:
+• The 'model' object was used after it was verified against null. Check lines: 196, 188.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3120]
+├─ CWE: 835
+├─ SAST: None
+├─ Level: 1
+└─ Total occurrences: 20 in projects: Lynx
+
+Pattern:
+Potentially infinite loop. The ' ' variable from the loop exit condition does not change its value between iterations.
+
+Example:
+• Potentially infinite loop. The 'pawns' variable from the loop exit condition does not change its value between iterations.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3080]
+├─ CWE: 476
+├─ SAST: None
+├─ Level: 2
+└─ Total occurrences: 17 in projects: Chloe, Riter, GifRecorder
+
+Pattern:
+Possible null dereference . Consider inspecting 
+
+Example:
+• Possible null dereference. Consider inspecting 'dbJoinTable'.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3013]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 3
+└─ Total occurrences: 17 in projects: LunrCore, GifRecorder, RestSharp, Chloe, Lynx
+
+Pattern:
+It is odd that the body of 'For Than' function is fully equivalent to the body of 'For ThanOrEqual' function ( , line 
+
+Example:
+• It is odd that the body of 'ForGreaterThan' function is fully equivalent to the body of 'ForGreaterThanOrEqual' function (234, line 244).
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3063]
+├─ CWE: 570
+├─ SAST: None
+├─ Level: 2
+└─ Total occurrences: 17 in projects: GifRecorder, RestSharp, Foster_issues, Lynx, Foster
+
+Pattern:
+A part of conditional expression is always false if it is evaluated: other.Controllers[i].Connected.
+
+Example:
+• A part of conditional expression is always false if it is evaluated: other.Controllers[i].Connected.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3117]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 2
+└─ Total occurrences: 16 in projects: Lynx, SpreadCheetah, GifRecorder
+
+Pattern:
+Constructor parameter ' ' is not used.
+
+Example:
+• Constructor parameter 'calculateFen' is not used.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3156]
+├─ CWE: 628
+├─ SAST: None
+├─ Level: 2
+└─ Total occurrences: 16 in projects: GifRecorder
+
+Pattern:
+The f  argument of the ' ' metho d is not expected to be null.
+
+Example:
+• The first argument of the 'Format' method is not expected to be null.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3010]
+├─ CWE: 252
+├─ SAST: None
+├─ Level: 2
+└─ Total occurrences: 14 in projects: Foster_issues, Lynx, Foster
+
+Pattern:
+The return value of function 'Advance' is required to be utilized.
+
+Example:
+• The return value of function 'Advance' is required to be utilized.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3072]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 2
+└─ Total occurrences: 13 in projects: LunrCore, RestSharp, GifRecorder, SoundFlow, Foster_issues, Lynx, Foster
+
+Pattern:
+The 'Page' class containing IDisposable members does not itself implement IDisposable. Inspect: image, atlas.
+
+Example:
+• The 'Page' class containing IDisposable members does not itself implement IDisposable. Inspect: image, atlas.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V5621]
+├─ CWE: 535
+├─ SAST: OWASP-8.3.5
+├─ Level: 3
+└─ Total occurrences: 11 in projects: GifRecorder, Lynx, SoundFlow, RestSharp
+
+Pattern:
+Error message contains potentially sensitive data, in ' Message', that may be exposed.
+
+Example:
+• Error message contains potentially sensitive data, in 'errorMessage', that may be exposed.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3139]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 2
+└─ Total occurrences: 9 in projects: Foster_issues, Foster, GifRecorder
+
+Pattern:
+Two or more case-branches perform the same actions.
+
+Example:
+• Two or more case-branches perform the same actions.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: Renew]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 1
+└─ Total occurrences: 8 in projects: LunrCore, RestSharp, GifRecorder, Riter, SoundFlow, Lynx, Foster, SpreadCheetah
+
+Pattern:
+Your license will expire in 29 days. Click 'Renew' to learn more or contact us via Feedback form on our website. This is an information message. You can continue using the analyzer with your current license. To hide this message, use the '--disableLicenseExpirationCheck' flag.
+
+Example:
+• Your license will expire in 29 days. Click 'Renew' to learn more or contact us via Feedback form on our website. This is an information message. You can continue using the analyzer with your current license. To hide this message, use the '--disableLicenseExpirationCheck' flag.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3060]
+├─ CWE: 682
+├─ SAST: None
+├─ Level: 3
+└─ Total occurrences: 8 in projects: Lynx
+
+Pattern:
+A value of variable is not modified. Consider inspecting the expression. It is possible that other value should be present instead of '0'.
+
+Example:
+• A value of variable is not modified. Consider inspecting the expression. It is possible that other value should be present instead of '0'.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3144]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 1
+└─ Total occurrences: 8 in projects: GifRecorder
+
+Pattern:
+This file is marked with copyleft license, which requires you to open the derived source code.
+
+Example:
+• This file is marked with copyleft license, which requires you to open the derived source code.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3073]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 2
+└─ Total occurrences: 7 in projects: GifRecorder, Chloe, Foster_issues, Lynx, Foster
+
+Pattern:
+Not all IDisposable members are properly disposed. Call 'Dispose' when disposing ' ' class. Inspect: _
+
+Example:
+• Not all IDisposable members are properly disposed. Call 'Dispose' when disposing 'InnerAdoSession' class. Inspect: _externalAdoSession.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3083]
+├─ CWE: 367
+├─ SAST: None
+├─ Level: 2
+└─ Total occurrences: 7 in projects: Chloe, GifRecorder
+
+Pattern:
+Unsafe invocation of event  , NullReferenceException is possible. Consider assigning event to a local variable before invoking it.
+
+Example:
+• Unsafe invocation of event 'OnReaderExecuting', NullReferenceException is possible. Consider assigning event to a local variable before invoking it.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V5605]
+├─ CWE: 367
+├─ SAST: OWASP-1.11.3, OWASP-11.1.6
+├─ Level: 2
+└─ Total occurrences: 7 in projects: Chloe, GifRecorder
+
+Pattern:
+Unsafe invocation of event  , NullReferenceException is possible. Consider assigning event to a local variable before invoking it.
+
+Example:
+• Unsafe invocation of event 'OnReaderExecuting', NullReferenceException is possible. Consider assigning event to a local variable before invoking it.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3090]
+├─ CWE: 833
+├─ SAST: None
+├─ Level: 2
+└─ Total occurrences: 7 in projects: Chloe, SpreadCheetah, GifRecorder
+
+Pattern:
+Unsafe locking on a type. All instances of a type will have the same 'Type' object.
+
+Example:
+• Unsafe locking on a type. All instances of a type will have the same 'Type' object.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3146]
+├─ CWE: 476
+├─ SAST: None
+├─ Level: 2
+└─ Total occurrences: 7 in projects: Chloe, GifRecorder, Riter, RestSharp
+
+Pattern:
+Possible null dereference of 'complexPropertyDescriptor'. The 'FirstOrDefault' can return default null value.
+
+Example:
+• Possible null dereference of 'complexPropertyDescriptor'. The 'FirstOrDefault' can return default null value.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3203]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 3
+└─ Total occurrences: 7 in projects: SoundFlow, GifRecorder
+
+Pattern:
+Method parameter is not used: 
+
+Example:
+• Method parameter is not used: pasteIndex.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3008]
+├─ CWE: 563
+├─ SAST: None
+├─ Level: 2
+└─ Total occurrences: 6 in projects: Chloe, Riter, GifRecorder
+
+Pattern:
+The ' ' variable is assigned values twice successively. Perhaps this is a mistake. Check lines: 
+
+Example:
+• The 'dataList' variable is assigned values twice successively. Perhaps this is a mistake. Check lines: 306, 292.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3106]
+├─ CWE: 125
+├─ SAST: None
+├─ Level: 2
+└─ Total occurrences: 5 in projects: Lynx, GifRecorder
+
+Pattern:
+Possibly index is out of bound. The value of 'promotedPiece' index could reach 15.
+
+Example:
+• Possibly index is out of bound. The value of 'promotedPiece' index could reach 15.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3130]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 3
+└─ Total occurrences: 5 in projects: GifRecorder
+
+Pattern:
+Priority of the '&&' operator is higher than that of the '||' operator. Possible missing parentheses.
+
+Example:
+• Priority of the '&&' operator is higher than that of the '||' operator. Possible missing parentheses.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3064]
+├─ CWE: 369
+├─ SAST: None
+├─ Level: 2
+└─ Total occurrences: 5 in projects: SoundFlow, GifRecorder
+
+Pattern:
+Potential division by zero. Consider inspecting denominator '
+
+Example:
+• Potential division by zero. Consider inspecting denominator '(MaxColorsWithTransparency - 1)'.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3051]
+├─ CWE: 704
+├─ SAST: None
+├─ Level: 2
+└─ Total occurrences: 4 in projects: Chloe
+
+Pattern:
+An excessive type cast. The object is already of the ' ' type.
+
+Example:
+• An excessive type cast. The object is already of the 'ComplexObjectModel' type.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3137]
+├─ CWE: 563
+├─ SAST: None
+├─ Level: 2
+└─ Total occurrences: 4 in projects: Chloe, GifRecorder
+
+Pattern:
+The ' s' variable is assigned but is not used by the end of the function.
+
+Example:
+• The 'provinces' variable is assigned but is not used by the end of the function.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3100]
+├─ CWE: 476
+├─ SAST: None
+├─ Level: 3
+└─ Total occurrences: 4 in projects: Foster_issues, Foster
+
+Pattern:
+NullReferenceException is possi ble. Unhandled exceptions in destructor lead to termination of runtime.
+
+Example:
+• NullReferenceException is possible when dereferencing 'GraphicsDevice' variable. Unhandled exceptions in destructor lead to termination of runtime.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3167]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 3
+└─ Total occurrences: 4 in projects: LunrCore, SpreadCheetah, RestSharp
+
+Pattern:
+Parameter of the 'CancellationToken' type is not utilized inside a method. Ignoring the parameter can cause application to be unresponsive to cancellation events.
+
+Example:
+• Parameter of the 'CancellationToken' type is not utilized inside a method. Ignoring the parameter can cause application to be unresponsive to cancellation events.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3032]
+├─ CWE: 835
+├─ SAST: None
+├─ Level: 2
+└─ Total occurrences: 4 in projects: SoundFlow, GifRecorder
+
+Pattern:
+Waiting on this expression is unreliable, as compiler may optimize some of the variables. Use volatile variable(s) or synchronization primitives to avoid this.
+
+Example:
+• Waiting on this expression is unreliable, as compiler may optimize some of the variables. Use volatile variable(s) or synchronization primitives to avoid this.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3043]
+├─ CWE: 483
+├─ SAST: None
+├─ Level: 1
+└─ Total occurrences: 4 in projects: GifRecorder
+
+Pattern:
+The code's operational logic does not correspond with its formatting. The statement is indented to the right, but it is always executed. It is possible that curly brackets are missing.
+
+Example:
+• The code's operational logic does not correspond with its formatting. The statement is indented to the right, but it is always executed. It is possible that curly brackets are missing.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V5616]
+├─ CWE: 77
+├─ SAST: OWASP-5.3.8
+├─ Level: 3
+└─ Total occurrences: 4 in projects: GifRecorder
+
+Pattern:
+Possible command injection. Potentially tainted data in the 'info' variable is used to create an OS command.
+
+Example:
+• Possible command injection. Potentially tainted data in the 'info' variable is used to create an OS command.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3074]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 3
+└─ Total occurrences: 3 in projects: Chloe
+
+Pattern:
+The ' DbSession ' class contains 'Dispose' method. Consider making it implement 'IDisposable' interface.
+
+Example:
+• The 'DbSession' class contains 'Dispose' method. Consider making it implement 'IDisposable' interface.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3056]
+├─ CWE: 682
+├─ SAST: None
+├─ Level: 3
+└─ Total occurrences: 3 in projects: Chloe, SoundFlow, SpreadCheetah
+
+Pattern:
+Consider reviewing the correctness of 'Prime2' item's usage.
+
+Example:
+• Consider reviewing the correctness of 'Prime2' item's usage.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3041]
+├─ CWE: 682
+├─ SAST: None
+├─ Level: 1
+└─ Total occurrences: 3 in projects: Foster_issues, Foster
+
+Pattern:
+The expression was implicitly cast from 'int' type to 'float' type. Consider utilizing an explicit type cast to avoid the loss of a fractional part. An example: double A = (double)(X) / Y;.
+
+Example:
+• The expression was implicitly cast from 'int' type to 'float' type. Consider utilizing an explicit type cast to avoid the loss of a fractional part. An example: double A = (double)(X) / Y;.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3109]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 2
+└─ Total occurrences: 3 in projects: Foster_issues, SoundFlow, Foster
+
+Pattern:
+The 'interval' sub-expression is present on both sides of the operator. The expression is incorrect or it can be simplified.
+
+Example:
+• The 'interval' sub-expression is present on both sides of the operator. The expression is incorrect or it can be simplified.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3155]
+├─ CWE: 682
+├─ SAST: None
+├─ Level: 3
+└─ Total occurrences: 3 in projects: Lynx, SoundFlow
+
+Pattern:
+The expression is incorrect or it can be simplified. The 'SetFileRankMask(-1, rank)' expression always evaluates to '0'.
+
+Example:
+• The expression is incorrect or it can be simplified. The 'SetFileRankMask(-1, rank)' expression always evaluates to '0'.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3047]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 1
+└─ Total occurrences: 3 in projects: GifRecorder
+
+Pattern:
+WPF: a class containing registered property does not correspond with a type that is passed as the ownerType.
+
+Example:
+• WPF: a class containing registered property does not correspond with a type that is passed as the ownerType.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V5625]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 2
+└─ Total occurrences: 2 in projects: Chloe, RestSharp
+
+Pattern:
+Referenced package Npgsql 8.0.3 depends on assembly System.Text.Json 8.0.0.0 from the System.Text.Json package which contains vulnerabilities according to CVE-2024-30105, CVE-2024-43485.
+
+Example:
+• Referenced package Npgsql 8.0.3 depends on assembly System.Text.Json 8.0.0.0 from the System.Text.Json package which contains vulnerabilities according to CVE-2024-30105, CVE-2024-43485.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V5611]
+├─ CWE: 502
+├─ SAST: OWASP-1.5.2, OWASP-5.5.3
+├─ Level: 3
+└─ Total occurrences: 2 in projects: LunrCore
+
+Pattern:
+Possible insecure deserialization. Potentially tainted data in the ' json' variable is used to deserialize an object.
+
+Example:
+• Possible insecure deserialization. Potentially tainted data in the 'utf8json' variable is used to deserialize an object.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3198]
+├─ CWE: 1164
+├─ SAST: None
+├─ Level: 3
+└─ Total occurrences: 2 in projects: Lynx
+
+Pattern:
+The 'occupancy' variable is assigned the '0' value that it already holds.
+
+Example:
+• The 'occupancy' variable is assigned the '0' value that it already holds.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3134]
+├─ CWE: 128
+├─ SAST: None
+├─ Level: 2
+└─ Total occurrences: 2 in projects: Lynx
+
+Pattern:
+Shift by a possibly negative number -1 will result in shifting the first operand by 6 low-order bits of the second operand.
+
+Example:
+• Shift by a possibly negative number -1 will result in shifting the first operand by 6 low-order bits of the second operand.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V5613]
+├─ CWE: 328
+├─ SAST: None
+├─ Level: 2
+└─ Total occurrences: 2 in projects: RestSharp
+
+Pattern:
+Use of ' SHA1' hash algorithm is not recommended. Such code may cause the exposure of sensitive data.
+
+Example:
+• Use of 'HMACSHA1' hash algorithm is not recommended. Such code may cause the exposure of sensitive data.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3142]
+├─ CWE: 561
+├─ SAST: None
+├─ Level: 2
+└─ Total occurrences: 2 in projects: GifRecorder
+
+Pattern:
+Unreachable code detected. It is possible that an error is present.
+
+Example:
+• Unreachable code detected. It is possible that an error is present.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3057]
+├─ CWE: 628
+├─ SAST: None
+├─ Level: 2
+└─ Total occurrences: 2 in projects: SpreadCheetah, GifRecorder
+
+Pattern:
+The 1st argument 'length - 4' has a possibly negative value, but is expected to be non-negative inside method, in 'ms.Read(buffer, 0, (int)count)'.
+
+Example:
+• The 1st argument 'length - 4' has a possibly negative value, but is expected to be non-negative inside method, in 'ms.Read(buffer, 0, (int)count)'.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3020]
+├─ CWE: 670
+├─ SAST: None
+├─ Level: 2
+└─ Total occurrences: 2 in projects: GifRecorder
+
+Pattern:
+An unconditional 'break' within a loop.
+
+Example:
+• An unconditional 'break' within a loop.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3023]
+├─ CWE: 571
+├─ SAST: None
+├─ Level: 1
+└─ Total occurrences: 2 in projects: GifRecorder
+
+Pattern:
+Consider inspecting this expression. The expression is excessive or contains a misprint.
+
+Example:
+• Consider inspecting this expression. The expression is excessive or contains a misprint.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3068]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 2
+└─ Total occurrences: 1 in projects: Chloe
+
+Pattern:
+Calling overrideable class member 'CreateDbContext' from constructor is dangerous.
+
+Example:
+• Calling overrideable class member 'CreateDbContext' from constructor is dangerous.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3127]
+├─ CWE: 682
+├─ SAST: None
+├─ Level: 2
+└─ Total occurrences: 1 in projects: Chloe
+
+Pattern:
+Two similar code fragments were found. Perhaps, this is a typo and 'person1' variable should be used instead of 'person2'
+
+Example:
+• Two similar code fragments were found. Perhaps, this is a typo and 'person1' variable should be used instead of 'person2'
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3202]
+├─ CWE: 561
+├─ SAST: None
+├─ Level: 2
+└─ Total occurrences: 1 in projects: Lynx
+
+Pattern:
+Unreachable code detected. The 'case' value 'TablebaseEvaluationCategory.Unknown' is out of range of the match expression 'tablebaseEval.Category'.
+
+Example:
+• Unreachable code detected. The 'case' value 'TablebaseEvaluationCategory.Unknown' is out of range of the match expression 'tablebaseEval.Category'.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3001]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 1
+└─ Total occurrences: 1 in projects: Lynx
+
+Pattern:
+There are identical sub-expressions 'zobristTable[piece, targetSquare]' to the left and to the right of the '^' operator.
+
+Example:
+• There are identical sub-expressions 'zobristTable[piece, targetSquare]' to the left and to the right of the '^' operator.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V5601]
+├─ CWE: 798
+├─ SAST: OWASP-2.10.4
+├─ Level: 3
+└─ Total occurrences: 1 in projects: RestSharp
+
+Pattern:
+Suspicious string literal could be a password: 'ClientPassword'. Storing credentials inside source code can lead to security issues.
+
+Example:
+• Suspicious string literal could be a password: 'ClientPassword'. Storing credentials inside source code can lead to security issues.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3138]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 3
+└─ Total occurrences: 1 in projects: RestSharp
+
+Pattern:
+String literal contains potential interpolated expression. Consider inspecting: user.
+
+Example:
+• String literal contains potential interpolated expression. Consider inspecting: user.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3012]
+├─ CWE: 783
+├─ SAST: None
+├─ Level: 1
+└─ Total occurrences: 1 in projects: Riter
+
+Pattern:
+The '?:' operator, regardless of its conditional expression, always returns one and the same value.
+
+Example:
+• The '?:' operator, regardless of its conditional expression, always returns one and the same value.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3054]
+├─ CWE: 609
+├─ SAST: None
+├─ Level: 2
+└─ Total occurrences: 1 in projects: GifRecorder
+
+Pattern:
+Potentially unsafe double-checked locking. Use volatile variable(s) or synchronization primitives to avoid this.
+
+Example:
+• Potentially unsafe double-checked locking. Use volatile variable(s) or synchronization primitives to avoid this.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V5604]
+├─ CWE: 609
+├─ SAST: OWASP-11.1.6, OWASP-1.11.3
+├─ Level: 2
+└─ Total occurrences: 1 in projects: GifRecorder
+
+Pattern:
+Potentially unsafe double-checked locking. Use volatile variable(s) or synchronization primitives to avoid this.
+
+Example:
+• Potentially unsafe double-checked locking. Use volatile variable(s) or synchronization primitives to avoid this.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V5612]
+├─ CWE: 326
+├─ SAST: None
+├─ Level: 2
+└─ Total occurrences: 1 in projects: GifRecorder
+
+Pattern:
+Do not use old versions of SSL/TLS protocols as it may cause security issues. Insecure protocols: TLS 1.1.
+
+Example:
+• Do not use old versions of SSL/TLS protocols as it may cause security issues. Insecure protocols: TLS 1.1.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3097]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 3
+└─ Total occurrences: 1 in projects: GifRecorder
+
+Pattern:
+Possible exception: the 'WindowPlacement' type marked by [Serializable] contains non-serializable members not marked by [NonSerialized].
+
+Example:
+• Possible exception: the 'WindowPlacement' type marked by [Serializable] contains non-serializable members not marked by [NonSerialized].
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3171]
+├─ CWE: 839
+├─ SAST: None
+├─ Level: 2
+└─ Total occurrences: 1 in projects: GifRecorder
+
+Pattern:
+The parameter corresponding to the 1st argument 'length - 4' could reach the value of -4 inside method when used as the size of an array.
+
+Example:
+• The parameter corresponding to the 1st argument 'length - 4' could reach the value of -4 inside method when used as the size of an array.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3207]
+├─ CWE: 670
+├─ SAST: None
+├─ Level: 1
+└─ Total occurrences: 1 in projects: GifRecorder
+
+Pattern:
+The 'not ExportFormats.Gif or ExportFormats.Apng' logical pattern may not work as expected. The 'not' pattern is matched only to the first expression from the 'or' pattern.
+
+Example:
+• The 'not ExportFormats.Gif or ExportFormats.Apng' logical pattern may not work as expected. The 'not' pattern is matched only to the first expression from the 'or' pattern.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3168]
+├─ CWE: 476
+├─ SAST: None
+├─ Level: 2
+└─ Total occurrences: 1 in projects: GifRecorder
+
+Pattern:
+Awaiting on the 'GetResponse(HttpMethod.Get, url, headers)' expression with potential null value can lead to NullReferenceException.
+
+Example:
+• Awaiting on the 'GetResponse(HttpMethod.Get, url, headers)' expression with potential null value can lead to NullReferenceException.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3052]
+├─ CWE: 390
+├─ SAST: None
+├─ Level: 2
+└─ Total occurrences: 1 in projects: GifRecorder
+
+Pattern:
+The original exception object 'u' was swallowed. Stack of original exception could be lost.
+
+Example:
+• The original exception object 'u' was swallowed. Stack of original exception could be lost.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V5603]
+├─ CWE: 390
+├─ SAST: OWASP-11.1.8
+├─ Level: 2
+└─ Total occurrences: 1 in projects: GifRecorder
+
+Pattern:
+The original exception object 'u' was swallowed. Stack of original exception could be lost.
+
+Example:
+• The original exception object 'u' was swallowed. Stack of original exception could be lost.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V5607]
+├─ CWE: 544
+├─ SAST: OWASP-7.4.2
+├─ Level: 3
+└─ Total occurrences: 1 in projects: SpreadCheetah
+
+Pattern:
+Exception classes should be publicly accessible.
+
+Example:
+• Exception classes should be publicly accessible.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3009]
+├─ CWE: 393
+├─ SAST: None
+├─ Level: 2
+└─ Total occurrences: 1 in projects: SpreadCheetah
+
+Pattern:
+It's odd that this method always returns one and the same value of 'true'.
+
+Example:
+• It's odd that this method always returns one and the same value of 'true'.
+
+────────────────────────────────────────────────────────────────────────────────

@@ -1,0 +1,633 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII" />
+  <title>TimeBox.cs</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <script src="../jquery-3.5.1.min.js"></script>
+</head>
+<body>
+<pre><code class = "cs">
+<a name="ln1">using System;</a>
+<a name="ln2">using System.ComponentModel;</a>
+<a name="ln3">using System.Globalization;</a>
+<a name="ln4">using System.Windows;</a>
+<a name="ln5">using System.Windows.Input;</a>
+<a name="ln6"> </a>
+<a name="ln7">namespace ScreenToGif.Controls;</a>
+<a name="ln8"> </a>
+<a name="ln9">public class TimeBox : ExtendedTextBox</a>
+<a name="ln10">{</a>
+<a name="ln11">    private bool _ignore = false;</a>
+<a name="ln12"> </a>
+<a name="ln13">    #region Dependency Properties</a>
+<a name="ln14"> </a>
+<a name="ln15">    public static readonly DependencyProperty SelectedProperty = DependencyProperty.Register(nameof(Selected), typeof(TimeSpan?), typeof(TimeBox),</a>
+<a name="ln16">        new FrameworkPropertyMetadata(null, Selected_PropertyChanged));</a>
+<a name="ln17"> </a>
+<a name="ln18">    public static readonly DependencyProperty MaximumProperty = DependencyProperty.Register(nameof(Maximum), typeof(TimeSpan?), typeof(TimeBox),</a>
+<a name="ln19">        new FrameworkPropertyMetadata(new TimeSpan(0, 23, 59, 59, 999), Maximum_PropertyChanged));</a>
+<a name="ln20"> </a>
+<a name="ln21">    public static readonly DependencyProperty MinimumProperty = DependencyProperty.Register(nameof(Minimum), typeof(TimeSpan?), typeof(TimeBox),</a>
+<a name="ln22">        new FrameworkPropertyMetadata(TimeSpan.Zero, Minimum_PropertyChanged));</a>
+<a name="ln23"> </a>
+<a name="ln24">    public static readonly DependencyProperty AvoidScrollProperty = DependencyProperty.Register(nameof(AvoidScroll), typeof(bool), typeof(TimeBox),</a>
+<a name="ln25">        new FrameworkPropertyMetadata(false));</a>
+<a name="ln26"> </a>
+<a name="ln27">    public static readonly DependencyProperty DisplaySecondsProperty = DependencyProperty.Register(nameof(DisplaySeconds), typeof(bool), typeof(TimeBox),</a>
+<a name="ln28">        new FrameworkPropertyMetadata(true));</a>
+<a name="ln29"> </a>
+<a name="ln30">    public static readonly DependencyProperty DisplayMillisecondsProperty = DependencyProperty.Register(nameof(DisplayMilliseconds), typeof(bool), typeof(TimeBox),</a>
+<a name="ln31">        new FrameworkPropertyMetadata(true));</a>
+<a name="ln32"> </a>
+<a name="ln33">    public static readonly DependencyProperty DisplayEmptyAsMidnightProperty = DependencyProperty.Register(nameof(DisplayEmptyAsMidnight), typeof(bool), typeof(TimeBox),</a>
+<a name="ln34">        new FrameworkPropertyMetadata(false));</a>
+<a name="ln35"> </a>
+<a name="ln36">    #endregion</a>
+<a name="ln37"> </a>
+<a name="ln38">    #region Property Accessor</a>
+<a name="ln39"> </a>
+<a name="ln40">    [Bindable(true), Category(&quot;Common&quot;)]</a>
+<a name="ln41">    public TimeSpan? Selected</a>
+<a name="ln42">    {</a>
+<a name="ln43">        get =&gt; (TimeSpan?)GetValue(SelectedProperty);</a>
+<a name="ln44">        set =&gt; SetValue(SelectedProperty, value);</a>
+<a name="ln45">    }</a>
+<a name="ln46"> </a>
+<a name="ln47">    [Bindable(true), Category(&quot;Common&quot;)]</a>
+<a name="ln48">    public TimeSpan? Maximum</a>
+<a name="ln49">    {</a>
+<a name="ln50">        get =&gt; (TimeSpan?)GetValue(MaximumProperty);</a>
+<a name="ln51">        set =&gt; SetValue(MaximumProperty, value);</a>
+<a name="ln52">    }</a>
+<a name="ln53"> </a>
+<a name="ln54">    [Bindable(true), Category(&quot;Common&quot;)]</a>
+<a name="ln55">    public TimeSpan? Minimum</a>
+<a name="ln56">    {</a>
+<a name="ln57">        get =&gt; (TimeSpan?)GetValue(MinimumProperty);</a>
+<a name="ln58">        set =&gt; SetValue(MinimumProperty, value);</a>
+<a name="ln59">    }</a>
+<a name="ln60"> </a>
+<a name="ln61">    [Bindable(true), Category(&quot;Common&quot;)]</a>
+<a name="ln62">    public bool AvoidScroll</a>
+<a name="ln63">    {</a>
+<a name="ln64">        get =&gt; (bool)GetValue(AvoidScrollProperty);</a>
+<a name="ln65">        set =&gt; SetValue(AvoidScrollProperty, value);</a>
+<a name="ln66">    }</a>
+<a name="ln67"> </a>
+<a name="ln68">    [Bindable(true), Category(&quot;Common&quot;)]</a>
+<a name="ln69">    public bool DisplaySeconds</a>
+<a name="ln70">    {</a>
+<a name="ln71">        get =&gt; (bool)GetValue(DisplaySecondsProperty);</a>
+<a name="ln72">        set =&gt; SetValue(DisplaySecondsProperty, value);</a>
+<a name="ln73">    }</a>
+<a name="ln74"> </a>
+<a name="ln75">    [Bindable(true), Category(&quot;Common&quot;)]</a>
+<a name="ln76">    public bool DisplayMilliseconds</a>
+<a name="ln77">    {</a>
+<a name="ln78">        get =&gt; (bool)GetValue(DisplayMillisecondsProperty);</a>
+<a name="ln79">        set =&gt; SetValue(DisplayMillisecondsProperty, value);</a>
+<a name="ln80">    }</a>
+<a name="ln81"> </a>
+<a name="ln82">    [Bindable(true), Category(&quot;Common&quot;)]</a>
+<a name="ln83">    public bool DisplayEmptyAsMidnight</a>
+<a name="ln84">    {</a>
+<a name="ln85">        get =&gt; (bool)GetValue(DisplayEmptyAsMidnightProperty);</a>
+<a name="ln86">        set =&gt; SetValue(DisplayEmptyAsMidnightProperty, value);</a>
+<a name="ln87">    }</a>
+<a name="ln88"> </a>
+<a name="ln89">    protected string Format =&gt; &quot;hh':'mm&quot; + (DisplaySeconds ? &quot;':'ss&quot; + (DisplayMilliseconds ? &quot;'.'fff&quot; : &quot;&quot;) : &quot;&quot;);</a>
+<a name="ln90"> </a>
+<a name="ln91">    #endregion</a>
+<a name="ln92"> </a>
+<a name="ln93">    #region Property Changed</a>
+<a name="ln94"> </a>
+<a name="ln95">    private static void Selected_PropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)</a>
+<a name="ln96">    {</a>
+<a name="ln97">        if (!(d is TimeBox timeBox) || timeBox._ignore)</a>
+<a name="ln98">            return;</a>
+<a name="ln99"> </a>
+<a name="ln100">        if (timeBox.Selected &gt; timeBox.Maximum)</a>
+<a name="ln101">        {</a>
+<a name="ln102">            timeBox.Tag = timeBox.Maximum;</a>
+<a name="ln103">            timeBox.Selected = timeBox.Maximum;</a>
+<a name="ln104">        }</a>
+<a name="ln105">        else if (timeBox.Selected &lt; timeBox.Minimum)</a>
+<a name="ln106">        {</a>
+<a name="ln107">            timeBox.Tag = timeBox.Minimum;</a>
+<a name="ln108">            timeBox.Selected = timeBox.Minimum;</a>
+<a name="ln109">        }</a>
+<a name="ln110"> </a>
+<a name="ln111">        timeBox.Text = timeBox.Selected?.ToString(timeBox.Format, CultureInfo.InvariantCulture) ?? &quot;&quot;;</a>
+<a name="ln112">    }</a>
+<a name="ln113"> </a>
+<a name="ln114">    private static void Maximum_PropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)</a>
+<a name="ln115">    {</a>
+<a name="ln116">        var timeBox = d as TimeBox;</a>
+<a name="ln117"> </a>
+<a name="ln118">        if (!(timeBox?.Tag is TimeSpan selected))</a>
+<a name="ln119">            return;</a>
+<a name="ln120"> </a>
+<a name="ln121">        if (selected &gt; timeBox.Maximum)</a>
+<a name="ln122">        {</a>
+<a name="ln123">            timeBox.Tag = timeBox.Maximum;</a>
+<a name="ln124">            timeBox.Selected = timeBox.Maximum;</a>
+<a name="ln125">        }</a>
+<a name="ln126">    }</a>
+<a name="ln127"> </a>
+<a name="ln128">    private static void Minimum_PropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)</a>
+<a name="ln129">    {</a>
+<a name="ln130">        var timeBox = d as TimeBox;</a>
+<a name="ln131"> </a>
+<a name="ln132">        if (!(timeBox?.Tag is TimeSpan selected))</a>
+<a name="ln133">            return;</a>
+<a name="ln134"> </a>
+<a name="ln135">        if (selected &lt; timeBox.Minimum)</a>
+<a name="ln136">        {</a>
+<a name="ln137">            timeBox.Tag = timeBox.Minimum;</a>
+<a name="ln138">            timeBox.Selected = timeBox.Minimum;</a>
+<a name="ln139">        }</a>
+<a name="ln140">    }</a>
+<a name="ln141"> </a>
+<a name="ln142">    #endregion</a>
+<a name="ln143"> </a>
+<a name="ln144">    static TimeBox()</a>
+<a name="ln145">    {</a>
+<a name="ln146">        DefaultStyleKeyProperty.OverrideMetadata(typeof(TimeBox), new FrameworkPropertyMetadata(typeof(TimeBox)));</a>
+<a name="ln147">    }</a>
+<a name="ln148"> </a>
+<a name="ln149">    #region Overrides</a>
+<a name="ln150"> </a>
+<a name="ln151">    protected override void OnPreviewTextInput(TextCompositionEventArgs e)</a>
+<a name="ln152">    {</a>
+<a name="ln153">        base.OnPreviewTextInput(e);</a>
+<a name="ln154"> </a>
+<a name="ln155">        if (_ignore)</a>
+<a name="ln156">            return;</a>
+<a name="ln157"> </a>
+<a name="ln158">        if (SelectionLength &gt; 0)</a>
+<a name="ln159">        {</a>
+<a name="ln160">            e.Handled = false;</a>
+<a name="ln161">            return;</a>
+<a name="ln162">        }</a>
+<a name="ln163"> </a>
+<a name="ln164">        if (Text.Length + e.Text.Length &lt; 2)</a>
+<a name="ln165">            return;</a>
+<a name="ln166"> </a>
+<a name="ln167">        #region Hour 01</a>
+<a name="ln168"> </a>
+<a name="ln169">        if (Text.Length == 1)</a>
+<a name="ln170">        {</a>
+<a name="ln171">            //Text property is old. In order to test, add new characters right now.</a>
+<a name="ln172">            Text += e.TextComposition.Text;</a>
+<a name="ln173"> </a>
+<a name="ln174">            //Validate if it's a valid hour value (0 - 23).</a>
+<a name="ln175">            if (int.TryParse(Text.Substring(0, 2), out var hour))</a>
+<a name="ln176">            {</a>
+<a name="ln177">                if (hour &gt; 23)</a>
+<a name="ln178">                    Text = &quot;23&quot;;</a>
+<a name="ln179"> </a>
+<a name="ln180">                Select(Text.Length, 0);</a>
+<a name="ln181">                e.Handled = true;</a>
+<a name="ln182">            }</a>
+<a name="ln183"> </a>
+<a name="ln184">            return;</a>
+<a name="ln185">        }</a>
+<a name="ln186"> </a>
+<a name="ln187">        #endregion</a>
+<a name="ln188"> </a>
+<a name="ln189">        #region Minute 01:02</a>
+<a name="ln190"> </a>
+<a name="ln191">        if (Text.Length == 4)</a>
+<a name="ln192">        {</a>
+<a name="ln193">            Text += e.TextComposition.Text;</a>
+<a name="ln194"> </a>
+<a name="ln195">            //Validate if it's a valid minute value (0 - 59).</a>
+<a name="ln196">            if (int.TryParse(Text.Substring(3, 2), out var minute))</a>
+<a name="ln197">            {</a>
+<a name="ln198">                if (minute &gt; 59)</a>
+<a name="ln199">                    Text = Text.Substring(0, 3) + &quot;59&quot;;</a>
+<a name="ln200"> </a>
+<a name="ln201">                Select(Text.Length, 0);</a>
+<a name="ln202">                e.Handled = true;</a>
+<a name="ln203">            }</a>
+<a name="ln204"> </a>
+<a name="ln205">            return;</a>
+<a name="ln206">        }</a>
+<a name="ln207"> </a>
+<a name="ln208">        #endregion</a>
+<a name="ln209"> </a>
+<a name="ln210">        if (!DisplaySeconds &amp;&amp; Text.Length &gt; 4)</a>
+<a name="ln211">        {</a>
+<a name="ln212">            UpdateSource();</a>
+<a name="ln213"> </a>
+<a name="ln214">            if (!e.Handled)</a>
+<a name="ln215">                MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));</a>
+<a name="ln216"> </a>
+<a name="ln217">            e.Handled = true;</a>
+<a name="ln218">            return;</a>
+<a name="ln219">        }</a>
+<a name="ln220"> </a>
+<a name="ln221">        #region Second 01:02:03</a>
+<a name="ln222"> </a>
+<a name="ln223">        if (Text.Length == 7)</a>
+<a name="ln224">        {</a>
+<a name="ln225">            Text = Text.Insert(SelectionStart, e.TextComposition.Text);</a>
+<a name="ln226"> </a>
+<a name="ln227">            //Validate if it's a valid seconds value (0 to 59).</a>
+<a name="ln228">            if (int.TryParse(Text.Substring(6, 2), out var second))</a>
+<a name="ln229">            {</a>
+<a name="ln230">                if (second &gt; 59)</a>
+<a name="ln231">                    Text = Text.Substring(0, 6) + &quot;59&quot;;</a>
+<a name="ln232"> </a>
+<a name="ln233">                e.Handled = true;</a>
+<a name="ln234">            }</a>
+<a name="ln235">        }</a>
+<a name="ln236"> </a>
+<a name="ln237">        #endregion</a>
+<a name="ln238"> </a>
+<a name="ln239">        #region Millisecond 01:02:03.004</a>
+<a name="ln240"> </a>
+<a name="ln241">        if (Text.Length == 11)</a>
+<a name="ln242">        {</a>
+<a name="ln243">            Text = Text.Insert(SelectionStart, e.TextComposition.Text);</a>
+<a name="ln244"> </a>
+<a name="ln245">            //SelectionStart = 7;</a>
+<a name="ln246">            //SelectionLength = 0;</a>
+<a name="ln247">        }</a>
+<a name="ln248"> </a>
+<a name="ln249">        #endregion</a>
+<a name="ln250"> </a>
+<a name="ln251">        //Don't let the user add more numbers if the maximum length will be surpassed.</a>
+<a name="ln252">        if (Text.Length &gt; (DisplayMilliseconds ? 11 : 6))</a>
+<a name="ln253">        {</a>
+<a name="ln254">            UpdateSource();</a>
+<a name="ln255"> </a>
+<a name="ln256">            if (!e.Handled)</a>
+<a name="ln257">                MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));</a>
+<a name="ln258"> </a>
+<a name="ln259">            e.Handled = true;</a>
+<a name="ln260">        }</a>
+<a name="ln261">    }</a>
+<a name="ln262"> </a>
+<a name="ln263">    protected override void OnPreviewKeyDown(KeyEventArgs e)</a>
+<a name="ln264">    {</a>
+<a name="ln265">        base.OnPreviewKeyDown(e);</a>
+<a name="ln266"> </a>
+<a name="ln267">        #region Navigation or selection</a>
+<a name="ln268"> </a>
+<a name="ln269">        if (e.Key == Key.Enter || e.Key == Key.Return || e.Key == Key.Tab || e.Key == Key.Left || e.Key == Key.Right || e.Key == Key.Escape || e.Key == Key.Home || e.Key == Key.End)</a>
+<a name="ln270">        {</a>
+<a name="ln271">            e.Handled = false;</a>
+<a name="ln272">            return;</a>
+<a name="ln273">        }</a>
+<a name="ln274"> </a>
+<a name="ln275">        #endregion</a>
+<a name="ln276"> </a>
+<a name="ln277">        if (IsReadOnly)</a>
+<a name="ln278">        {</a>
+<a name="ln279">            e.Handled = true;</a>
+<a name="ln280">            return;</a>
+<a name="ln281">        }</a>
+<a name="ln282"> </a>
+<a name="ln283">        #region Remove</a>
+<a name="ln284"> </a>
+<a name="ln285">        if (e.Key == Key.Back || e.Key == Key.Delete)</a>
+<a name="ln286">        {</a>
+<a name="ln287">            if (SelectionLength == Text.Length || Text.Length == 1 &amp;&amp; (SelectionStart == 0 &amp;&amp; e.Key == Key.Delete || SelectionStart == 1 &amp;&amp; e.Key == Key.Back))</a>
+<a name="ln288">            {</a>
+<a name="ln289">                Text = &quot;&quot;;</a>
+<a name="ln290">                RaiseEvent(new RoutedEventArgs(TextChangedEvent));</a>
+<a name="ln291">                UpdateSource();</a>
+<a name="ln292">            }</a>
+<a name="ln293"> </a>
+<a name="ln294">            e.Handled = false;</a>
+<a name="ln295">            return;</a>
+<a name="ln296">        }</a>
+<a name="ln297"> </a>
+<a name="ln298">        #endregion</a>
+<a name="ln299"> </a>
+<a name="ln300">        #region Colon (:) and period (.)</a>
+<a name="ln301"> </a>
+<a name="ln302">        if ((e.Key == Key.OemQuestion || e.Key == Key.OemPeriod) &amp;&amp; (Keyboard.Modifiers &amp; ModifierKeys.Control) == 0)</a>
+<a name="ln303">        {</a>
+<a name="ln304">            var separatorSelected = Text.Substring(SelectionStart, SelectionLength).Contains(&quot;:&quot;) || Text.Substring(SelectionStart, SelectionLength).Contains(&quot;.&quot;);</a>
+<a name="ln305"> </a>
+<a name="ln306">            //Let it add a separator if in the right position.</a>
+<a name="ln307">            if (SelectionStart == 2 || SelectionStart == 5 &amp;&amp; DisplaySeconds || SelectionStart == 8 || separatorSelected)</a>
+<a name="ln308">            {</a>
+<a name="ln309">                e.Handled = false;</a>
+<a name="ln310">                return;</a>
+<a name="ln311">            }</a>
+<a name="ln312"> </a>
+<a name="ln313">            if (Text.Length &gt; 8)</a>
+<a name="ln314">            {</a>
+<a name="ln315">                e.Handled = true;</a>
+<a name="ln316">                return;</a>
+<a name="ln317">            }</a>
+<a name="ln318"> </a>
+<a name="ln319">            #region Adds the hour, minute, second and millisecond</a>
+<a name="ln320"> </a>
+<a name="ln321">            //1 --&gt; 01:</a>
+<a name="ln322">            //0 --&gt; 01:</a>
+<a name="ln323">            if (Text.Length == 1)</a>
+<a name="ln324">                Text = &quot;0&quot; + (Text.Equals(&quot;0&quot;) ? &quot;1&quot; : Text) + &quot;:&quot;;</a>
+<a name="ln325"> </a>
+<a name="ln326">            //01:2 --&gt; 01:02:</a>
+<a name="ln327">            //01:0 --&gt; 01:01:</a>
+<a name="ln328">            else if (Text.Length == 4)</a>
+<a name="ln329">                Text = Text.Substring(0, 3) + &quot;0&quot; + (Text.Substring(3, 1).Equals(&quot;0&quot;) ? &quot;1&quot; : Text.Substring(3, 1)) + (DisplaySeconds ? &quot;:&quot; : &quot;&quot;);</a>
+<a name="ln330"> </a>
+<a name="ln331">            //01:02:5 --&gt; 01:02:05</a>
+<a name="ln332">            //01:02:0 --&gt; 01:02:00</a>
+<a name="ln333">            else if (Text.Length == 7)</a>
+<a name="ln334">                Text = Text.Substring(0, 6) + &quot;0&quot; + Text.Substring(6, 1);</a>
+<a name="ln335"> </a>
+<a name="ln336">            //01:02:03.5 --&gt; 01:02:03.005</a>
+<a name="ln337">            //01:02:03.0 --&gt; 01:02:03.000</a>
+<a name="ln338">            else if (Text.Length == 10)</a>
+<a name="ln339">                Text = Text.Substring(0, 9) + Text.Substring(6, 1).PadLeft(3, '0');</a>
+<a name="ln340"> </a>
+<a name="ln341">            #endregion</a>
+<a name="ln342"> </a>
+<a name="ln343">            SelectionStart = Text.Length;</a>
+<a name="ln344">            e.Handled = true;</a>
+<a name="ln345">            return;</a>
+<a name="ln346">        }</a>
+<a name="ln347"> </a>
+<a name="ln348">        #endregion</a>
+<a name="ln349"> </a>
+<a name="ln350">        #region Numeric</a>
+<a name="ln351"> </a>
+<a name="ln352">        if (e.Key &gt;= Key.D0 &amp;&amp; e.Key &lt;= Key.D9 || e.Key &gt;= Key.NumPad0 &amp;&amp; e.Key &lt;= Key.NumPad9)</a>
+<a name="ln353">        {</a>
+<a name="ln354">            //01</a>
+<a name="ln355">            if (Text.Length - SelectionLength == 2)</a>
+<a name="ln356">            {</a>
+<a name="ln357">                Text = Text + &quot;:&quot;;</a>
+<a name="ln358">                Select(Text.Length, 0);</a>
+<a name="ln359">            }</a>
+<a name="ln360"> </a>
+<a name="ln361">            //01:02</a>
+<a name="ln362">            if (Text.Length - SelectionLength == 5 &amp;&amp; DisplaySeconds)</a>
+<a name="ln363">            {</a>
+<a name="ln364">                Text = Text + &quot;:&quot;;</a>
+<a name="ln365">                Select(Text.Length, 0);</a>
+<a name="ln366">            }</a>
+<a name="ln367"> </a>
+<a name="ln368">            //01:02:03</a>
+<a name="ln369">            if (Text.Length - SelectionLength == 8 &amp;&amp; DisplayMilliseconds)</a>
+<a name="ln370">            {</a>
+<a name="ln371">                Text = Text + &quot;.&quot;;</a>
+<a name="ln372">                Select(Text.Length, 0);</a>
+<a name="ln373">            }</a>
+<a name="ln374"> </a>
+<a name="ln375">            e.Handled = false;</a>
+<a name="ln376">            return;</a>
+<a name="ln377">        }</a>
+<a name="ln378"> </a>
+<a name="ln379">        #endregion</a>
+<a name="ln380"> </a>
+<a name="ln381">        #region Value Navigation</a>
+<a name="ln382"> </a>
+<a name="ln383">        if (Keyboard.Modifiers == ModifierKeys.Control)</a>
+<a name="ln384">        {</a>
+<a name="ln385">            //System's actions. Ignore.</a>
+<a name="ln386">            if (e.Key == Key.A || e.Key == Key.X || e.Key == Key.C || e.Key == Key.V)</a>
+<a name="ln387">            {</a>
+<a name="ln388">                e.Handled = false;</a>
+<a name="ln389">                return;</a>
+<a name="ln390">            }</a>
+<a name="ln391"> </a>
+<a name="ln392">            //Now or maximum.</a>
+<a name="ln393">            if (e.Key == Key.OemSemicolon || e.Key == Key.Oem2)</a>
+<a name="ln394">            {</a>
+<a name="ln395">                //Text = DateTime.Now.TimeOfDay.ToString(Format);</a>
+<a name="ln396">                Selected = Maximum ?? DateTime.Now.TimeOfDay;</a>
+<a name="ln397">                SelectAll();</a>
+<a name="ln398">                return;</a>
+<a name="ln399">            }</a>
+<a name="ln400"> </a>
+<a name="ln401">            //Increase or decrease.</a>
+<a name="ln402">            if (e.Key == Key.OemComma || e.Key == Key.Decimal)</a>
+<a name="ln403">            {</a>
+<a name="ln404">                Change(Selected, -1, TimeSpan.FromMinutes(1));</a>
+<a name="ln405"> </a>
+<a name="ln406">                //Text = string.IsNullOrWhiteSpace(Text) ? DateTime.Now.TimeOfDay.ToString(Format) : Text;</a>
+<a name="ln407"> </a>
+<a name="ln408">                ////Previous minute.</a>
+<a name="ln409">                //if (TimeSpan.TryParse(Text, out var aux))</a>
+<a name="ln410">                //{</a>
+<a name="ln411">                //    if (aux - TimeSpan.FromMinutes(1) &lt; (Minimum ?? TimeSpan.Zero)) //Deal with milliseconds...</a>
+<a name="ln412">                //    {</a>
+<a name="ln413">                //        aux = Maximum ?? new TimeSpan(0, 23, 59, 59, 999);</a>
+<a name="ln414">                //        Text = aux.ToString(Format);</a>
+<a name="ln415">                //    }</a>
+<a name="ln416">                //    else</a>
+<a name="ln417">                //        Text = aux.Add(TimeSpan.FromMinutes(-1)).ToString(Format);</a>
+<a name="ln418">                //}</a>
+<a name="ln419">            }</a>
+<a name="ln420">            else if (e.Key == Key.OemPeriod)</a>
+<a name="ln421">            {</a>
+<a name="ln422">                Change(Selected, 1, TimeSpan.FromMinutes(1));</a>
+<a name="ln423"> </a>
+<a name="ln424">                //Text = string.IsNullOrWhiteSpace(Text) ? DateTime.Now.TimeOfDay.ToString(Format) : Text;</a>
+<a name="ln425"> </a>
+<a name="ln426">                ////Next minute.</a>
+<a name="ln427">                //if (TimeSpan.TryParse(Text, out var aux))</a>
+<a name="ln428">                //{</a>
+<a name="ln429">                //    if (aux + TimeSpan.FromMinutes(1) &gt; (Maximum ?? new TimeSpan(0, 23, 59, 59, 999))) //Deal with milliseconds...</a>
+<a name="ln430">                //    {</a>
+<a name="ln431">                //        aux = Minimum ?? TimeSpan.Zero;</a>
+<a name="ln432">                //        Text = aux.ToString(Format);</a>
+<a name="ln433">                //    }</a>
+<a name="ln434">                //    else</a>
+<a name="ln435">                //        Text = aux.Add(TimeSpan.FromMinutes(1)).ToString(Format);</a>
+<a name="ln436">                //}</a>
+<a name="ln437">            }</a>
+<a name="ln438"> </a>
+<a name="ln439">            //UpdateSource();</a>
+<a name="ln440">        }</a>
+<a name="ln441"> </a>
+<a name="ln442">        #endregion</a>
+<a name="ln443">    }</a>
+<a name="ln444"> </a>
+<a name="ln445">    protected override void OnGotFocus(RoutedEventArgs e)</a>
+<a name="ln446">    {</a>
+<a name="ln447">        base.OnGotFocus(e);</a>
+<a name="ln448"> </a>
+<a name="ln449">        SelectAll();</a>
+<a name="ln450">    }</a>
+<a name="ln451"> </a>
+<a name="ln452">    protected override void OnPreviewLostKeyboardFocus(KeyboardFocusChangedEventArgs e)</a>
+<a name="ln453">    {</a>
+<a name="ln454">        if (e.NewFocus == e.OldFocus)</a>
+<a name="ln455">            return;</a>
+<a name="ln456"> </a>
+<a name="ln457">        //Validate on LostFocus.</a>
+<a name="ln458">        if (!TimeSpan.TryParse(Text, out var aux))</a>
+<a name="ln459">        {</a>
+<a name="ln460">            Selected = null;</a>
+<a name="ln461">        }</a>
+<a name="ln462">        else</a>
+<a name="ln463">        {</a>
+<a name="ln464">            //If the TryParse converted a single digit group to days, transform it to hours.</a>
+<a name="ln465">            if (aux.Days &gt; 0 &amp;&amp; aux.Days &lt; 24 &amp;&amp; aux.Minutes == 0 &amp;&amp; aux.Seconds == 0)</a>
+<a name="ln466">                aux = new TimeSpan(aux.Days, 0, 0);</a>
+<a name="ln467"> </a>
+<a name="ln468">            Selected = aux;</a>
+<a name="ln469">        }</a>
+<a name="ln470"> </a>
+<a name="ln471">        UpdateSource();</a>
+<a name="ln472"> </a>
+<a name="ln473">        base.OnPreviewLostKeyboardFocus(e);</a>
+<a name="ln474">    }</a>
+<a name="ln475"> </a>
+<a name="ln476">    protected override void OnLostKeyboardFocus(KeyboardFocusChangedEventArgs e)</a>
+<a name="ln477">    {</a>
+<a name="ln478">        //Validate on LostFocus.</a>
+<a name="ln479">        if (!TimeSpan.TryParse(Text, out var aux))</a>
+<a name="ln480">        {</a>
+<a name="ln481">            Selected = null;</a>
+<a name="ln482">        }</a>
+<a name="ln483">        else</a>
+<a name="ln484">        {</a>
+<a name="ln485">            //If the TryParse converted a single digit group to days, transform it to hours.</a>
+<a name="ln486">            if (aux.Days &gt; 0 &amp;&amp; aux.Days &lt; 24 &amp;&amp; aux.Minutes == 0 &amp;&amp; aux.Seconds == 0)</a>
+<a name="ln487">                aux = new TimeSpan(aux.Days, 0, 0);</a>
+<a name="ln488"> </a>
+<a name="ln489">            Selected = aux;</a>
+<a name="ln490">        }</a>
+<a name="ln491"> </a>
+<a name="ln492">        UpdateSource();</a>
+<a name="ln493"> </a>
+<a name="ln494">        base.OnLostKeyboardFocus(e);</a>
+<a name="ln495">    }</a>
+<a name="ln496"> </a>
+<a name="ln497">    protected override void OnLostFocus(RoutedEventArgs e)</a>
+<a name="ln498">    {</a>
+<a name="ln499">        //Validate on LostFocus.</a>
+<a name="ln500">        if (!TimeSpan.TryParse(Text, out var aux))</a>
+<a name="ln501">        {</a>
+<a name="ln502">            Selected = null;</a>
+<a name="ln503">        }</a>
+<a name="ln504">        else</a>
+<a name="ln505">        {</a>
+<a name="ln506">            //If the TryParse converted a single digit group to days, transform it to hours.</a>
+<a name="ln507">            if (aux.Days &gt; 0 &amp;&amp; aux.Days &lt; 24 &amp;&amp; aux.Minutes == 0 &amp;&amp; aux.Seconds == 0)</a>
+<a name="ln508">                aux = new TimeSpan(aux.Days, 0, 0);</a>
+<a name="ln509"> </a>
+<a name="ln510">            Selected = aux;</a>
+<a name="ln511">        }</a>
+<a name="ln512"> </a>
+<a name="ln513">        UpdateSource();</a>
+<a name="ln514"> </a>
+<a name="ln515">        base.OnLostFocus(e);</a>
+<a name="ln516">    }</a>
+<a name="ln517"> </a>
+<a name="ln518">    protected override void OnPreviewMouseLeftButtonDown(MouseButtonEventArgs e)</a>
+<a name="ln519">    {</a>
+<a name="ln520">        if (!IsKeyboardFocusWithin)</a>
+<a name="ln521">        {</a>
+<a name="ln522">            e.Handled = true;</a>
+<a name="ln523">            Focus();</a>
+<a name="ln524">        }</a>
+<a name="ln525">    }</a>
+<a name="ln526"> </a>
+<a name="ln527">    protected override void OnMouseWheel(MouseWheelEventArgs e)</a>
+<a name="ln528">    {</a>
+<a name="ln529">        if (IsReadOnly || AvoidScroll || !IsFocused)</a>
+<a name="ln530">        {</a>
+<a name="ln531">            base.OnMouseWheel(e);</a>
+<a name="ln532">            return;</a>
+<a name="ln533">        }</a>
+<a name="ln534"> </a>
+<a name="ln535">        switch (Keyboard.Modifiers)</a>
+<a name="ln536">        {</a>
+<a name="ln537">            case ModifierKeys.Control: //Milliseconds.</a>
+<a name="ln538">            {</a>
+<a name="ln539">                if (!DisplayMilliseconds)</a>
+<a name="ln540">                    return;</a>
+<a name="ln541"> </a>
+<a name="ln542">                Selected = Change(Selected, e.Delta, new TimeSpan(0, 0, 0, 0, 100));</a>
+<a name="ln543">                break;</a>
+<a name="ln544">            }</a>
+<a name="ln545"> </a>
+<a name="ln546">            case ModifierKeys.None: //Seconds.</a>
+<a name="ln547">            {</a>
+<a name="ln548">                if (!DisplaySeconds)</a>
+<a name="ln549">                    return;</a>
+<a name="ln550"> </a>
+<a name="ln551">                Selected = Change(Selected, e.Delta, new TimeSpan(0, 0, 1));</a>
+<a name="ln552">                break;</a>
+<a name="ln553">            }</a>
+<a name="ln554"> </a>
+<a name="ln555">            case ModifierKeys.Shift: //Minutes.</a>
+<a name="ln556">            {</a>
+<a name="ln557">                Selected = Change(Selected, e.Delta, new TimeSpan(0, 1, 0));</a>
+<a name="ln558">                break;</a>
+<a name="ln559">            }</a>
+<a name="ln560"> </a>
+<a name="ln561">            case ModifierKeys.Shift | ModifierKeys.Control: //Hours.</a>
+<a name="ln562">            {</a>
+<a name="ln563">                Selected = Change(Selected, e.Delta, new TimeSpan(1, 0, 0));</a>
+<a name="ln564">                break;</a>
+<a name="ln565">            }</a>
+<a name="ln566">        }</a>
+<a name="ln567"> </a>
+<a name="ln568">        e.Handled = true;</a>
+<a name="ln569">        base.OnMouseWheel(e);</a>
+<a name="ln570">    }</a>
+<a name="ln571"> </a>
+<a name="ln572">    #endregion</a>
+<a name="ln573"> </a>
+<a name="ln574">    #region Methods</a>
+<a name="ln575"> </a>
+<a name="ln576">    private void UpdateSource()</a>
+<a name="ln577">    {</a>
+<a name="ln578">        var prop = GetBindingExpression(TextProperty);</a>
+<a name="ln579"> </a>
+<a name="ln580">        prop?.UpdateSource();</a>
+<a name="ln581">    }</a>
+<a name="ln582"> </a>
+<a name="ln583">    private TimeSpan Change(TimeSpan? current, int delta, TimeSpan amount)</a>
+<a name="ln584">    {</a>
+<a name="ln585">        return delta &gt; 0 ? current?.Add(amount) ?? Maximum ?? new TimeSpan(0, 23, 59, 59, 999) :</a>
+<a name="ln586">            current?.Subtract(amount) ?? Minimum ?? new TimeSpan(0, 0, 0);</a>
+<a name="ln587">    }</a>
+<a name="ln588"> </a>
+<a name="ln589">    #endregion</a>
+<a name="ln590">}</a>
+</code></pre>
+<div class="balloon" rel="338"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3022/" target="_blank">V3022</a> Expression 'Text.Length == 10' is always false.</p></div>
+<div class="balloon" rel="269"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3063/" target="_blank">V3063</a> A part of conditional expression is always false if it is evaluated: e.Key == Key.Return.</p></div>
+<div class="balloon" rel="535"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3002/" target="_blank">V3002</a> The switch statement does not cover all values of the 'ModifierKeys' enum: Alt, Windows.</p></div>
+<div class="balloon" rel="307"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3130/" target="_blank">V3130</a> Priority of the '&amp;&amp;' operator is higher than that of the '||' operator. Possible missing parentheses.</p></div>
+<link rel="stylesheet" href="highlight.css">
+<script src="highlight.pack.js"></script>
+<script src="highlightjs-line-numbers.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script>hljs.initLineNumbersOnLoad();</script>
+<script>
+  $(document).ready(function() {
+      $('.balloon').each(function () {
+          var bl = $(this);
+          var line = bl.attr('rel');
+          var text = $('a[name="ln'+line+'"]').text();
+
+          var space_count = 0;
+          for(var i = 0; i<text.length; i++){
+              var char = text[i];
+              if((char !== ' ')&&(char !== '\t'))break;
+              if(char === '\t')space_count++;
+              space_count++;
+          }
+
+          bl.css('margin-left', space_count*8);
+          $('a[name="ln'+line+'"]').after(bl);
+      });
+
+      window.location = window.location;
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,4563 @@
+{
+  "version": 3,
+  "warnings": [
+    {
+      "code": "V3073",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Data\\InnerAdoSession.cs",
+          "line": 6,
+          "endLine": 6,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -1127876530,
+            "nextLine": 123,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Data\\InnerAdoSession.cs",
+          "line": 10,
+          "endLine": 10
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Not all IDisposable members are properly disposed. Call 'Dispose' when disposing 'InnerAdoSession' class. Inspect: _externalAdoSession.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3073",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\DbContextButler.cs",
+          "line": 9,
+          "endLine": 9,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -1189365682,
+            "nextLine": 123,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\DbContextButler.cs",
+          "line": 14,
+          "endLine": 14
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Not all IDisposable members are properly disposed. Call 'Dispose' when disposing 'DbContextButler' class. Inspect: _defaultDbContextProvider...",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V5606",
+      "cwe": 1069,
+      "sastId": "OWASP-7.4.2",
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\DbContextButler.cs",
+          "line": 67,
+          "endLine": 67,
+          "navigation": {
+            "previousLine": 125,
+            "currentLine": 1094,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An empty exception handler. Silent suppression of exceptions may hide the presence of bugs or vulnerabilities.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V5606",
+      "cwe": 1069,
+      "sastId": "OWASP-7.4.2",
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\DbContextButler.cs",
+          "line": 133,
+          "endLine": 133,
+          "navigation": {
+            "previousLine": 125,
+            "currentLine": 1094,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An empty exception handler. Silent suppression of exceptions may hide the presence of bugs or vulnerabilities.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V5606",
+      "cwe": 1069,
+      "sastId": "OWASP-7.4.2",
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Data\\AdoSession.cs",
+          "line": 271,
+          "endLine": 271,
+          "navigation": {
+            "previousLine": 125,
+            "currentLine": 1094,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An empty exception handler. Silent suppression of exceptions may hide the presence of bugs or vulnerabilities.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3083",
+      "cwe": 367,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Data\\AdoSession.cs",
+          "line": 128,
+          "endLine": 128,
+          "navigation": {
+            "previousLine": 675137828,
+            "currentLine": -942963734,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Unsafe invocation of event 'OnReaderExecuting', NullReferenceException is possible. Consider assigning event to a local variable before invoking it.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V5605",
+      "cwe": 367,
+      "sastId": "OWASP-1.11.3, OWASP-11.1.6",
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Data\\AdoSession.cs",
+          "line": 128,
+          "endLine": 128,
+          "navigation": {
+            "previousLine": 675137828,
+            "currentLine": -942963734,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Unsafe invocation of event 'OnReaderExecuting', NullReferenceException is possible. Consider assigning event to a local variable before invoking it.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3083",
+      "cwe": 367,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Data\\AdoSession.cs",
+          "line": 138,
+          "endLine": 138,
+          "navigation": {
+            "previousLine": -1126181675,
+            "currentLine": -1193546846,
+            "nextLine": 0,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Data\\AdoSession.cs",
+          "line": 144,
+          "endLine": 144
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Unsafe invocation of event 'OnReaderExecuted', NullReferenceException is possible. Consider assigning event to a local variable before invoking it.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V5605",
+      "cwe": 367,
+      "sastId": "OWASP-1.11.3, OWASP-11.1.6",
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Data\\AdoSession.cs",
+          "line": 138,
+          "endLine": 138,
+          "navigation": {
+            "previousLine": -1126181675,
+            "currentLine": -1193546846,
+            "nextLine": 0,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Data\\AdoSession.cs",
+          "line": 144,
+          "endLine": 144
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Unsafe invocation of event 'OnReaderExecuted', NullReferenceException is possible. Consider assigning event to a local variable before invoking it.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3083",
+      "cwe": 367,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Data\\AdoSession.cs",
+          "line": 173,
+          "endLine": 173,
+          "navigation": {
+            "previousLine": 675137828,
+            "currentLine": -985426965,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Unsafe invocation of event, NullReferenceException is possible. Consider assigning event to a local variable before invoking it.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V5605",
+      "cwe": 367,
+      "sastId": "OWASP-1.11.3, OWASP-11.1.6",
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Data\\AdoSession.cs",
+          "line": 173,
+          "endLine": 173,
+          "navigation": {
+            "previousLine": 675137828,
+            "currentLine": -985426965,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Unsafe invocation of event, NullReferenceException is possible. Consider assigning event to a local variable before invoking it.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3083",
+      "cwe": 367,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Data\\AdoSession.cs",
+          "line": 183,
+          "endLine": 183,
+          "navigation": {
+            "previousLine": -1126181675,
+            "currentLine": 966779810,
+            "nextLine": 0,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Data\\AdoSession.cs",
+          "line": 189,
+          "endLine": 189
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Unsafe invocation of event 'OnNonQueryExecuted', NullReferenceException is possible. Consider assigning event to a local variable before invoking it.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V5605",
+      "cwe": 367,
+      "sastId": "OWASP-1.11.3, OWASP-11.1.6",
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Data\\AdoSession.cs",
+          "line": 183,
+          "endLine": 183,
+          "navigation": {
+            "previousLine": -1126181675,
+            "currentLine": 966779810,
+            "nextLine": 0,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Data\\AdoSession.cs",
+          "line": 189,
+          "endLine": 189
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Unsafe invocation of event 'OnNonQueryExecuted', NullReferenceException is possible. Consider assigning event to a local variable before invoking it.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3083",
+      "cwe": 367,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Data\\AdoSession.cs",
+          "line": 223,
+          "endLine": 223,
+          "navigation": {
+            "previousLine": 675137828,
+            "currentLine": -942865430,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Unsafe invocation of event 'OnScalarExecuting', NullReferenceException is possible. Consider assigning event to a local variable before invoking it.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V5605",
+      "cwe": 367,
+      "sastId": "OWASP-1.11.3, OWASP-11.1.6",
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Data\\AdoSession.cs",
+          "line": 223,
+          "endLine": 223,
+          "navigation": {
+            "previousLine": 675137828,
+            "currentLine": -942865430,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Unsafe invocation of event 'OnScalarExecuting', NullReferenceException is possible. Consider assigning event to a local variable before invoking it.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3083",
+      "cwe": 367,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Data\\AdoSession.cs",
+          "line": 233,
+          "endLine": 233,
+          "navigation": {
+            "previousLine": -1126181675,
+            "currentLine": -1193759838,
+            "nextLine": 0,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Data\\AdoSession.cs",
+          "line": 239,
+          "endLine": 239
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Unsafe invocation of event 'OnScalarExecuted', NullReferenceException is possible. Consider assigning event to a local variable before invoking it.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V5605",
+      "cwe": 367,
+      "sastId": "OWASP-1.11.3, OWASP-11.1.6",
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Data\\AdoSession.cs",
+          "line": 233,
+          "endLine": 233,
+          "navigation": {
+            "previousLine": -1126181675,
+            "currentLine": -1193759838,
+            "nextLine": 0,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Data\\AdoSession.cs",
+          "line": 239,
+          "endLine": 239
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Unsafe invocation of event 'OnScalarExecuted', NullReferenceException is possible. Consider assigning event to a local variable before invoking it.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3111",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\DbParam.cs",
+          "line": 50,
+          "endLine": 50,
+          "navigation": {
+            "previousLine": 1653942301,
+            "currentLine": 1484649,
+            "nextLine": 90589113,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Checking value of 'value' for null will always return false when generic type is instantiated with a value type.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3074",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\DbSession.cs",
+          "line": 6,
+          "endLine": 6,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -346623338,
+            "nextLine": 123,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\DbSession.cs",
+          "line": 159,
+          "endLine": 159
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "The 'DbSession' class contains 'Dispose' method. Consider making it implement 'IDisposable' interface.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3074",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\DbSessionProvider.cs",
+          "line": 6,
+          "endLine": 6,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 51554103,
+            "nextLine": 123,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\DbSessionProvider.cs",
+          "line": 163,
+          "endLine": 163
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "The 'DbSessionProvider' class contains 'Dispose' method. Consider making it implement 'IDisposable' interface.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3080",
+      "cwe": 476,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\DbExpressions\\DbExpressionVisitor.cs",
+          "line": 185,
+          "endLine": 185,
+          "navigation": {
+            "previousLine": 900979930,
+            "currentLine": -1665614479,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Possible null dereference. Consider inspecting 'dbJoinTable'.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3111",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Extensions\\HashCode.cs",
+          "line": 98,
+          "endLine": 98,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 8030372,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Checking value of 'value1' for null will always return false when generic type is instantiated with a value type.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3111",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Extensions\\HashCode.cs",
+          "line": 111,
+          "endLine": 111,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 8030372,
+            "nextLine": 4884648,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Checking value of 'value1' for null will always return false when generic type is instantiated with a value type.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3111",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Extensions\\HashCode.cs",
+          "line": 112,
+          "endLine": 112,
+          "navigation": {
+            "previousLine": 8030372,
+            "currentLine": 4884648,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Checking value of 'value2' for null will always return false when generic type is instantiated with a value type.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3111",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Extensions\\HashCode.cs",
+          "line": 126,
+          "endLine": 126,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 8030372,
+            "nextLine": 4884648,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Checking value of 'value1' for null will always return false when generic type is instantiated with a value type.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3111",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Extensions\\HashCode.cs",
+          "line": 127,
+          "endLine": 127,
+          "navigation": {
+            "previousLine": 8030372,
+            "currentLine": 4884648,
+            "nextLine": 5933228,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Checking value of 'value2' for null will always return false when generic type is instantiated with a value type.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3111",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Extensions\\HashCode.cs",
+          "line": 128,
+          "endLine": 128,
+          "navigation": {
+            "previousLine": 4884648,
+            "currentLine": 5933228,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Checking value of 'value3' for null will always return false when generic type is instantiated with a value type.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3111",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Extensions\\HashCode.cs",
+          "line": 143,
+          "endLine": 143,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 8030372,
+            "nextLine": 4884648,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Checking value of 'value1' for null will always return false when generic type is instantiated with a value type.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3111",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Extensions\\HashCode.cs",
+          "line": 144,
+          "endLine": 144,
+          "navigation": {
+            "previousLine": 8030372,
+            "currentLine": 4884648,
+            "nextLine": 5933228,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Checking value of 'value2' for null will always return false when generic type is instantiated with a value type.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3111",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Extensions\\HashCode.cs",
+          "line": 145,
+          "endLine": 145,
+          "navigation": {
+            "previousLine": 4884648,
+            "currentLine": 5933228,
+            "nextLine": 2787504,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Checking value of 'value3' for null will always return false when generic type is instantiated with a value type.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3111",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Extensions\\HashCode.cs",
+          "line": 146,
+          "endLine": 146,
+          "navigation": {
+            "previousLine": 5933228,
+            "currentLine": 2787504,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Checking value of 'value4' for null will always return false when generic type is instantiated with a value type.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3111",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Extensions\\HashCode.cs",
+          "line": 164,
+          "endLine": 164,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 8030372,
+            "nextLine": 4884648,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Checking value of 'value1' for null will always return false when generic type is instantiated with a value type.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3111",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Extensions\\HashCode.cs",
+          "line": 165,
+          "endLine": 165,
+          "navigation": {
+            "previousLine": 8030372,
+            "currentLine": 4884648,
+            "nextLine": 5933228,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Checking value of 'value2' for null will always return false when generic type is instantiated with a value type.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3111",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Extensions\\HashCode.cs",
+          "line": 166,
+          "endLine": 166,
+          "navigation": {
+            "previousLine": 4884648,
+            "currentLine": 5933228,
+            "nextLine": 2787504,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Checking value of 'value3' for null will always return false when generic type is instantiated with a value type.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3111",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Extensions\\HashCode.cs",
+          "line": 167,
+          "endLine": 167,
+          "navigation": {
+            "previousLine": 5933228,
+            "currentLine": 2787504,
+            "nextLine": 3836084,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Checking value of 'value4' for null will always return false when generic type is instantiated with a value type.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3111",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Extensions\\HashCode.cs",
+          "line": 168,
+          "endLine": 168,
+          "navigation": {
+            "previousLine": 2787504,
+            "currentLine": 3836084,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Checking value of 'value5' for null will always return false when generic type is instantiated with a value type.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3111",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Extensions\\HashCode.cs",
+          "line": 188,
+          "endLine": 188,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 8030372,
+            "nextLine": 4884648,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Checking value of 'value1' for null will always return false when generic type is instantiated with a value type.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3111",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Extensions\\HashCode.cs",
+          "line": 189,
+          "endLine": 189,
+          "navigation": {
+            "previousLine": 8030372,
+            "currentLine": 4884648,
+            "nextLine": 5933228,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Checking value of 'value2' for null will always return false when generic type is instantiated with a value type.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3111",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Extensions\\HashCode.cs",
+          "line": 190,
+          "endLine": 190,
+          "navigation": {
+            "previousLine": 4884648,
+            "currentLine": 5933228,
+            "nextLine": 2787504,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Checking value of 'value3' for null will always return false when generic type is instantiated with a value type.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3111",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Extensions\\HashCode.cs",
+          "line": 191,
+          "endLine": 191,
+          "navigation": {
+            "previousLine": 5933228,
+            "currentLine": 2787504,
+            "nextLine": 3836084,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Checking value of 'value4' for null will always return false when generic type is instantiated with a value type.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3111",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Extensions\\HashCode.cs",
+          "line": 192,
+          "endLine": 192,
+          "navigation": {
+            "previousLine": 2787504,
+            "currentLine": 3836084,
+            "nextLine": 690360,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Checking value of 'value5' for null will always return false when generic type is instantiated with a value type.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3111",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Extensions\\HashCode.cs",
+          "line": 193,
+          "endLine": 193,
+          "navigation": {
+            "previousLine": 3836084,
+            "currentLine": 690360,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Checking value of 'value6' for null will always return false when generic type is instantiated with a value type.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3111",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Extensions\\HashCode.cs",
+          "line": 214,
+          "endLine": 214,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 8030372,
+            "nextLine": 4884648,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Checking value of 'value1' for null will always return false when generic type is instantiated with a value type.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3111",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Extensions\\HashCode.cs",
+          "line": 215,
+          "endLine": 215,
+          "navigation": {
+            "previousLine": 8030372,
+            "currentLine": 4884648,
+            "nextLine": 5933228,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Checking value of 'value2' for null will always return false when generic type is instantiated with a value type.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3111",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Extensions\\HashCode.cs",
+          "line": 216,
+          "endLine": 216,
+          "navigation": {
+            "previousLine": 4884648,
+            "currentLine": 5933228,
+            "nextLine": 2787504,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Checking value of 'value3' for null will always return false when generic type is instantiated with a value type.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3111",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Extensions\\HashCode.cs",
+          "line": 217,
+          "endLine": 217,
+          "navigation": {
+            "previousLine": 5933228,
+            "currentLine": 2787504,
+            "nextLine": 3836084,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Checking value of 'value4' for null will always return false when generic type is instantiated with a value type.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3111",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Extensions\\HashCode.cs",
+          "line": 218,
+          "endLine": 218,
+          "navigation": {
+            "previousLine": 2787504,
+            "currentLine": 3836084,
+            "nextLine": 690360,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Checking value of 'value5' for null will always return false when generic type is instantiated with a value type.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3111",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Extensions\\HashCode.cs",
+          "line": 219,
+          "endLine": 219,
+          "navigation": {
+            "previousLine": 3836084,
+            "currentLine": 690360,
+            "nextLine": 1738940,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Checking value of 'value6' for null will always return false when generic type is instantiated with a value type.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3111",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Extensions\\HashCode.cs",
+          "line": 220,
+          "endLine": 220,
+          "navigation": {
+            "previousLine": 690360,
+            "currentLine": 1738940,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Checking value of 'value7' for null will always return false when generic type is instantiated with a value type.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3111",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Extensions\\HashCode.cs",
+          "line": 242,
+          "endLine": 242,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 8030372,
+            "nextLine": 4884648,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Checking value of 'value1' for null will always return false when generic type is instantiated with a value type.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3111",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Extensions\\HashCode.cs",
+          "line": 243,
+          "endLine": 243,
+          "navigation": {
+            "previousLine": 8030372,
+            "currentLine": 4884648,
+            "nextLine": 5933228,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Checking value of 'value2' for null will always return false when generic type is instantiated with a value type.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3111",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Extensions\\HashCode.cs",
+          "line": 244,
+          "endLine": 244,
+          "navigation": {
+            "previousLine": 4884648,
+            "currentLine": 5933228,
+            "nextLine": 2787504,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Checking value of 'value3' for null will always return false when generic type is instantiated with a value type.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3111",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Extensions\\HashCode.cs",
+          "line": 245,
+          "endLine": 245,
+          "navigation": {
+            "previousLine": 5933228,
+            "currentLine": 2787504,
+            "nextLine": 3836084,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Checking value of 'value4' for null will always return false when generic type is instantiated with a value type.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3111",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Extensions\\HashCode.cs",
+          "line": 246,
+          "endLine": 246,
+          "navigation": {
+            "previousLine": 2787504,
+            "currentLine": 3836084,
+            "nextLine": 690360,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Checking value of 'value5' for null will always return false when generic type is instantiated with a value type.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3111",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Extensions\\HashCode.cs",
+          "line": 247,
+          "endLine": 247,
+          "navigation": {
+            "previousLine": 3836084,
+            "currentLine": 690360,
+            "nextLine": 1738940,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Checking value of 'value6' for null will always return false when generic type is instantiated with a value type.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3111",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Extensions\\HashCode.cs",
+          "line": 248,
+          "endLine": 248,
+          "navigation": {
+            "previousLine": 690360,
+            "currentLine": 1738940,
+            "nextLine": 15370368,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Checking value of 'value7' for null will always return false when generic type is instantiated with a value type.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3111",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Extensions\\HashCode.cs",
+          "line": 249,
+          "endLine": 249,
+          "navigation": {
+            "previousLine": 1738940,
+            "currentLine": 15370368,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Checking value of 'value8' for null will always return false when generic type is instantiated with a value type.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3111",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Extensions\\HashCode.cs",
+          "line": 315,
+          "endLine": 315,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -1527064313,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Checking value of 'value' for null will always return false when generic type is instantiated with a value type.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3056",
+      "cwe": 682,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Extensions\\HashCode.cs",
+          "line": 273,
+          "endLine": 273,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 880602355,
+            "nextLine": 6912499,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Extensions\\HashCode.cs",
+          "line": 274,
+          "endLine": 274
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Consider reviewing the correctness of 'Prime2' item's usage.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3090",
+      "cwe": 833,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Mapper\\ObjectMemberMapper.cs",
+          "line": 78,
+          "endLine": 78,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 40171,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Unsafe locking on a type. All instances of a type will have the same 'Type' object.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3149",
+      "cwe": 476,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\IncludedCollectionQuery.cs",
+          "line": 22,
+          "endLine": 22,
+          "navigation": {
+            "previousLine": -1221310866,
+            "currentLine": 8704123,
+            "nextLine": 2024167449,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\IncludedCollectionQuery.cs",
+          "line": 21,
+          "endLine": 21
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Dereferencing the result of 'as' operator can lead to NullReferenceException. Consider inspecting 'prevIncludeExpression'.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3149",
+      "cwe": 476,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\IncludeQueryBase.cs",
+          "line": 32,
+          "endLine": 32,
+          "navigation": {
+            "previousLine": -1221310866,
+            "currentLine": 8704123,
+            "nextLine": 2024167449,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\IncludeQueryBase.cs",
+          "line": 31,
+          "endLine": 31
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Dereferencing the result of 'as' operator can lead to NullReferenceException. Consider inspecting 'prevIncludeExpression'.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3149",
+      "cwe": 476,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\IncludeQueryBase.cs",
+          "line": 42,
+          "endLine": 42,
+          "navigation": {
+            "previousLine": -1284500297,
+            "currentLine": 919689907,
+            "nextLine": 0,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\IncludeQueryBase.cs",
+          "line": 113,
+          "endLine": 113
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\IncludeQueryBase.cs",
+          "line": 39,
+          "endLine": 39
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Dereferencing the result of 'as' operator inside method can lead to NullReferenceException. Consider inspecting 1st argument: member.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3149",
+      "cwe": 476,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\IncludeQueryBase.cs",
+          "line": 55,
+          "endLine": 55,
+          "navigation": {
+            "previousLine": -1221310866,
+            "currentLine": 8704123,
+            "nextLine": 2024167449,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\IncludeQueryBase.cs",
+          "line": 54,
+          "endLine": 54
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Dereferencing the result of 'as' operator can lead to NullReferenceException. Consider inspecting 'prevIncludeExpression'.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3149",
+      "cwe": 476,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\IncludeQueryBase.cs",
+          "line": 73,
+          "endLine": 73,
+          "navigation": {
+            "previousLine": 40230601,
+            "currentLine": 147738371,
+            "nextLine": 125,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\IncludeQueryBase.cs",
+          "line": 71,
+          "endLine": 71
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Dereferencing the result of 'as' operator can lead to NullReferenceException. Consider inspecting 'member'.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3149",
+      "cwe": 476,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\IncludeQueryBase.cs",
+          "line": 94,
+          "endLine": 94,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 919689907,
+            "nextLine": 0,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\IncludeQueryBase.cs",
+          "line": 113,
+          "endLine": 113
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\IncludeQueryBase.cs",
+          "line": 92,
+          "endLine": 92
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Dereferencing the result of 'as' operator inside method can lead to NullReferenceException. Consider inspecting 1st argument: member.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3090",
+      "cwe": 833,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\Internals\\InternalSqlQuery.cs",
+          "line": 84,
+          "endLine": 84,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 1258091902,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Unsafe locking on a type. All instances of a type will have the same 'Type' object.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3062",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\Query.Async.cs",
+          "line": 54,
+          "endLine": 54,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -1781615579,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Max' method.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3062",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\Query.Async.cs",
+          "line": 58,
+          "endLine": 58,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -1781091291,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Min' method.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3062",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\Query.Async.cs",
+          "line": 63,
+          "endLine": 63,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -1470461356,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Sum' method.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3062",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\Query.Async.cs",
+          "line": 67,
+          "endLine": 67,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 1353753186,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Sum' method.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3062",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\Query.Async.cs",
+          "line": 71,
+          "endLine": 71,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 1172753075,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Sum' method.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3062",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\Query.Async.cs",
+          "line": 75,
+          "endLine": 75,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -1949817939,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Sum' method.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3062",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\Query.Async.cs",
+          "line": 79,
+          "endLine": 79,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 458815326,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Sum' method.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3062",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\Query.Async.cs",
+          "line": 83,
+          "endLine": 83,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 917788791,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Sum' method.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3062",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\Query.Async.cs",
+          "line": 87,
+          "endLine": 87,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -277857675,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Sum' method.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3062",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\Query.Async.cs",
+          "line": 91,
+          "endLine": 91,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -555367904,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Sum' method.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3062",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\Query.Async.cs",
+          "line": 95,
+          "endLine": 95,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -1083539202,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Sum' method.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3062",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\Query.Async.cs",
+          "line": 99,
+          "endLine": 99,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 2127607606,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Sum' method.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3062",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\Query.Async.cs",
+          "line": 105,
+          "endLine": 105,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 1556910608,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3062",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\Query.Async.cs",
+          "line": 109,
+          "endLine": 109,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -1180921109,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3062",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\Query.Async.cs",
+          "line": 113,
+          "endLine": 113,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -1176726805,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3062",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\Query.Async.cs",
+          "line": 117,
+          "endLine": 117,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 1941738268,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3062",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\Query.Async.cs",
+          "line": 121,
+          "endLine": 121,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -1793539904,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3062",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\Query.Async.cs",
+          "line": 125,
+          "endLine": 125,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 708065098,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3062",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\Query.Async.cs",
+          "line": 129,
+          "endLine": 129,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -431189773,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3062",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\Query.Async.cs",
+          "line": 133,
+          "endLine": 133,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -862152916,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3062",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\Query.Async.cs",
+          "line": 137,
+          "endLine": 137,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -126617344,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3062",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\Query.Async.cs",
+          "line": 141,
+          "endLine": 141,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -253606710,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3146",
+      "cwe": 476,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\SplitQuery\\ComplexNavigationQueryExecutor.cs",
+          "line": 61,
+          "endLine": 61,
+          "navigation": {
+            "previousLine": 783303728,
+            "currentLine": -602575156,
+            "nextLine": 125,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\SplitQuery\\ComplexNavigationQueryExecutor.cs",
+          "line": 60,
+          "endLine": 60
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Possible null dereference of 'complexPropertyDescriptor'. The 'FirstOrDefault' can return default null value.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3062",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\Query`.cs",
+          "line": 392,
+          "endLine": 392,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -1870119175,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Max' method.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3062",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\Query`.cs",
+          "line": 396,
+          "endLine": 396,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -1869594887,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Min' method.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3062",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\Query`.cs",
+          "line": 401,
+          "endLine": 401,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 273699752,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Sum' method.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3062",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\Query`.cs",
+          "line": 405,
+          "endLine": 405,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 547688859,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Sum' method.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3062",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\Query`.cs",
+          "line": 409,
+          "endLine": 409,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -1513247423,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Sum' method.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3062",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\Query`.cs",
+          "line": 413,
+          "endLine": 413,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 1268706376,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Sum' method.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3062",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\Query`.cs",
+          "line": 417,
+          "endLine": 417,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 293669862,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Sum' method.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3062",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\Query`.cs",
+          "line": 421,
+          "endLine": 421,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 587702535,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Sum' method.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3062",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\Query`.cs",
+          "line": 425,
+          "endLine": 425,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -305773221,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Sum' method.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3062",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\Query`.cs",
+          "line": 429,
+          "endLine": 429,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -611763076,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Sum' method.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3062",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\Query`.cs",
+          "line": 433,
+          "endLine": 433,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 1070014261,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Sum' method.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3062",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\Query`.cs",
+          "line": 437,
+          "endLine": 437,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 2139850913,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Sum' method.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3062",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\Query`.cs",
+          "line": 442,
+          "endLine": 442,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 1503685708,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3062",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\Query`.cs",
+          "line": 446,
+          "endLine": 446,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -1287295405,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3062",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\Query`.cs",
+          "line": 450,
+          "endLine": 450,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -1291489709,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3062",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\Query`.cs",
+          "line": 454,
+          "endLine": 454,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 1712286316,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3062",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\Query`.cs",
+          "line": 458,
+          "endLine": 458,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 948374336,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3062",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\Query`.cs",
+          "line": 462,
+          "endLine": 462,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 1896587339,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3062",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\Query`.cs",
+          "line": 466,
+          "endLine": 466,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -852794861,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3062",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\Query`.cs",
+          "line": 470,
+          "endLine": 470,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -1705807124,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3062",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\Query`.cs",
+          "line": 474,
+          "endLine": 474,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -223738440,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3062",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\Query`.cs",
+          "line": 478,
+          "endLine": 478,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -447627846,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3146",
+      "cwe": 476,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\SplitQuery\\RootQueryExecutor.cs",
+          "line": 58,
+          "endLine": 58,
+          "navigation": {
+            "previousLine": 783303728,
+            "currentLine": -602575156,
+            "nextLine": 125,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\SplitQuery\\RootQueryExecutor.cs",
+          "line": 57,
+          "endLine": 57
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Possible null dereference of 'complexPropertyDescriptor'. The 'FirstOrDefault' can return default null value.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3051",
+      "cwe": 704,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\Model\\ComplexObjectModel.cs",
+          "line": 162,
+          "endLine": 162,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": -992198515,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An excessive type cast. The object is already of the 'ComplexObjectModel' type.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3125",
+      "cwe": 476,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\Model\\ComplexObjectModel.cs",
+          "line": 196,
+          "endLine": 196,
+          "navigation": {
+            "previousLine": 55753947,
+            "currentLine": 2120612806,
+            "nextLine": 97897,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\Model\\ComplexObjectModel.cs",
+          "line": 188,
+          "endLine": 188
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "The 'model' object was used after it was verified against null. Check lines: 196, 188.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3149",
+      "cwe": 476,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\Model\\ComplexObjectModel.cs",
+          "line": 436,
+          "endLine": 436,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 210372646,
+            "nextLine": 125,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\Model\\ComplexObjectModel.cs",
+          "line": 654,
+          "endLine": 654
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Dereferencing the result of 'as' operator inside method can lead to NullReferenceException. Consider inspecting 1st argument.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3149",
+      "cwe": 476,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\Model\\ComplexObjectModel.cs",
+          "line": 473,
+          "endLine": 473,
+          "navigation": {
+            "previousLine": -555226308,
+            "currentLine": 402266670,
+            "nextLine": 125,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\Model\\ComplexObjectModel.cs",
+          "line": 472,
+          "endLine": 472
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Dereferencing the result of 'as' operator can lead to NullReferenceException. Consider inspecting 'joinTable'.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3051",
+      "cwe": 704,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\Model\\ComplexObjectModel.cs",
+          "line": 500,
+          "endLine": 500,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 1985707154,
+            "nextLine": -1869783909,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An excessive type cast. The object is already of the 'ComplexObjectModel' type.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3051",
+      "cwe": 704,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\Model\\ComplexObjectModel.cs",
+          "line": 539,
+          "endLine": 539,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 1985707154,
+            "nextLine": 1736612357,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An excessive type cast. The object is already of the 'ComplexObjectModel' type.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3149",
+      "cwe": 476,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\Model\\ComplexObjectModel.cs",
+          "line": 643,
+          "endLine": 643,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": -826955306,
+            "nextLine": 1487289794,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\Model\\ComplexObjectModel.cs",
+          "line": 654,
+          "endLine": 654
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Dereferencing the result of 'as' operator inside method can lead to NullReferenceException. Consider inspecting 1st argument.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3051",
+      "cwe": 704,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Query\\Visitors\\QueryExpressionResolver.cs",
+          "line": 90,
+          "endLine": 90,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": -1366471934,
+            "nextLine": 5641033,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An excessive type cast. The object is already of the 'QueryStateBase' type.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3149",
+      "cwe": 476,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\RDBMS\\MethodHandlers\\Else_HandlerBase.cs",
+          "line": 15,
+          "endLine": 15,
+          "navigation": {
+            "previousLine": 146504601,
+            "currentLine": 614623891,
+            "nextLine": 0,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\RDBMS\\MethodHandlers\\Else_HandlerBase.cs",
+          "line": 27,
+          "endLine": 27
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Dereferencing the result of 'as' operator inside method can lead to NullReferenceException. Consider inspecting 1st argument.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3149",
+      "cwe": 476,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\RDBMS\\MethodHandlers\\Else_HandlerBase.cs",
+          "line": 30,
+          "endLine": 30,
+          "navigation": {
+            "previousLine": 1595505017,
+            "currentLine": 1601794935,
+            "nextLine": 2032251483,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\RDBMS\\MethodHandlers\\Else_HandlerBase.cs",
+          "line": 27,
+          "endLine": 27
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Dereferencing the result of 'as' operator can lead to NullReferenceException. Consider inspecting 'whenCall'.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V5606",
+      "cwe": 1069,
+      "sastId": "OWASP-7.4.2",
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Reflection\\DelegateFactory.cs",
+          "line": 38,
+          "endLine": 38,
+          "navigation": {
+            "previousLine": 125,
+            "currentLine": 1094,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An empty exception handler. Silent suppression of exceptions may hide the presence of bugs or vulnerabilities.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3149",
+      "cwe": 476,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Sharding\\Internals\\ShardingInternalQuery.cs",
+          "line": 21,
+          "endLine": 21,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 1715118475,
+            "nextLine": 0,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Sharding\\Visitors\\ShardingQueryExpressionResolver.cs",
+          "line": 20,
+          "endLine": 20
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Dereferencing the result of 'as' operator can lead to NullReferenceException. Consider inspecting 'queryState'.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3080",
+      "cwe": 476,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Sharding\\IShardingContext.cs",
+          "line": 118,
+          "endLine": 118,
+          "navigation": {
+            "previousLine": -1645974280,
+            "currentLine": 1960744940,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Possible null dereference. Consider inspecting 'routeTables'.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3080",
+      "cwe": 476,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Sharding\\Queries\\ShardTableGroupAggregateQuery.cs",
+          "line": 95,
+          "endLine": 95,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": -2061772276,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Possible null dereference. Consider inspecting 'groupQuery'.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3073",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Sharding\\QueryEnumerator.cs",
+          "line": 7,
+          "endLine": 7,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 811689385,
+            "nextLine": 123,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Sharding\\QueryEnumerator.cs",
+          "line": 13,
+          "endLine": 13
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Not all IDisposable members are properly disposed. Call 'Dispose' when disposing 'QueryEnumerator' class. Inspect: _enumerator.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3074",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Sharding\\ShardingDbSessionProvider.cs",
+          "line": 6,
+          "endLine": 6,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 1241077975,
+            "nextLine": 123,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Sharding\\ShardingDbSessionProvider.cs",
+          "line": 155,
+          "endLine": 155
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "The 'ShardingDbSessionProvider' class contains 'Dispose' method. Consider making it implement 'IDisposable' interface.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3080",
+      "cwe": 476,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Sharding\\ShardingDbContextProvider.Helpers.cs",
+          "line": 26,
+          "endLine": 26,
+          "navigation": {
+            "previousLine": 1017212448,
+            "currentLine": 405423204,
+            "nextLine": 0,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Sharding\\IShardingContext.cs",
+          "line": 28,
+          "endLine": 28
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Possible null dereference inside method at 'shardingConfig.RouteFactory'. Consider inspecting the 2nd argument: shardingConfig.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3111",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Sharding\\PriorityQueue.cs",
+          "line": 113,
+          "endLine": 113,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 725865,
+            "nextLine": 17733,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Checking value of 'item' for null will always return false when generic type is instantiated with a value type.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3090",
+      "cwe": 833,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Sharding\\SharedObjectPool.cs",
+          "line": 34,
+          "endLine": 34,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": -486834954,
+            "nextLine": 123,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Sharding\\SharedObjectPool.cs",
+          "line": 87,
+          "endLine": 87
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Sharding\\SharedObjectPool.cs",
+          "line": 104,
+          "endLine": 104
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Unsafe locking on 'this' instance in class 'SharedObjectPool'.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3062",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Sharding\\ShardingQuery.cs",
+          "line": 235,
+          "endLine": 235,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -1781615579,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Max' method.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3062",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Sharding\\ShardingQuery.cs",
+          "line": 244,
+          "endLine": 244,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -1781091291,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Min' method.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3062",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Sharding\\ShardingQuery.cs",
+          "line": 300,
+          "endLine": 300,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 1558636176,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3062",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Sharding\\ShardingQuery.cs",
+          "line": 305,
+          "endLine": 305,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -1178043413,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3062",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Sharding\\ShardingQuery.cs",
+          "line": 310,
+          "endLine": 310,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -1182237717,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3062",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Sharding\\ShardingQuery.cs",
+          "line": 315,
+          "endLine": 315,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 1930772764,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3062",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Sharding\\ShardingQuery.cs",
+          "line": 320,
+          "endLine": 320,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -1873391424,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3062",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Sharding\\ShardingQuery.cs",
+          "line": 325,
+          "endLine": 325,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 708065098,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3062",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Sharding\\ShardingQuery.cs",
+          "line": 330,
+          "endLine": 330,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -431189773,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3062",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Sharding\\ShardingQuery.cs",
+          "line": 335,
+          "endLine": 335,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -862152916,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3062",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Sharding\\ShardingQuery.cs",
+          "line": 340,
+          "endLine": 340,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -126617344,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3062",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Sharding\\ShardingQuery.cs",
+          "line": 345,
+          "endLine": 345,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -253606710,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "An object 'default(IQuery<T>)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3149",
+      "cwe": 476,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Sharding\\ShardingHelpers.cs",
+          "line": 52,
+          "endLine": 52,
+          "navigation": {
+            "previousLine": 2061747903,
+            "currentLine": 361814123,
+            "nextLine": 125,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Sharding\\ShardingHelpers.cs",
+          "line": 51,
+          "endLine": 51
+        }
+      ],
+      "projects": [
+        "Chloe"
+      ],
+      "message": "Dereferencing the result of 'as' operator can lead to NullReferenceException. Consider inspecting 'memberExp'.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3149",
+      "cwe": 476,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\ChloeDemo\\DbBulkInsertExtension.cs",
+          "line": 226,
+          "endLine": 226,
+          "navigation": {
+            "previousLine": -2108554719,
+            "currentLine": -589012527,
+            "nextLine": 1403661711,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\ChloeDemo\\DbBulkInsertExtension.cs",
+          "line": 208,
+          "endLine": 208
+        }
+      ],
+      "projects": [
+        "ChloeDemo"
+      ],
+      "message": "Dereferencing the result of 'as' operator can lead to NullReferenceException. Consider inspecting 'connection'.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3149",
+      "cwe": 476,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\ChloeDemo\\DbBulkInsertExtension.cs",
+          "line": 274,
+          "endLine": 274,
+          "navigation": {
+            "previousLine": -2108554719,
+            "currentLine": -589012527,
+            "nextLine": 1403661711,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\ChloeDemo\\DbBulkInsertExtension.cs",
+          "line": 256,
+          "endLine": 256
+        }
+      ],
+      "projects": [
+        "ChloeDemo"
+      ],
+      "message": "Dereferencing the result of 'as' operator can lead to NullReferenceException. Consider inspecting 'connection'.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3095",
+      "cwe": 476,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\ChloeDemo\\OracleDemo.cs",
+          "line": 56,
+          "endLine": 56,
+          "navigation": {
+            "previousLine": 744713552,
+            "currentLine": -1903248037,
+            "nextLine": 1825929365,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\ChloeDemo\\OracleDemo.cs",
+          "line": 57,
+          "endLine": 57
+        }
+      ],
+      "projects": [
+        "ChloeDemo"
+      ],
+      "message": "The 'a.Name' object was used before it was verified against null. Check lines: 56, 57.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3095",
+      "cwe": 476,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\ChloeDemo\\MsSqlDemo.cs",
+          "line": 58,
+          "endLine": 58,
+          "navigation": {
+            "previousLine": 743985006,
+            "currentLine": -1900699803,
+            "nextLine": 1825929365,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\ChloeDemo\\MsSqlDemo.cs",
+          "line": 59,
+          "endLine": 59
+        }
+      ],
+      "projects": [
+        "ChloeDemo"
+      ],
+      "message": "The 'a.Name' object was used before it was verified against null. Check lines: 58, 59.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3125",
+      "cwe": 476,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\ChloeDemo\\MsSqlDemo.cs",
+          "line": 60,
+          "endLine": 60,
+          "navigation": {
+            "previousLine": 1825929365,
+            "currentLine": -863319258,
+            "nextLine": 1008333804,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\ChloeDemo\\MsSqlDemo.cs",
+          "line": 59,
+          "endLine": 59
+        }
+      ],
+      "projects": [
+        "ChloeDemo"
+      ],
+      "message": "The 'a.Name' object was used after it was verified against null. Check lines: 60, 59.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3095",
+      "cwe": 476,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\ChloeDemo\\PostgreSQLDemo.cs",
+          "line": 55,
+          "endLine": 55,
+          "navigation": {
+            "previousLine": -476560248,
+            "currentLine": -187143672,
+            "nextLine": -992367911,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\ChloeDemo\\PostgreSQLDemo.cs",
+          "line": 56,
+          "endLine": 56
+        }
+      ],
+      "projects": [
+        "ChloeDemo"
+      ],
+      "message": "The 'a.Name' object was used before it was verified against null. Check lines: 55, 56.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3013",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\ChloeDemo\\Sharding\\OrderShardingRoute.cs",
+          "line": 234,
+          "endLine": 234,
+          "navigation": {
+            "previousLine": 104201312,
+            "currentLine": -1038639254,
+            "nextLine": 123,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\ChloeDemo\\Sharding\\OrderShardingRoute.cs",
+          "line": 244,
+          "endLine": 244
+        }
+      ],
+      "projects": [
+        "ChloeDemo"
+      ],
+      "message": "It is odd that the body of 'ForGreaterThan' function is fully equivalent to the body of 'ForGreaterThanOrEqual' function (234, line 244).",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3013",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\ChloeDemo\\Sharding\\OrderShardingRoute.cs",
+          "line": 254,
+          "endLine": 254,
+          "navigation": {
+            "previousLine": 104201312,
+            "currentLine": -1844736259,
+            "nextLine": 123,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\ChloeDemo\\Sharding\\OrderShardingRoute.cs",
+          "line": 264,
+          "endLine": 264
+        }
+      ],
+      "projects": [
+        "ChloeDemo"
+      ],
+      "message": "It is odd that the body of 'ForLessThan' function is fully equivalent to the body of 'ForLessThanOrEqual' function (254, line 264).",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3013",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\ChloeDemo\\Sharding\\OrderShardingRoute.cs",
+          "line": 300,
+          "endLine": 300,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": -1374309061,
+            "nextLine": 123,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\ChloeDemo\\Sharding\\OrderShardingRoute.cs",
+          "line": 305,
+          "endLine": 305
+        }
+      ],
+      "projects": [
+        "ChloeDemo"
+      ],
+      "message": "It is odd that the body of 'ForGreaterThan' function is fully equivalent to the body of 'ForGreaterThanOrEqual' function (300, line 305).",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3013",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\ChloeDemo\\Sharding\\OrderShardingRoute.cs",
+          "line": 310,
+          "endLine": 310,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 345331127,
+            "nextLine": 123,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\ChloeDemo\\Sharding\\OrderShardingRoute.cs",
+          "line": 315,
+          "endLine": 315
+        }
+      ],
+      "projects": [
+        "ChloeDemo"
+      ],
+      "message": "It is odd that the body of 'ForLessThan' function is fully equivalent to the body of 'ForLessThanOrEqual' function (310, line 315).",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3095",
+      "cwe": 476,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\ChloeDemo\\DamengDemo.cs",
+          "line": 51,
+          "endLine": 51,
+          "navigation": {
+            "previousLine": 2028343614,
+            "currentLine": 2100697758,
+            "nextLine": 825649834,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\ChloeDemo\\DamengDemo.cs",
+          "line": 52,
+          "endLine": 52
+        }
+      ],
+      "projects": [
+        "ChloeDemo"
+      ],
+      "message": "The 'a.Name' object was used before it was verified against null. Check lines: 51, 52.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3008",
+      "cwe": 563,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\ChloeDemo\\Sharding\\ShardingQueryTest.cs",
+          "line": 306,
+          "endLine": 306,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 1125842743,
+            "nextLine": 0,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\ChloeDemo\\Sharding\\ShardingQueryTest.cs",
+          "line": 292,
+          "endLine": 292
+        }
+      ],
+      "projects": [
+        "ChloeDemo"
+      ],
+      "message": "The 'dataList' variable is assigned values twice successively. Perhaps this is a mistake. Check lines: 306, 292.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3008",
+      "cwe": 563,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\ChloeDemo\\Sharding\\ShardingQueryTest.cs",
+          "line": 402,
+          "endLine": 402,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": -509718376,
+            "nextLine": -1037605875,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\ChloeDemo\\Sharding\\ShardingQueryTest.cs",
+          "line": 395,
+          "endLine": 395
+        }
+      ],
+      "projects": [
+        "ChloeDemo"
+      ],
+      "message": "The 'orders' variable is assigned values twice successively. Perhaps this is a mistake. Check lines: 402, 395.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3149",
+      "cwe": 476,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe.Extension\\DbContextExtension_NETCORE.cs",
+          "line": 57,
+          "endLine": 57,
+          "navigation": {
+            "previousLine": 925200525,
+            "currentLine": -1487748804,
+            "nextLine": 1890109570,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe.Extension\\DbContextExtension_NETCORE.cs",
+          "line": 56,
+          "endLine": 56
+        }
+      ],
+      "projects": [
+        "Chloe.Extension"
+      ],
+      "message": "Dereferencing the result of 'as' operator can lead to NullReferenceException. Consider inspecting 'dbContext1'.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3022",
+      "cwe": 571,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe.Extension\\DbContextExtension_NETCORE.cs",
+          "line": 74,
+          "endLine": 74,
+          "navigation": {
+            "previousLine": 1831447831,
+            "currentLine": 47534185,
+            "nextLine": 981567303,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe.Extension"
+      ],
+      "message": "Expression 'paramValue != null' is always true.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3095",
+      "cwe": 476,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe.Extension\\DbContextExtension_NETCORE.cs",
+          "line": 69,
+          "endLine": 69,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": -341864510,
+            "nextLine": 0,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe.Extension\\DbContextExtension_NETCORE.cs",
+          "line": 74,
+          "endLine": 74
+        }
+      ],
+      "projects": [
+        "Chloe.Extension"
+      ],
+      "message": "The 'arg' object was used before it was verified against null. Check lines: 69, 74.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3125",
+      "cwe": 476,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe.Extension\\Utils.cs",
+          "line": 26,
+          "endLine": 26,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 1897915507,
+            "nextLine": 808592385,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe.Extension\\Utils.cs",
+          "line": 8,
+          "endLine": 8
+        }
+      ],
+      "projects": [
+        "Chloe.Extension"
+      ],
+      "message": "The 'dbContext1' object was used after it was verified against null. Check lines: 26, 8.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3149",
+      "cwe": 476,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe.Extension\\Utils.cs",
+          "line": 26,
+          "endLine": 26,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 1897915507,
+            "nextLine": 808592385,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe.Extension\\Utils.cs",
+          "line": 7,
+          "endLine": 7
+        }
+      ],
+      "projects": [
+        "Chloe.Extension"
+      ],
+      "message": "Dereferencing the result of 'as' operator can lead to NullReferenceException. Consider inspecting 'dbContext1'.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3149",
+      "cwe": 476,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe.Extension\\Utils.cs",
+          "line": 27,
+          "endLine": 27,
+          "navigation": {
+            "previousLine": 1897915507,
+            "currentLine": 808592385,
+            "nextLine": 125,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe\\Utility\\PublicHelper.cs",
+          "line": 184,
+          "endLine": 184
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe.Extension\\Utils.cs",
+          "line": 26,
+          "endLine": 26
+        }
+      ],
+      "projects": [
+        "Chloe.Extension"
+      ],
+      "message": "Dereferencing the result of 'as' operator inside method can lead to NullReferenceException. Consider inspecting 1st argument: dbContextProvider.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3149",
+      "cwe": 476,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe.Oracle\\DDL\\OracleTableGenerator.cs",
+          "line": 112,
+          "endLine": 112,
+          "navigation": {
+            "previousLine": 1899384693,
+            "currentLine": 1686125703,
+            "nextLine": -42440239,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe.Oracle\\DDL\\OracleTableGenerator.cs",
+          "line": 111,
+          "endLine": 111
+        }
+      ],
+      "projects": [
+        "Chloe.Oracle"
+      ],
+      "message": "Dereferencing the result of 'as' operator can lead to NullReferenceException. Consider inspecting 'dbContext'.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3149",
+      "cwe": 476,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe.Oracle\\DDL\\OracleTableGenerator.cs",
+          "line": 121,
+          "endLine": 121,
+          "navigation": {
+            "previousLine": 1899384693,
+            "currentLine": 1686125703,
+            "nextLine": 1199441173,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe.Oracle\\DDL\\OracleTableGenerator.cs",
+          "line": 120,
+          "endLine": 120
+        }
+      ],
+      "projects": [
+        "Chloe.Oracle"
+      ],
+      "message": "Dereferencing the result of 'as' operator can lead to NullReferenceException. Consider inspecting 'dbContext'.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3111",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe.Extension\\QueryExtension.cs",
+          "line": 38,
+          "endLine": 38,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 372969,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Chloe.Extension"
+      ],
+      "message": "Checking value of 'val' for null will always return false when generic type is instantiated with a value type.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3095",
+      "cwe": 476,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\ChloeDemo\\KingbaseESDemo.cs",
+          "line": 48,
+          "endLine": 48,
+          "navigation": {
+            "previousLine": 745319120,
+            "currentLine": -1904117029,
+            "nextLine": -163939129,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\ChloeDemo\\KingbaseESDemo.cs",
+          "line": 49,
+          "endLine": 49
+        }
+      ],
+      "projects": [
+        "ChloeDemo"
+      ],
+      "message": "The 'a.Name' object was used before it was verified against null. Check lines: 48, 49.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3149",
+      "cwe": 476,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe.PostgreSQL\\DDL\\PostgreSQLTableGenerator.cs",
+          "line": 21,
+          "endLine": 21,
+          "navigation": {
+            "previousLine": -715621261,
+            "currentLine": -1399686977,
+            "nextLine": 1199462421,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\Chloe.PostgreSQL\\DDL\\PostgreSQLTableGenerator.cs",
+          "line": 20,
+          "endLine": 20
+        }
+      ],
+      "projects": [
+        "Chloe.PostgreSQL"
+      ],
+      "message": "Dereferencing the result of 'as' operator can lead to NullReferenceException. Consider inspecting 'dbContext'.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3068",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\ChloeDemo\\DemoBase.cs",
+          "line": 15,
+          "endLine": 15,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 2078636541,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "ChloeDemo"
+      ],
+      "message": "Calling overrideable class member 'CreateDbContext' from constructor is dangerous.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3137",
+      "cwe": 563,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\ChloeDemo\\DemoBase.cs",
+          "line": 77,
+          "endLine": 77,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": -735661528,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "ChloeDemo"
+      ],
+      "message": "The 'provinces' variable is assigned but is not used by the end of the function.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3137",
+      "cwe": 563,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\ChloeDemo\\DemoBase.cs",
+          "line": 106,
+          "endLine": 106,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 555506919,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "ChloeDemo"
+      ],
+      "message": "The 'testEntities' variable is assigned but is not used by the end of the function.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3008",
+      "cwe": 563,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\ChloeDemo\\DemoBase.cs",
+          "line": 269,
+          "endLine": 269,
+          "navigation": {
+            "previousLine": 1483,
+            "currentLine": 2027682612,
+            "nextLine": 116,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\ChloeDemo\\DemoBase.cs",
+          "line": 259,
+          "endLine": 259
+        }
+      ],
+      "projects": [
+        "ChloeDemo"
+      ],
+      "message": "The 'persons' variable is assigned values twice successively. Perhaps this is a mistake. Check lines: 269, 259.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3137",
+      "cwe": 563,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\ChloeDemo\\DemoBase.cs",
+          "line": 581,
+          "endLine": 581,
+          "navigation": {
+            "previousLine": 969198226,
+            "currentLine": -153026030,
+            "nextLine": 116,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "ChloeDemo"
+      ],
+      "message": "The 'persons' variable is assigned but is not used by the end of the function.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3127",
+      "cwe": 682,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\ChloeDemo\\DemoBase.cs",
+          "line": 791,
+          "endLine": 791,
+          "navigation": {
+            "previousLine": 1180960605,
+            "currentLine": 1180960581,
+            "nextLine": 0,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\ChloeDemo\\DemoBase.cs",
+          "line": 790,
+          "endLine": 790
+        }
+      ],
+      "projects": [
+        "ChloeDemo"
+      ],
+      "message": "Two similar code fragments were found. Perhaps, this is a typo and 'person1' variable should be used instead of 'person2'",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3095",
+      "cwe": 476,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\ChloeDemo\\DemoBase.cs",
+          "line": 1114,
+          "endLine": 1114,
+          "navigation": {
+            "previousLine": 743985006,
+            "currentLine": -1900699803,
+            "nextLine": 939483612,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Chloe\\src\\ChloeDemo\\DemoBase.cs",
+          "line": 1115,
+          "endLine": 1115
+        }
+      ],
+      "projects": [
+        "ChloeDemo"
+      ],
+      "message": "The 'a.Name' object was used before it was verified against null. Check lines: 1114, 1115.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V5625",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "",
+          "line": 1,
+          "endLine": 1,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 0,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "ChloeDemo"
+      ],
+      "message": "Referenced package Npgsql 8.0.3 depends on assembly System.Text.Json 8.0.0.0 from the System.Text.Json package which contains vulnerabilities according to CVE-2024-30105, CVE-2024-43485.",
+      "favorite": false,
+      "falseAlarm": false
+    }
+  ]
+}

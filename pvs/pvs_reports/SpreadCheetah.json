@@ -1,0 +1,82 @@
+{
+  "Renew": {
+    "code": "Renew",
+    "cwe": 0,
+    "sastId": null,
+    "level": 1,
+    "count": 1,
+    "example": "Your license will expire in 29 days. Click 'Renew' to learn more or contact us via Feedback form on our website. This is an information message. You can continue using the analyzer with your current license. To hide this message, use the '--disableLicenseExpirationCheck' flag."
+  },
+  "V3090": {
+    "code": "V3090",
+    "cwe": 833,
+    "sastId": null,
+    "level": 3,
+    "count": 1,
+    "example": "Unsafe locking on 'this' instance in class 'Lock'."
+  },
+  "V3111": {
+    "code": "V3111",
+    "cwe": 0,
+    "sastId": null,
+    "level": 3,
+    "count": 7,
+    "example": "Checking value of 'last' for null will always return false when generic type is instantiated with a value type."
+  },
+  "V3117": {
+    "code": "V3117",
+    "cwe": 0,
+    "sastId": null,
+    "level": 2,
+    "count": 4,
+    "example": "Constructor parameter 'treatAsSingleSeparator' is not used."
+  },
+  "V3167": {
+    "code": "V3167",
+    "cwe": 0,
+    "sastId": null,
+    "level": 3,
+    "count": 1,
+    "example": "Parameter of the 'CancellationToken' type is not utilized inside a method. Ignoring the parameter can cause application to be unresponsive to cancellation events."
+  },
+  "V5607": {
+    "code": "V5607",
+    "cwe": 544,
+    "sastId": "OWASP-7.4.2",
+    "level": 3,
+    "count": 1,
+    "example": "Exception classes should be publicly accessible."
+  },
+  "V3022": {
+    "code": "V3022",
+    "cwe": 571,
+    "sastId": null,
+    "level": 1,
+    "count": 1,
+    "example": "Expression 'TryFormatWithFraction(days, millisAfterMidnight, destination, out bytesWritten)' is always true."
+  },
+  "V3009": {
+    "code": "V3009",
+    "cwe": 393,
+    "sastId": null,
+    "level": 2,
+    "count": 1,
+    "example": "It's odd that this method always returns one and the same value of 'true'."
+  },
+  "V3057": {
+    "code": "V3057",
+    "cwe": 628,
+    "sastId": null,
+    "level": 2,
+    "count": 1,
+    "example": "The '' constructor could receive the '-1' value while non-negative value is expected. Inspect the second argument."
+  },
+  "V3056": {
+    "code": "V3056",
+    "cwe": 682,
+    "sastId": null,
+    "level": 3,
+    "count": 1,
+    "example": "Consider reviewing the correctness of 'Prime2' item's usage."
+  }
+}

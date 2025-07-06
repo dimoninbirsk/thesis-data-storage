@@ -1,0 +1,100 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII" />
+  <title>WindowPlacement.cs</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <script src="../jquery-3.5.1.min.js"></script>
+</head>
+<body>
+<pre><code class = "cs">
+<a name="ln1">using System.Runtime.InteropServices;</a>
+<a name="ln2">using ScreenToGif.Domain.Enums.Native;</a>
+<a name="ln3">using ScreenToGif.Domain.Models.Native;</a>
+<a name="ln4">using Point = System.Drawing.Point;</a>
+<a name="ln5"> </a>
+<a name="ln6">namespace ScreenToGif.Native.Structs;</a>
+<a name="ln7"> </a>
+<a name="ln8">/// &lt;summary&gt;</a>
+<a name="ln9">/// Contains information about the placement of a window on the screen.</a>
+<a name="ln10">/// &lt;/summary&gt;</a>
+<a name="ln11">[Serializable]</a>
+<a name="ln12">[StructLayout(LayoutKind.Sequential)]</a>
+<a name="ln13">internal struct WindowPlacement</a>
+<a name="ln14">{</a>
+<a name="ln15">    /// &lt;summary&gt;</a>
+<a name="ln16">    /// The length of the structure, in bytes. Before calling the GetWindowPlacement or SetWindowPlacement functions, set this member to sizeof(WINDOWPLACEMENT).</a>
+<a name="ln17">    /// &lt;para&gt;</a>
+<a name="ln18">    /// GetWindowPlacement and SetWindowPlacement fail if this member is not set correctly.</a>
+<a name="ln19">    /// &lt;/para&gt;</a>
+<a name="ln20">    /// &lt;/summary&gt;</a>
+<a name="ln21">    public int Length;</a>
+<a name="ln22"> </a>
+<a name="ln23">    /// &lt;summary&gt;</a>
+<a name="ln24">    /// Specifies flags that control the position of the minimized window and the method by which the window is restored.</a>
+<a name="ln25">    /// &lt;/summary&gt;</a>
+<a name="ln26">    public int Flags;</a>
+<a name="ln27"> </a>
+<a name="ln28">    /// &lt;summary&gt;</a>
+<a name="ln29">    /// The current show state of the window.</a>
+<a name="ln30">    /// &lt;/summary&gt;</a>
+<a name="ln31">    public ShowWindowCommands ShowCmd;</a>
+<a name="ln32"> </a>
+<a name="ln33">    /// &lt;summary&gt;</a>
+<a name="ln34">    /// The coordinates of the window's upper-left corner when the window is minimized.</a>
+<a name="ln35">    /// &lt;/summary&gt;</a>
+<a name="ln36">    public Point MinPosition;</a>
+<a name="ln37"> </a>
+<a name="ln38">    /// &lt;summary&gt;</a>
+<a name="ln39">    /// The coordinates of the window's upper-left corner when the window is maximized.</a>
+<a name="ln40">    /// &lt;/summary&gt;</a>
+<a name="ln41">    public Point MaxPosition;</a>
+<a name="ln42"> </a>
+<a name="ln43">    /// &lt;summary&gt;</a>
+<a name="ln44">    /// The window's coordinates when the window is in the restored position.</a>
+<a name="ln45">    /// &lt;/summary&gt;</a>
+<a name="ln46">    public NativeRect NormalPosition;</a>
+<a name="ln47"> </a>
+<a name="ln48">    /// &lt;summary&gt;</a>
+<a name="ln49">    /// Gets the default (empty) value.</a>
+<a name="ln50">    /// &lt;/summary&gt;</a>
+<a name="ln51">    public static WindowPlacement Default</a>
+<a name="ln52">    {</a>
+<a name="ln53">        get</a>
+<a name="ln54">        {</a>
+<a name="ln55">            var result = new WindowPlacement();</a>
+<a name="ln56">            result.Length = Marshal.SizeOf(result);</a>
+<a name="ln57">            return result;</a>
+<a name="ln58">        }</a>
+<a name="ln59">    }</a>
+<a name="ln60">}</a>
+</code></pre>
+<div class="balloon" rel="13"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3097/" target="_blank">V3097</a> Possible exception: the 'WindowPlacement' type marked by [Serializable] contains non-serializable members not marked by [NonSerialized].</p></div>
+<link rel="stylesheet" href="highlight.css">
+<script src="highlight.pack.js"></script>
+<script src="highlightjs-line-numbers.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script>hljs.initLineNumbersOnLoad();</script>
+<script>
+  $(document).ready(function() {
+      $('.balloon').each(function () {
+          var bl = $(this);
+          var line = bl.attr('rel');
+          var text = $('a[name="ln'+line+'"]').text();
+
+          var space_count = 0;
+          for(var i = 0; i<text.length; i++){
+              var char = text[i];
+              if((char !== ' ')&&(char !== '\t'))break;
+              if(char === '\t')space_count++;
+              space_count++;
+          }
+
+          bl.css('margin-left', space_count*8);
+          $('a[name="ln'+line+'"]').after(bl);
+      });
+
+      window.location = window.location;
+  });
+</script>
+</body>
+</html>

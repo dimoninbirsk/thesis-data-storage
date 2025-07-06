@@ -1,0 +1,245 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>Vector.cs</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <script src="../jquery-3.5.1.min.js"></script>
+</head>
+<body>
+<pre><code class = "cs">
+<a name="ln1">﻿using Lunr.Serialization;</a>
+<a name="ln2">using System;</a>
+<a name="ln3">using System.Collections.Generic;</a>
+<a name="ln4">using System.Linq;</a>
+<a name="ln5">using System.Text.Json.Serialization;</a>
+<a name="ln6"> </a>
+<a name="ln7">namespace Lunr</a>
+<a name="ln8">{</a>
+<a name="ln9">    /// &lt;summary&gt;</a>
+<a name="ln10">    /// A vector is used to construct the vector space of documents and queries.These</a>
+<a name="ln11">    /// vectors support operations to determine the similarity between two documents or</a>
+<a name="ln12">    /// a document and a query.</a>
+<a name="ln13">    ///</a>
+<a name="ln14">    /// Normally no parameters are required for initializing a vector, but in the case of</a>
+<a name="ln15">    /// loading a previously dumped vector the raw elements can be provided to the constructor.</a>
+<a name="ln16">    /// </a>
+<a name="ln17">    /// For performance with large numbers of dimensions, this is implemented as a list of index and value.</a>
+<a name="ln18">    /// &lt;/summary&gt;</a>
+<a name="ln19">    [JsonConverter(typeof(VectorJsonConverter))]</a>
+<a name="ln20">    public class Vector</a>
+<a name="ln21">    {</a>
+<a name="ln22">        private readonly List&lt;(int index, double value)&gt; _elements;</a>
+<a name="ln23">        private double _magnitude = 0;</a>
+<a name="ln24"> </a>
+<a name="ln25">        public int Count =&gt; _elements.Count;</a>
+<a name="ln26"> </a>
+<a name="ln27">        public Vector(params (int index, double value)[] elements)</a>
+<a name="ln28">            =&gt; _elements = new List&lt;(int, double)&gt;(elements);</a>
+<a name="ln29"> </a>
+<a name="ln30">        public Vector() =&gt; _elements = new List&lt;(int, double)&gt;();</a>
+<a name="ln31"> </a>
+<a name="ln32">        public Vector(int capacity) =&gt; _elements = new List&lt;(int, double)&gt;(capacity);</a>
+<a name="ln33"> </a>
+<a name="ln34">        /// &lt;summary&gt;</a>
+<a name="ln35">        /// Inserts an element at an index within the vector.</a>
+<a name="ln36">        /// Does not allow duplicates, will throw an error if there is already an entry</a>
+<a name="ln37">        /// for this index.</a>
+<a name="ln38">        /// &lt;/summary&gt;</a>
+<a name="ln39">        /// &lt;param name=&quot;index&quot;&gt;The index at which the element should be inserted.&lt;/param&gt;</a>
+<a name="ln40">        /// &lt;param name=&quot;value&quot;&gt;The value to be inserted into the vector.&lt;/param&gt;</a>
+<a name="ln41">        public void Insert(int index, double value)</a>
+<a name="ln42">            =&gt; Upsert(index, value, (_, __) =&gt; throw new InvalidOperationException($&quot;Duplicate index {index}.&quot;));</a>
+<a name="ln43"> </a>
+<a name="ln44">        /// &lt;summary&gt;</a>
+<a name="ln45">        /// Calculates the magnitude of this vector.</a>
+<a name="ln46">        /// &lt;/summary&gt;</a>
+<a name="ln47">        public double Magnitude</a>
+<a name="ln48">            =&gt; _magnitude == 0 ? _magnitude = Math.Sqrt(_elements.Sum(static el =&gt; el.value * el.value)) : _magnitude;</a>
+<a name="ln49"> </a>
+<a name="ln50">        /// &lt;summary&gt;</a>
+<a name="ln51">        /// Calculates the dot product of this vector and another vector.</a>
+<a name="ln52">        /// &lt;/summary&gt;</a>
+<a name="ln53">        /// &lt;param name=&quot;other&quot;&gt;The vector to compute the dot product with.&lt;/param&gt;</a>
+<a name="ln54">        /// &lt;returns&gt;The dot product of the two vectors.&lt;/returns&gt;</a>
+<a name="ln55">        public double Dot(Vector other)</a>
+<a name="ln56">        {</a>
+<a name="ln57">            int i = 0, j = 0;</a>
+<a name="ln58">            double dotProduct = 0;</a>
+<a name="ln59"> </a>
+<a name="ln60">            while (i &lt; _elements.Count &amp;&amp; j &lt; other._elements.Count)</a>
+<a name="ln61">            {</a>
+<a name="ln62">                (int index, double value) = _elements[i];</a>
+<a name="ln63">                (int otherIndex, double otherValue) = other._elements[j];</a>
+<a name="ln64"> </a>
+<a name="ln65">                if (index &lt; otherIndex)</a>
+<a name="ln66">                {</a>
+<a name="ln67">                    i++;</a>
+<a name="ln68">                }</a>
+<a name="ln69">                else if (index &gt; otherIndex)</a>
+<a name="ln70">                {</a>
+<a name="ln71">                    j++;</a>
+<a name="ln72">                }</a>
+<a name="ln73">                else</a>
+<a name="ln74">                {</a>
+<a name="ln75">                    dotProduct += value * otherValue;</a>
+<a name="ln76">                    i++; j++;</a>
+<a name="ln77">                }</a>
+<a name="ln78">            }</a>
+<a name="ln79">            return dotProduct;</a>
+<a name="ln80">        }</a>
+<a name="ln81"> </a>
+<a name="ln82">        /// &lt;summary&gt;</a>
+<a name="ln83">        /// Calculates the similarity between this vector and another vector.</a>
+<a name="ln84">        /// &lt;/summary&gt;</a>
+<a name="ln85">        /// &lt;param name=&quot;other&quot;&gt;The other vector to calculate the similarity with.&lt;/param&gt;</a>
+<a name="ln86">        /// &lt;returns&gt;The similarity with the other vector&lt;/returns&gt;</a>
+<a name="ln87">        public double Similarity(Vector other) =&gt; Magnitude == 0 ? 0 : Dot(other) / Magnitude;</a>
+<a name="ln88"> </a>
+<a name="ln89">        /// &lt;summary&gt;</a>
+<a name="ln90">        /// Saves the contents of the vector for serialization.</a>
+<a name="ln91">        /// &lt;/summary&gt;</a>
+<a name="ln92">        /// &lt;returns&gt;The alternating list of indices and values.&lt;/returns&gt;</a>
+<a name="ln93">        public IEnumerable&lt;double&gt; Save()</a>
+<a name="ln94">        {</a>
+<a name="ln95">            foreach((int index, double value) in _elements)</a>
+<a name="ln96">            {</a>
+<a name="ln97">                yield return index;</a>
+<a name="ln98">                yield return value;</a>
+<a name="ln99">            }</a>
+<a name="ln100">        }</a>
+<a name="ln101"> </a>
+<a name="ln102">        /// &lt;summary&gt;</a>
+<a name="ln103">        /// Calculates the position within the vector to insert a given index.</a>
+<a name="ln104">        ///</a>
+<a name="ln105">        /// This is used internally by insert and upsert.If there are duplicate indexes then</a>
+<a name="ln106">        /// the position is returned as if the value for that index were to be updated, but it</a>
+<a name="ln107">        /// is the callers responsibility to check whether there is a duplicate at that index.</a>
+<a name="ln108">        /// </a>
+<a name="ln109">        /// Performs a binary search to find the insert point for a new element.</a>
+<a name="ln110">        /// &lt;/summary&gt;</a>
+<a name="ln111">        /// &lt;param name=&quot;index&quot;&gt;The new index to insert.&lt;/param&gt;</a>
+<a name="ln112">        /// &lt;returns&gt;The position where to insert the new coordinate.&lt;/returns&gt;</a>
+<a name="ln113">        public int PositionForIndex(int index)</a>
+<a name="ln114">        {</a>
+<a name="ln115">            // For an empty vector the tuple can be inserted at the beginning</a>
+<a name="ln116">            if (_elements.Count is 0)</a>
+<a name="ln117">            {</a>
+<a name="ln118">                return 0;</a>
+<a name="ln119">            }</a>
+<a name="ln120"> </a>
+<a name="ln121">            int start = 0,</a>
+<a name="ln122">                end = _elements.Count,</a>
+<a name="ln123">                sliceLength = end - start,</a>
+<a name="ln124">                pivotPoint = sliceLength &gt;&gt; 1,</a>
+<a name="ln125">                pivotIndex = _elements[pivotPoint].index;</a>
+<a name="ln126"> </a>
+<a name="ln127">            while (sliceLength &gt; 1)</a>
+<a name="ln128">            {</a>
+<a name="ln129">                if (pivotIndex &lt; index)</a>
+<a name="ln130">                {</a>
+<a name="ln131">                    start = pivotPoint;</a>
+<a name="ln132">                }</a>
+<a name="ln133"> </a>
+<a name="ln134">                if (pivotIndex &gt; index)</a>
+<a name="ln135">                {</a>
+<a name="ln136">                    end = pivotPoint;</a>
+<a name="ln137">                }</a>
+<a name="ln138"> </a>
+<a name="ln139">                if (pivotIndex == index)</a>
+<a name="ln140">                {</a>
+<a name="ln141">                    break;</a>
+<a name="ln142">                }</a>
+<a name="ln143"> </a>
+<a name="ln144">                sliceLength = end - start;</a>
+<a name="ln145">                pivotPoint = start + (sliceLength &gt;&gt; 1);</a>
+<a name="ln146">                pivotIndex = _elements[pivotPoint].index;</a>
+<a name="ln147">            }</a>
+<a name="ln148"> </a>
+<a name="ln149">            return pivotIndex &gt;= index ? pivotPoint : pivotPoint + 1;</a>
+<a name="ln150">        }</a>
+<a name="ln151"> </a>
+<a name="ln152">        /// &lt;summary&gt;</a>
+<a name="ln153">        /// Inserts or updates an existing index within the vector.</a>
+<a name="ln154">        /// &lt;/summary&gt;</a>
+<a name="ln155">        /// &lt;param name=&quot;insertIdx&quot;&gt;The index at which the element should be inserted.&lt;/param&gt;</a>
+<a name="ln156">        /// &lt;param name=&quot;value&quot;&gt;The value to be inserted into the vector.&lt;/param&gt;</a>
+<a name="ln157">        /// &lt;param name=&quot;conflictResolutionFunction&quot;&gt;</a>
+<a name="ln158">        /// A function that is called for updates, the existing value and the</a>
+<a name="ln159">        /// requested value are passed as arguments. It returns the new resolved value.</a>
+<a name="ln160">        /// &lt;/param&gt;</a>
+<a name="ln161">        public void Upsert(int insertIdx, double value, Func&lt;double, double, double&gt; conflictResolutionFunction)</a>
+<a name="ln162">        {</a>
+<a name="ln163">            _magnitude = 0;</a>
+<a name="ln164"> </a>
+<a name="ln165">            int position = PositionForIndex(insertIdx);</a>
+<a name="ln166"> </a>
+<a name="ln167">            if (position == _elements.Count)</a>
+<a name="ln168">            {</a>
+<a name="ln169">                _elements.Add((insertIdx, value));</a>
+<a name="ln170">            }</a>
+<a name="ln171">            else if (_elements[position].index == insertIdx)</a>
+<a name="ln172">            {</a>
+<a name="ln173">                _elements[position] = (insertIdx, conflictResolutionFunction(_elements[position].value, value));</a>
+<a name="ln174">            }</a>
+<a name="ln175">            else</a>
+<a name="ln176">            {</a>
+<a name="ln177">                _elements.Insert(position, (insertIdx, value));</a>
+<a name="ln178">            }</a>
+<a name="ln179">        }</a>
+<a name="ln180"> </a>
+<a name="ln181">        /// &lt;summary&gt;</a>
+<a name="ln182">        /// Inserts or updates an existing index within the vector.</a>
+<a name="ln183">        /// &lt;/summary&gt;</a>
+<a name="ln184">        /// &lt;param name=&quot;index&quot;&gt;The index at which the element should be inserted.&lt;/param&gt;</a>
+<a name="ln185">        /// &lt;param name=&quot;value&quot;&gt;The value to be inserted into the vector.&lt;/param&gt;</a>
+<a name="ln186">        public void Upsert(int index, double value)</a>
+<a name="ln187">            =&gt; Upsert(index, value, (existing, requested) =&gt; requested);</a>
+<a name="ln188"> </a>
+<a name="ln189">        /// &lt;summary&gt;</a>
+<a name="ln190">        /// Converts the vector to an array of the elements within the vector.</a>
+<a name="ln191">        /// &lt;/summary&gt;</a>
+<a name="ln192">        /// &lt;returns&gt;The array of elements.&lt;/returns&gt;</a>
+<a name="ln193">        public double[] ToArray()</a>
+<a name="ln194">        {</a>
+<a name="ln195">            var result = new double[_elements.Count];</a>
+<a name="ln196"> </a>
+<a name="ln197">            for (int i = 0; i &lt; result.Length; i++)</a>
+<a name="ln198">            {</a>
+<a name="ln199">                result[i] = _elements[i].value;</a>
+<a name="ln200">            }</a>
+<a name="ln201"> </a>
+<a name="ln202">            return result;</a>
+<a name="ln203">        }</a>
+<a name="ln204">    }</a>
+<a name="ln205">}</a>
+</code></pre>
+<div class="balloon" rel="87"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3024/" target="_blank">V3024</a> An odd precise comparison: Magnitude == 0. Consider using a comparison with defined precision: Math.Abs(A - B) &lt; Epsilon.</p></div>
+<link rel="stylesheet" href="highlight.css">
+<script src="highlight.pack.js"></script>
+<script src="highlightjs-line-numbers.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script>hljs.initLineNumbersOnLoad();</script>
+<script>
+  $(document).ready(function() {
+      $('.balloon').each(function () {
+          var bl = $(this);
+          var line = bl.attr('rel');
+          var text = $('a[name="ln'+line+'"]').text();
+
+          var space_count = 0;
+          for(var i = 0; i<text.length; i++){
+              var char = text[i];
+              if((char !== ' ')&&(char !== '\t'))break;
+              if(char === '\t')space_count++;
+              space_count++;
+          }
+
+          bl.css('margin-left', space_count*8);
+          $('a[name="ln'+line+'"]').after(bl);
+      });
+
+      window.location = window.location;
+  });
+</script>
+</body>
+</html>

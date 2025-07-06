@@ -1,0 +1,210 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>PVS-Studio HTML Report</title>
+<style type="text/css">
+   TABLE {
+    width: 100%;
+   }
+   #col_group, #col_level, #col_code, #col_cwe, #col_sast {
+    text-align: center;
+    white-space: nowrap;
+    width: 0;
+   }
+   #col_file, #col_info, #col_projects {
+    white-space: nowrap;
+    text-align: left;
+    width: 0;
+   }
+   #col_info {
+    width: 120px;
+   }
+   #col_message {
+    text-align: left;
+   }
+  </style>
+<link rel="stylesheet" href="style.css" />
+<script type="text/javascript" src="script.js"></script>
+<script type="text/javascript" src="toggle-cell.js"></script>
+</head>
+<body>
+  <div class="header">
+    <img src="images/logo.png" alt=""/>
+    <h1>PVS-Studio Analysis Results</h1>
+    <br class="clear">
+  </div>
+  <table cellpadding="0" cellspacing="0" border="0" class="infotopic">
+     <tr><th id="col_info">Date:</th><td>04/16/25 21:58:59</td></tr>
+     <tr><th id="col_info">PVS-Studio Version:</th><td>7.36.91321.1771</td></tr>
+     <tr><th id="col_info">Total Warnings (GA):</th><td>13</td></tr>
+     <tr><th id="col_info">Total Warnings (OWASP):</th><td>2</td></tr>
+     <tr><th id="col_info">Fails/Info:</th><td>1</td></tr>
+  </table>
+  <div class="toggle-box">
+    <label>
+      Show full paths
+    <input class="path-toggle toggle-button" type="checkbox" name="toggle-path" onclick="togglePathView()" />
+    </label>
+  </div>
+  <table cellpadding="0" cellspacing="0" border="0" class="sortable" id="sorter">
+    <tr>
+      <th class="gsort">Group</th>
+      <th class="psort">Projects</th>
+      <th>Location</th>
+      <th class="lsort">Level</th>
+      <th class="vsort">Code</th>
+      <th class="rsort">SAST</th>
+      <th>Message</th>
+    </tr>
+    <tr>
+      <td id="col_group"></td>
+      <td id="col_projects"><p></p></td>
+      <td id="col_file"></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/renewal/">Renew</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Your license will expire in 29 days. Click 'Renew' to learn more or contact us via Feedback form on our website. This is an information message. You can continue using the analyzer with your current license. To hide this message, use the '--disableLicenseExpirationCheck' flag.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>LunrCoreLmdbPerf</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/SearchBenchmarkBase.cs_0.html#ln8">SearchBenchmarkBase.cs:8</a><a target="_blank" class="file-link display-none" href="sources/SearchBenchmarkBase.cs_0.html#ln8">C:\Users\dimoninbirsk\source\thesis\lunr-core\LunrCoreLmdbPerf\SearchBenchmarkBase.cs:8</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3072/">V3072</td>
+      <td id="col_sast"></td>
+      <td id="col_message">The 'SearchBenchmarkBase' class containing IDisposable members does not itself implement IDisposable. Inspect: Index.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>LunrCoreLmdbPerf</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/SearchBenchmarkLmdb.cs_1.html#ln10">SearchBenchmarkLmdb.cs:10</a><a target="_blank" class="file-link display-none" href="sources/SearchBenchmarkLmdb.cs_1.html#ln10">C:\Users\dimoninbirsk\source\thesis\lunr-core\LunrCoreLmdbPerf\SearchBenchmarkLmdb.cs:10</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3072/">V3072</td>
+      <td id="col_sast"></td>
+      <td id="col_message">The 'SearchBenchmarkLmdb' class containing IDisposable members does not itself implement IDisposable. Inspect: _lmdb.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>LunrCoreLmdbTests</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/SearchTests.cs_2.html#ln203">SearchTests.cs:203</a><a target="_blank" class="file-link display-none" href="sources/SearchTests.cs_2.html#ln203">C:\Users\dimoninbirsk\source\thesis\lunr-core\LunrCoreLmdbTests\SearchTests.cs:203</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3013/">V3013</td>
+      <td id="col_sast"></td>
+      <td id="col_message">It is odd that the body of 'FieldScopedTermNoMatch' function is fully equivalent to the body of 'SearchByFieldNoMatches' function (203, line 317).</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>LunrCoreLmdbTests</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/SearchTests.cs_2.html#ln415">SearchTests.cs:415</a><a target="_blank" class="file-link display-none" href="sources/SearchTests.cs_2.html#ln415">C:\Users\dimoninbirsk\source\thesis\lunr-core\LunrCoreLmdbTests\SearchTests.cs:415</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3024/">V3024</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An odd precise comparison: result.Score == 0. Consider using a comparison with defined precision: Math.Abs(A - B) &lt; Epsilon.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>LunrCoreTests</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/PipelineTests.cs_3.html#ln367">PipelineTests.cs:367</a><a target="_blank" class="file-link display-none" href="sources/PipelineTests.cs_3.html#ln367">C:\Users\dimoninbirsk\source\thesis\lunr-core\LunrCoreTests\PipelineTests.cs:367</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3013/">V3013</td>
+      <td id="col_sast"></td>
+      <td id="col_message">It is odd that the body of 'Noop' function is fully equivalent to the body of 'NopNop' function (367, line 377).</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>LunrCoreTests</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/PipelineTests.cs_3.html#ln357">PipelineTests.cs:357</a><a target="_blank" class="file-link display-none" href="sources/PipelineTests.cs_3.html#ln357">C:\Users\dimoninbirsk\source\thesis\lunr-core\LunrCoreTests\PipelineTests.cs:357</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3167/">V3167</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Parameter of the 'CancellationToken' type is not utilized inside a method. Ignoring the parameter can cause application to be unresponsive to cancellation events.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>LunrCoreTests</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/PipelineTests.cs_3.html#ln404">PipelineTests.cs:404</a><a target="_blank" class="file-link display-none" href="sources/PipelineTests.cs_3.html#ln404">C:\Users\dimoninbirsk\source\thesis\lunr-core\LunrCoreTests\PipelineTests.cs:404</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3167/">V3167</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Parameter of the 'CancellationToken' type is not utilized inside a method. Ignoring the parameter can cause application to be unresponsive to cancellation events.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>LunrCoreTests</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/SearchTests.cs_4.html#ln211">SearchTests.cs:211</a><a target="_blank" class="file-link display-none" href="sources/SearchTests.cs_4.html#ln211">C:\Users\dimoninbirsk\source\thesis\lunr-core\LunrCoreTests\SearchTests.cs:211</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3013/">V3013</td>
+      <td id="col_sast"></td>
+      <td id="col_message">It is odd that the body of 'FieldScopedTermNoMatch' function is fully equivalent to the body of 'SearchByFieldNoMatches' function (211, line 336).</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>LunrCoreTests</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/SearchTests.cs_4.html#ln442">SearchTests.cs:442</a><a target="_blank" class="file-link display-none" href="sources/SearchTests.cs_4.html#ln442">C:\Users\dimoninbirsk\source\thesis\lunr-core\LunrCoreTests\SearchTests.cs:442</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3024/">V3024</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An odd precise comparison: result.Score == 0. Consider using a comparison with defined precision: Math.Abs(A - B) &lt; Epsilon.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>LunrCore</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Clause.cs_5.html#ln169">Clause.cs:169</a><a target="_blank" class="file-link display-none" href="sources/Clause.cs_5.html#ln169">C:\Users\dimoninbirsk\source\thesis\lunr-core\LunrCore\Clause.cs:169</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3024/">V3024</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An odd precise comparison: Boost == 1. Consider using a comparison with defined precision: Math.Abs(A - B) &lt; Epsilon.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>LunrCore</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Field.cs_6.html#ln34">Field.cs:34</a><a target="_blank" class="file-link display-none" href="sources/Field.cs_6.html#ln34">C:\Users\dimoninbirsk\source\thesis\lunr-core\LunrCore\Field.cs:34</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3024/">V3024</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An odd precise comparison: Boost != 1. Consider using a comparison with defined precision: Math.Abs(A - B) &gt; Epsilon.</td>
+    </tr>
+    <tr>
+      <td id="col_group">OWASP</td>
+      <td id="col_projects"><p>LunrCore</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Index.cs_7.html#ln573">Index.cs:573</a><a target="_blank" class="file-link display-none" href="sources/Index.cs_7.html#ln573">C:\Users\dimoninbirsk\source\thesis\lunr-core\LunrCore\Index.cs:573</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v5611/">V5611</td>
+      <td id="col_sast">OWASP-1.5.2, OWASP-5.5.3</td>
+      <td id="col_message">Possible insecure deserialization. Potentially tainted data in the 'utf8json' variable is used to deserialize an object.</td>
+    </tr>
+    <tr>
+      <td id="col_group">OWASP</td>
+      <td id="col_projects"><p>LunrCore</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Index.cs_7.html#ln589">Index.cs:589</a><a target="_blank" class="file-link display-none" href="sources/Index.cs_7.html#ln589">C:\Users\dimoninbirsk\source\thesis\lunr-core\LunrCore\Index.cs:589</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v5611/">V5611</td>
+      <td id="col_sast">OWASP-1.5.2, OWASP-5.5.3</td>
+      <td id="col_message">Possible insecure deserialization. Potentially tainted data in the 'json' variable is used to deserialize an object.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>LunrCore</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/TokenSet.cs_8.html#ln229">TokenSet.cs:229</a><a target="_blank" class="file-link display-none" href="sources/TokenSet.cs_8.html#ln229">C:\Users\dimoninbirsk\source\thesis\lunr-core\LunrCore\TokenSet.cs:229</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3022/">V3022</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Expression 'frameStr.Length == 1' is always false.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>LunrCore</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Vector.cs_9.html#ln87">Vector.cs:87</a><a target="_blank" class="file-link display-none" href="sources/Vector.cs_9.html#ln87">C:\Users\dimoninbirsk\source\thesis\lunr-core\LunrCore\Vector.cs:87</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3024/">V3024</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An odd precise comparison: Magnitude == 0. Consider using a comparison with defined precision: Math.Abs(A - B) &lt; Epsilon.</td>
+    </tr>
+  </table>
+<script type="text/javascript">
+var sorter=new table.sorter("sorter");
+sorter.init("sorter",0);
+</script>
+</body>
+</html>

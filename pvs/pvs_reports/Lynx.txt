@@ -1,0 +1,297 @@
+PVS-Studio Report: Lynx
+================================================================================
+
+┌─[ID: V3022]
+├─ CWE: 571
+├─ SAST: None
+├─ Level: 1
+└─ Occurrences: 33
+
+Common pattern:
+Expression   is always 
+
+Examples:
+• Expression '(((9 * (int)BoardSquare.a1) + 8) & 8) != 0' is always false.
+• Expression '(((9 * (int)BoardSquare.h1) + 8) & 8) != 0' is always true.
+• Expression '((Masks.LightSquaresMask >> (int)BoardSquare.a1) & 1) != 0' is always false.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3150]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 2
+└─ Occurrences: 28
+
+Common pattern:
+Loop break conditions do not depend on the number of iterations.
+
+Message:
+• Loop break conditions do not depend on the number of iterations.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3114]
+├─ CWE: 404
+├─ SAST: None
+├─ Level: 2
+└─ Occurrences: 28
+
+Common pattern:
+IDisposable object ' ' is not disposed before method returns.
+
+Examples:
+• IDisposable object 'engine' is not disposed before method returns.
+• IDisposable object 'game' is not disposed before method returns.
+• IDisposable object 'position' is not disposed before method returns.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3120]
+├─ CWE: 835
+├─ SAST: None
+├─ Level: 1
+└─ Occurrences: 20
+
+Common pattern:
+Potentially infinite loop. The ' ' variable from the loop exit condition does not change its value between iterations.
+
+Examples:
+• Potentially infinite loop. The 'bb' variable from the loop exit condition does not change its value between iterations.
+• Potentially infinite loop. The 'bb1' variable from the loop exit condition does not change its value between iterations.
+• Potentially infinite loop. The 'bb2' variable from the loop exit condition does not change its value between iterations.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3010]
+├─ CWE: 252
+├─ SAST: None
+├─ Level: 1
+└─ Occurrences: 12
+
+Common pattern:
+The return value of function 'EncodeMove ' is required to be utilized.
+
+Examples:
+• The return value of function 'EncodeMoveBool' is required to be utilized.
+• The return value of function 'EncodeMoveInt' is required to be utilized.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3060]
+├─ CWE: 682
+├─ SAST: None
+├─ Level: 3
+└─ Occurrences: 8
+
+Common pattern:
+A value of variable is not modified. Consider inspecting the expression. It is possible that other value should be present instead of '0'.
+
+Message:
+• A value of variable is not modified. Consider inspecting the expression. It is possible that other value should be present instead of '0'.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3117]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 2
+└─ Occurrences: 7
+
+Common pattern:
+Constructor parameter ' ' is not used.
+
+Examples:
+• Constructor parameter 'calculateFen' is not used.
+• Constructor parameter 'nullMove' is not used.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3072]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 2
+└─ Occurrences: 6
+
+Common pattern:
+The ' ' class containing IDisposable members does not itself implement IDisposable. Inspect: _
+
+Examples:
+• The 'ImprovedGame' class containing IDisposable members does not itself implement IDisposable. Inspect: _gameInitialPosition, CurrentPosition.
+• The 'ImprovedGame2' class containing IDisposable members does not itself implement IDisposable. Inspect: _gameInitialPosition, CurrentPosition.
+• The 'OriginalGame' class containing IDisposable members does not itself implement IDisposable. Inspect: _gameInitialPosition, CurrentPosition.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V5621]
+├─ CWE: 535
+├─ SAST: OWASP-8.3.5
+├─ Level: 3
+└─ Occurrences: 4
+
+Common pattern:
+Error message contains potentially sensitive data, in ' Message', that may be exposed.
+
+Examples:
+• Error message contains potentially sensitive data, in 'e.Message', that may be exposed.
+• Error message contains potentially sensitive data, in 'errorMessage', that may be exposed.
+• Error message contains potentially sensitive data, in 'taskCanceledException.Message', that may be exposed.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3155]
+├─ CWE: 682
+├─ SAST: None
+├─ Level: 3
+└─ Occurrences: 2
+
+Common pattern:
+The expression is incorrect or it can be simplified. The 'SetFileRankMask(-1, rank)' expression always evaluates to '0'.
+
+Examples:
+• The expression is incorrect or it can be simplified. Consider inspecting the '1' literal.
+• The expression is incorrect or it can be simplified. The 'SetFileRankMask(-1, rank)' expression always evaluates to '0'.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3106]
+├─ CWE: 125
+├─ SAST: None
+├─ Level: 2
+└─ Occurrences: 2
+
+Common pattern:
+Possibly index is out of bound. The value of 'promotedPiece' index could reach 15.
+
+Message:
+• Possibly index is out of bound. The value of 'promotedPiece' index could reach 15.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3002]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 2
+└─ Occurrences: 2
+
+Common pattern:
+The switch statement does not cover all values of the 'SpecialMoveType' enum: DoublePawnPush.
+
+Message:
+• The switch statement does not cover all values of the 'SpecialMoveType' enum: DoublePawnPush.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3013]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 3
+└─ Occurrences: 2
+
+Common pattern:
+It is odd that the body of 'AddMutable ByType' function is fully equivalent to the body of 'AddMutable ByRef' function (9 , line 
+
+Examples:
+• It is odd that the body of 'AddMutableByType' function is fully equivalent to the body of 'AddMutableByRef' function (97, line 98).
+• It is odd that the body of 'AddMutableReadonlyByType' function is fully equivalent to the body of 'AddMutableReadonlyByRef' function (99, line 100).
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3198]
+├─ CWE: 1164
+├─ SAST: None
+├─ Level: 3
+└─ Occurrences: 2
+
+Common pattern:
+The 'occupancy' variable is assigned the '0' value that it already holds.
+
+Message:
+• The 'occupancy' variable is assigned the '0' value that it already holds.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3134]
+├─ CWE: 128
+├─ SAST: None
+├─ Level: 2
+└─ Occurrences: 2
+
+Common pattern:
+Shift by a possibly negative number -1 will result in shifting the first operand by 6 low-order bits of the second operand.
+
+Examples:
+• Shift by 64 bits is greater than the size of 'UInt64' type of expression 'attackDiagram'.
+• Shift by a possibly negative number -1 will result in shifting the first operand by 6 low-order bits of the second operand.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: Renew]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 1
+└─ Occurrences: 1
+
+Common pattern:
+Your license will expire in 29 days. Click 'Renew' to learn more or contact us via Feedback form on our website. This is an information message. You can continue using the analyzer with your current license. To hide this message, use the '--disableLicenseExpirationCheck' flag.
+
+Message:
+• Your license will expire in 29 days. Click 'Renew' to learn more or contact us via Feedback form on our website. This is an information message. You can continue using the analyzer with your current license. To hide this message, use the '--disableLicenseExpirationCheck' flag.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3202]
+├─ CWE: 561
+├─ SAST: None
+├─ Level: 2
+└─ Occurrences: 1
+
+Common pattern:
+Unreachable code detected. The 'case' value 'TablebaseEvaluationCategory.Unknown' is out of range of the match expression 'tablebaseEval.Category'.
+
+Message:
+• Unreachable code detected. The 'case' value 'TablebaseEvaluationCategory.Unknown' is out of range of the match expression 'tablebaseEval.Category'.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3073]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 2
+└─ Occurrences: 1
+
+Common pattern:
+Not all IDisposable members are properly disposed. Call 'Dispose' when disposing 'Game' class. Inspect: CurrentPosition, PositionBeforeLastSearch.
+
+Message:
+• Not all IDisposable members are properly disposed. Call 'Dispose' when disposing 'Game' class. Inspect: CurrentPosition, PositionBeforeLastSearch.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3063]
+├─ CWE: 571
+├─ SAST: None
+├─ Level: 2
+└─ Occurrences: 1
+
+Common pattern:
+A part of conditional expression is always true if it is evaluated: iterations > -EvaluationConstants.PositiveCheckmateDetectionLimit.
+
+Message:
+• A part of conditional expression is always true if it is evaluated: iterations > -EvaluationConstants.PositiveCheckmateDetectionLimit.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3001]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 1
+└─ Occurrences: 1
+
+Common pattern:
+There are identical sub-expressions 'zobristTable[piece, targetSquare]' to the left and to the right of the '^' operator.
+
+Message:
+• There are identical sub-expressions 'zobristTable[piece, targetSquare]' to the left and to the right of the '^' operator.
+
+────────────────────────────────────────────────────────────────────────────────

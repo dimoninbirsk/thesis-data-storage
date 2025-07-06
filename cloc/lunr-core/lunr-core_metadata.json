@@ -1,0 +1,69 @@
+{"header" : {
+  "cloc_url"           : "github.com/AlDanial/cloc",
+  "cloc_version"       : "2.04",
+  "elapsed_seconds"    : 1.42103004455566,
+  "n_files"            : 238,
+  "n_lines"            : 341982,
+  "files_per_second"   : 167.48414357025,
+  "lines_per_second"   : 240657.825153115,
+  "report_file"        : "C:\\Users\\dimoninbirsk\\source\\thesis\\cloc\\lunr-core\\metadata.json"},
+"Text" :{
+  "nFiles": 27,
+  "blank": 0,
+  "comment": 0,
+  "code": 275005},
+"JSON" :{
+  "nFiles": 36,
+  "blank": 0,
+  "comment": 0,
+  "code": 49511},
+"C#" :{
+  "nFiles": 104,
+  "blank": 1828,
+  "comment": 1761,
+  "code": 8997},
+"XML" :{
+  "nFiles": 38,
+  "blank": 0,
+  "comment": 0,
+  "code": 3718},
+"Properties" :{
+  "nFiles": 1,
+  "blank": 15,
+  "comment": 0,
+  "code": 229},
+"Markdown" :{
+  "nFiles": 6,
+  "blank": 77,
+  "comment": 20,
+  "code": 208},
+"MSBuild script" :{
+  "nFiles": 6,
+  "blank": 27,
+  "comment": 0,
+  "code": 147},
+"INI" :{
+  "nFiles": 9,
+  "blank": 0,
+  "comment": 0,
+  "code": 121},
+"YAML" :{
+  "nFiles": 4,
+  "blank": 15,
+  "comment": 5,
+  "code": 94},
+"C# Generated" :{
+  "nFiles": 6,
+  "blank": 24,
+  "comment": 58,
+  "code": 60},
+"Visual Studio Solution" :{
+  "nFiles": 1,
+  "blank": 1,
+  "comment": 1,
+  "code": 60},
+"SUM": {
+  "blank": 1987,
+  "comment": 1845,
+  "code": 338150,
+  "nFiles": 238} }

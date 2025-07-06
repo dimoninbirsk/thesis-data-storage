@@ -1,0 +1,1645 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>SelectControlOld.cs</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <script src="../jquery-3.5.1.min.js"></script>
+</head>
+<body>
+<pre><code class = "cs">
+<a name="ln1">using System;</a>
+<a name="ln2">using System.Collections.Generic;</a>
+<a name="ln3">using System.Linq;</a>
+<a name="ln4">using System.Windows;</a>
+<a name="ln5">using System.Windows.Controls;</a>
+<a name="ln6">using System.Windows.Controls.Primitives;</a>
+<a name="ln7">using System.Windows.Input;</a>
+<a name="ln8">using System.Windows.Media;</a>
+<a name="ln9">using System.Windows.Media.Imaging;</a>
+<a name="ln10">using System.Windows.Shapes;</a>
+<a name="ln11">using Microsoft.Win32;</a>
+<a name="ln12">using ScreenToGif.Domain.Enums;</a>
+<a name="ln13">using ScreenToGif.Domain.Models;</a>
+<a name="ln14">using ScreenToGif.Domain.Models.Native;</a>
+<a name="ln15">using ScreenToGif.Native.External;</a>
+<a name="ln16">using ScreenToGif.Native.Helpers;</a>
+<a name="ln17">using ScreenToGif.Util;</a>
+<a name="ln18">using ScreenToGif.Util.Extensions;</a>
+<a name="ln19">using ScreenToGif.Util.Settings;</a>
+<a name="ln20"> </a>
+<a name="ln21">namespace ScreenToGif.Controls;</a>
+<a name="ln22"> </a>
+<a name="ln23">public class SelectControlOld : Control</a>
+<a name="ln24">{</a>
+<a name="ln25">    #region Variables</a>
+<a name="ln26"> </a>
+<a name="ln27">    /// &lt;summary&gt;</a>
+<a name="ln28">    /// Resizing adorner uses Thumbs for visual elements.</a>
+<a name="ln29">    /// The Thumbs have built-in mouse input handling.</a>
+<a name="ln30">    /// &lt;/summary&gt;</a>
+<a name="ln31">    private Thumb _topLeft, _topRight, _bottomLeft, _bottomRight, _top, _bottom, _left, _right;</a>
+<a name="ln32"> </a>
+<a name="ln33">    /// &lt;summary&gt;</a>
+<a name="ln34">    /// The selection rectangle, used to drag the selection Rect elsewhere.</a>
+<a name="ln35">    /// &lt;/summary&gt;</a>
+<a name="ln36">    private Rectangle _rectangle;</a>
+<a name="ln37"> </a>
+<a name="ln38">    /// &lt;summary&gt;</a>
+<a name="ln39">    /// The grid that holds the three buttons to control the selection.</a>
+<a name="ln40">    /// &lt;/summary&gt;</a>
+<a name="ln41">    private ExtendedUniformGrid _statusControlGrid;</a>
+<a name="ln42"> </a>
+<a name="ln43">    /// &lt;summary&gt;</a>
+<a name="ln44">    /// The pre-calculated size of the horizontal and vertical versions of the status control grid.</a>
+<a name="ln45">    /// &lt;/summary&gt;</a>
+<a name="ln46">    private Size _statusHorizontalSize, _statusVerticalSize;</a>
+<a name="ln47"> </a>
+<a name="ln48">    /// &lt;summary&gt;</a>
+<a name="ln49">    /// The grid that holds the zoomed image.</a>
+<a name="ln50">    /// &lt;/summary&gt;</a>
+<a name="ln51">    private Grid _zoomGrid;</a>
+<a name="ln52"> </a>
+<a name="ln53">    /// &lt;summary&gt;</a>
+<a name="ln54">    /// The zoomed image.</a>
+<a name="ln55">    /// &lt;/summary&gt;</a>
+<a name="ln56">    private Image _croppedImage;</a>
+<a name="ln57"> </a>
+<a name="ln58">    /// &lt;summary&gt;</a>
+<a name="ln59">    /// The textblock that lies at the bottom of the zoom view.</a>
+<a name="ln60">    /// &lt;/summary&gt;</a>
+<a name="ln61">    private TextBlock _zoomTextBlock;</a>
+<a name="ln62"> </a>
+<a name="ln63">    /// &lt;summary&gt;</a>
+<a name="ln64">    /// The main canvas, the root element.</a>
+<a name="ln65">    /// &lt;/summary&gt;</a>
+<a name="ln66">    private Canvas _mainCanvas;</a>
+<a name="ln67"> </a>
+<a name="ln68">    /// &lt;summary&gt;</a>
+<a name="ln69">    /// Status control buttons.</a>
+<a name="ln70">    /// &lt;/summary&gt;</a>
+<a name="ln71">    private ExtendedButton _acceptButton, _retryButton, _cancelButton;</a>
+<a name="ln72"> </a>
+<a name="ln73">    /// &lt;summary&gt;</a>
+<a name="ln74">    /// The texblock that shows the size of the selection.</a>
+<a name="ln75">    /// &lt;/summary&gt;</a>
+<a name="ln76">    private TextBlock _sizeTextBlock;</a>
+<a name="ln77"> </a>
+<a name="ln78">    /// &lt;summary&gt;</a>
+<a name="ln79">    /// The grid that holds the sizing controls.</a>
+<a name="ln80">    /// &lt;/summary&gt;</a>
+<a name="ln81">    private Grid _rectGrid;</a>
+<a name="ln82"> </a>
+<a name="ln83">    /// &lt;summary&gt;</a>
+<a name="ln84">    /// The button that closes the sizing widget.</a>
+<a name="ln85">    /// &lt;/summary&gt;</a>
+<a name="ln86">    private ExtendedButton _closeRectButton;</a>
+<a name="ln87"> </a>
+<a name="ln88">    /// &lt;summary&gt;</a>
+<a name="ln89">    /// The grid that enables the movement of the sizing widget.</a>
+<a name="ln90">    /// &lt;/summary&gt;</a>
+<a name="ln91">    private Grid _moveSizeWidgetGrid;</a>
+<a name="ln92"> </a>
+<a name="ln93">    /// &lt;summary&gt;</a>
+<a name="ln94">    /// The start point for the drag operation.</a>
+<a name="ln95">    /// &lt;/summary&gt;</a>
+<a name="ln96">    private Point _startPoint;</a>
+<a name="ln97"> </a>
+<a name="ln98">    /// &lt;summary&gt;</a>
+<a name="ln99">    /// Blind spots for the ZoomView. If the cursor is on top of any of this spots, the zoom view should not appear.</a>
+<a name="ln100">    /// &lt;/summary&gt;</a>
+<a name="ln101">    private readonly List&lt;Rect&gt; _blindSpots = new List&lt;Rect&gt;();</a>
+<a name="ln102"> </a>
+<a name="ln103">    /// &lt;summary&gt;</a>
+<a name="ln104">    /// The latest window that contains the mouse cursor on top of it.</a>
+<a name="ln105">    /// &lt;/summary&gt;</a>
+<a name="ln106">    private DetectedRegion _hitTestWindow;</a>
+<a name="ln107"> </a>
+<a name="ln108">    /// &lt;summary&gt;</a>
+<a name="ln109">    /// True when this control is ready to process mouse input when using the Screen/Window selection mode.</a>
+<a name="ln110">    /// This was added because the event MouseMove was being fired before the method that adjusts the other controls finished. (TL;DR It was a race condition)</a>
+<a name="ln111">    /// &lt;/summary&gt;</a>
+<a name="ln112">    private bool _ready;</a>
+<a name="ln113"> </a>
+<a name="ln114">    public List&lt;DetectedRegion&gt; Windows = new();</a>
+<a name="ln115"> </a>
+<a name="ln116">    public List&lt;Monitor&gt; Monitors = new();</a>
+<a name="ln117"> </a>
+<a name="ln118">    public BitmapSource BackImage;</a>
+<a name="ln119"> </a>
+<a name="ln120">    #endregion</a>
+<a name="ln121"> </a>
+<a name="ln122">    #region Dependency Properties</a>
+<a name="ln123"> </a>
+<a name="ln124">    public static readonly DependencyProperty IsPickingRegionProperty = DependencyProperty.Register(nameof(IsPickingRegion), typeof(bool), typeof(SelectControlOld), new PropertyMetadata(true));</a>
+<a name="ln125"> </a>
+<a name="ln126">    public static readonly DependencyProperty SelectedProperty = DependencyProperty.Register(nameof(Selected), typeof(Rect), typeof(SelectControlOld), new PropertyMetadata(Rect.Empty, Selected_PropertyChanged));</a>
+<a name="ln127"> </a>
+<a name="ln128">    public static readonly DependencyProperty NonExpandedSelectionProperty = DependencyProperty.Register(nameof(NonExpandedSelection), typeof(Rect), typeof(SelectControlOld), new PropertyMetadata(Rect.Empty));</a>
+<a name="ln129"> </a>
+<a name="ln130">    public static readonly DependencyProperty FinishedSelectionProperty = DependencyProperty.Register(nameof(FinishedSelection), typeof(bool), typeof(SelectControlOld), new PropertyMetadata(false));</a>
+<a name="ln131"> </a>
+<a name="ln132">    public static readonly DependencyProperty ModeProperty = DependencyProperty.Register(nameof(Mode), typeof(ModeType), typeof(SelectControlOld), new PropertyMetadata(ModeType.Region, Mode_Changed));</a>
+<a name="ln133"> </a>
+<a name="ln134">    public static readonly DependencyProperty ScaleProperty = DependencyProperty.Register(nameof(Scale), typeof(double), typeof(SelectControlOld), new PropertyMetadata(1d, Mode_Changed));</a>
+<a name="ln135"> </a>
+<a name="ln136">    public static readonly DependencyProperty EmbeddedModeProperty = DependencyProperty.Register(nameof(EmbeddedMode), typeof(bool), typeof(SelectControlOld), new PropertyMetadata(false));</a>
+<a name="ln137"> </a>
+<a name="ln138">    public static readonly RoutedEvent SelectionAcceptedEvent = EventManager.RegisterRoutedEvent(nameof(SelectionAccepted), RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(SelectControlOld));</a>
+<a name="ln139"> </a>
+<a name="ln140">    public static readonly RoutedEvent SelectionChangedEvent = EventManager.RegisterRoutedEvent(nameof(SelectionChanged), RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(SelectControlOld));</a>
+<a name="ln141"> </a>
+<a name="ln142">    public static readonly RoutedEvent SelectionCanceledEvent = EventManager.RegisterRoutedEvent(nameof(SelectionCanceled), RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(SelectControlOld));</a>
+<a name="ln143"> </a>
+<a name="ln144">    #endregion</a>
+<a name="ln145"> </a>
+<a name="ln146">    #region Properties</a>
+<a name="ln147"> </a>
+<a name="ln148">    public bool IsPickingRegion</a>
+<a name="ln149">    {</a>
+<a name="ln150">        get =&gt; (bool)GetValue(IsPickingRegionProperty);</a>
+<a name="ln151">        set =&gt; SetValue(IsPickingRegionProperty, value);</a>
+<a name="ln152">    }</a>
+<a name="ln153"> </a>
+<a name="ln154">    public Rect Selected</a>
+<a name="ln155">    {</a>
+<a name="ln156">        get =&gt; (Rect)GetValue(SelectedProperty);</a>
+<a name="ln157">        set =&gt; SetValue(SelectedProperty, value);</a>
+<a name="ln158">    }</a>
+<a name="ln159"> </a>
+<a name="ln160">    public Rect NonExpandedSelection</a>
+<a name="ln161">    {</a>
+<a name="ln162">        get =&gt; (Rect)GetValue(NonExpandedSelectionProperty);</a>
+<a name="ln163">        set =&gt; SetValue(NonExpandedSelectionProperty, value);</a>
+<a name="ln164">    }</a>
+<a name="ln165"> </a>
+<a name="ln166">    public bool FinishedSelection</a>
+<a name="ln167">    {</a>
+<a name="ln168">        get =&gt; (bool)GetValue(FinishedSelectionProperty);</a>
+<a name="ln169">        set =&gt; SetValue(FinishedSelectionProperty, value);</a>
+<a name="ln170">    }</a>
+<a name="ln171"> </a>
+<a name="ln172">    public ModeType Mode</a>
+<a name="ln173">    {</a>
+<a name="ln174">        get =&gt; (ModeType)GetValue(ModeProperty);</a>
+<a name="ln175">        set =&gt; SetValue(ModeProperty, value);</a>
+<a name="ln176">    }</a>
+<a name="ln177"> </a>
+<a name="ln178">    public double Scale</a>
+<a name="ln179">    {</a>
+<a name="ln180">        get =&gt; (double)GetValue(ScaleProperty);</a>
+<a name="ln181">        set =&gt; SetValue(ScaleProperty, value);</a>
+<a name="ln182">    }</a>
+<a name="ln183"> </a>
+<a name="ln184">    public bool EmbeddedMode</a>
+<a name="ln185">    {</a>
+<a name="ln186">        get =&gt; (bool)GetValue(EmbeddedModeProperty);</a>
+<a name="ln187">        set =&gt; SetValue(EmbeddedModeProperty, value);</a>
+<a name="ln188">    }</a>
+<a name="ln189"> </a>
+<a name="ln190"> </a>
+<a name="ln191">    public event RoutedEventHandler SelectionAccepted</a>
+<a name="ln192">    {</a>
+<a name="ln193">        add =&gt; AddHandler(SelectionAcceptedEvent, value);</a>
+<a name="ln194">        remove =&gt; RemoveHandler(SelectionAcceptedEvent, value);</a>
+<a name="ln195">    }</a>
+<a name="ln196"> </a>
+<a name="ln197">    public event RoutedEventHandler SelectionChanged</a>
+<a name="ln198">    {</a>
+<a name="ln199">        add =&gt; AddHandler(SelectionChangedEvent, value);</a>
+<a name="ln200">        remove =&gt; RemoveHandler(SelectionChangedEvent, value);</a>
+<a name="ln201">    }</a>
+<a name="ln202"> </a>
+<a name="ln203">    public event RoutedEventHandler SelectionCanceled</a>
+<a name="ln204">    {</a>
+<a name="ln205">        add =&gt; AddHandler(SelectionCanceledEvent, value);</a>
+<a name="ln206">        remove =&gt; RemoveHandler(SelectionCanceledEvent, value);</a>
+<a name="ln207">    }</a>
+<a name="ln208"> </a>
+<a name="ln209">    #endregion</a>
+<a name="ln210"> </a>
+<a name="ln211">    static SelectControlOld()</a>
+<a name="ln212">    {</a>
+<a name="ln213">        DefaultStyleKeyProperty.OverrideMetadata(typeof(SelectControlOld), new FrameworkPropertyMetadata(typeof(SelectControlOld)));</a>
+<a name="ln214">    }</a>
+<a name="ln215"> </a>
+<a name="ln216">    #region Overrides</a>
+<a name="ln217"> </a>
+<a name="ln218">    public override void OnApplyTemplate()</a>
+<a name="ln219">    {</a>
+<a name="ln220">        base.OnApplyTemplate();</a>
+<a name="ln221"> </a>
+<a name="ln222">        _mainCanvas = Template.FindName(&quot;MainCanvas&quot;, this) as Canvas;</a>
+<a name="ln223"> </a>
+<a name="ln224">        _topLeft = Template.FindName(&quot;TopLeftThumb&quot;, this) as Thumb;</a>
+<a name="ln225">        _topRight = Template.FindName(&quot;TopRightThumb&quot;, this) as Thumb;</a>
+<a name="ln226">        _bottomLeft = Template.FindName(&quot;BottomLeftThumb&quot;, this) as Thumb;</a>
+<a name="ln227">        _bottomRight = Template.FindName(&quot;BottomRightThumb&quot;, this) as Thumb;</a>
+<a name="ln228"> </a>
+<a name="ln229">        _top = Template.FindName(&quot;TopThumb&quot;, this) as Thumb;</a>
+<a name="ln230">        _bottom = Template.FindName(&quot;BottomThumb&quot;, this) as Thumb;</a>
+<a name="ln231">        _left = Template.FindName(&quot;LeftThumb&quot;, this) as Thumb;</a>
+<a name="ln232">        _right = Template.FindName(&quot;RightThumb&quot;, this) as Thumb;</a>
+<a name="ln233"> </a>
+<a name="ln234">        _rectangle = Template.FindName(&quot;SelectRectangle&quot;, this) as Rectangle;</a>
+<a name="ln235">        _statusControlGrid = Template.FindName(&quot;StatusControlGrid&quot;, this) as ExtendedUniformGrid;</a>
+<a name="ln236">        _acceptButton = Template.FindName(&quot;AcceptButton&quot;, this) as ExtendedButton;</a>
+<a name="ln237">        _retryButton = Template.FindName(&quot;RetryButton&quot;, this) as ExtendedButton;</a>
+<a name="ln238">        _cancelButton = Template.FindName(&quot;CancelButton&quot;, this) as ExtendedButton;</a>
+<a name="ln239"> </a>
+<a name="ln240">        _zoomGrid = Template.FindName(&quot;ZoomGrid&quot;, this) as Grid;</a>
+<a name="ln241">        _croppedImage = Template.FindName(&quot;CroppedImage&quot;, this) as Image;</a>
+<a name="ln242">        _zoomTextBlock = Template.FindName(&quot;ZoomTextBlock&quot;, this) as TextBlock;</a>
+<a name="ln243">        _sizeTextBlock = Template.FindName(&quot;SizeTextBlock&quot;, this) as TextBlock;</a>
+<a name="ln244">        //_rectGrid = Template.FindName(&quot;RectGrid&quot;, this) as Grid;</a>
+<a name="ln245">        //_closeRectButton = Template.FindName(&quot;CloseSizeWidgetButton&quot;, this) as ImageButton;</a>
+<a name="ln246">        //_moveSizeWidgetGrid = Template.FindName(&quot;MoveSizeWidgetGrid&quot;, this) as Grid;</a>
+<a name="ln247"> </a>
+<a name="ln248">        //if (_topLeft == null || _topRight == null || _bottomLeft == null || _bottomRight == null ||</a>
+<a name="ln249">        //    _top == null || _bottom == null || _left == null || _right == null || _rectangle == null || _mainCanvas == null || _zoomGrid == null || _croppedImage == null)</a>
+<a name="ln250">        //    return;</a>
+<a name="ln251"> </a>
+<a name="ln252">        Loaded += OnLoaded;</a>
+<a name="ln253">        Unloaded += OnUnloaded;</a>
+<a name="ln254">        SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;</a>
+<a name="ln255"> </a>
+<a name="ln256">        //Add handlers for resizing • Corners.</a>
+<a name="ln257">        _topLeft.DragDelta += HandleTopLeft;</a>
+<a name="ln258">        _topRight.DragDelta += HandleTopRight;</a>
+<a name="ln259">        _bottomLeft.DragDelta += HandleBottomLeft;</a>
+<a name="ln260">        _bottomRight.DragDelta += HandleBottomRight;</a>
+<a name="ln261"> </a>
+<a name="ln262">        //Add handlers for resizing • Sides.</a>
+<a name="ln263">        _top.DragDelta += HandleTop;</a>
+<a name="ln264">        _bottom.DragDelta += HandleBottom;</a>
+<a name="ln265">        _left.DragDelta += HandleLeft;</a>
+<a name="ln266">        _right.DragDelta += HandleRight;</a>
+<a name="ln267"> </a>
+<a name="ln268">        //Drag to move.</a>
+<a name="ln269">        _rectangle.MouseLeftButtonDown += Rectangle_MouseLeftButtonDown;</a>
+<a name="ln270">        _rectangle.MouseMove += Rectangle_MouseMove;</a>
+<a name="ln271">        _rectangle.MouseLeftButtonUp += Rectangle_MouseLeftButtonUp;</a>
+<a name="ln272"> </a>
+<a name="ln273">        //if (_acceptButton == null || _retryButton == null || _cancelButton == null)</a>
+<a name="ln274">        //    return;</a>
+<a name="ln275"> </a>
+<a name="ln276">        _acceptButton.Click += (sender, e) =&gt; { Accept(); };</a>
+<a name="ln277">        _retryButton.Click += (sender, e) =&gt; { Retry(); };</a>
+<a name="ln278">        _cancelButton.Click += (sender, e) =&gt; { Cancel(); };</a>
+<a name="ln279"> </a>
+<a name="ln280">        //Enable sizing controls.</a>
+<a name="ln281">        //if (!EmbeddedMode)</a>
+<a name="ln282">        //{</a>
+<a name="ln283">        //    _sizeTextBlock.PreviewMouseLeftButtonDown += SizeTextBlock_MouseUp;</a>
+<a name="ln284">        //    _sizeTextBlock.IsHitTestVisible = true;</a>
+<a name="ln285">        //    _sizeTextBlock.Cursor = Cursors.Hand;</a>
+<a name="ln286">        //}</a>
+<a name="ln287"> </a>
+<a name="ln288">        Monitors = MonitorHelper.AllMonitorsScaled(Scale, true);</a>
+<a name="ln289">    }</a>
+<a name="ln290"> </a>
+<a name="ln291">    private void SystemEvents_DisplaySettingsChanged(object o, EventArgs eventArgs)</a>
+<a name="ln292">    {</a>
+<a name="ln293">        Scale = this.Scale();</a>
+<a name="ln294"> </a>
+<a name="ln295">        Monitors = MonitorHelper.AllMonitorsScaled(Scale, true);</a>
+<a name="ln296"> </a>
+<a name="ln297">        //TODO: Adjust the selection and the UI when this happens.</a>
+<a name="ln298">    }</a>
+<a name="ln299"> </a>
+<a name="ln300">    protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)</a>
+<a name="ln301">    {</a>
+<a name="ln302">        _startPoint = e.GetPosition(this);</a>
+<a name="ln303"> </a>
+<a name="ln304">        if (Mode == ModeType.Region)</a>
+<a name="ln305">        {</a>
+<a name="ln306">            Selected = new Rect(e.GetPosition(this), new Size(0, 0));</a>
+<a name="ln307">            FinishedSelection = false;</a>
+<a name="ln308"> </a>
+<a name="ln309">            CaptureMouse();</a>
+<a name="ln310"> </a>
+<a name="ln311">            AdjustStatusControls();</a>
+<a name="ln312">            AdjustFlowControls();</a>
+<a name="ln313">            DetectBlindSpots();</a>
+<a name="ln314">        }</a>
+<a name="ln315">        else</a>
+<a name="ln316">        {</a>
+<a name="ln317">            if (Mode == ModeType.Window &amp;&amp; _hitTestWindow != null)</a>
+<a name="ln318">                User32.SetForegroundWindow(_hitTestWindow.Handle);</a>
+<a name="ln319"> </a>
+<a name="ln320">            if (Selected.Width &gt; 0 &amp;&amp; Selected.Height &gt; 0)</a>
+<a name="ln321">                RaiseAcceptedEvent();</a>
+<a name="ln322">        }</a>
+<a name="ln323"> </a>
+<a name="ln324">        e.Handled = true;</a>
+<a name="ln325">        base.OnMouseLeftButtonDown(e);</a>
+<a name="ln326">    }</a>
+<a name="ln327"> </a>
+<a name="ln328">    protected override void OnMouseRightButtonDown(MouseButtonEventArgs e)</a>
+<a name="ln329">    {</a>
+<a name="ln330">        if (Mode == ModeType.Region)</a>
+<a name="ln331">            Retry();</a>
+<a name="ln332"> </a>
+<a name="ln333">        e.Handled = true;</a>
+<a name="ln334">        base.OnMouseLeftButtonDown(e);</a>
+<a name="ln335">    }</a>
+<a name="ln336"> </a>
+<a name="ln337">    protected override void OnMouseMove(MouseEventArgs e)</a>
+<a name="ln338">    {</a>
+<a name="ln339">        if (Mode == ModeType.Region)</a>
+<a name="ln340">        {</a>
+<a name="ln341">            var current = e.GetPosition(this);</a>
+<a name="ln342"> </a>
+<a name="ln343">            AdjustZoomView(current);</a>
+<a name="ln344"> </a>
+<a name="ln345">            if (!IsMouseCaptured || e.LeftButton != MouseButtonState.Pressed)</a>
+<a name="ln346">                return;</a>
+<a name="ln347"> </a>
+<a name="ln348">            if (current.X &lt; -1)</a>
+<a name="ln349">                current.X = -1;</a>
+<a name="ln350"> </a>
+<a name="ln351">            if (current.Y &lt; -1)</a>
+<a name="ln352">                current.Y = -1;</a>
+<a name="ln353"> </a>
+<a name="ln354">            if (current.X &gt; ActualWidth)</a>
+<a name="ln355">                current.X = ActualWidth;</a>
+<a name="ln356"> </a>
+<a name="ln357">            if (current.Y &gt; ActualHeight)</a>
+<a name="ln358">                current.Y = ActualHeight;</a>
+<a name="ln359"> </a>
+<a name="ln360">            Selected = new Rect(Math.Min(current.X, _startPoint.X), Math.Min(current.Y, _startPoint.Y), Math.Abs(current.X - _startPoint.X), Math.Abs(current.Y - _startPoint.Y));</a>
+<a name="ln361"> </a>
+<a name="ln362">            AdjustInfo(current);</a>
+<a name="ln363">        }</a>
+<a name="ln364">        else if (_ready)</a>
+<a name="ln365">        {</a>
+<a name="ln366">            var current = e.GetPosition(this);</a>
+<a name="ln367"> </a>
+<a name="ln368">            _hitTestWindow = Windows.FirstOrDefault(x =&gt; x.Bounds.Contains(current));</a>
+<a name="ln369">            Selected = _hitTestWindow?.Bounds ?? Rect.Empty;</a>
+<a name="ln370"> </a>
+<a name="ln371">            AdjustInfo(current);</a>
+<a name="ln372">        }</a>
+<a name="ln373"> </a>
+<a name="ln374">        base.OnMouseMove(e);</a>
+<a name="ln375">    }</a>
+<a name="ln376"> </a>
+<a name="ln377">    protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)</a>
+<a name="ln378">    {</a>
+<a name="ln379">        if (Mode == ModeType.Region)</a>
+<a name="ln380">        {</a>
+<a name="ln381">            ReleaseMouseCapture();</a>
+<a name="ln382"> </a>
+<a name="ln383">            if (Selected.Width &lt; 10 || Selected.Height &lt; 10)</a>
+<a name="ln384">            {</a>
+<a name="ln385">                OnMouseRightButtonDown(e);</a>
+<a name="ln386">                return;</a>
+<a name="ln387">            }</a>
+<a name="ln388"> </a>
+<a name="ln389">            FinishedSelection = true;</a>
+<a name="ln390"> </a>
+<a name="ln391">            AdjustThumbs();</a>
+<a name="ln392">            AdjustStatusControls(e.GetPosition(this));</a>
+<a name="ln393">            AdjustFlowControls();</a>
+<a name="ln394">            DetectBlindSpots();</a>
+<a name="ln395">        }</a>
+<a name="ln396"> </a>
+<a name="ln397">        //e.Handled = true;</a>
+<a name="ln398">        base.OnMouseLeftButtonUp(e);</a>
+<a name="ln399">    }</a>
+<a name="ln400"> </a>
+<a name="ln401">    protected override void OnPreviewKeyDown(KeyEventArgs e)</a>
+<a name="ln402">    {</a>
+<a name="ln403">        //Apparently, this event is not triggered.</a>
+<a name="ln404">        if (e.Key == Key.Escape)</a>
+<a name="ln405">            Cancel();</a>
+<a name="ln406"> </a>
+<a name="ln407">        if (e.Key == Key.Enter || e.Key == Key.Return)</a>
+<a name="ln408">            Accept();</a>
+<a name="ln409"> </a>
+<a name="ln410">        e.Handled = true;</a>
+<a name="ln411">        base.OnPreviewKeyDown(e);</a>
+<a name="ln412"> </a>
+<a name="ln413">        if (Mode != ModeType.Region || Selected.IsEmpty)</a>
+<a name="ln414">            return;</a>
+<a name="ln415"> </a>
+<a name="ln416">        //Control + Shift: Expand both ways.</a>
+<a name="ln417">        if ((Keyboard.Modifiers &amp; ModifierKeys.Control) != 0 &amp;&amp; (Keyboard.Modifiers &amp; ModifierKeys.Shift) != 0)</a>
+<a name="ln418">        {</a>
+<a name="ln419">            switch (e.Key)</a>
+<a name="ln420">            {</a>
+<a name="ln421">                case Key.Up:</a>
+<a name="ln422">                    HandleBottom(_bottom, new DragDeltaEventArgs(0, 1));</a>
+<a name="ln423">                    HandleTop(_top, new DragDeltaEventArgs(0, -1));</a>
+<a name="ln424">                    break;</a>
+<a name="ln425">                case Key.Down:</a>
+<a name="ln426">                    HandleBottom(_bottom, new DragDeltaEventArgs(0, -1));</a>
+<a name="ln427">                    HandleTop(_top, new DragDeltaEventArgs(0, 1));</a>
+<a name="ln428">                    break;</a>
+<a name="ln429">                case Key.Left:</a>
+<a name="ln430">                    HandleRight(_right, new DragDeltaEventArgs(-1, 0));</a>
+<a name="ln431">                    HandleLeft(_left, new DragDeltaEventArgs(1, 0));</a>
+<a name="ln432">                    break;</a>
+<a name="ln433">                case Key.Right:</a>
+<a name="ln434">                    HandleRight(_right, new DragDeltaEventArgs(1, 0));</a>
+<a name="ln435">                    HandleLeft(_left, new DragDeltaEventArgs(-1, 0));</a>
+<a name="ln436">                    break;</a>
+<a name="ln437">            }</a>
+<a name="ln438">        }</a>
+<a name="ln439">        else if ((Keyboard.Modifiers &amp; ModifierKeys.Shift) != 0) //If the Shift key is pressed, the sizing mode is enabled (bottom right).</a>
+<a name="ln440">        {</a>
+<a name="ln441">            switch (e.Key)</a>
+<a name="ln442">            {</a>
+<a name="ln443">                case Key.Up:</a>
+<a name="ln444">                    HandleBottom(_bottom, new DragDeltaEventArgs(0, -1));</a>
+<a name="ln445">                    break;</a>
+<a name="ln446">                case Key.Down:</a>
+<a name="ln447">                    HandleBottom(_bottom, new DragDeltaEventArgs(0, 1));</a>
+<a name="ln448">                    break;</a>
+<a name="ln449">                case Key.Left:</a>
+<a name="ln450">                    HandleRight(_right, new DragDeltaEventArgs(-1, 0));</a>
+<a name="ln451">                    break;</a>
+<a name="ln452">                case Key.Right:</a>
+<a name="ln453">                    HandleRight(_right, new DragDeltaEventArgs(1, 0));</a>
+<a name="ln454">                    break;</a>
+<a name="ln455">            }</a>
+<a name="ln456">        }</a>
+<a name="ln457">        else if ((Keyboard.Modifiers &amp; ModifierKeys.Control) != 0) //If the Control key is pressed, the sizing mode is enabled (top left).</a>
+<a name="ln458">        {</a>
+<a name="ln459">            switch (e.Key)</a>
+<a name="ln460">            {</a>
+<a name="ln461">                case Key.Up:</a>
+<a name="ln462">                    HandleTop(_top, new DragDeltaEventArgs(0, -1));</a>
+<a name="ln463">                    break;</a>
+<a name="ln464">                case Key.Down:</a>
+<a name="ln465">                    HandleTop(_top, new DragDeltaEventArgs(0, 1));</a>
+<a name="ln466">                    break;</a>
+<a name="ln467">                case Key.Left:</a>
+<a name="ln468">                    HandleLeft(_left, new DragDeltaEventArgs(-1, 0));</a>
+<a name="ln469">                    break;</a>
+<a name="ln470">                case Key.Right:</a>
+<a name="ln471">                    HandleLeft(_left, new DragDeltaEventArgs(1, 0));</a>
+<a name="ln472">                    break;</a>
+<a name="ln473">            }</a>
+<a name="ln474">        }</a>
+<a name="ln475">        else</a>
+<a name="ln476">        {</a>
+<a name="ln477">            switch (e.Key) //If no other key is pressed, the movement mode is enabled.</a>
+<a name="ln478">            {</a>
+<a name="ln479">                case Key.Up:</a>
+<a name="ln480">                    HandleCenter(new DragDeltaEventArgs(0, -1));</a>
+<a name="ln481">                    break;</a>
+<a name="ln482">                case Key.Down:</a>
+<a name="ln483">                    HandleCenter(new DragDeltaEventArgs(0, 1));</a>
+<a name="ln484">                    break;</a>
+<a name="ln485">                case Key.Left:</a>
+<a name="ln486">                    HandleCenter(new DragDeltaEventArgs(-1, 0));</a>
+<a name="ln487">                    break;</a>
+<a name="ln488">                case Key.Right:</a>
+<a name="ln489">                    HandleCenter(new DragDeltaEventArgs(1, 0));</a>
+<a name="ln490">                    break;</a>
+<a name="ln491">            }</a>
+<a name="ln492">        }</a>
+<a name="ln493">    }</a>
+<a name="ln494"> </a>
+<a name="ln495">    #endregion</a>
+<a name="ln496"> </a>
+<a name="ln497">    #region Methods</a>
+<a name="ln498"> </a>
+<a name="ln499">    private void AdjustSelection()</a>
+<a name="ln500">    {</a>
+<a name="ln501">        //If already opened with a region selected, treat as &quot;already selected&quot;.</a>
+<a name="ln502">        if (Selected == Rect.Empty) return;</a>
+<a name="ln503"> </a>
+<a name="ln504">        FinishedSelection = true;</a>
+<a name="ln505"> </a>
+<a name="ln506">        var point = Mouse.GetPosition(this);</a>
+<a name="ln507"> </a>
+<a name="ln508">        AdjustThumbs();</a>
+<a name="ln509">        AdjustStatusControls(point);</a>
+<a name="ln510">        AdjustFlowControls();</a>
+<a name="ln511">        DetectBlindSpots();</a>
+<a name="ln512">        AdjustInfo(point);</a>
+<a name="ln513">    }</a>
+<a name="ln514"> </a>
+<a name="ln515">    private void AdjustThumbs()</a>
+<a name="ln516">    {</a>
+<a name="ln517">        //Top left.</a>
+<a name="ln518">        Canvas.SetLeft(_topLeft, Selected.Left - _topLeft.Width / 2);</a>
+<a name="ln519">        Canvas.SetTop(_topLeft, Selected.Top - _topLeft.Height / 2);</a>
+<a name="ln520"> </a>
+<a name="ln521">        //Top right.</a>
+<a name="ln522">        Canvas.SetLeft(_topRight, Selected.Right - _topRight.Width / 2);</a>
+<a name="ln523">        Canvas.SetTop(_topRight, Selected.Top - _topRight.Height / 2);</a>
+<a name="ln524"> </a>
+<a name="ln525">        //Bottom left.</a>
+<a name="ln526">        Canvas.SetLeft(_bottomLeft, Selected.Left - _bottomLeft.Width / 2);</a>
+<a name="ln527">        Canvas.SetTop(_bottomLeft, Selected.Bottom - _bottomLeft.Height / 2);</a>
+<a name="ln528"> </a>
+<a name="ln529">        //Bottom right.</a>
+<a name="ln530">        Canvas.SetLeft(_bottomRight, Selected.Right - _bottomRight.Width / 2);</a>
+<a name="ln531">        Canvas.SetTop(_bottomRight, Selected.Bottom - _bottomRight.Height / 2);</a>
+<a name="ln532"> </a>
+<a name="ln533">        //Top.</a>
+<a name="ln534">        Canvas.SetLeft(_top, Selected.Left + Selected.Width / 2 - _top.Width / 2);</a>
+<a name="ln535">        Canvas.SetTop(_top, Selected.Top - _top.Height / 2);</a>
+<a name="ln536"> </a>
+<a name="ln537">        //Left.</a>
+<a name="ln538">        Canvas.SetLeft(_left, Selected.Left - _left.Width / 2);</a>
+<a name="ln539">        Canvas.SetTop(_left, Selected.Top + Selected.Height / 2 - _left.Height / 2);</a>
+<a name="ln540"> </a>
+<a name="ln541">        //Right.</a>
+<a name="ln542">        Canvas.SetLeft(_right, Selected.Right - _right.Width / 2);</a>
+<a name="ln543">        Canvas.SetTop(_right, Selected.Top + Selected.Height / 2 - _right.Height / 2);</a>
+<a name="ln544"> </a>
+<a name="ln545">        //Bottom.</a>
+<a name="ln546">        Canvas.SetLeft(_bottom, Selected.Left + Selected.Width / 2 - _bottom.Width / 2);</a>
+<a name="ln547">        Canvas.SetTop(_bottom, Selected.Bottom - _bottom.Height / 2);</a>
+<a name="ln548">    }</a>
+<a name="ln549"> </a>
+<a name="ln550">    private void AdjustZoomView(Point point)</a>
+<a name="ln551">    {</a>
+<a name="ln552">        if (BackImage == null || Mode != ModeType.Region || !UserSettings.All.Magnifier || (_bottom.IsVisible &amp;&amp; Selected.Contains(point)) || _blindSpots.Any(x =&gt; x.Contains(point)))</a>
+<a name="ln553">        {</a>
+<a name="ln554">            _zoomGrid.Visibility = Visibility.Hidden;</a>
+<a name="ln555">            return;</a>
+<a name="ln556">        }</a>
+<a name="ln557"> </a>
+<a name="ln558">        var monitor = Monitors.FirstOrDefault(x =&gt; x.Bounds.Contains(point));</a>
+<a name="ln559"> </a>
+<a name="ln560">        if (monitor == null)</a>
+<a name="ln561">        {</a>
+<a name="ln562">            _zoomGrid.Visibility = Visibility.Hidden;</a>
+<a name="ln563">            return;</a>
+<a name="ln564">        }</a>
+<a name="ln565"> </a>
+<a name="ln566">        var scaledPoint = point.Scale(Scale);</a>
+<a name="ln567">        var scaledSize = (int)Math.Round(15 * Scale, MidpointRounding.AwayFromZero);</a>
+<a name="ln568"> </a>
+<a name="ln569">        try</a>
+<a name="ln570">        {</a>
+<a name="ln571">            //The image is already 7 pixels offset of the current position.</a>
+<a name="ln572">            _croppedImage.Source = new CroppedBitmap(BackImage, new Int32Rect((int)scaledPoint.X, (int)scaledPoint.Y, scaledSize, scaledSize));</a>
+<a name="ln573">        }</a>
+<a name="ln574">        catch (Exception)</a>
+<a name="ln575">        { }</a>
+<a name="ln576"> </a>
+<a name="ln577">        var left = point.X + 20;</a>
+<a name="ln578">        var top = point.Y - _zoomGrid.ActualHeight - 20;</a>
+<a name="ln579"> </a>
+<a name="ln580">        //Right overflow, adjust to the left.</a>
+<a name="ln581">        if (monitor.Bounds.Right - point.X &lt; _zoomGrid.ActualWidth + 20)</a>
+<a name="ln582">            left = point.X - _zoomGrid.ActualWidth - 20;</a>
+<a name="ln583"> </a>
+<a name="ln584">        //Top overflow, adjust to the bottom.</a>
+<a name="ln585">        if (point.Y - _zoomGrid.ActualHeight - 20 &lt; monitor.Bounds.Top)</a>
+<a name="ln586">            top = point.Y + 20;</a>
+<a name="ln587"> </a>
+<a name="ln588">        Canvas.SetLeft(_zoomGrid, left);</a>
+<a name="ln589">        Canvas.SetTop(_zoomGrid, top);</a>
+<a name="ln590"> </a>
+<a name="ln591">        _zoomTextBlock.Text = $&quot;X: {scaledPoint.X + SystemParameters.VirtualScreenLeft} ◇ Y: {scaledPoint.Y + SystemParameters.VirtualScreenTop}&quot;;</a>
+<a name="ln592"> </a>
+<a name="ln593">        _zoomGrid.Visibility = Visibility.Visible;</a>
+<a name="ln594">    }</a>
+<a name="ln595"> </a>
+<a name="ln596">    private void AdjustStatusControls(Point? point = null)</a>
+<a name="ln597">    {</a>
+<a name="ln598">        if (_statusControlGrid == null)</a>
+<a name="ln599">            return;</a>
+<a name="ln600"> </a>
+<a name="ln601">        if (!FinishedSelection || EmbeddedMode)</a>
+<a name="ln602">        {</a>
+<a name="ln603">            _statusControlGrid.Visibility = Visibility.Hidden;</a>
+<a name="ln604">            return;</a>
+<a name="ln605">        }</a>
+<a name="ln606"> </a>
+<a name="ln607">        //Show the controls always closest to the given point, if there's no space on the current monitor,</a>
+<a name="ln608">        //try finding the second closest point, or else show inside the selection rectangle.</a>
+<a name="ln609"> </a>
+<a name="ln610">        if (!point.HasValue)</a>
+<a name="ln611">            return;</a>
+<a name="ln612"> </a>
+<a name="ln613">        //If the main monitor is not the most left / top one, the bounds of monitors left to / above the main monitor are negative,</a>
+<a name="ln614">        //But the cursor point is always starting from 0,0</a>
+<a name="ln615">        //So, the cursor point may not fall into any monitor bounds (exceed the maximum right / bottom coordinate)</a>
+<a name="ln616">        //As a result, convert the cursor point into the same axis of monitors by plusing the negative left / top coordinate</a>
+<a name="ln617">        //double minimumMonitorTop = Monitors.Min(x =&gt; x.Bounds.Top);</a>
+<a name="ln618">        //double minimumMonitorLeft = Monitors.Min(x =&gt; x.Bounds.Left);</a>
+<a name="ln619"> </a>
+<a name="ln620">        var absolutePoint = new Point(point.Value.X, point.Value.Y);</a>
+<a name="ln621"> </a>
+<a name="ln622">        var monitor = Monitors.FirstOrDefault(x =&gt; x.Bounds.Contains(absolutePoint));</a>
+<a name="ln623"> </a>
+<a name="ln624">        if (monitor == null)</a>
+<a name="ln625">            return;</a>
+<a name="ln626"> </a>
+<a name="ln627">        //If there's no space at the sides, show inside the rectangle.</a>
+<a name="ln628">        if (Selected.Width &gt; monitor.Bounds.Width - _statusVerticalSize.Width * 2 &amp;&amp; Selected.Height &gt; monitor.Bounds.Height - _statusHorizontalSize.Height * 2)</a>
+<a name="ln629">        {</a>
+<a name="ln630">            _statusControlGrid.Rows = 1;</a>
+<a name="ln631">            _statusControlGrid.Columns = 3;</a>
+<a name="ln632">            _statusControlGrid.IsReversed = false;</a>
+<a name="ln633">            _statusControlGrid.UpdateLayout();</a>
+<a name="ln634"> </a>
+<a name="ln635">            Canvas.SetLeft(_statusControlGrid, Selected.Left + Selected.Width / 2 - _statusControlGrid.ActualWidth / 2);</a>
+<a name="ln636">            Canvas.SetTop(_statusControlGrid, Selected.Top + Selected.Height / 2 - _statusControlGrid.ActualHeight / 2);</a>
+<a name="ln637">        }</a>
+<a name="ln638">        else</a>
+<a name="ln639">        {</a>
+<a name="ln640">            //Out of 4 Points, get the one that is closest to the current mouse position.</a>
+<a name="ln641">            var distances = new[] { (Selected.TopLeft - point.Value).Length, (Selected.TopRight - point.Value).Length, (Selected.BottomLeft - point.Value).Length, (Selected.BottomRight - point.Value).Length };</a>
+<a name="ln642">            var index = Array.IndexOf(distances, distances.Min());</a>
+<a name="ln643"> </a>
+<a name="ln644">            const int margin = 10;</a>
+<a name="ln645"> </a>
+<a name="ln646">            var canTopLeft = Selected.Top - monitor.Bounds.Top &gt; _statusHorizontalSize.Height + margin || Selected.Left - monitor.Bounds.Left &gt; _statusVerticalSize.Width + margin;</a>
+<a name="ln647">            var canBottomLeft = monitor.Bounds.Bottom - Selected.Bottom &gt; _statusHorizontalSize.Height + margin || Selected.Left - monitor.Bounds.Left &gt; _statusVerticalSize.Width + margin;</a>
+<a name="ln648"> </a>
+<a name="ln649">            switch (index)</a>
+<a name="ln650">            {</a>
+<a name="ln651">                case 0: //Top Left.</a>
+<a name="ln652">                    if (Selected.Top - monitor.Bounds.Top &gt; _statusHorizontalSize.Height + margin)</a>
+<a name="ln653">                    {</a>
+<a name="ln654">                        //On top.</a>
+<a name="ln655">                        _statusControlGrid.Rows = 1;</a>
+<a name="ln656">                        _statusControlGrid.Columns = 3;</a>
+<a name="ln657">                        _statusControlGrid.IsReversed = false;</a>
+<a name="ln658">                        _statusControlGrid.UpdateLayout();</a>
+<a name="ln659"> </a>
+<a name="ln660">                        Canvas.SetLeft(_statusControlGrid, Selected.Left);</a>
+<a name="ln661">                        Canvas.SetTop(_statusControlGrid, Selected.Top - _statusControlGrid.ActualHeight - margin);</a>
+<a name="ln662">                        break;</a>
+<a name="ln663">                    }</a>
+<a name="ln664">                    else if (Selected.Left - monitor.Bounds.Left &gt; _statusVerticalSize.Width + margin)</a>
+<a name="ln665">                    {</a>
+<a name="ln666">                        //To the left.</a>
+<a name="ln667">                        _statusControlGrid.Rows = 3;</a>
+<a name="ln668">                        _statusControlGrid.Columns = 1;</a>
+<a name="ln669">                        _statusControlGrid.IsReversed = false;</a>
+<a name="ln670">                        _statusControlGrid.UpdateLayout();</a>
+<a name="ln671"> </a>
+<a name="ln672">                        Canvas.SetLeft(_statusControlGrid, Selected.Left - _statusControlGrid.ActualWidth - margin);</a>
+<a name="ln673">                        Canvas.SetTop(_statusControlGrid, Selected.Top);</a>
+<a name="ln674">                        break;</a>
+<a name="ln675">                    }</a>
+<a name="ln676"> </a>
+<a name="ln677">                    if (Selected.Width &gt; Selected.Height &amp;&amp; canBottomLeft)</a>
+<a name="ln678">                        goto case 2; //Bottom left.</a>
+<a name="ln679">                    else</a>
+<a name="ln680">                        goto case 1; //Top right.</a>
+<a name="ln681"> </a>
+<a name="ln682">                case 1: //Top Right.</a>
+<a name="ln683">                    if (Selected.Top - monitor.Bounds.Top &gt; _statusHorizontalSize.Height + margin)</a>
+<a name="ln684">                    {</a>
+<a name="ln685">                        //On top.</a>
+<a name="ln686">                        _statusControlGrid.Rows = 1;</a>
+<a name="ln687">                        _statusControlGrid.Columns = 3;</a>
+<a name="ln688">                        _statusControlGrid.IsReversed = true;</a>
+<a name="ln689">                        _statusControlGrid.UpdateLayout();</a>
+<a name="ln690"> </a>
+<a name="ln691">                        Canvas.SetLeft(_statusControlGrid, Selected.Right - _statusControlGrid.ActualWidth);</a>
+<a name="ln692">                        Canvas.SetTop(_statusControlGrid, Selected.Top - _statusControlGrid.ActualHeight - margin);</a>
+<a name="ln693">                        break;</a>
+<a name="ln694">                    }</a>
+<a name="ln695">                    else if (monitor.Bounds.Right - Selected.Right &gt; _statusVerticalSize.Width + margin)</a>
+<a name="ln696">                    {</a>
+<a name="ln697">                        //To the right.</a>
+<a name="ln698">                        _statusControlGrid.Rows = 3;</a>
+<a name="ln699">                        _statusControlGrid.Columns = 1;</a>
+<a name="ln700">                        _statusControlGrid.IsReversed = false;</a>
+<a name="ln701">                        _statusControlGrid.UpdateLayout();</a>
+<a name="ln702"> </a>
+<a name="ln703">                        Canvas.SetLeft(_statusControlGrid, Selected.Right + margin);</a>
+<a name="ln704">                        Canvas.SetTop(_statusControlGrid, Selected.Top);</a>
+<a name="ln705">                        break;</a>
+<a name="ln706">                    }</a>
+<a name="ln707"> </a>
+<a name="ln708">                    if (Selected.Width &gt; Selected.Height &amp;&amp; canTopLeft)</a>
+<a name="ln709">                        goto case 3; //Bottom right.</a>
+<a name="ln710">                    else</a>
+<a name="ln711">                        goto case 0; //Top left.</a>
+<a name="ln712"> </a>
+<a name="ln713">                case 2: //Bottom Left.</a>
+<a name="ln714">                    if (monitor.Bounds.Bottom - Selected.Bottom &gt; _statusHorizontalSize.Height + margin)</a>
+<a name="ln715">                    {</a>
+<a name="ln716">                        //On the bottom.</a>
+<a name="ln717">                        _statusControlGrid.Rows = 1;</a>
+<a name="ln718">                        _statusControlGrid.Columns = 3;</a>
+<a name="ln719">                        _statusControlGrid.IsReversed = false;</a>
+<a name="ln720">                        _statusControlGrid.UpdateLayout();</a>
+<a name="ln721"> </a>
+<a name="ln722">                        Canvas.SetLeft(_statusControlGrid, Selected.Left);</a>
+<a name="ln723">                        Canvas.SetTop(_statusControlGrid, Selected.Bottom + margin);</a>
+<a name="ln724">                        break;</a>
+<a name="ln725">                    }</a>
+<a name="ln726">                    else if (Selected.Left - monitor.Bounds.Left &gt; _statusVerticalSize.Width + margin)</a>
+<a name="ln727">                    {</a>
+<a name="ln728">                        //To the left.</a>
+<a name="ln729">                        _statusControlGrid.Rows = 3;</a>
+<a name="ln730">                        _statusControlGrid.Columns = 1;</a>
+<a name="ln731">                        _statusControlGrid.IsReversed = true;</a>
+<a name="ln732">                        _statusControlGrid.UpdateLayout();</a>
+<a name="ln733"> </a>
+<a name="ln734">                        Canvas.SetLeft(_statusControlGrid, Selected.Left - _statusControlGrid.ActualWidth - margin);</a>
+<a name="ln735">                        Canvas.SetTop(_statusControlGrid, Selected.Bottom - _statusControlGrid.ActualHeight);</a>
+<a name="ln736">                        break;</a>
+<a name="ln737">                    }</a>
+<a name="ln738"> </a>
+<a name="ln739">                    if (Selected.Width &gt; Selected.Height &amp;&amp; canTopLeft)</a>
+<a name="ln740">                        goto case 0; //Top left.</a>
+<a name="ln741">                    else</a>
+<a name="ln742">                        goto case 3; //Bottom right.</a>
+<a name="ln743"> </a>
+<a name="ln744">                case 3: //Bottom Right.</a>
+<a name="ln745">                    if (monitor.Bounds.Bottom - Selected.Bottom &gt; _statusHorizontalSize.Height + margin)</a>
+<a name="ln746">                    {</a>
+<a name="ln747">                        //On the bottom.</a>
+<a name="ln748">                        _statusControlGrid.Rows = 1;</a>
+<a name="ln749">                        _statusControlGrid.Columns = 3;</a>
+<a name="ln750">                        _statusControlGrid.IsReversed = true;</a>
+<a name="ln751">                        _statusControlGrid.UpdateLayout();</a>
+<a name="ln752"> </a>
+<a name="ln753">                        Canvas.SetLeft(_statusControlGrid, Selected.Right - _statusControlGrid.ActualWidth);</a>
+<a name="ln754">                        Canvas.SetTop(_statusControlGrid, Selected.Bottom + margin);</a>
+<a name="ln755">                        break;</a>
+<a name="ln756">                    }</a>
+<a name="ln757">                    else if (monitor.Bounds.Right - Selected.Right &gt; _statusVerticalSize.Width + margin)</a>
+<a name="ln758">                    {</a>
+<a name="ln759">                        //To the right.</a>
+<a name="ln760">                        _statusControlGrid.Rows = 3;</a>
+<a name="ln761">                        _statusControlGrid.Columns = 1;</a>
+<a name="ln762">                        _statusControlGrid.IsReversed = true;</a>
+<a name="ln763">                        _statusControlGrid.UpdateLayout();</a>
+<a name="ln764"> </a>
+<a name="ln765">                        Canvas.SetLeft(_statusControlGrid, Selected.Right + margin);</a>
+<a name="ln766">                        Canvas.SetTop(_statusControlGrid, Selected.Bottom - _statusControlGrid.ActualHeight);</a>
+<a name="ln767">                        break;</a>
+<a name="ln768">                    }</a>
+<a name="ln769"> </a>
+<a name="ln770">                    if (Selected.Width &gt; Selected.Height &amp;&amp; canBottomLeft)</a>
+<a name="ln771">                        goto case 1; //Top right.</a>
+<a name="ln772">                    else</a>
+<a name="ln773">                        goto case 2; //Bottom left.</a>
+<a name="ln774">            }</a>
+<a name="ln775">        }</a>
+<a name="ln776"> </a>
+<a name="ln777">        _statusControlGrid.Visibility = Visibility.Visible;</a>
+<a name="ln778">    }</a>
+<a name="ln779"> </a>
+<a name="ln780">    private void AdjustFlowControls()</a>
+<a name="ln781">    {</a>
+<a name="ln782">        if (_mainCanvas == null)</a>
+<a name="ln783">            return;</a>
+<a name="ln784"> </a>
+<a name="ln785">        foreach (var button in _mainCanvas.Children.OfType&lt;ExtendedButton&gt;())</a>
+<a name="ln786">            button.Visibility = FinishedSelection ? Visibility.Hidden : Visibility.Visible;</a>
+<a name="ln787">    }</a>
+<a name="ln788"> </a>
+<a name="ln789">    private void AdjustInfo(Point? point = null)</a>
+<a name="ln790">    {</a>
+<a name="ln791">        if (_sizeTextBlock == null)</a>
+<a name="ln792">            return;</a>
+<a name="ln793"> </a>
+<a name="ln794">        if (point == null || Selected.IsEmpty || Selected.Width &lt; _sizeTextBlock.ActualWidth || Selected.Height &lt; _sizeTextBlock.ActualHeight)</a>
+<a name="ln795">        {</a>
+<a name="ln796">            _sizeTextBlock.Visibility = Visibility.Hidden;</a>
+<a name="ln797">            return;</a>
+<a name="ln798">        }</a>
+<a name="ln799"> </a>
+<a name="ln800">        //Out of 4 Points, get the one that is farthest from the current mouse position.</a>
+<a name="ln801">        var distances = new[] { (Selected.TopLeft - point.Value).Length, (Selected.TopRight - point.Value).Length, (Selected.BottomLeft - point.Value).Length, (Selected.BottomRight - point.Value).Length };</a>
+<a name="ln802">        var index = Array.IndexOf(distances, distances.Max());</a>
+<a name="ln803"> </a>
+<a name="ln804">        switch (index)</a>
+<a name="ln805">        {</a>
+<a name="ln806">            case 0:</a>
+<a name="ln807">                Canvas.SetTop(_sizeTextBlock, Selected.Top);</a>
+<a name="ln808">                Canvas.SetLeft(_sizeTextBlock, Selected.Left);</a>
+<a name="ln809">                break;</a>
+<a name="ln810">            case 1:</a>
+<a name="ln811">                Canvas.SetTop(_sizeTextBlock, Selected.Top);</a>
+<a name="ln812">                Canvas.SetLeft(_sizeTextBlock, Selected.Right - _sizeTextBlock.ActualWidth);</a>
+<a name="ln813">                break;</a>
+<a name="ln814">            case 2:</a>
+<a name="ln815">                Canvas.SetTop(_sizeTextBlock, Selected.Bottom - _sizeTextBlock.ActualHeight);</a>
+<a name="ln816">                Canvas.SetLeft(_sizeTextBlock, Selected.Left);</a>
+<a name="ln817">                break;</a>
+<a name="ln818">            case 3:</a>
+<a name="ln819">                Canvas.SetTop(_sizeTextBlock, Selected.Bottom - _sizeTextBlock.ActualHeight);</a>
+<a name="ln820">                Canvas.SetLeft(_sizeTextBlock, Selected.Right - _sizeTextBlock.ActualWidth);</a>
+<a name="ln821">                break;</a>
+<a name="ln822">        }</a>
+<a name="ln823"> </a>
+<a name="ln824">        _sizeTextBlock.Visibility = Visibility.Visible;</a>
+<a name="ln825">    }</a>
+<a name="ln826"> </a>
+<a name="ln827">    private void DetectBlindSpots()</a>
+<a name="ln828">    {</a>
+<a name="ln829">        _blindSpots.Clear();</a>
+<a name="ln830"> </a>
+<a name="ln831">        if (Mode != ModeType.Region || !UserSettings.All.Magnifier)</a>
+<a name="ln832">            return;</a>
+<a name="ln833"> </a>
+<a name="ln834">        //If nothing selected, only the Close button will appear.</a>
+<a name="ln835">        if (Selected.IsEmpty)// || !FinishedSelection)</a>
+<a name="ln836">        {</a>
+<a name="ln837">            foreach (var monitor in Monitors)</a>
+<a name="ln838">                _blindSpots.Add(new Rect(new Point(monitor.Bounds.Right - 40, monitor.Bounds.Top), new Size(40, 40)));</a>
+<a name="ln839"> </a>
+<a name="ln840">            return;</a>
+<a name="ln841">        }</a>
+<a name="ln842"> </a>
+<a name="ln843">        if (_statusControlGrid.Visibility == Visibility.Visible)</a>
+<a name="ln844">            _blindSpots.Add(new Rect(new Point(Canvas.GetLeft(_statusControlGrid), Canvas.GetTop(_statusControlGrid)), new Size(_statusControlGrid.ActualWidth, _statusControlGrid.ActualHeight)));</a>
+<a name="ln845">    }</a>
+<a name="ln846"> </a>
+<a name="ln847">    internal void Accept()</a>
+<a name="ln848">    {</a>
+<a name="ln849">        if (!FinishedSelection)</a>
+<a name="ln850">            return;</a>
+<a name="ln851"> </a>
+<a name="ln852">        RaiseAcceptedEvent();</a>
+<a name="ln853">    }</a>
+<a name="ln854"> </a>
+<a name="ln855">    public void Retry()</a>
+<a name="ln856">    {</a>
+<a name="ln857">        Selected = Rect.Empty;</a>
+<a name="ln858"> </a>
+<a name="ln859">        FinishedSelection = false;</a>
+<a name="ln860"> </a>
+<a name="ln861">        AdjustMode();</a>
+<a name="ln862">        AdjustStatusControls();</a>
+<a name="ln863">        AdjustFlowControls();</a>
+<a name="ln864">        DetectBlindSpots();</a>
+<a name="ln865">        AdjustInfo();</a>
+<a name="ln866">    }</a>
+<a name="ln867"> </a>
+<a name="ln868">    public void Cancel()</a>
+<a name="ln869">    {</a>
+<a name="ln870">        Selected = Rect.Empty;</a>
+<a name="ln871"> </a>
+<a name="ln872">        FinishedSelection = false;</a>
+<a name="ln873"> </a>
+<a name="ln874">        AdjustStatusControls();</a>
+<a name="ln875">        DetectBlindSpots();</a>
+<a name="ln876">        RaiseCanceledEvent();</a>
+<a name="ln877">    }</a>
+<a name="ln878"> </a>
+<a name="ln879">    public void RaiseAcceptedEvent()</a>
+<a name="ln880">    {</a>
+<a name="ln881">        if (SelectionAcceptedEvent == null || !IsLoaded)</a>
+<a name="ln882">            return;</a>
+<a name="ln883"> </a>
+<a name="ln884">        RaiseEvent(new RoutedEventArgs(SelectionAcceptedEvent));</a>
+<a name="ln885">    }</a>
+<a name="ln886"> </a>
+<a name="ln887">    public void RaiseChangedEvent()</a>
+<a name="ln888">    {</a>
+<a name="ln889">        if (SelectionChangedEvent == null || !IsLoaded)</a>
+<a name="ln890">            return;</a>
+<a name="ln891"> </a>
+<a name="ln892">        RaiseEvent(new RoutedEventArgs(SelectionChangedEvent));</a>
+<a name="ln893">    }</a>
+<a name="ln894"> </a>
+<a name="ln895">    public void RaiseCanceledEvent()</a>
+<a name="ln896">    {</a>
+<a name="ln897">        if (SelectionCanceledEvent == null || !IsLoaded)</a>
+<a name="ln898">            return;</a>
+<a name="ln899"> </a>
+<a name="ln900">        RaiseEvent(new RoutedEventArgs(SelectionCanceledEvent));</a>
+<a name="ln901">    }</a>
+<a name="ln902"> </a>
+<a name="ln903">    public void AdjustMode()</a>
+<a name="ln904">    {</a>
+<a name="ln905">        if (Mode == ModeType.Window)</a>
+<a name="ln906">            Windows = Native.Helpers.Windows.EnumerateWindows(Scale).AdjustPosition(SystemParameters.VirtualScreenLeft, SystemParameters.VirtualScreenTop);</a>
+<a name="ln907">        else if (Mode == ModeType.Fullscreen)</a>
+<a name="ln908">            Windows = MonitorHelper.AllMonitorsScaled(Scale, true).Select(x =&gt; new DetectedRegion(x.Handle, x.Bounds.Offset(-1), x.Name)).ToList();</a>
+<a name="ln909">        else</a>
+<a name="ln910">            Windows.Clear();</a>
+<a name="ln911">    }</a>
+<a name="ln912"> </a>
+<a name="ln913">    private void CalculateStatusGridSizes()</a>
+<a name="ln914">    {</a>
+<a name="ln915">        _statusControlGrid.Rows = 3;</a>
+<a name="ln916">        _statusControlGrid.Columns = 1;</a>
+<a name="ln917">        _statusControlGrid.UpdateLayout();</a>
+<a name="ln918"> </a>
+<a name="ln919">        _statusVerticalSize = new Size(_statusControlGrid.ActualWidth, _statusControlGrid.ActualHeight);</a>
+<a name="ln920"> </a>
+<a name="ln921">        _statusControlGrid.Rows = 1;</a>
+<a name="ln922">        _statusControlGrid.Columns = 3;</a>
+<a name="ln923">        _statusControlGrid.UpdateLayout();</a>
+<a name="ln924"> </a>
+<a name="ln925">        _statusHorizontalSize = new Size(_statusControlGrid.ActualWidth, _statusControlGrid.ActualHeight);</a>
+<a name="ln926">    }</a>
+<a name="ln927"> </a>
+<a name="ln928">    #endregion</a>
+<a name="ln929"> </a>
+<a name="ln930">    #region Events</a>
+<a name="ln931"> </a>
+<a name="ln932">    public void OnLoaded(object o, RoutedEventArgs routedEventArgs)</a>
+<a name="ln933">    {</a>
+<a name="ln934">        _ready = false;</a>
+<a name="ln935"> </a>
+<a name="ln936">        Keyboard.Focus(this);</a>
+<a name="ln937"> </a>
+<a name="ln938">        _blindSpots.Clear();</a>
+<a name="ln939"> </a>
+<a name="ln940">        if (EmbeddedMode)</a>
+<a name="ln941">        {</a>
+<a name="ln942">            var viewBox = new Viewbox</a>
+<a name="ln943">            {</a>
+<a name="ln944">                Height = Height,</a>
+<a name="ln945">                Width = Width,</a>
+<a name="ln946">                Stretch = Stretch.Uniform,</a>
+<a name="ln947">                StretchDirection = StretchDirection.Both,</a>
+<a name="ln948">                Tag = &quot;T&quot;,</a>
+<a name="ln949">                ClipToBounds = true,</a>
+<a name="ln950">                IsHitTestVisible = false,</a>
+<a name="ln951">                Child = new TextPath</a>
+<a name="ln952">                {</a>
+<a name="ln953">                    IsHitTestVisible = false,</a>
+<a name="ln954">                    Text = LocalizationHelper.Get(&quot;S.Recorder.SelectArea.Embedded&quot;),</a>
+<a name="ln955">                    Fill = new SolidColorBrush(Color.FromArgb(200, 0, 0, 0)),</a>
+<a name="ln956">                    Stroke = new SolidColorBrush(Color.FromArgb(200, 255, 255, 255)),</a>
+<a name="ln957">                    StrokeThickness = 1.6,</a>
+<a name="ln958">                    FontFamily = new FontFamily(&quot;Segoe UI&quot;),</a>
+<a name="ln959">                    FontSize = 80,</a>
+<a name="ln960">                    FontWeight = FontWeights.SemiBold,</a>
+<a name="ln961">                    Margin = new Thickness(80),</a>
+<a name="ln962">                    VerticalAlignment = VerticalAlignment.Stretch,</a>
+<a name="ln963">                    HorizontalAlignment = HorizontalAlignment.Stretch,</a>
+<a name="ln964">                    ClipToBounds = true</a>
+<a name="ln965">                }</a>
+<a name="ln966">            };</a>
+<a name="ln967"> </a>
+<a name="ln968">            _mainCanvas.Children.Insert(0, viewBox);</a>
+<a name="ln969"> </a>
+<a name="ln970">            Canvas.SetLeft(viewBox, 0);</a>
+<a name="ln971">            Canvas.SetTop(viewBox, 0);</a>
+<a name="ln972">            Panel.SetZIndex(viewBox, 0);</a>
+<a name="ln973"> </a>
+<a name="ln974">            AdjustSelection();</a>
+<a name="ln975">            return;</a>
+<a name="ln976">        }</a>
+<a name="ln977"> </a>
+<a name="ln978">        AdjustZoomView(Mouse.GetPosition(this));</a>
+<a name="ln979"> </a>
+<a name="ln980">        CalculateStatusGridSizes();</a>
+<a name="ln981"> </a>
+<a name="ln982">        #region For each monitor</a>
+<a name="ln983"> </a>
+<a name="ln984">        foreach (var monitor in Monitors)</a>
+<a name="ln985">        {</a>
+<a name="ln986">            //Close button.</a>
+<a name="ln987">            var button = new ExtendedButton</a>
+<a name="ln988">            {</a>
+<a name="ln989">                Name = &quot;CancelButton&quot;,</a>
+<a name="ln990">                Width = 40,</a>
+<a name="ln991">                Height = 40,</a>
+<a name="ln992">                ContentHeight = 25,</a>
+<a name="ln993">                ContentWidth = 25,</a>
+<a name="ln994">                ToolTip = LocalizationHelper.Get(&quot;S.Recorder.CancelSelection&quot;),</a>
+<a name="ln995">                Icon = TryFindResource(&quot;Vector.Cancel&quot;) as Brush,</a>
+<a name="ln996">                Style = TryFindResource(&quot;Style.Button.NoText.White&quot;) as Style,</a>
+<a name="ln997">                Cursor = Cursors.Arrow,</a>
+<a name="ln998">                Tag = &quot;T&quot;</a>
+<a name="ln999">            };</a>
+<a name="ln1000"> </a>
+<a name="ln1001">            button.Click += (sender, e) =&gt; { Cancel(); };</a>
+<a name="ln1002"> </a>
+<a name="ln1003">            _mainCanvas.Children.Add(button);</a>
+<a name="ln1004"> </a>
+<a name="ln1005">            Canvas.SetLeft(button, monitor.Bounds.Right - 40);</a>
+<a name="ln1006">            Canvas.SetTop(button, monitor.Bounds.Top);</a>
+<a name="ln1007">            Panel.SetZIndex(button, 8);</a>
+<a name="ln1008"> </a>
+<a name="ln1009">            _blindSpots.Add(new Rect(new Point(monitor.Bounds.Right - 40, monitor.Bounds.Top), new Size(40, 40)));</a>
+<a name="ln1010">        }</a>
+<a name="ln1011"> </a>
+<a name="ln1012">        #endregion</a>
+<a name="ln1013"> </a>
+<a name="ln1014">        if (Mode == ModeType.Fullscreen)</a>
+<a name="ln1015">        {</a>
+<a name="ln1016">            foreach (var monitor in Monitors)</a>
+<a name="ln1017">            {</a>
+<a name="ln1018">                var viewBox = new Viewbox</a>
+<a name="ln1019">                {</a>
+<a name="ln1020">                    Height = monitor.Bounds.Height,</a>
+<a name="ln1021">                    Width = monitor.Bounds.Width,</a>
+<a name="ln1022">                    Stretch = Stretch.Uniform,</a>
+<a name="ln1023">                    Tag = &quot;T&quot;,</a>
+<a name="ln1024">                    IsHitTestVisible = false,</a>
+<a name="ln1025">                    Child = new TextPath</a>
+<a name="ln1026">                    {</a>
+<a name="ln1027">                        IsHitTestVisible = false,</a>
+<a name="ln1028">                        Text = &quot;👆 &quot; + LocalizationHelper.Get(&quot;S.Recorder.SelectScreen&quot;),</a>
+<a name="ln1029">                        Fill = new SolidColorBrush(Color.FromArgb(200, 0, 0, 0)),</a>
+<a name="ln1030">                        Stroke = new SolidColorBrush(Color.FromArgb(200, 255, 255, 255)),</a>
+<a name="ln1031">                        StrokeThickness = 1.6,</a>
+<a name="ln1032">                        FontFamily = new FontFamily(&quot;Segoe UI&quot;),</a>
+<a name="ln1033">                        FontSize = 80,</a>
+<a name="ln1034">                        FontWeight = FontWeights.SemiBold,</a>
+<a name="ln1035">                        Margin = new Thickness(50)</a>
+<a name="ln1036">                    }</a>
+<a name="ln1037">                };</a>
+<a name="ln1038"> </a>
+<a name="ln1039">                _mainCanvas.Children.Insert(0, viewBox);</a>
+<a name="ln1040"> </a>
+<a name="ln1041">                Canvas.SetLeft(viewBox, monitor.Bounds.Left);</a>
+<a name="ln1042">                Canvas.SetTop(viewBox, monitor.Bounds.Top);</a>
+<a name="ln1043">                Panel.SetZIndex(viewBox, 0);</a>
+<a name="ln1044">            }</a>
+<a name="ln1045">        }</a>
+<a name="ln1046">        else if (Mode == ModeType.Window)</a>
+<a name="ln1047">        {</a>
+<a name="ln1048">            foreach (var window in Windows)</a>
+<a name="ln1049">            {</a>
+<a name="ln1050">                var border = new Border</a>
+<a name="ln1051">                {</a>
+<a name="ln1052">                    Tag = &quot;T&quot;,</a>
+<a name="ln1053">                    ClipToBounds = true,</a>
+<a name="ln1054">                    IsHitTestVisible = false,</a>
+<a name="ln1055">                    Height = window.Bounds.Height,</a>
+<a name="ln1056">                    Width = window.Bounds.Width,</a>
+<a name="ln1057">                    Child = new Viewbox</a>
+<a name="ln1058">                    {</a>
+<a name="ln1059">                        Stretch = Stretch.Uniform,</a>
+<a name="ln1060">                        StretchDirection = StretchDirection.Both,</a>
+<a name="ln1061">                        VerticalAlignment = VerticalAlignment.Center,</a>
+<a name="ln1062">                        Child = new TextPath</a>
+<a name="ln1063">                        {</a>
+<a name="ln1064">                            IsHitTestVisible = false,</a>
+<a name="ln1065">                            Text = window.Bounds.Width &lt; 400 || window.Bounds.Height &lt; 100 ? &quot;👆&quot; : &quot;👆 &quot; + LocalizationHelper.Get(&quot;S.Recorder.SelectWindow&quot;),</a>
+<a name="ln1066">                            Fill = new SolidColorBrush(Color.FromArgb(200, 0, 0, 0)),</a>
+<a name="ln1067">                            Stroke = new SolidColorBrush(Color.FromArgb(200, 255, 255, 255)),</a>
+<a name="ln1068">                            StrokeThickness = 1.6,</a>
+<a name="ln1069">                            FontFamily = new FontFamily(&quot;Segoe UI&quot;),</a>
+<a name="ln1070">                            FontSize = 80,</a>
+<a name="ln1071">                            FontWeight = FontWeights.SemiBold,</a>
+<a name="ln1072">                            Margin = new Thickness(20),</a>
+<a name="ln1073">                            VerticalAlignment = VerticalAlignment.Stretch,</a>
+<a name="ln1074">                            HorizontalAlignment = HorizontalAlignment.Stretch,</a>
+<a name="ln1075">                        }</a>
+<a name="ln1076">                    }</a>
+<a name="ln1077">                };</a>
+<a name="ln1078"> </a>
+<a name="ln1079">                var viewBox = new Viewbox</a>
+<a name="ln1080">                {</a>
+<a name="ln1081">                    Height = window.Bounds.Height,</a>
+<a name="ln1082">                    Width = window.Bounds.Width,</a>
+<a name="ln1083">                    Stretch = Stretch.Uniform,</a>
+<a name="ln1084">                    StretchDirection = StretchDirection.Both,</a>
+<a name="ln1085">                    Tag = &quot;T&quot;,</a>
+<a name="ln1086">                    ClipToBounds = true,</a>
+<a name="ln1087">                    IsHitTestVisible = false,</a>
+<a name="ln1088">                    VerticalAlignment = VerticalAlignment.Center,</a>
+<a name="ln1089">                    Child = new TextPath</a>
+<a name="ln1090">                    {</a>
+<a name="ln1091">                        IsHitTestVisible = false,</a>
+<a name="ln1092">                        Text = window.Bounds.Width &lt; 400 || window.Bounds.Height &lt; 100 ? &quot;👆&quot; : &quot;👆 &quot; + LocalizationHelper.Get(&quot;S.Recorder.SelectWindow&quot;),</a>
+<a name="ln1093">                        Fill = new SolidColorBrush(Color.FromArgb(200, 0, 0, 0)),</a>
+<a name="ln1094">                        Stroke = new SolidColorBrush(Color.FromArgb(200, 255, 255, 255)),</a>
+<a name="ln1095">                        StrokeThickness = 1.6,</a>
+<a name="ln1096">                        FontFamily = new FontFamily(&quot;Segoe UI&quot;),</a>
+<a name="ln1097">                        FontSize = 80,</a>
+<a name="ln1098">                        FontWeight = FontWeights.SemiBold,</a>
+<a name="ln1099">                        Margin = new Thickness(20),</a>
+<a name="ln1100">                        VerticalAlignment = VerticalAlignment.Stretch,</a>
+<a name="ln1101">                        HorizontalAlignment = HorizontalAlignment.Stretch,</a>
+<a name="ln1102">                        ClipToBounds = true,</a>
+<a name="ln1103">                    }</a>
+<a name="ln1104">                    //Child = new Border</a>
+<a name="ln1105">                    //{</a>
+<a name="ln1106">                    //    Background = PickBrush(),</a>
+<a name="ln1107">                    //    Margin = new Thickness(20),</a>
+<a name="ln1108">                    //    ClipToBounds = true,</a>
+<a name="ln1109">                    //    VerticalAlignment = VerticalAlignment.Bottom,</a>
+<a name="ln1110">                    //    HorizontalAlignment = HorizontalAlignment.Stretch,</a>
+<a name="ln1111">                    //    Child = new TextPath</a>
+<a name="ln1112">                    //    {</a>
+<a name="ln1113">                    //        IsHitTestVisible = false,</a>
+<a name="ln1114">                    //        Text = window.Bounds.Width &lt; 400 || window.Bounds.Height &lt; 100 ? &quot;👆&quot;</a>
+<a name="ln1115">                    //            : &quot;👆 &quot; + this.TextResource(&quot;S.Recorder.SelectWindow&quot;),</a>
+<a name="ln1116">                    //        Fill = new SolidColorBrush(Color.FromArgb(200, 0, 0, 0)),</a>
+<a name="ln1117">                    //        Stroke = new SolidColorBrush(Color.FromArgb(200, 255, 255, 255)),</a>
+<a name="ln1118">                    //        StrokeThickness = 1.6,</a>
+<a name="ln1119">                    //        FontFamily = new FontFamily(&quot;Segoe UI&quot;),</a>
+<a name="ln1120">                    //        FontSize = 80,</a>
+<a name="ln1121">                    //        FontWeight = FontWeights.SemiBold,</a>
+<a name="ln1122">                    //        Margin = new Thickness(20),</a>
+<a name="ln1123">                    //        VerticalAlignment = VerticalAlignment.Bottom,</a>
+<a name="ln1124">                    //        HorizontalAlignment = HorizontalAlignment.Stretch,</a>
+<a name="ln1125">                    //        ClipToBounds = true,</a>
+<a name="ln1126">                    //    }</a>
+<a name="ln1127">                    //}</a>
+<a name="ln1128">                };</a>
+<a name="ln1129"> </a>
+<a name="ln1130">                border.UpdateLayout();</a>
+<a name="ln1131"> </a>
+<a name="ln1132">                var top = Windows.Where(x =&gt; x.Order &lt; window.Order).Select(x =&gt; x.Bounds).ToList();</a>
+<a name="ln1133">                var geo = new RectangleGeometry { Rect = new Rect(new Size(window.Bounds.Width, window.Bounds.Height)) }.GetFlattenedPathGeometry(0, ToleranceType.Absolute);</a>
+<a name="ln1134"> </a>
+<a name="ln1135">                if (top.Any())</a>
+<a name="ln1136">                {</a>
+<a name="ln1137">                    foreach (var region in top)</a>
+<a name="ln1138">                    {</a>
+<a name="ln1139">                        geo = Geometry.Combine(geo, new RectangleGeometry { Rect = new Rect(new Point(region.X - window.Bounds.X, region.Y - window.Bounds.Y), new Size(region.Width, region.Height)) },</a>
+<a name="ln1140">                            GeometryCombineMode.Exclude, viewBox.RenderTransform);</a>
+<a name="ln1141">                    }</a>
+<a name="ln1142"> </a>
+<a name="ln1143">                    border.Clip = geo;</a>
+<a name="ln1144">                }</a>
+<a name="ln1145"> </a>
+<a name="ln1146">                _mainCanvas.Children.Insert(0, border);</a>
+<a name="ln1147"> </a>
+<a name="ln1148">                Canvas.SetLeft(border, window.Bounds.Left);</a>
+<a name="ln1149">                Canvas.SetTop(border, window.Bounds.Top);</a>
+<a name="ln1150">                Panel.SetZIndex(border, 0);</a>
+<a name="ln1151">            }</a>
+<a name="ln1152">        }</a>
+<a name="ln1153">        else</a>
+<a name="ln1154">        {</a>
+<a name="ln1155">            foreach (var monitor in Monitors)</a>
+<a name="ln1156">            {</a>
+<a name="ln1157">                var viewBox = new Viewbox</a>
+<a name="ln1158">                {</a>
+<a name="ln1159">                    Height = monitor.Bounds.Height,</a>
+<a name="ln1160">                    Width = monitor.Bounds.Width,</a>
+<a name="ln1161">                    Stretch = Stretch.Uniform,</a>
+<a name="ln1162">                    StretchDirection = StretchDirection.Both,</a>
+<a name="ln1163">                    Tag = &quot;T&quot;,</a>
+<a name="ln1164">                    ClipToBounds = true,</a>
+<a name="ln1165">                    IsHitTestVisible = false,</a>
+<a name="ln1166">                    Child = new TextPath</a>
+<a name="ln1167">                    {</a>
+<a name="ln1168">                        IsHitTestVisible = false,</a>
+<a name="ln1169">                        Text = LocalizationHelper.Get(&quot;S.Recorder.SelectArea&quot;),</a>
+<a name="ln1170">                        Fill = new SolidColorBrush(Color.FromArgb(200, 0, 0, 0)),</a>
+<a name="ln1171">                        Stroke = new SolidColorBrush(Color.FromArgb(200, 255, 255, 255)),</a>
+<a name="ln1172">                        StrokeThickness = 1.6,</a>
+<a name="ln1173">                        FontFamily = new FontFamily(&quot;Segoe UI&quot;),</a>
+<a name="ln1174">                        FontSize = 80,</a>
+<a name="ln1175">                        FontWeight = FontWeights.SemiBold,</a>
+<a name="ln1176">                        Margin = new Thickness(80),</a>
+<a name="ln1177">                        VerticalAlignment = VerticalAlignment.Stretch,</a>
+<a name="ln1178">                        HorizontalAlignment = HorizontalAlignment.Stretch,</a>
+<a name="ln1179">                        ClipToBounds = true</a>
+<a name="ln1180">                    }</a>
+<a name="ln1181">                };</a>
+<a name="ln1182"> </a>
+<a name="ln1183">                _mainCanvas.Children.Insert(0, viewBox);</a>
+<a name="ln1184"> </a>
+<a name="ln1185">                Canvas.SetLeft(viewBox, monitor.Bounds.Left);</a>
+<a name="ln1186">                Canvas.SetTop(viewBox, monitor.Bounds.Top);</a>
+<a name="ln1187">                Panel.SetZIndex(viewBox, 0);</a>
+<a name="ln1188">            }</a>
+<a name="ln1189">        }</a>
+<a name="ln1190"> </a>
+<a name="ln1191">        AdjustSelection();</a>
+<a name="ln1192"> </a>
+<a name="ln1193">        _ready = true;</a>
+<a name="ln1194">    }</a>
+<a name="ln1195"> </a>
+<a name="ln1196">    private void OnUnloaded(object sender, RoutedEventArgs e)</a>
+<a name="ln1197">    {</a>
+<a name="ln1198">        SystemEvents.DisplaySettingsChanged -= SystemEvents_DisplaySettingsChanged;</a>
+<a name="ln1199"> </a>
+<a name="ln1200">        if (_mainCanvas == null)</a>
+<a name="ln1201">            return;</a>
+<a name="ln1202"> </a>
+<a name="ln1203">        var list = _mainCanvas.Children.OfType&lt;FrameworkElement&gt;().Where(x =&gt; x.Tag as string == &quot;T&quot;).ToList();</a>
+<a name="ln1204"> </a>
+<a name="ln1205">        foreach (var element in list)</a>
+<a name="ln1206">            _mainCanvas.Children.Remove(element);</a>
+<a name="ln1207">    }</a>
+<a name="ln1208"> </a>
+<a name="ln1209">    private static void Selected_PropertyChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)</a>
+<a name="ln1210">    {</a>
+<a name="ln1211">        if (!(o is SelectControlOld control))</a>
+<a name="ln1212">            return;</a>
+<a name="ln1213"> </a>
+<a name="ln1214">        var rounded = MathExtensions.RoundUpValue(control.Scale);</a>
+<a name="ln1215"> </a>
+<a name="ln1216">        var width = Math.Round(control.Selected.Size.Width * control.Scale, MidpointRounding.AwayFromZero) - rounded * 2;</a>
+<a name="ln1217">        var height = Math.Round(control.Selected.Size.Height * control.Scale, MidpointRounding.AwayFromZero) - rounded * 2;</a>
+<a name="ln1218"> </a>
+<a name="ln1219">        if (control.Selected.IsEmpty || height &lt;= 0 || width &lt;= 0)</a>
+<a name="ln1220">        {</a>
+<a name="ln1221">            control.NonExpandedSelection = control.Selected;</a>
+<a name="ln1222">            return;</a>
+<a name="ln1223">        }</a>
+<a name="ln1224"> </a>
+<a name="ln1225">        control.NonExpandedSelection = new Rect(control.Selected.TopLeft, control.Selected.Size).Scale(control.Scale).Offset(rounded);</a>
+<a name="ln1226"> </a>
+<a name="ln1227">        control.RaiseChangedEvent(); //Check if makes sense.</a>
+<a name="ln1228">    }</a>
+<a name="ln1229"> </a>
+<a name="ln1230">    private static void Mode_Changed(DependencyObject o, DependencyPropertyChangedEventArgs e)</a>
+<a name="ln1231">    {</a>
+<a name="ln1232">        var control = o as SelectControlOld;</a>
+<a name="ln1233"> </a>
+<a name="ln1234">        control?.AdjustMode();</a>
+<a name="ln1235">    }</a>
+<a name="ln1236"> </a>
+<a name="ln1237">    private void Rectangle_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)</a>
+<a name="ln1238">    {</a>
+<a name="ln1239">        if (Mode != ModeType.Region)</a>
+<a name="ln1240">            return;</a>
+<a name="ln1241"> </a>
+<a name="ln1242">        _startPoint = e.GetPosition(this);</a>
+<a name="ln1243"> </a>
+<a name="ln1244">        _rectangle.CaptureMouse();</a>
+<a name="ln1245"> </a>
+<a name="ln1246">        FinishedSelection = false;</a>
+<a name="ln1247"> </a>
+<a name="ln1248">        AdjustStatusControls();</a>
+<a name="ln1249">        DetectBlindSpots();</a>
+<a name="ln1250">        AdjustInfo();</a>
+<a name="ln1251"> </a>
+<a name="ln1252">        RaiseChangedEvent(); //Check if makes sense.</a>
+<a name="ln1253"> </a>
+<a name="ln1254">        e.Handled = true;</a>
+<a name="ln1255">    }</a>
+<a name="ln1256"> </a>
+<a name="ln1257">    private void Rectangle_MouseMove(object sender, MouseEventArgs e)</a>
+<a name="ln1258">    {</a>
+<a name="ln1259">        if (Mode != ModeType.Region || !_rectangle.IsMouseCaptured || e.LeftButton != MouseButtonState.Pressed) return;</a>
+<a name="ln1260"> </a>
+<a name="ln1261">        //A quick double click will fire this event, when it should fire the OnMouseLeftButtonUp.</a>
+<a name="ln1262">        if (Selected.IsEmpty || Selected.Width &lt; 10 || Selected.Height &lt; 10)</a>
+<a name="ln1263">            return;</a>
+<a name="ln1264"> </a>
+<a name="ln1265">        _rectangle.MouseMove -= Rectangle_MouseMove;</a>
+<a name="ln1266"> </a>
+<a name="ln1267">        var currentPosition = e.GetPosition(this);</a>
+<a name="ln1268"> </a>
+<a name="ln1269">        var x = Selected.X + (currentPosition.X - _startPoint.X);</a>
+<a name="ln1270">        var y = Selected.Y + (currentPosition.Y - _startPoint.Y);</a>
+<a name="ln1271"> </a>
+<a name="ln1272">        if (x &lt; -1)</a>
+<a name="ln1273">            x = -1;</a>
+<a name="ln1274"> </a>
+<a name="ln1275">        if (y &lt; -1)</a>
+<a name="ln1276">            y = -1;</a>
+<a name="ln1277"> </a>
+<a name="ln1278">        if (x + Selected.Width &gt; ActualWidth + 1)</a>
+<a name="ln1279">            x = ActualWidth + 1 - Selected.Width;</a>
+<a name="ln1280"> </a>
+<a name="ln1281">        if (y + Selected.Height &gt; ActualHeight + 1)</a>
+<a name="ln1282">            y = ActualHeight + 1 - Selected.Height;</a>
+<a name="ln1283"> </a>
+<a name="ln1284">        Selected = new Rect(x, y, Selected.Width, Selected.Height);</a>
+<a name="ln1285"> </a>
+<a name="ln1286">        _startPoint = currentPosition;</a>
+<a name="ln1287">        e.Handled = true;</a>
+<a name="ln1288"> </a>
+<a name="ln1289">        AdjustInfo();</a>
+<a name="ln1290"> </a>
+<a name="ln1291">        _rectangle.MouseMove += Rectangle_MouseMove;</a>
+<a name="ln1292">    }</a>
+<a name="ln1293"> </a>
+<a name="ln1294">    private void Rectangle_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)</a>
+<a name="ln1295">    {</a>
+<a name="ln1296">        if (Mode != ModeType.Region)</a>
+<a name="ln1297">            return;</a>
+<a name="ln1298"> </a>
+<a name="ln1299">        if (_rectangle.IsMouseCaptured)</a>
+<a name="ln1300">            _rectangle?.ReleaseMouseCapture();</a>
+<a name="ln1301"> </a>
+<a name="ln1302">        //A quick double quick will fire this event, when it should fire the OnMouseLeftButtonUp.</a>
+<a name="ln1303">        if (Selected.IsEmpty || Selected.Width &lt; 10 || Selected.Height &lt; 10)</a>
+<a name="ln1304">            return;</a>
+<a name="ln1305"> </a>
+<a name="ln1306">        FinishedSelection = true;</a>
+<a name="ln1307"> </a>
+<a name="ln1308">        var point = Mouse.GetPosition(this);</a>
+<a name="ln1309"> </a>
+<a name="ln1310">        AdjustThumbs();</a>
+<a name="ln1311">        AdjustStatusControls(point);</a>
+<a name="ln1312">        DetectBlindSpots();</a>
+<a name="ln1313">        AdjustInfo(point);</a>
+<a name="ln1314"> </a>
+<a name="ln1315">        e.Handled = true;</a>
+<a name="ln1316">    }</a>
+<a name="ln1317"> </a>
+<a name="ln1318">    private void SizeTextBlock_MouseUp(object sender, MouseButtonEventArgs e)</a>
+<a name="ln1319">    {</a>
+<a name="ln1320">        //Open dialog asking for left/top/width/height.</a>
+<a name="ln1321">        _rectGrid.Visibility = Visibility.Visible;</a>
+<a name="ln1322">    }</a>
+<a name="ln1323"> </a>
+<a name="ln1324">    ///&lt;summary&gt;</a>
+<a name="ln1325">    ///Handler for resizing from the top-left.</a>
+<a name="ln1326">    ///&lt;/summary&gt;</a>
+<a name="ln1327">    private void HandleTopLeft(object sender, DragDeltaEventArgs e)</a>
+<a name="ln1328">    {</a>
+<a name="ln1329">        if (!(sender is Thumb)) return;</a>
+<a name="ln1330"> </a>
+<a name="ln1331">        e.Handled = true;</a>
+<a name="ln1332"> </a>
+<a name="ln1333">        //Change the size by the amount the user drags the cursor.</a>
+<a name="ln1334">        var width = Math.Max(Selected.Width - e.HorizontalChange, 10);</a>
+<a name="ln1335">        var left = Selected.Left - (width - Selected.Width);</a>
+<a name="ln1336">        var height = Math.Max(Selected.Height - e.VerticalChange, 10);</a>
+<a name="ln1337">        var top = Selected.Top - (height - Selected.Height);</a>
+<a name="ln1338"> </a>
+<a name="ln1339">        if (top &lt; 0)</a>
+<a name="ln1340">        {</a>
+<a name="ln1341">            height -= top * -1;</a>
+<a name="ln1342">            top = 0;</a>
+<a name="ln1343">        }</a>
+<a name="ln1344"> </a>
+<a name="ln1345">        if (left &lt; 0)</a>
+<a name="ln1346">        {</a>
+<a name="ln1347">            width -= left * -1;</a>
+<a name="ln1348">            left = 0;</a>
+<a name="ln1349">        }</a>
+<a name="ln1350"> </a>
+<a name="ln1351">        Selected = new Rect(left, top, width, height);</a>
+<a name="ln1352"> </a>
+<a name="ln1353">        var point = Mouse.GetPosition(this);</a>
+<a name="ln1354"> </a>
+<a name="ln1355">        AdjustThumbs();</a>
+<a name="ln1356">        AdjustStatusControls(point);</a>
+<a name="ln1357">        DetectBlindSpots();</a>
+<a name="ln1358">        AdjustInfo(point);</a>
+<a name="ln1359">    }</a>
+<a name="ln1360"> </a>
+<a name="ln1361">    /// &lt;summary&gt;</a>
+<a name="ln1362">    ///  Handler for resizing from the top-right.</a>
+<a name="ln1363">    /// &lt;/summary&gt;</a>
+<a name="ln1364">    private void HandleTopRight(object sender, DragDeltaEventArgs e)</a>
+<a name="ln1365">    {</a>
+<a name="ln1366">        if (!(sender is Thumb)) return;</a>
+<a name="ln1367"> </a>
+<a name="ln1368">        e.Handled = true;</a>
+<a name="ln1369"> </a>
+<a name="ln1370">        //Change the size by the amount the user drags the cursor.</a>
+<a name="ln1371">        var width = Math.Max(Selected.Width + e.HorizontalChange, 10);</a>
+<a name="ln1372">        var height = Math.Max(Selected.Height - e.VerticalChange, 10);</a>
+<a name="ln1373">        var top = Selected.Top - (height - Selected.Height);</a>
+<a name="ln1374"> </a>
+<a name="ln1375">        if (top &lt; 0)</a>
+<a name="ln1376">        {</a>
+<a name="ln1377">            height -= top * -1;</a>
+<a name="ln1378">            top = 0;</a>
+<a name="ln1379">        }</a>
+<a name="ln1380"> </a>
+<a name="ln1381">        if (Selected.Left + width &gt; ActualWidth)</a>
+<a name="ln1382">            width = ActualWidth - Selected.Left;</a>
+<a name="ln1383"> </a>
+<a name="ln1384">        Selected = new Rect(Selected.Left, top, width, height);</a>
+<a name="ln1385"> </a>
+<a name="ln1386">        var point = Mouse.GetPosition(this);</a>
+<a name="ln1387"> </a>
+<a name="ln1388">        AdjustThumbs();</a>
+<a name="ln1389">        AdjustStatusControls(point);</a>
+<a name="ln1390">        DetectBlindSpots();</a>
+<a name="ln1391">        AdjustInfo(point);</a>
+<a name="ln1392">    }</a>
+<a name="ln1393"> </a>
+<a name="ln1394">    /// &lt;summary&gt;</a>
+<a name="ln1395">    ///  Handler for resizing from the bottom-left.</a>
+<a name="ln1396">    /// &lt;/summary&gt;</a>
+<a name="ln1397">    private void HandleBottomLeft(object sender, DragDeltaEventArgs e)</a>
+<a name="ln1398">    {</a>
+<a name="ln1399">        if (!(sender is Thumb)) return;</a>
+<a name="ln1400"> </a>
+<a name="ln1401">        e.Handled = true;</a>
+<a name="ln1402"> </a>
+<a name="ln1403">        //Change the size by the amount the user drags the cursor.</a>
+<a name="ln1404">        var width = Math.Max(Selected.Width - e.HorizontalChange, 10);</a>
+<a name="ln1405">        var left = Selected.Left - (width - Selected.Width);</a>
+<a name="ln1406">        var height = Math.Max(Selected.Height + e.VerticalChange, 10);</a>
+<a name="ln1407"> </a>
+<a name="ln1408">        if (left &lt; 0)</a>
+<a name="ln1409">        {</a>
+<a name="ln1410">            width -= left * -1;</a>
+<a name="ln1411">            left = 0;</a>
+<a name="ln1412">        }</a>
+<a name="ln1413"> </a>
+<a name="ln1414">        if (Selected.Left + width &gt; ActualWidth)</a>
+<a name="ln1415">            width = ActualWidth - Selected.Left;</a>
+<a name="ln1416"> </a>
+<a name="ln1417">        if (Selected.Top + height &gt; ActualHeight)</a>
+<a name="ln1418">            height = ActualHeight - Selected.Top;</a>
+<a name="ln1419"> </a>
+<a name="ln1420">        Selected = new Rect(left, Selected.Top, width, height);</a>
+<a name="ln1421"> </a>
+<a name="ln1422">        var point = Mouse.GetPosition(this);</a>
+<a name="ln1423"> </a>
+<a name="ln1424">        AdjustThumbs();</a>
+<a name="ln1425">        AdjustStatusControls(point);</a>
+<a name="ln1426">        DetectBlindSpots();</a>
+<a name="ln1427">        AdjustInfo(point);</a>
+<a name="ln1428">    }</a>
+<a name="ln1429"> </a>
+<a name="ln1430">    /// &lt;summary&gt;</a>
+<a name="ln1431">    /// Handler for resizing from the bottom-right.</a>
+<a name="ln1432">    /// &lt;/summary&gt;</a>
+<a name="ln1433">    private void HandleBottomRight(object sender, DragDeltaEventArgs e)</a>
+<a name="ln1434">    {</a>
+<a name="ln1435">        if (!(sender is Thumb)) return;</a>
+<a name="ln1436"> </a>
+<a name="ln1437">        e.Handled = true;</a>
+<a name="ln1438"> </a>
+<a name="ln1439">        //Change the size by the amount the user drags the cursor.</a>
+<a name="ln1440">        var width = Math.Max(Selected.Width + e.HorizontalChange, 10);</a>
+<a name="ln1441">        var height = Math.Max(Selected.Height + e.VerticalChange, 10);</a>
+<a name="ln1442"> </a>
+<a name="ln1443">        if (Selected.Left + width &gt; ActualWidth)</a>
+<a name="ln1444">            width = ActualWidth - Selected.Left;</a>
+<a name="ln1445"> </a>
+<a name="ln1446">        if (Selected.Top + height &gt; ActualHeight)</a>
+<a name="ln1447">            height = ActualHeight - Selected.Top;</a>
+<a name="ln1448"> </a>
+<a name="ln1449">        Selected = new Rect(Selected.Left, Selected.Top, width, height);</a>
+<a name="ln1450"> </a>
+<a name="ln1451">        var point = Mouse.GetPosition(this);</a>
+<a name="ln1452"> </a>
+<a name="ln1453">        AdjustThumbs();</a>
+<a name="ln1454">        AdjustStatusControls(point);</a>
+<a name="ln1455">        DetectBlindSpots();</a>
+<a name="ln1456">        AdjustInfo(point);</a>
+<a name="ln1457">    }</a>
+<a name="ln1458"> </a>
+<a name="ln1459">    /// &lt;summary&gt;</a>
+<a name="ln1460">    /// Handler for resizing from the left-middle.</a>
+<a name="ln1461">    /// &lt;/summary&gt;</a>
+<a name="ln1462">    private void HandleLeft(object sender, DragDeltaEventArgs e)</a>
+<a name="ln1463">    {</a>
+<a name="ln1464">        if (!(sender is Thumb)) return;</a>
+<a name="ln1465"> </a>
+<a name="ln1466">        e.Handled = true;</a>
+<a name="ln1467"> </a>
+<a name="ln1468">        //Change the size by the amount the user drags the cursor.</a>
+<a name="ln1469">        var width = Math.Max(Selected.Width - e.HorizontalChange, 10);</a>
+<a name="ln1470">        var left = Selected.Left - (width - Selected.Width);</a>
+<a name="ln1471"> </a>
+<a name="ln1472">        if (left &lt; 0)</a>
+<a name="ln1473">        {</a>
+<a name="ln1474">            width -= left * -1;</a>
+<a name="ln1475">            left = 0;</a>
+<a name="ln1476">        }</a>
+<a name="ln1477"> </a>
+<a name="ln1478">        Selected = new Rect(left, Selected.Top, width, Selected.Height);</a>
+<a name="ln1479"> </a>
+<a name="ln1480">        var point = Mouse.GetPosition(this);</a>
+<a name="ln1481"> </a>
+<a name="ln1482">        AdjustThumbs();</a>
+<a name="ln1483">        AdjustStatusControls(point);</a>
+<a name="ln1484">        DetectBlindSpots();</a>
+<a name="ln1485">        AdjustInfo(point);</a>
+<a name="ln1486">    }</a>
+<a name="ln1487"> </a>
+<a name="ln1488">    /// &lt;summary&gt;</a>
+<a name="ln1489">    /// Handler for resizing from the top-middle.</a>
+<a name="ln1490">    /// &lt;/summary&gt;</a>
+<a name="ln1491">    private void HandleTop(object sender, DragDeltaEventArgs e)</a>
+<a name="ln1492">    {</a>
+<a name="ln1493">        if (!(sender is Thumb)) return;</a>
+<a name="ln1494"> </a>
+<a name="ln1495">        e.Handled = true;</a>
+<a name="ln1496"> </a>
+<a name="ln1497">        //Change the size by the amount the user drags the cursor.</a>
+<a name="ln1498">        var height = Math.Max(Selected.Height - e.VerticalChange, 10);</a>
+<a name="ln1499">        var top = Selected.Top - (height - Selected.Height);</a>
+<a name="ln1500"> </a>
+<a name="ln1501">        if (top &lt; 0)</a>
+<a name="ln1502">        {</a>
+<a name="ln1503">            height -= top * -1;</a>
+<a name="ln1504">            top = 0;</a>
+<a name="ln1505">        }</a>
+<a name="ln1506"> </a>
+<a name="ln1507">        Selected = new Rect(Selected.Left, top, Selected.Width, height);</a>
+<a name="ln1508"> </a>
+<a name="ln1509">        var point = Mouse.GetPosition(this);</a>
+<a name="ln1510"> </a>
+<a name="ln1511">        AdjustThumbs();</a>
+<a name="ln1512">        AdjustStatusControls(point);</a>
+<a name="ln1513">        DetectBlindSpots();</a>
+<a name="ln1514">        AdjustInfo(point);</a>
+<a name="ln1515">    }</a>
+<a name="ln1516"> </a>
+<a name="ln1517">    /// &lt;summary&gt;</a>
+<a name="ln1518">    ///  Handler for resizing from the right-middle.</a>
+<a name="ln1519">    /// &lt;/summary&gt;</a>
+<a name="ln1520">    private void HandleRight(object sender, DragDeltaEventArgs e)</a>
+<a name="ln1521">    {</a>
+<a name="ln1522">        if (!(sender is Thumb)) return;</a>
+<a name="ln1523"> </a>
+<a name="ln1524">        e.Handled = true;</a>
+<a name="ln1525"> </a>
+<a name="ln1526">        //Change the size by the amount the user drags the cursor.</a>
+<a name="ln1527">        var width = Math.Max(Selected.Width + e.HorizontalChange, 10);</a>
+<a name="ln1528"> </a>
+<a name="ln1529">        if (Selected.Left + width &gt; ActualWidth)</a>
+<a name="ln1530">            width = ActualWidth - Selected.Left;</a>
+<a name="ln1531"> </a>
+<a name="ln1532">        Selected = new Rect(Selected.Left, Selected.Top, width, Selected.Height);</a>
+<a name="ln1533"> </a>
+<a name="ln1534">        var point = Mouse.GetPosition(this);</a>
+<a name="ln1535"> </a>
+<a name="ln1536">        AdjustThumbs();</a>
+<a name="ln1537">        DetectBlindSpots();</a>
+<a name="ln1538">        AdjustStatusControls(point);</a>
+<a name="ln1539">        AdjustInfo(point);</a>
+<a name="ln1540">    }</a>
+<a name="ln1541"> </a>
+<a name="ln1542">    /// &lt;summary&gt;</a>
+<a name="ln1543">    /// Handler for resizing from the bottom-middle.</a>
+<a name="ln1544">    /// &lt;/summary&gt;</a>
+<a name="ln1545">    private void HandleBottom(object sender, DragDeltaEventArgs e)</a>
+<a name="ln1546">    {</a>
+<a name="ln1547">        if (!(sender is Thumb)) return;</a>
+<a name="ln1548"> </a>
+<a name="ln1549">        e.Handled = true;</a>
+<a name="ln1550"> </a>
+<a name="ln1551">        //Change the size by the amount the user drags the cursor.</a>
+<a name="ln1552">        var height = Math.Max(Selected.Height + e.VerticalChange, 10);</a>
+<a name="ln1553"> </a>
+<a name="ln1554">        if (Selected.Top + height &gt; ActualHeight)</a>
+<a name="ln1555">            height = ActualHeight - Selected.Top;</a>
+<a name="ln1556"> </a>
+<a name="ln1557">        Selected = new Rect(Selected.Left, Selected.Top, Selected.Width, height);</a>
+<a name="ln1558"> </a>
+<a name="ln1559">        var point = Mouse.GetPosition(this);</a>
+<a name="ln1560"> </a>
+<a name="ln1561">        AdjustThumbs();</a>
+<a name="ln1562">        AdjustStatusControls(point);</a>
+<a name="ln1563">        DetectBlindSpots();</a>
+<a name="ln1564">        AdjustInfo(point);</a>
+<a name="ln1565">    }</a>
+<a name="ln1566"> </a>
+<a name="ln1567">    /// &lt;summary&gt;</a>
+<a name="ln1568">    /// Handler for moving the selection.</a>
+<a name="ln1569">    /// &lt;/summary&gt;</a>
+<a name="ln1570">    private void HandleCenter(DragDeltaEventArgs e)</a>
+<a name="ln1571">    {</a>
+<a name="ln1572">        e.Handled = true;</a>
+<a name="ln1573"> </a>
+<a name="ln1574">        var sel = new Rect(Selected.Left + e.HorizontalChange, Selected.Top + e.VerticalChange, Selected.Width, Selected.Height);</a>
+<a name="ln1575"> </a>
+<a name="ln1576">        #region Limit the drag to inside the bounds</a>
+<a name="ln1577"> </a>
+<a name="ln1578">        if (sel.Left &lt; 0)</a>
+<a name="ln1579">            sel.X = 0;</a>
+<a name="ln1580"> </a>
+<a name="ln1581">        if (sel.Top &lt; 0)</a>
+<a name="ln1582">            sel.Y = 0;</a>
+<a name="ln1583"> </a>
+<a name="ln1584">        if (sel.Right &gt; ActualWidth)</a>
+<a name="ln1585">            sel.X = ActualWidth - sel.Width;</a>
+<a name="ln1586"> </a>
+<a name="ln1587">        if (sel.Bottom &gt; ActualHeight)</a>
+<a name="ln1588">            sel.Y = ActualHeight - sel.Height;</a>
+<a name="ln1589"> </a>
+<a name="ln1590">        #endregion</a>
+<a name="ln1591"> </a>
+<a name="ln1592">        Selected = new Rect(sel.Left, sel.Top, sel.Width, sel.Height);</a>
+<a name="ln1593"> </a>
+<a name="ln1594">        var point = Mouse.GetPosition(this);</a>
+<a name="ln1595"> </a>
+<a name="ln1596">        AdjustThumbs();</a>
+<a name="ln1597">        AdjustStatusControls(point);</a>
+<a name="ln1598">        DetectBlindSpots();</a>
+<a name="ln1599">        AdjustInfo(point);</a>
+<a name="ln1600">    }</a>
+<a name="ln1601"> </a>
+<a name="ln1602">    #endregion</a>
+<a name="ln1603">}</a>
+</code></pre>
+<div class="balloon" rel="1299"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3095/" target="_blank">V3095</a> The '_rectangle' object was used before it was verified against null. Check lines: 1299, 1300.</p></div>
+<div class="balloon" rel="407"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3063/" target="_blank">V3063</a> A part of conditional expression is always false if it is evaluated: e.Key == Key.Return.</p></div>
+<div class="balloon" rel="574"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v5606/" target="_blank">V5606</a> An empty exception handler. Silent suppression of exceptions may hide the presence of bugs or vulnerabilities.</p></div>
+<link rel="stylesheet" href="highlight.css">
+<script src="highlight.pack.js"></script>
+<script src="highlightjs-line-numbers.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script>hljs.initLineNumbersOnLoad();</script>
+<script>
+  $(document).ready(function() {
+      $('.balloon').each(function () {
+          var bl = $(this);
+          var line = bl.attr('rel');
+          var text = $('a[name="ln'+line+'"]').text();
+
+          var space_count = 0;
+          for(var i = 0; i<text.length; i++){
+              var char = text[i];
+              if((char !== ' ')&&(char !== '\t'))break;
+              if(char === '\t')space_count++;
+              space_count++;
+          }
+
+          bl.css('margin-left', space_count*8);
+          $('a[name="ln'+line+'"]').after(bl);
+      });
+
+      window.location = window.location;
+  });
+</script>
+</body>
+</html>

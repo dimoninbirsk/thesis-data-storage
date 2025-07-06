@@ -1,0 +1,591 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>MathHelper.cs</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <script src="../jquery-3.5.1.min.js"></script>
+</head>
+<body>
+<pre><code class = "cs">
+<a name="ln1">﻿using System.Numerics;</a>
+<a name="ln2">using System.Runtime.Intrinsics;</a>
+<a name="ln3">using System.Runtime.Intrinsics.X86;</a>
+<a name="ln4"> </a>
+<a name="ln5">namespace SoundFlow.Utils;</a>
+<a name="ln6"> </a>
+<a name="ln7">/// &lt;summary&gt;</a>
+<a name="ln8">///     Helper methods for common math operations.</a>
+<a name="ln9">/// &lt;/summary&gt;</a>
+<a name="ln10">public static class MathHelper</a>
+<a name="ln11">{</a>
+<a name="ln12">    /// &lt;summary&gt;</a>
+<a name="ln13">    /// Computes the Inverse Fast Fourier Transform (IFFT) of a complex array.</a>
+<a name="ln14">    /// &lt;/summary&gt;</a>
+<a name="ln15">    /// &lt;param name=&quot;data&quot;&gt;The complex data array.&lt;/param&gt;</a>
+<a name="ln16">    public static void InverseFft(Complex[] data)</a>
+<a name="ln17">    {</a>
+<a name="ln18">        // Conjugate the complex data</a>
+<a name="ln19">        for (var i = 0; i &lt; data.Length; i++)</a>
+<a name="ln20">        {</a>
+<a name="ln21">            data[i] = Complex.Conjugate(data[i]);</a>
+<a name="ln22">        }</a>
+<a name="ln23"> </a>
+<a name="ln24">        // Perform FFT</a>
+<a name="ln25">        Fft(data);</a>
+<a name="ln26"> </a>
+<a name="ln27">        // Conjugate and scale the result</a>
+<a name="ln28">        for (var i = 0; i &lt; data.Length; i++)</a>
+<a name="ln29">        {</a>
+<a name="ln30">            data[i] = Complex.Conjugate(data[i]);</a>
+<a name="ln31">        }</a>
+<a name="ln32">    }</a>
+<a name="ln33"> </a>
+<a name="ln34">    /// &lt;summary&gt;</a>
+<a name="ln35">    /// Computes the Fast Fourier Transform (FFT) of a complex array using SIMD acceleration with fallback to a scalar implementation.</a>
+<a name="ln36">    /// &lt;/summary&gt;</a>
+<a name="ln37">    /// &lt;param name=&quot;data&quot;&gt;The complex data array. Must be a power of 2 in length.&lt;/param&gt;</a>
+<a name="ln38">    public static void Fft(Complex[] data)</a>
+<a name="ln39">    {</a>
+<a name="ln40">        var n = data.Length;</a>
+<a name="ln41">        if (n &lt;= 1) return;</a>
+<a name="ln42"> </a>
+<a name="ln43">        if (Avx.IsSupported &amp;&amp; n &gt;= 8) // Use AVX for larger arrays</a>
+<a name="ln44">            FftAvx(data);</a>
+<a name="ln45">        else if (Sse2.IsSupported &amp;&amp; n &gt;= 4) // Use SSE2 for smaller arrays</a>
+<a name="ln46">            FftSse2(data);</a>
+<a name="ln47">        else // Fallback to scalar implementation</a>
+<a name="ln48">            FftScalar(data);</a>
+<a name="ln49">    }</a>
+<a name="ln50"> </a>
+<a name="ln51">    /// &lt;summary&gt;</a>
+<a name="ln52">    /// Scalar implementation of the Fast Fourier Transform (FFT).</a>
+<a name="ln53">    /// &lt;/summary&gt;</a>
+<a name="ln54">    /// &lt;param name=&quot;data&quot;&gt;The complex data array. Must be a power of 2 in length.&lt;/param&gt;</a>
+<a name="ln55">    private static void FftScalar(Complex[] data)</a>
+<a name="ln56">    {</a>
+<a name="ln57">        var n = data.Length;</a>
+<a name="ln58">        if (n &lt;= 1) return;</a>
+<a name="ln59"> </a>
+<a name="ln60">        // Separate even and odd elements</a>
+<a name="ln61">        var even = new Complex[n / 2];</a>
+<a name="ln62">        var odd = new Complex[n / 2];</a>
+<a name="ln63">        for (var i = 0; i &lt; n / 2; i++)</a>
+<a name="ln64">        {</a>
+<a name="ln65">            even[i] = data[2 * i];</a>
+<a name="ln66">            odd[i] = data[2 * i + 1];</a>
+<a name="ln67">        }</a>
+<a name="ln68"> </a>
+<a name="ln69">        // Recursive FFT on even and odd parts</a>
+<a name="ln70">        FftScalar(even);</a>
+<a name="ln71">        FftScalar(odd);</a>
+<a name="ln72"> </a>
+<a name="ln73">        // Combine</a>
+<a name="ln74">        for (var k = 0; k &lt; n / 2; k++)</a>
+<a name="ln75">        {</a>
+<a name="ln76">            var t = Complex.FromPolarCoordinates(1.0, -2.0 * Math.PI * k / n) * odd[k];</a>
+<a name="ln77">            data[k] = even[k] + t;</a>
+<a name="ln78">            data[k + n / 2] = even[k] - t;</a>
+<a name="ln79">        }</a>
+<a name="ln80">    }</a>
+<a name="ln81"> </a>
+<a name="ln82">    /// &lt;summary&gt;</a>
+<a name="ln83">    /// SSE2-accelerated implementation of the Fast Fourier Transform (FFT).</a>
+<a name="ln84">    /// &lt;/summary&gt;</a>
+<a name="ln85">    /// &lt;param name=&quot;data&quot;&gt;The complex data array. Must be a power of 2 in length and at least 4.&lt;/param&gt;</a>
+<a name="ln86">    private static unsafe void FftSse2(Complex[] data)</a>
+<a name="ln87">    {</a>
+<a name="ln88">        var n = data.Length;</a>
+<a name="ln89"> </a>
+<a name="ln90">        // Bit-reverse the data</a>
+<a name="ln91">        BitReverse(data);</a>
+<a name="ln92"> </a>
+<a name="ln93">        // Cooley-Tukey FFT algorithm with SSE2</a>
+<a name="ln94">        for (var s = 1; s &lt;= Math.Log(n, 2); s++)</a>
+<a name="ln95">        {</a>
+<a name="ln96">            var m = 1 &lt;&lt; s;</a>
+<a name="ln97">            var m2 = m &gt;&gt; 1;</a>
+<a name="ln98">            var wm = Vector128.Create(Complex.FromPolarCoordinates(1.0, -Math.PI / m2).Real,</a>
+<a name="ln99">                Complex.FromPolarCoordinates(1.0, -Math.PI / m2).Imaginary);</a>
+<a name="ln100"> </a>
+<a name="ln101">            for (var k = 0; k &lt; n; k += m)</a>
+<a name="ln102">            {</a>
+<a name="ln103">                var w = Vector128.Create(1.0, 0.0);</a>
+<a name="ln104">                for (var j = 0; j &lt; m2; j += 2)</a>
+<a name="ln105">                {</a>
+<a name="ln106">                    fixed (Complex* pData = &amp;data[0])</a>
+<a name="ln107">                    {</a>
+<a name="ln108">                        // Load even and odd elements</a>
+<a name="ln109">                        var even1 = Sse2.LoadVector128((double*)(pData + k + j));</a>
+<a name="ln110">                        var odd1 = Sse2.LoadVector128((double*)(pData + k + j + m2));</a>
+<a name="ln111"> </a>
+<a name="ln112">                        var even2 = Sse2.LoadVector128((double*)(pData + k + j + 2));</a>
+<a name="ln113">                        var odd2 = Sse2.LoadVector128((double*)(pData + k + j + m2 + 2));</a>
+<a name="ln114"> </a>
+<a name="ln115">                        // Calculate twiddle factors</a>
+<a name="ln116">                        var twiddle1 = MultiplyComplexSse2(odd1, w);</a>
+<a name="ln117"> </a>
+<a name="ln118">                        // Update w</a>
+<a name="ln119">                        w = MultiplyComplexSse2(w, wm);</a>
+<a name="ln120">                        var twiddle2 = MultiplyComplexSse2(odd2, w);</a>
+<a name="ln121">                        w = MultiplyComplexSse2(w, wm);</a>
+<a name="ln122"> </a>
+<a name="ln123">                        // Butterfly operations</a>
+<a name="ln124">                        Sse2.Store((double*)(pData + k + j), Sse2.Add(even1, twiddle1));</a>
+<a name="ln125">                        Sse2.Store((double*)(pData + k + j + m2), Sse2.Subtract(even1, twiddle1));</a>
+<a name="ln126"> </a>
+<a name="ln127">                        Sse2.Store((double*)(pData + k + j + 2), Sse2.Add(even2, twiddle2));</a>
+<a name="ln128">                        Sse2.Store((double*)(pData + k + j + m2 + 2), Sse2.Subtract(even2, twiddle2));</a>
+<a name="ln129">                    }</a>
+<a name="ln130">                }</a>
+<a name="ln131">            }</a>
+<a name="ln132">        }</a>
+<a name="ln133">    }</a>
+<a name="ln134"> </a>
+<a name="ln135">    /// &lt;summary&gt;</a>
+<a name="ln136">    /// AVX-accelerated implementation of the Fast Fourier Transform (FFT).</a>
+<a name="ln137">    /// &lt;/summary&gt;</a>
+<a name="ln138">    /// &lt;param name=&quot;data&quot;&gt;The complex data array. Must be a power of 2 in length and at least 8.&lt;/param&gt;</a>
+<a name="ln139">    private static unsafe void FftAvx(Complex[] data)</a>
+<a name="ln140">    {</a>
+<a name="ln141">        var n = data.Length;</a>
+<a name="ln142">        BitReverse(data);</a>
+<a name="ln143"> </a>
+<a name="ln144">        for (var s = 1; s &lt;= Math.Log(n, 2); s++)</a>
+<a name="ln145">        {</a>
+<a name="ln146">            var m = 1 &lt;&lt; s;</a>
+<a name="ln147">            var m2 = m &gt;&gt; 1;</a>
+<a name="ln148"> </a>
+<a name="ln149">            if (m &lt; 8) // Use scalar for small m</a>
+<a name="ln150">            {</a>
+<a name="ln151">                // Handle with scalar implementation for this stage</a>
+<a name="ln152">                // This part is simplified; needs proper integration</a>
+<a name="ln153">                for (var k = 0; k &lt; n; k += m)</a>
+<a name="ln154">                {</a>
+<a name="ln155">                    for (var j = 0; j &lt; m2; j++)</a>
+<a name="ln156">                    {</a>
+<a name="ln157">                        var t = Complex.FromPolarCoordinates(1.0, -2.0 * Math.PI * j / m) * data[k + j + m2];</a>
+<a name="ln158">                        var tmp = data[k + j];</a>
+<a name="ln159">                        data[k + j] = tmp + t;</a>
+<a name="ln160">                        data[k + j + m2] = tmp - t;</a>
+<a name="ln161">                    }</a>
+<a name="ln162">                }</a>
+<a name="ln163">                continue;</a>
+<a name="ln164">            }</a>
+<a name="ln165"> </a>
+<a name="ln166">            var wm = Vector256.Create(</a>
+<a name="ln167">                Complex.FromPolarCoordinates(1.0, -Math.PI / m2).Real,</a>
+<a name="ln168">                Complex.FromPolarCoordinates(1.0, -Math.PI / m2).Imaginary,</a>
+<a name="ln169">                Complex.FromPolarCoordinates(1.0, -Math.PI / m2).Real,</a>
+<a name="ln170">                Complex.FromPolarCoordinates(1.0, -Math.PI / m2).Imaginary</a>
+<a name="ln171">            );</a>
+<a name="ln172"> </a>
+<a name="ln173">            for (var k = 0; k &lt; n; k += m)</a>
+<a name="ln174">            {</a>
+<a name="ln175">                var w = Vector256.Create(1.0, 0.0, 1.0, 0.0);</a>
+<a name="ln176">                for (var j = 0; j &lt; m2; j += 2)</a>
+<a name="ln177">                {</a>
+<a name="ln178">                    if (j + 1 &gt;= m2) break;</a>
+<a name="ln179"> </a>
+<a name="ln180">                    fixed (Complex* pData = &amp;data[0])</a>
+<a name="ln181">                    {</a>
+<a name="ln182">                        var even = Avx.LoadVector256((double*)(pData + k + j));</a>
+<a name="ln183">                        var odd = Avx.LoadVector256((double*)(pData + k + j + m2));</a>
+<a name="ln184"> </a>
+<a name="ln185">                        var twiddle = MultiplyComplexAvx(odd, w);</a>
+<a name="ln186">                        w = MultiplyComplexAvx(w, wm);</a>
+<a name="ln187"> </a>
+<a name="ln188">                        Avx.Store((double*)(pData + k + j), Avx.Add(even, twiddle));</a>
+<a name="ln189">                        Avx.Store((double*)(pData + k + j + m2), Avx.Subtract(even, twiddle));</a>
+<a name="ln190">                    }</a>
+<a name="ln191">                }</a>
+<a name="ln192">            }</a>
+<a name="ln193">        }</a>
+<a name="ln194">    }</a>
+<a name="ln195"> </a>
+<a name="ln196">    /// &lt;summary&gt;</a>
+<a name="ln197">    /// Bit-reverses the order of elements in a complex array.</a>
+<a name="ln198">    /// &lt;/summary&gt;</a>
+<a name="ln199">    /// &lt;param name=&quot;data&quot;&gt;The complex data array. Must be a power of 2 in length.&lt;/param&gt;</a>
+<a name="ln200">    private static void BitReverse(Complex[] data)</a>
+<a name="ln201">    {</a>
+<a name="ln202">        var n = data.Length;</a>
+<a name="ln203">        for (int i = 1, j = 0; i &lt; n; i++)</a>
+<a name="ln204">        {</a>
+<a name="ln205">            var bit = n &gt;&gt; 1;</a>
+<a name="ln206">            for (; (j &amp; bit) &gt; 0; bit &gt;&gt;= 1)</a>
+<a name="ln207">            {</a>
+<a name="ln208">                j ^= bit;</a>
+<a name="ln209">            }</a>
+<a name="ln210"> </a>
+<a name="ln211">            j ^= bit;</a>
+<a name="ln212"> </a>
+<a name="ln213">            if (i &lt; j)</a>
+<a name="ln214">            {</a>
+<a name="ln215">                (data[j], data[i]) = (data[i], data[j]);</a>
+<a name="ln216">            }</a>
+<a name="ln217">        }</a>
+<a name="ln218">    }</a>
+<a name="ln219"> </a>
+<a name="ln220">    /// &lt;summary&gt;</a>
+<a name="ln221">    /// Multiplies two complex numbers represented as Vector128.</a>
+<a name="ln222">    /// &lt;/summary&gt;</a>
+<a name="ln223">    /// &lt;param name=&quot;a&quot;&gt;The first complex number (real, imaginary).&lt;/param&gt;</a>
+<a name="ln224">    /// &lt;param name=&quot;b&quot;&gt;The second complex number (real, imaginary).&lt;/param&gt;</a>
+<a name="ln225">    /// &lt;returns&gt;The result of complex multiplication (real, imaginary).&lt;/returns&gt;</a>
+<a name="ln226">    private static Vector128&lt;double&gt; MultiplyComplexSse2(Vector128&lt;double&gt; a, Vector128&lt;double&gt; b)</a>
+<a name="ln227">    {</a>
+<a name="ln228">        // (a.Real * b.Real - a.Imaginary * b.Imaginary, a.Real * b.Imaginary + a.Imaginary * b.Real)</a>
+<a name="ln229">        var real = Sse2.Multiply(a, b);</a>
+<a name="ln230">        var imaginary =</a>
+<a name="ln231">            Sse2.Multiply(Sse2.Shuffle(a, a, 0b_01_00_01_00),</a>
+<a name="ln232">                Sse2.Shuffle(b, b,</a>
+<a name="ln233">                    0b_01_00_01_00)); // [a.Imaginary, a.Real, a.Imaginary, a.Real] * [b.Imaginary, b.Real, b.Imaginary, b.Real]</a>
+<a name="ln234"> </a>
+<a name="ln235">        // Negate the second element in imaginary</a>
+<a name="ln236">        var sign = Vector128.Create(-1.0, 1.0);</a>
+<a name="ln237">        imaginary = Sse2.Multiply(imaginary, sign);</a>
+<a name="ln238"> </a>
+<a name="ln239">        return Sse2.Add(real,</a>
+<a name="ln240">            Sse2.Shuffle(imaginary, imaginary,</a>
+<a name="ln241">                0b_01_00_01_00)); // [real.Real - imaginary.Imaginary, real.Imaginary + imaginary.Real]</a>
+<a name="ln242">    }</a>
+<a name="ln243"> </a>
+<a name="ln244">    /// &lt;summary&gt;</a>
+<a name="ln245">    /// Multiplies two complex numbers represented as Vector256.</a>
+<a name="ln246">    /// &lt;/summary&gt;</a>
+<a name="ln247">    /// &lt;param name=&quot;a&quot;&gt;The first complex number (real, imaginary, real, imaginary).&lt;/param&gt;</a>
+<a name="ln248">    /// &lt;param name=&quot;b&quot;&gt;The second complex number (real, imaginary, real, imaginary).&lt;/param&gt;</a>
+<a name="ln249">    /// &lt;returns&gt;The result of complex multiplication (real, imaginary, real, imaginary).&lt;/returns&gt;</a>
+<a name="ln250">    private static Vector256&lt;double&gt; MultiplyComplexAvx(Vector256&lt;double&gt; a, Vector256&lt;double&gt; b)</a>
+<a name="ln251">    {</a>
+<a name="ln252">        var bSwapped = Avx.Shuffle(b, b, 0b_01_00_01_00);</a>
+<a name="ln253">        var temp1 = Avx.Multiply(a, b);</a>
+<a name="ln254">        var temp2 = Avx.Multiply(a, bSwapped);</a>
+<a name="ln255">    </a>
+<a name="ln256">        // Compute real parts: temp1[0] - temp1[1], temp1[2] - temp1[3]</a>
+<a name="ln257">        var real = Avx.HorizontalSubtract(temp1, temp1);</a>
+<a name="ln258">        real = Avx.Permute2x128(real, real, 0x31);</a>
+<a name="ln259">    </a>
+<a name="ln260">        // Compute imag parts: temp2[0] + temp2[1], temp2[2] + temp2[3]</a>
+<a name="ln261">        var imag = Avx.HorizontalAdd(temp2, temp2);</a>
+<a name="ln262">        imag = Avx.Permute2x128(imag, imag, 0x31);</a>
+<a name="ln263">    </a>
+<a name="ln264">        // Combine real and imag parts</a>
+<a name="ln265">        var result = Avx.Add(</a>
+<a name="ln266">            Avx.Shuffle(real, real, 0b_00_00_10_00),</a>
+<a name="ln267">            Avx.Shuffle(imag, imag, 0b_01_01_11_01)</a>
+<a name="ln268">        );</a>
+<a name="ln269">        return result;</a>
+<a name="ln270">    }</a>
+<a name="ln271">    </a>
+<a name="ln272">    /// &lt;summary&gt;</a>
+<a name="ln273">    /// Generates a Hamming window of a specified size using SIMD acceleration with fallback to a scalar implementation.</a>
+<a name="ln274">    /// &lt;/summary&gt;</a>
+<a name="ln275">    /// &lt;param name=&quot;size&quot;&gt;The size of the Hamming window.&lt;/param&gt;</a>
+<a name="ln276">    /// &lt;returns&gt;The Hamming window array.&lt;/returns&gt;</a>
+<a name="ln277">    public static float[] HammingWindow(int size)</a>
+<a name="ln278">    {</a>
+<a name="ln279">        if (Avx.IsSupported &amp;&amp; size &gt;= Vector256&lt;float&gt;.Count)</a>
+<a name="ln280">            return HammingWindowAvx(size);</a>
+<a name="ln281"> </a>
+<a name="ln282">        if (Sse.IsSupported &amp;&amp; size &gt;= Vector128&lt;float&gt;.Count)</a>
+<a name="ln283">            return HammingWindowSse(size);</a>
+<a name="ln284"> </a>
+<a name="ln285">        return HammingWindowScalar(size);</a>
+<a name="ln286">    }</a>
+<a name="ln287"> </a>
+<a name="ln288">    /// &lt;summary&gt;</a>
+<a name="ln289">    /// Generates a Hamming window using a scalar implementation.</a>
+<a name="ln290">    /// &lt;/summary&gt;</a>
+<a name="ln291">    /// &lt;param name=&quot;size&quot;&gt;The size of the Hamming window.&lt;/param&gt;</a>
+<a name="ln292">    /// &lt;returns&gt;The Hamming window array.&lt;/returns&gt;</a>
+<a name="ln293">    private static float[] HammingWindowScalar(int size)</a>
+<a name="ln294">    {</a>
+<a name="ln295">        var window = new float[size];</a>
+<a name="ln296">        for (var i = 0; i &lt; size; i++)</a>
+<a name="ln297">        {</a>
+<a name="ln298">            window[i] = 0.54f - 0.46f * MathF.Cos((2 * MathF.PI * i) / (size - 1));</a>
+<a name="ln299">        }</a>
+<a name="ln300"> </a>
+<a name="ln301">        return window;</a>
+<a name="ln302">    }</a>
+<a name="ln303"> </a>
+<a name="ln304">    /// &lt;summary&gt;</a>
+<a name="ln305">    /// Generates a Hamming window using SSE acceleration.</a>
+<a name="ln306">    /// &lt;/summary&gt;</a>
+<a name="ln307">    /// &lt;param name=&quot;size&quot;&gt;The size of the Hamming window.&lt;/param&gt;</a>
+<a name="ln308">    /// &lt;returns&gt;The Hamming window array.&lt;/returns&gt;</a>
+<a name="ln309">    private static unsafe float[] HammingWindowSse(int size)</a>
+<a name="ln310">    {</a>
+<a name="ln311">        var window = new float[size];</a>
+<a name="ln312">        var vectorSize = Vector128&lt;float&gt;.Count;</a>
+<a name="ln313">        var remainder = size % vectorSize;</a>
+<a name="ln314"> </a>
+<a name="ln315">        fixed (float* pWindow = window)</a>
+<a name="ln316">        {</a>
+<a name="ln317">            // Precompute constants</a>
+<a name="ln318">            var vConstA = Vector128.Create(0.54f);</a>
+<a name="ln319">            var vConstB = Vector128.Create(0.46f);</a>
+<a name="ln320">            var vTwoPi = Vector128.Create(2.0f * MathF.PI / (size - 1));</a>
+<a name="ln321"> </a>
+<a name="ln322">            // Process in chunks of vectorSize</a>
+<a name="ln323">            for (var i = 0; i &lt; size - remainder; i += vectorSize)</a>
+<a name="ln324">            {</a>
+<a name="ln325">                // Create a vector of indices (i, i+1, i+2, i+3)</a>
+<a name="ln326">                var vIndices = Vector128.Create((float)i, i + 1, i + 2, i + 3);</a>
+<a name="ln327"> </a>
+<a name="ln328">                // Calculate the cosine argument: (2 * PI * i) / (size - 1)</a>
+<a name="ln329">                var vCosArg = Sse.Multiply(vTwoPi, vIndices);</a>
+<a name="ln330"> </a>
+<a name="ln331">                // Calculate the cosine value using a fast approximation (could be improved)</a>
+<a name="ln332">                var vCos = FastCosineSse(vCosArg);</a>
+<a name="ln333"> </a>
+<a name="ln334">                // Calculate the Hamming window value: 0.54 - 0.46 * cos(arg)</a>
+<a name="ln335">                var vResult = Sse.Subtract(vConstA, Sse.Multiply(vConstB, vCos));</a>
+<a name="ln336"> </a>
+<a name="ln337">                // Store the result</a>
+<a name="ln338">                Sse.Store(pWindow + i, vResult);</a>
+<a name="ln339">            }</a>
+<a name="ln340"> </a>
+<a name="ln341">            // Handle the remaining elements</a>
+<a name="ln342">            for (var i = size - remainder; i &lt; size; i++)</a>
+<a name="ln343">            {</a>
+<a name="ln344">                window[i] = 0.54f - 0.46f * MathF.Cos((2 * MathF.PI * i) / (size - 1));</a>
+<a name="ln345">            }</a>
+<a name="ln346">        }</a>
+<a name="ln347"> </a>
+<a name="ln348">        return window;</a>
+<a name="ln349">    }</a>
+<a name="ln350"> </a>
+<a name="ln351">    /// &lt;summary&gt;</a>
+<a name="ln352">    /// Generates a Hamming window using AVX acceleration.</a>
+<a name="ln353">    /// &lt;/summary&gt;</a>
+<a name="ln354">    /// &lt;param name=&quot;size&quot;&gt;The size of the Hamming window.&lt;/param&gt;</a>
+<a name="ln355">    /// &lt;returns&gt;The Hamming window array.&lt;/returns&gt;</a>
+<a name="ln356">    private static unsafe float[] HammingWindowAvx(int size)</a>
+<a name="ln357">    {</a>
+<a name="ln358">        var window = new float[size];</a>
+<a name="ln359">        var vectorSize = Vector256&lt;float&gt;.Count;</a>
+<a name="ln360">        var remainder = size % vectorSize;</a>
+<a name="ln361"> </a>
+<a name="ln362">        fixed (float* pWindow = window)</a>
+<a name="ln363">        {</a>
+<a name="ln364">            // Precompute constants</a>
+<a name="ln365">            var vConstA = Vector256.Create(0.54f);</a>
+<a name="ln366">            var vConstB = Vector256.Create(0.46f);</a>
+<a name="ln367">            var vTwoPi = Vector256.Create(2.0f * MathF.PI / (size - 1));</a>
+<a name="ln368"> </a>
+<a name="ln369">            // Process in chunks of vectorSize</a>
+<a name="ln370">            for (var i = 0; i &lt; size - remainder; i += vectorSize)</a>
+<a name="ln371">            {</a>
+<a name="ln372">                // Create a vector of indices (i, i+1, ..., i+7)</a>
+<a name="ln373">                var vIndices = Vector256.Create((float)i, i + 1, i + 2, i + 3, i + 4, i + 5, i + 6, i + 7);</a>
+<a name="ln374"> </a>
+<a name="ln375">                // Calculate the cosine argument: (2 * PI * i) / (size - 1)</a>
+<a name="ln376">                var vCosArg = Avx.Multiply(vTwoPi, vIndices);</a>
+<a name="ln377"> </a>
+<a name="ln378">                // Calculate the cosine value using a fast approximation (could be improved)</a>
+<a name="ln379">                var vCos = FastCosineAvx(vCosArg);</a>
+<a name="ln380"> </a>
+<a name="ln381">                // Calculate the Hamming window value: 0.54 - 0.46 * cos(arg)</a>
+<a name="ln382">                var vResult = Avx.Subtract(vConstA, Avx.Multiply(vConstB, vCos));</a>
+<a name="ln383"> </a>
+<a name="ln384">                // Store the result</a>
+<a name="ln385">                Avx.Store(pWindow + i, vResult);</a>
+<a name="ln386">            }</a>
+<a name="ln387"> </a>
+<a name="ln388">            // Handle the remaining elements</a>
+<a name="ln389">            for (var i = size - remainder; i &lt; size; i++)</a>
+<a name="ln390">            {</a>
+<a name="ln391">                window[i] = 0.54f - 0.46f * MathF.Cos((2 * MathF.PI * i) / (size - 1));</a>
+<a name="ln392">            }</a>
+<a name="ln393">        }</a>
+<a name="ln394"> </a>
+<a name="ln395">        return window;</a>
+<a name="ln396">    }</a>
+<a name="ln397"> </a>
+<a name="ln398">    /// &lt;summary&gt;</a>
+<a name="ln399">    /// Generates a Hanning window of a specified size using SIMD acceleration with fallback to a scalar implementation.</a>
+<a name="ln400">    /// &lt;/summary&gt;</a>
+<a name="ln401">    /// &lt;param name=&quot;size&quot;&gt;The size of the Hanning window.&lt;/param&gt;</a>
+<a name="ln402">    /// &lt;returns&gt;The Hanning window array.&lt;/returns&gt;</a>
+<a name="ln403">    public static float[] HanningWindow(int size)</a>
+<a name="ln404">    {</a>
+<a name="ln405">        if (Avx.IsSupported &amp;&amp; size &gt;= Vector256&lt;float&gt;.Count)</a>
+<a name="ln406">            return HanningWindowAvx(size);</a>
+<a name="ln407"> </a>
+<a name="ln408">        if (Sse.IsSupported &amp;&amp; size &gt;= Vector128&lt;float&gt;.Count)</a>
+<a name="ln409">            return HanningWindowSse(size);</a>
+<a name="ln410"> </a>
+<a name="ln411">        return HanningWindowScalar(size);</a>
+<a name="ln412">    }</a>
+<a name="ln413"> </a>
+<a name="ln414">    /// &lt;summary&gt;</a>
+<a name="ln415">    /// Generates a Hanning window using a scalar implementation.</a>
+<a name="ln416">    /// &lt;/summary&gt;</a>
+<a name="ln417">    /// &lt;param name=&quot;size&quot;&gt;The size of the Hanning window.&lt;/param&gt;</a>
+<a name="ln418">    /// &lt;returns&gt;The Hanning window array.&lt;/returns&gt;</a>
+<a name="ln419">    private static float[] HanningWindowScalar(int size)</a>
+<a name="ln420">    {</a>
+<a name="ln421">        var window = new float[size];</a>
+<a name="ln422">        for (var i = 0; i &lt; size; i++)</a>
+<a name="ln423">        {</a>
+<a name="ln424">            window[i] = 0.5f * (1.0f - MathF.Cos((2 * MathF.PI * i) / (size - 1)));</a>
+<a name="ln425">        }</a>
+<a name="ln426"> </a>
+<a name="ln427">        return window;</a>
+<a name="ln428">    }</a>
+<a name="ln429"> </a>
+<a name="ln430">    /// &lt;summary&gt;</a>
+<a name="ln431">    /// Generates a Hanning window using SSE acceleration.</a>
+<a name="ln432">    /// &lt;/summary&gt;</a>
+<a name="ln433">    /// &lt;param name=&quot;size&quot;&gt;The size of the Hanning window.&lt;/param&gt;</a>
+<a name="ln434">    /// &lt;returns&gt;The Hanning window array.&lt;/returns&gt;</a>
+<a name="ln435">    private static unsafe float[] HanningWindowSse(int size)</a>
+<a name="ln436">    {</a>
+<a name="ln437">        var window = new float[size];</a>
+<a name="ln438">        var vectorSize = Vector128&lt;float&gt;.Count;</a>
+<a name="ln439">        var remainder = size % vectorSize;</a>
+<a name="ln440"> </a>
+<a name="ln441">        fixed (float* pWindow = window)</a>
+<a name="ln442">        {</a>
+<a name="ln443">            var vConstA = Vector128.Create(0.5f);</a>
+<a name="ln444">            var vConstB = Vector128.Create(0.5f);</a>
+<a name="ln445">            var vTwoPi = Vector128.Create(2.0f * MathF.PI / (size - 1));</a>
+<a name="ln446"> </a>
+<a name="ln447">            for (var i = 0; i &lt; size - remainder; i += vectorSize)</a>
+<a name="ln448">            {</a>
+<a name="ln449">                var vIndices = Vector128.Create((float)i, i + 1, i + 2, i + 3);</a>
+<a name="ln450">                var vCosArg = Sse.Multiply(vTwoPi, vIndices);</a>
+<a name="ln451">                var vCos = FastCosineSse(vCosArg);</a>
+<a name="ln452">                var vResult = Sse.Subtract(vConstA, Sse.Multiply(vConstB, vCos));</a>
+<a name="ln453">                Sse.Store(pWindow + i, vResult);</a>
+<a name="ln454">            }</a>
+<a name="ln455"> </a>
+<a name="ln456">            // Handle remaining elements</a>
+<a name="ln457">            for (var i = size - remainder; i &lt; size; i++)</a>
+<a name="ln458">            {</a>
+<a name="ln459">                window[i] = 0.5f * (1.0f - MathF.Cos((2 * MathF.PI * i) / (size - 1)));</a>
+<a name="ln460">            }</a>
+<a name="ln461">        }</a>
+<a name="ln462"> </a>
+<a name="ln463">        return window;</a>
+<a name="ln464">    }</a>
+<a name="ln465"> </a>
+<a name="ln466">    /// &lt;summary&gt;</a>
+<a name="ln467">    /// Generates a Hanning window using AVX acceleration.</a>
+<a name="ln468">    /// &lt;/summary&gt;</a>
+<a name="ln469">    /// &lt;param name=&quot;size&quot;&gt;The size of the Hanning window.&lt;/param&gt;</a>
+<a name="ln470">    /// &lt;returns&gt;The Hanning window array.&lt;/returns&gt;</a>
+<a name="ln471">    private static unsafe float[] HanningWindowAvx(int size)</a>
+<a name="ln472">    {</a>
+<a name="ln473">        var window = new float[size];</a>
+<a name="ln474">        var vectorSize = Vector256&lt;float&gt;.Count;</a>
+<a name="ln475">        var remainder = size % vectorSize;</a>
+<a name="ln476"> </a>
+<a name="ln477">        fixed (float* pWindow = window)</a>
+<a name="ln478">        {</a>
+<a name="ln479">            var vConstA = Vector256.Create(0.5f);</a>
+<a name="ln480">            var vConstB = Vector256.Create(0.5f);</a>
+<a name="ln481">            var vTwoPi = Vector256.Create(2.0f * MathF.PI / (size - 1));</a>
+<a name="ln482"> </a>
+<a name="ln483">            for (var i = 0; i &lt; size - remainder; i += vectorSize)</a>
+<a name="ln484">            {</a>
+<a name="ln485">                var vIndices = Vector256.Create((float)i, i + 1, i + 2, i + 3,</a>
+<a name="ln486">                    i + 4, i + 5, i + 6, i + 7);</a>
+<a name="ln487">                var vCosArg = Avx.Multiply(vTwoPi, vIndices);</a>
+<a name="ln488">                var vCos = FastCosineAvx(vCosArg);</a>
+<a name="ln489">                var vResult = Avx.Subtract(vConstA, Avx.Multiply(vConstB, vCos));</a>
+<a name="ln490">                Avx.Store(pWindow + i, vResult);</a>
+<a name="ln491">            }</a>
+<a name="ln492"> </a>
+<a name="ln493">            // Handle remaining elements</a>
+<a name="ln494">            for (var i = size - remainder; i &lt; size; i++)</a>
+<a name="ln495">            {</a>
+<a name="ln496">                window[i] = 0.5f * (1.0f - MathF.Cos((2 * MathF.PI * i) / (size - 1)));</a>
+<a name="ln497">            }</a>
+<a name="ln498">        }</a>
+<a name="ln499"> </a>
+<a name="ln500">        return window;</a>
+<a name="ln501">    }</a>
+<a name="ln502">    </a>
+<a name="ln503">    /// &lt;summary&gt;</a>
+<a name="ln504">    /// Performs linear interpolation between two values</a>
+<a name="ln505">    /// &lt;/summary&gt;</a>
+<a name="ln506">    public static float Lerp(float a, float b, float t) =&gt; a + (b - a) * Math.Clamp(t, 0, 1);</a>
+<a name="ln507">    </a>
+<a name="ln508">    /// &lt;summary&gt;</a>
+<a name="ln509">    /// Checks if a number is a power of two (2, 4, 8, 16, etc.).</a>
+<a name="ln510">    /// &lt;/summary&gt;</a>
+<a name="ln511">    /// &lt;param name=&quot;n&quot;&gt;The number to check&lt;/param&gt;</a>
+<a name="ln512">    /// &lt;returns&gt;&lt;/returns&gt;</a>
+<a name="ln513">    public static bool IsPowerOfTwo(int n) =&gt; (n &amp; (n - 1)) == 0 &amp;&amp; n != 0;</a>
+<a name="ln514"> </a>
+<a name="ln515">    /// &lt;summary&gt;</a>
+<a name="ln516">    /// Approximates the cosine of a vector using SSE instructions.</a>
+<a name="ln517">    /// Placeholder for now, I need to implement a more accurate approximation.</a>
+<a name="ln518">    /// &lt;/summary&gt;</a>
+<a name="ln519">    /// &lt;param name=&quot;x&quot;&gt;The input vector.&lt;/param&gt;</a>
+<a name="ln520">    /// &lt;returns&gt;The approximated cosine of the input vector.&lt;/returns&gt;</a>
+<a name="ln521">    private static Vector128&lt;float&gt; FastCosineSse(Vector128&lt;float&gt; x)</a>
+<a name="ln522">    {</a>
+<a name="ln523">        // Simple polynomial approximation (for demonstration - needs improvement)</a>
+<a name="ln524">        // cos(x) ≈ 1 - x^2/2 + x^4/24</a>
+<a name="ln525">        var x2 = Sse.Multiply(x, x);</a>
+<a name="ln526">        var x4 = Sse.Multiply(x2, x2);</a>
+<a name="ln527">        var term2 = Sse.Multiply(x2, Vector128.Create(1f / 2f));</a>
+<a name="ln528">        var term4 = Sse.Multiply(x4, Vector128.Create(1f / 24f));</a>
+<a name="ln529"> </a>
+<a name="ln530">        return Sse.Subtract(Vector128.Create(1.0f), Sse.Add(term2, term4));</a>
+<a name="ln531">    }</a>
+<a name="ln532"> </a>
+<a name="ln533">    /// &lt;summary&gt;</a>
+<a name="ln534">    /// Approximates the cosine of a vector using AVX instructions.</a>
+<a name="ln535">    /// Placeholder for now, I need to implement a more accurate approximation.</a>
+<a name="ln536">    /// &lt;/summary&gt;</a>
+<a name="ln537">    /// &lt;param name=&quot;x&quot;&gt;The input vector.&lt;/param&gt;</a>
+<a name="ln538">    /// &lt;returns&gt;The approximated cosine of the input vector.&lt;/returns&gt;</a>
+<a name="ln539">    private static Vector256&lt;float&gt; FastCosineAvx(Vector256&lt;float&gt; x)</a>
+<a name="ln540">    {</a>
+<a name="ln541">        // Simple polynomial approximation (for demonstration - needs improvement)</a>
+<a name="ln542">        // cos(x) ≈ 1 - x^2/2 + x^4/24</a>
+<a name="ln543">        var x2 = Avx.Multiply(x, x);</a>
+<a name="ln544">        var x4 = Avx.Multiply(x2, x2);</a>
+<a name="ln545">        var term2 = Avx.Multiply(x2, Vector256.Create(1f / 2f));</a>
+<a name="ln546">        var term4 = Avx.Multiply(x4, Vector256.Create(1f / 24f));</a>
+<a name="ln547"> </a>
+<a name="ln548">        return Avx.Subtract(Vector256.Create(1.0f), Avx.Add(term2, term4));</a>
+<a name="ln549">    }</a>
+<a name="ln550">}</a>
+</code></pre>
+<div class="balloon" rel="298"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3064/" target="_blank">V3064</a> Potential division by zero. Consider inspecting denominator '(size - 1)'.</p></div>
+<div class="balloon" rel="424"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3064/" target="_blank">V3064</a> Potential division by zero. Consider inspecting denominator '(size - 1)'.</p></div>
+<link rel="stylesheet" href="highlight.css">
+<script src="highlight.pack.js"></script>
+<script src="highlightjs-line-numbers.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script>hljs.initLineNumbersOnLoad();</script>
+<script>
+  $(document).ready(function() {
+      $('.balloon').each(function () {
+          var bl = $(this);
+          var line = bl.attr('rel');
+          var text = $('a[name="ln'+line+'"]').text();
+
+          var space_count = 0;
+          for(var i = 0; i<text.length; i++){
+              var char = text[i];
+              if((char !== ' ')&&(char !== '\t'))break;
+              if(char === '\t')space_count++;
+              space_count++;
+          }
+
+          bl.css('margin-left', space_count*8);
+          $('a[name="ln'+line+'"]').after(bl);
+      });
+
+      window.location = window.location;
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,1962 @@
+[
+  {
+    "key": "dc895540-5ef8-4fda-beb0-9e6aea129536",
+    "rule": "csharpsquid:S1192",
+    "severity": "MINOR",
+    "component": "Riter:src/Riter/Core/IO/FileStorage.cs",
+    "project": "Riter",
+    "line": 21,
+    "hash": "46be0568d93a2d0b6686b8ab6a3d3ebc",
+    "textRange": {
+      "startLine": 21,
+      "endLine": 21,
+      "startOffset": 39,
+      "endOffset": 49
+    },
+    "flows": [
+      {
+        "locations": [
+          {
+            "component": "Riter:src/Riter/Core/IO/FileStorage.cs",
+            "textRange": {
+              "startLine": 23,
+              "endLine": 23,
+              "startOffset": 43,
+              "endOffset": 53
+            },
+            "msgFormattings": []
+          }
+        ]
+      },
+      {
+        "locations": [
+          {
+            "component": "Riter:src/Riter/Core/IO/FileStorage.cs",
+            "textRange": {
+              "startLine": 26,
+              "endLine": 26,
+              "startOffset": 32,
+              "endOffset": 42
+            },
+            "msgFormattings": []
+          }
+        ]
+      },
+      {
+        "locations": [
+          {
+            "component": "Riter:src/Riter/Core/IO/FileStorage.cs",
+            "textRange": {
+              "startLine": 48,
+              "endLine": 48,
+              "startOffset": 39,
+              "endOffset": 49
+            },
+            "msgFormattings": []
+          }
+        ]
+      },
+      {
+        "locations": [
+          {
+            "component": "Riter:src/Riter/Core/IO/FileStorage.cs",
+            "textRange": {
+              "startLine": 50,
+              "endLine": 50,
+              "startOffset": 43,
+              "endOffset": 53
+            },
+            "msgFormattings": []
+          }
+        ]
+      },
+      {
+        "locations": [
+          {
+            "component": "Riter:src/Riter/Core/IO/FileStorage.cs",
+            "textRange": {
+              "startLine": 53,
+              "endLine": 53,
+              "startOffset": 32,
+              "endOffset": 42
+            },
+            "msgFormattings": []
+          }
+        ]
+      }
+    ],
+    "status": "OPEN",
+    "message": "Define a constant instead of using this literal 'RiterApp' 6 times.",
+    "effort": "4min",
+    "debt": "4min",
+    "author": "mha.karimi@gmail.com",
+    "tags": [
+      "design"
+    ],
+    "creationDate": "2025-03-16T05:24:24+0000",
+    "updateDate": "2025-04-13T15:59:27+0000",
+    "type": "CODE_SMELL",
+    "scope": "MAIN",
+    "quickFixAvailable": false,
+    "messageFormattings": [],
+    "codeVariants": [],
+    "cleanCodeAttribute": "DISTINCT",
+    "cleanCodeAttributeCategory": "ADAPTABLE",
+    "impacts": [
+      {
+        "softwareQuality": "MAINTAINABILITY",
+        "severity": "LOW"
+      }
+    ],
+    "issueStatus": "OPEN",
+    "prioritizedRule": false
+  },
+  {
+    "key": "1f254c70-bb2d-4e4f-aa44-12fa8ea1f136",
+    "rule": "csharpsquid:S1192",
+    "severity": "MINOR",
+    "component": "Riter:src/Riter/Services/ThemeService.cs",
+    "project": "Riter",
+    "line": 31,
+    "hash": "a775e0961ec19bd3b94315622f53373c",
+    "textRange": {
+      "startLine": 31,
+      "endLine": 31,
+      "startOffset": 43,
+      "endOffset": 52
+    },
+    "flows": [
+      {
+        "locations": [
+          {
+            "component": "Riter:src/Riter/Services/ThemeService.cs",
+            "textRange": {
+              "startLine": 34,
+              "endLine": 34,
+              "startOffset": 52,
+              "endOffset": 61
+            },
+            "msgFormattings": []
+          }
+        ]
+      },
+      {
+        "locations": [
+          {
+            "component": "Riter:src/Riter/Services/ThemeService.cs",
+            "textRange": {
+              "startLine": 36,
+              "endLine": 36,
+              "startOffset": 55,
+              "endOffset": 64
+            },
+            "msgFormattings": []
+          }
+        ]
+      },
+      {
+        "locations": [
+          {
+            "component": "Riter:src/Riter/Services/ThemeService.cs",
+            "textRange": {
+              "startLine": 38,
+              "endLine": 38,
+              "startOffset": 53,
+              "endOffset": 62
+            },
+            "msgFormattings": []
+          }
+        ]
+      }
+    ],
+    "status": "OPEN",
+    "message": "Define a constant instead of using this literal '#7d7d7d' 4 times.",
+    "effort": "4min",
+    "debt": "4min",
+    "author": "mha.karimi@gmail.com",
+    "tags": [
+      "design"
+    ],
+    "creationDate": "2025-03-16T05:05:56+0000",
+    "updateDate": "2025-04-13T15:59:27+0000",
+    "type": "CODE_SMELL",
+    "scope": "MAIN",
+    "quickFixAvailable": false,
+    "messageFormattings": [],
+    "codeVariants": [],
+    "cleanCodeAttribute": "DISTINCT",
+    "cleanCodeAttributeCategory": "ADAPTABLE",
+    "impacts": [
+      {
+        "softwareQuality": "MAINTAINABILITY",
+        "severity": "LOW"
+      }
+    ],
+    "issueStatus": "OPEN",
+    "prioritizedRule": false
+  },
+  {
+    "key": "befb7728-e81f-4b65-a79c-2ded6c6a92a0",
+    "rule": "csharpsquid:S107",
+    "severity": "MAJOR",
+    "component": "Riter:src/Riter/ViewModel/PaletteStateOrchestratorViewModel.cs",
+    "project": "Riter",
+    "line": 11,
+    "hash": "6f3171c9bb279b1206dd5ef630d50c9d",
+    "textRange": {
+      "startLine": 11,
+      "endLine": 24,
+      "startOffset": 44,
+      "endOffset": 38
+    },
+    "flows": [],
+    "status": "OPEN",
+    "message": "Constructor has 13 parameters, which is greater than the 7 authorized.",
+    "effort": "20min",
+    "debt": "20min",
+    "author": "aparat1337@gmail.com",
+    "tags": [
+      "brain-overload"
+    ],
+    "creationDate": "2025-03-13T00:03:45+0000",
+    "updateDate": "2025-04-13T15:59:27+0000",
+    "type": "CODE_SMELL",
+    "scope": "MAIN",
+    "quickFixAvailable": false,
+    "messageFormattings": [],
+    "codeVariants": [],
+    "cleanCodeAttribute": "FOCUSED",
+    "cleanCodeAttributeCategory": "ADAPTABLE",
+    "impacts": [
+      {
+        "softwareQuality": "MAINTAINABILITY",
+        "severity": "MEDIUM"
+      }
+    ],
+    "issueStatus": "OPEN",
+    "prioritizedRule": false
+  },
+  {
+    "key": "e597bf7b-1753-4614-a7b7-da5b3998dbda",
+    "rule": "csharpsquid:S2486",
+    "severity": "MINOR",
+    "component": "Riter:src/Riter/Core/UI/SubPanels/UpdatePanel.xaml.cs",
+    "project": "Riter",
+    "line": 40,
+    "hash": "a8982eb2a988054aa4d8d792dd074cca",
+    "textRange": {
+      "startLine": 40,
+      "endLine": 42,
+      "startOffset": 8,
+      "endOffset": 9
+    },
+    "flows": [],
+    "status": "OPEN",
+    "message": "Handle the exception or explain in a comment why it can be ignored.",
+    "effort": "1h",
+    "debt": "1h",
+    "author": "mha.karimi@gmail.com",
+    "tags": [
+      "cwe",
+      "error-handling",
+      "suspicious"
+    ],
+    "creationDate": "2025-03-04T11:37:14+0000",
+    "updateDate": "2025-04-13T15:59:27+0000",
+    "type": "CODE_SMELL",
+    "scope": "MAIN",
+    "quickFixAvailable": false,
+    "messageFormattings": [],
+    "codeVariants": [],
+    "cleanCodeAttribute": "CLEAR",
+    "cleanCodeAttributeCategory": "INTENTIONAL",
+    "impacts": [
+      {
+        "softwareQuality": "MAINTAINABILITY",
+        "severity": "LOW"
+      }
+    ],
+    "issueStatus": "OPEN",
+    "prioritizedRule": false
+  },
+  {
+    "key": "69380383-ab0a-4707-98c6-a9f45269e2ba",
+    "rule": "csharpsquid:S108",
+    "severity": "MAJOR",
+    "component": "Riter:src/Riter/Core/UI/SubPanels/UpdatePanel.xaml.cs",
+    "project": "Riter",
+    "line": 41,
+    "hash": "f95b70fdc3088560732a5ac135644506",
+    "textRange": {
+      "startLine": 41,
+      "endLine": 42,
+      "startOffset": 8,
+      "endOffset": 9
+    },
+    "flows": [],
+    "status": "OPEN",
+    "message": "Either remove or fill this block of code.",
+    "effort": "5min",
+    "debt": "5min",
+    "author": "mha.karimi@gmail.com",
+    "tags": [
+      "suspicious"
+    ],
+    "creationDate": "2025-03-04T11:37:14+0000",
+    "updateDate": "2025-04-13T15:59:27+0000",
+    "type": "CODE_SMELL",
+    "scope": "MAIN",
+    "quickFixAvailable": false,
+    "messageFormattings": [],
+    "codeVariants": [],
+    "cleanCodeAttribute": "CLEAR",
+    "cleanCodeAttributeCategory": "INTENTIONAL",
+    "impacts": [
+      {
+        "softwareQuality": "MAINTAINABILITY",
+        "severity": "MEDIUM"
+      }
+    ],
+    "issueStatus": "OPEN",
+    "prioritizedRule": false
+  },
+  {
+    "key": "b96a8d3c-efe3-4331-86e9-d5a7a7384df6",
+    "rule": "csharpsquid:S112",
+    "severity": "MAJOR",
+    "component": "Riter:src/Riter/Core/UI/SubPanels/UpdatePanel.xaml.cs",
+    "project": "Riter",
+    "line": 62,
+    "hash": "60fa52afc7e8619dc2ac705b966ffec0",
+    "textRange": {
+      "startLine": 62,
+      "endLine": 62,
+      "startOffset": 21,
+      "endOffset": 68
+    },
+    "flows": [],
+    "status": "OPEN",
+    "message": "'System.Exception' should not be thrown by user code.",
+    "effort": "20min",
+    "debt": "20min",
+    "author": "mha.karimi@gmail.com",
+    "tags": [
+      "cwe",
+      "error-handling"
+    ],
+    "creationDate": "2025-03-04T11:37:14+0000",
+    "updateDate": "2025-04-13T15:59:27+0000",
+    "type": "CODE_SMELL",
+    "scope": "MAIN",
+    "quickFixAvailable": false,
+    "messageFormattings": [],
+    "codeVariants": [],
+    "cleanCodeAttribute": "COMPLETE",
+    "cleanCodeAttributeCategory": "INTENTIONAL",
+    "impacts": [
+      {
+        "softwareQuality": "MAINTAINABILITY",
+        "severity": "MEDIUM"
+      }
+    ],
+    "issueStatus": "OPEN",
+    "prioritizedRule": false
+  },
+  {
+    "key": "15bff77c-5e57-4392-8300-1ecb5ba6ea54",
+    "rule": "external_roslyn:CA1822",
+    "severity": "INFO",
+    "component": "Riter:src/Riter/Core/UI/SubPanels/UpdatePanel.xaml.cs",
+    "project": "Riter",
+    "line": 113,
+    "hash": "ae40cb2164ebcb4b9f9d28d5fa192e9b",
+    "textRange": {
+      "startLine": 113,
+      "endLine": 113,
+      "startOffset": 17,
+      "endOffset": 35
+    },
+    "flows": [],
+    "status": "OPEN",
+    "message": "Member 'CreateUpdateScript' does not access instance data and can be marked as static",
+    "effort": "0min",
+    "debt": "0min",
+    "author": "mha.karimi@gmail.com",
+    "tags": [],
+    "creationDate": "2025-03-04T11:37:14+0000",
+    "updateDate": "2025-04-13T15:59:27+0000",
+    "type": "CODE_SMELL",
+    "externalRuleEngine": "roslyn",
+    "scope": "MAIN",
+    "quickFixAvailable": false,
+    "messageFormattings": [],
+    "codeVariants": [],
+    "cleanCodeAttribute": "CONVENTIONAL",
+    "cleanCodeAttributeCategory": "CONSISTENT",
+    "impacts": [
+      {
+        "softwareQuality": "MAINTAINABILITY",
+        "severity": "INFO"
+      }
+    ],
+    "issueStatus": "OPEN",
+    "prioritizedRule": false
+  },
+  {
+    "key": "334c9a56-1ee1-4a54-8ac6-519effb4b989",
+    "rule": "csharpsquid:S2325",
+    "severity": "MINOR",
+    "component": "Riter:src/Riter/Core/UI/SubPanels/UpdatePanel.xaml.cs",
+    "project": "Riter",
+    "line": 113,
+    "hash": "ae40cb2164ebcb4b9f9d28d5fa192e9b",
+    "textRange": {
+      "startLine": 113,
+      "endLine": 113,
+      "startOffset": 17,
+      "endOffset": 35
+    },
+    "flows": [],
+    "status": "OPEN",
+    "message": "Make 'CreateUpdateScript' a static method.",
+    "effort": "5min",
+    "debt": "5min",
+    "author": "mha.karimi@gmail.com",
+    "tags": [
+      "pitfall"
+    ],
+    "creationDate": "2025-03-04T11:37:14+0000",
+    "updateDate": "2025-04-13T15:59:27+0000",
+    "type": "CODE_SMELL",
+    "scope": "MAIN",
+    "quickFixAvailable": false,
+    "messageFormattings": [],
+    "codeVariants": [],
+    "cleanCodeAttribute": "CLEAR",
+    "cleanCodeAttributeCategory": "INTENTIONAL",
+    "impacts": [
+      {
+        "softwareQuality": "MAINTAINABILITY",
+        "severity": "LOW"
+      }
+    ],
+    "issueStatus": "OPEN",
+    "prioritizedRule": false
+  },
+  {
+    "key": "2a741de4-a39c-49a5-b1a5-d3c3eaf2dec8",
+    "rule": "csharpsquid:S1118",
+    "severity": "MAJOR",
+    "component": "Riter:src/Riter/Core/ApplicationVersionMapper.cs",
+    "project": "Riter",
+    "line": 4,
+    "hash": "612d9ac48d962a602ef7f612ee9dfd73",
+    "textRange": {
+      "startLine": 4,
+      "endLine": 4,
+      "startOffset": 13,
+      "endOffset": 37
+    },
+    "flows": [],
+    "status": "OPEN",
+    "message": "Add a 'protected' constructor or the 'static' keyword to the class declaration.",
+    "effort": "10min",
+    "debt": "10min",
+    "author": "mha.karimi@gmail.com",
+    "tags": [
+      "design"
+    ],
+    "creationDate": "2025-02-27T11:12:46+0000",
+    "updateDate": "2025-04-13T15:59:27+0000",
+    "type": "CODE_SMELL",
+    "scope": "MAIN",
+    "quickFixAvailable": false,
+    "messageFormattings": [],
+    "codeVariants": [],
+    "cleanCodeAttribute": "CLEAR",
+    "cleanCodeAttributeCategory": "INTENTIONAL",
+    "impacts": [
+      {
+        "softwareQuality": "MAINTAINABILITY",
+        "severity": "MEDIUM"
+      }
+    ],
+    "issueStatus": "OPEN",
+    "prioritizedRule": false
+  },
+  {
+    "key": "89e72708-8ca6-4f55-b8c4-8c3c01c64971",
+    "rule": "csharpsquid:S1118",
+    "severity": "MAJOR",
+    "component": "Riter:src/Riter/Services/AutomaticUpdateService.cs",
+    "project": "Riter",
+    "line": 6,
+    "hash": "415f19e5e37378ff232e45e66ec3d9fb",
+    "textRange": {
+      "startLine": 6,
+      "endLine": 6,
+      "startOffset": 13,
+      "endOffset": 35
+    },
+    "flows": [],
+    "status": "OPEN",
+    "message": "Add a 'protected' constructor or the 'static' keyword to the class declaration.",
+    "effort": "10min",
+    "debt": "10min",
+    "author": "mha.karimi@gmail.com",
+    "tags": [
+      "design"
+    ],
+    "creationDate": "2025-02-27T11:12:46+0000",
+    "updateDate": "2025-04-13T15:59:27+0000",
+    "type": "CODE_SMELL",
+    "scope": "MAIN",
+    "quickFixAvailable": false,
+    "messageFormattings": [],
+    "codeVariants": [],
+    "cleanCodeAttribute": "CLEAR",
+    "cleanCodeAttributeCategory": "INTENTIONAL",
+    "impacts": [
+      {
+        "softwareQuality": "MAINTAINABILITY",
+        "severity": "MEDIUM"
+      }
+    ],
+    "issueStatus": "OPEN",
+    "prioritizedRule": false
+  },
+  {
+    "key": "07ab459c-7426-488e-b61e-fc686bfa63b3",
+    "rule": "csharpsquid:S1066",
+    "severity": "MAJOR",
+    "component": "Riter:src/Riter/Services/HotkeyCommandService.cs",
+    "project": "Riter",
+    "line": 24,
+    "hash": "65482e447cb51f26fc71ef7523e0adb7",
+    "textRange": {
+      "startLine": 24,
+      "endLine": 24,
+      "startOffset": 12,
+      "endOffset": 14
+    },
+    "flows": [
+      {
+        "locations": [
+          {
+            "component": "Riter:src/Riter/Services/HotkeyCommandService.cs",
+            "textRange": {
+              "startLine": 22,
+              "endLine": 22,
+              "startOffset": 8,
+              "endOffset": 10
+            },
+            "msg": "Merge this if statement with its nested one.",
+            "msgFormattings": []
+          }
+        ]
+      }
+    ],
+    "status": "OPEN",
+    "message": "Merge this if statement with the enclosing one.",
+    "effort": "5min",
+    "debt": "5min",
+    "author": "mha.karimi@gmail.com",
+    "tags": [
+      "clumsy"
+    ],
+    "creationDate": "2025-02-26T10:51:15+0000",
+    "updateDate": "2025-04-13T15:59:27+0000",
+    "type": "CODE_SMELL",
+    "scope": "MAIN",
+    "quickFixAvailable": false,
+    "messageFormattings": [],
+    "codeVariants": [],
+    "cleanCodeAttribute": "CLEAR",
+    "cleanCodeAttributeCategory": "INTENTIONAL",
+    "impacts": [
+      {
+        "softwareQuality": "MAINTAINABILITY",
+        "severity": "MEDIUM"
+      }
+    ],
+    "issueStatus": "OPEN",
+    "prioritizedRule": false
+  },
+  {
+    "key": "957d004c-3533-4d92-b95b-74eea1b627d3",
+    "rule": "csharpsquid:S3267",
+    "severity": "MINOR",
+    "component": "Riter:src/Riter/Core/UI/MainInkCanvasControl.xaml.cs",
+    "project": "Riter",
+    "line": 204,
+    "hash": "622caca132295675817e974d4a46efbf",
+    "textRange": {
+      "startLine": 204,
+      "endLine": 204,
+      "startOffset": 34,
+      "endOffset": 55
+    },
+    "flows": [
+      {
+        "locations": [
+          {
+            "component": "Riter:src/Riter/Core/UI/MainInkCanvasControl.xaml.cs",
+            "textRange": {
+              "startLine": 206,
+              "endLine": 206,
+              "startOffset": 16,
+              "endOffset": 45
+            },
+            "msgFormattings": []
+          }
+        ]
+      }
+    ],
+    "status": "OPEN",
+    "message": "Loops should be simplified using the \"Where\" LINQ method",
+    "effort": "5min",
+    "debt": "5min",
+    "author": "ipazooki@gmail.com",
+    "tags": [],
+    "creationDate": "2025-02-26T07:33:15+0000",
+    "updateDate": "2025-04-13T15:59:27+0000",
+    "type": "CODE_SMELL",
+    "scope": "MAIN",
+    "quickFixAvailable": false,
+    "messageFormattings": [],
+    "codeVariants": [],
+    "cleanCodeAttribute": "CLEAR",
+    "cleanCodeAttributeCategory": "INTENTIONAL",
+    "impacts": [
+      {
+        "softwareQuality": "MAINTAINABILITY",
+        "severity": "LOW"
+      }
+    ],
+    "issueStatus": "OPEN",
+    "prioritizedRule": false
+  },
+  {
+    "key": "7d7ca585-ec68-4da5-990f-e7ee745a4aa1",
+    "rule": "csharpsquid:S2971",
+    "severity": "MAJOR",
+    "component": "Riter:src/Riter/Core/UI/SubPanels/KeyboardHotKeys.xaml.cs",
+    "project": "Riter",
+    "line": 90,
+    "hash": "89b9d7127a592dbdb2826ed750306ee3",
+    "textRange": {
+      "startLine": 90,
+      "endLine": 90,
+      "startOffset": 61,
+      "endOffset": 66
+    },
+    "flows": [],
+    "status": "OPEN",
+    "message": "Drop 'Where' and move the condition into the 'FirstOrDefault'.",
+    "effort": "5min",
+    "debt": "5min",
+    "author": "ipazooki@gmail.com",
+    "tags": [
+      "clumsy"
+    ],
+    "creationDate": "2025-02-26T07:33:15+0000",
+    "updateDate": "2025-04-13T15:59:27+0000",
+    "type": "CODE_SMELL",
+    "scope": "MAIN",
+    "quickFixAvailable": false,
+    "messageFormattings": [],
+    "codeVariants": [],
+    "cleanCodeAttribute": "FOCUSED",
+    "cleanCodeAttributeCategory": "ADAPTABLE",
+    "impacts": [
+      {
+        "softwareQuality": "MAINTAINABILITY",
+        "severity": "MEDIUM"
+      }
+    ],
+    "issueStatus": "OPEN",
+    "prioritizedRule": false
+  },
+  {
+    "key": "dc8f575b-779a-4f20-b6c5-eb1635b0db72",
+    "rule": "csharpsquid:S2696",
+    "severity": "CRITICAL",
+    "component": "Riter:src/Riter/MainWindow.xaml.cs",
+    "project": "Riter",
+    "line": 50,
+    "hash": "31903ffa510fbc9fb62cd44c39431419",
+    "textRange": {
+      "startLine": 50,
+      "endLine": 50,
+      "startOffset": 8,
+      "endOffset": 17
+    },
+    "flows": [
+      {
+        "locations": [
+          {
+            "component": "Riter:src/Riter/MainWindow.xaml.cs",
+            "textRange": {
+              "startLine": 18,
+              "endLine": 18,
+              "startOffset": 26,
+              "endOffset": 47
+            },
+            "msgFormattings": []
+          }
+        ]
+      }
+    ],
+    "status": "OPEN",
+    "message": "Remove this set, which updates a 'static' field from an instance method.",
+    "effort": "20min",
+    "debt": "20min",
+    "author": "ipazooki@gmail.com",
+    "tags": [
+      "multi-threading"
+    ],
+    "creationDate": "2025-02-25T17:34:03+0000",
+    "updateDate": "2025-04-13T15:59:27+0000",
+    "type": "CODE_SMELL",
+    "scope": "MAIN",
+    "quickFixAvailable": false,
+    "messageFormattings": [],
+    "codeVariants": [],
+    "cleanCodeAttribute": "COMPLETE",
+    "cleanCodeAttributeCategory": "INTENTIONAL",
+    "impacts": [
+      {
+        "softwareQuality": "MAINTAINABILITY",
+        "severity": "HIGH"
+      }
+    ],
+    "issueStatus": "OPEN",
+    "prioritizedRule": false
+  },
+  {
+    "key": "df61f47e-b800-42c8-93e4-05c9fdfa59b8",
+    "rule": "csharpsquid:S1075",
+    "severity": "MINOR",
+    "component": "Riter:src/Riter/Core/AppSettings.cs",
+    "project": "Riter",
+    "line": 21,
+    "hash": "b6fa88079b353662195e83b84521504d",
+    "textRange": {
+      "startLine": 21,
+      "endLine": 21,
+      "startOffset": 43,
+      "endOffset": 84
+    },
+    "flows": [],
+    "status": "OPEN",
+    "message": "Refactor your code not to use hardcoded absolute paths or URIs.",
+    "effort": "20min",
+    "debt": "20min",
+    "author": "mha.karimi@gmail.com",
+    "tags": [],
+    "creationDate": "2024-12-21T02:37:47+0000",
+    "updateDate": "2025-04-13T15:59:27+0000",
+    "type": "CODE_SMELL",
+    "scope": "MAIN",
+    "quickFixAvailable": false,
+    "messageFormattings": [],
+    "codeVariants": [],
+    "cleanCodeAttribute": "CONVENTIONAL",
+    "cleanCodeAttributeCategory": "CONSISTENT",
+    "impacts": [
+      {
+        "softwareQuality": "MAINTAINABILITY",
+        "severity": "LOW"
+      }
+    ],
+    "issueStatus": "OPEN",
+    "prioritizedRule": false
+  },
+  {
+    "key": "bf749829-db28-42d5-91ae-2bea95a7ca55",
+    "rule": "csharpsquid:S1006",
+    "severity": "CRITICAL",
+    "component": "Riter:src/Riter/Core/Shape/FilledRectangleDrawer.cs",
+    "project": "Riter",
+    "line": 12,
+    "hash": "baeaea815acec3c7fde904ae56bfa45f",
+    "textRange": {
+      "startLine": 12,
+      "endLine": 12,
+      "startOffset": 95,
+      "endOffset": 102
+    },
+    "flows": [],
+    "status": "OPEN",
+    "message": "Remove the default parameter value to match the signature of overridden method.",
+    "effort": "2min",
+    "debt": "2min",
+    "author": "mha.karimi@gmail.com",
+    "tags": [
+      "pitfall"
+    ],
+    "creationDate": "2024-12-05T12:17:25+0000",
+    "updateDate": "2025-04-13T15:59:27+0000",
+    "type": "CODE_SMELL",
+    "scope": "MAIN",
+    "quickFixAvailable": false,
+    "messageFormattings": [],
+    "codeVariants": [],
+    "cleanCodeAttribute": "CLEAR",
+    "cleanCodeAttributeCategory": "INTENTIONAL",
+    "impacts": [
+      {
+        "softwareQuality": "MAINTAINABILITY",
+        "severity": "HIGH"
+      }
+    ],
+    "issueStatus": "OPEN",
+    "prioritizedRule": false
+  },
+  {
+    "key": "5e537282-1b3c-4c3d-9136-b27c0d21c02e",
+    "rule": "csharpsquid:S3358",
+    "severity": "MAJOR",
+    "component": "Riter:src/Riter/Core/HiddenAllToVisibilityConverter.cs",
+    "project": "Riter",
+    "line": 8,
+    "hash": "c691b1946c028fd6952ff450d6848537",
+    "textRange": {
+      "startLine": 8,
+      "endLine": 8,
+      "startOffset": 37,
+      "endOffset": 90
+    },
+    "flows": [],
+    "status": "OPEN",
+    "message": "Extract this nested ternary operation into an independent statement.",
+    "effort": "5min",
+    "debt": "5min",
+    "author": "mha.karimi@gmail.com",
+    "tags": [
+      "confusing"
+    ],
+    "creationDate": "2024-12-04T02:03:24+0000",
+    "updateDate": "2025-04-13T15:59:27+0000",
+    "type": "CODE_SMELL",
+    "scope": "MAIN",
+    "quickFixAvailable": false,
+    "messageFormattings": [],
+    "codeVariants": [],
+    "cleanCodeAttribute": "CLEAR",
+    "cleanCodeAttributeCategory": "INTENTIONAL",
+    "impacts": [
+      {
+        "softwareQuality": "MAINTAINABILITY",
+        "severity": "MEDIUM"
+      }
+    ],
+    "issueStatus": "OPEN",
+    "prioritizedRule": false
+  },
+  {
+    "key": "fb64aee6-fe0f-4fbe-b1df-20d0029027d5",
+    "rule": "csharpsquid:S1006",
+    "severity": "CRITICAL",
+    "component": "Riter:src/Riter/Core/Shape/ArrowDrawer.cs",
+    "project": "Riter",
+    "line": 13,
+    "hash": "baeaea815acec3c7fde904ae56bfa45f",
+    "textRange": {
+      "startLine": 13,
+      "endLine": 13,
+      "startOffset": 95,
+      "endOffset": 102
+    },
+    "flows": [],
+    "status": "OPEN",
+    "message": "Remove the default parameter value to match the signature of overridden method.",
+    "effort": "2min",
+    "debt": "2min",
+    "author": "mha.karimi@gmail.com",
+    "tags": [
+      "pitfall"
+    ],
+    "creationDate": "2024-11-22T05:32:15+0000",
+    "updateDate": "2025-04-13T15:59:27+0000",
+    "type": "CODE_SMELL",
+    "scope": "MAIN",
+    "quickFixAvailable": false,
+    "messageFormattings": [],
+    "codeVariants": [],
+    "cleanCodeAttribute": "CLEAR",
+    "cleanCodeAttributeCategory": "INTENTIONAL",
+    "impacts": [
+      {
+        "softwareQuality": "MAINTAINABILITY",
+        "severity": "HIGH"
+      }
+    ],
+    "issueStatus": "OPEN",
+    "prioritizedRule": false
+  },
+  {
+    "key": "bfd9013a-75af-4efb-bb19-b6c6c5d778f7",
+    "rule": "csharpsquid:S1006",
+    "severity": "CRITICAL",
+    "component": "Riter:src/Riter/Core/Shape/CircleDrawer.cs",
+    "project": "Riter",
+    "line": 11,
+    "hash": "baeaea815acec3c7fde904ae56bfa45f",
+    "textRange": {
+      "startLine": 11,
+      "endLine": 11,
+      "startOffset": 95,
+      "endOffset": 102
+    },
+    "flows": [],
+    "status": "OPEN",
+    "message": "Remove the default parameter value to match the signature of overridden method.",
+    "effort": "2min",
+    "debt": "2min",
+    "author": "mha.karimi@gmail.com",
+    "tags": [
+      "pitfall"
+    ],
+    "creationDate": "2024-11-22T05:32:15+0000",
+    "updateDate": "2025-04-13T15:59:27+0000",
+    "type": "CODE_SMELL",
+    "scope": "MAIN",
+    "quickFixAvailable": false,
+    "messageFormattings": [],
+    "codeVariants": [],
+    "cleanCodeAttribute": "CLEAR",
+    "cleanCodeAttributeCategory": "INTENTIONAL",
+    "impacts": [
+      {
+        "softwareQuality": "MAINTAINABILITY",
+        "severity": "HIGH"
+      }
+    ],
+    "issueStatus": "OPEN",
+    "prioritizedRule": false
+  },
+  {
+    "key": "7ec9a3ea-8e93-41ec-b8d9-e61ba85ad18b",
+    "rule": "csharpsquid:S1006",
+    "severity": "CRITICAL",
+    "component": "Riter:src/Riter/Core/Shape/DatabaseDrawer.cs",
+    "project": "Riter",
+    "line": 13,
+    "hash": "baeaea815acec3c7fde904ae56bfa45f",
+    "textRange": {
+      "startLine": 13,
+      "endLine": 13,
+      "startOffset": 95,
+      "endOffset": 102
+    },
+    "flows": [],
+    "status": "OPEN",
+    "message": "Remove the default parameter value to match the signature of overridden method.",
+    "effort": "2min",
+    "debt": "2min",
+    "author": "mha.karimi@gmail.com",
+    "tags": [
+      "pitfall"
+    ],
+    "creationDate": "2024-11-22T05:32:15+0000",
+    "updateDate": "2025-04-13T15:59:27+0000",
+    "type": "CODE_SMELL",
+    "scope": "MAIN",
+    "quickFixAvailable": false,
+    "messageFormattings": [],
+    "codeVariants": [],
+    "cleanCodeAttribute": "CLEAR",
+    "cleanCodeAttributeCategory": "INTENTIONAL",
+    "impacts": [
+      {
+        "softwareQuality": "MAINTAINABILITY",
+        "severity": "HIGH"
+      }
+    ],
+    "issueStatus": "OPEN",
+    "prioritizedRule": false
+  },
+  {
+    "key": "13ea0d11-14d7-4cf5-8550-96fa7364181d",
+    "rule": "csharpsquid:S1006",
+    "severity": "CRITICAL",
+    "component": "Riter:src/Riter/Core/Shape/LineDrawer.cs",
+    "project": "Riter",
+    "line": 12,
+    "hash": "baeaea815acec3c7fde904ae56bfa45f",
+    "textRange": {
+      "startLine": 12,
+      "endLine": 12,
+      "startOffset": 95,
+      "endOffset": 102
+    },
+    "flows": [],
+    "status": "OPEN",
+    "message": "Remove the default parameter value to match the signature of overridden method.",
+    "effort": "2min",
+    "debt": "2min",
+    "author": "mha.karimi@gmail.com",
+    "tags": [
+      "pitfall"
+    ],
+    "creationDate": "2024-11-22T05:32:15+0000",
+    "updateDate": "2025-04-13T15:59:27+0000",
+    "type": "CODE_SMELL",
+    "scope": "MAIN",
+    "quickFixAvailable": false,
+    "messageFormattings": [],
+    "codeVariants": [],
+    "cleanCodeAttribute": "CLEAR",
+    "cleanCodeAttributeCategory": "INTENTIONAL",
+    "impacts": [
+      {
+        "softwareQuality": "MAINTAINABILITY",
+        "severity": "HIGH"
+      }
+    ],
+    "issueStatus": "OPEN",
+    "prioritizedRule": false
+  },
+  {
+    "key": "3a3c41d6-e448-452c-8348-4920a041fdfc",
+    "rule": "csharpsquid:S1006",
+    "severity": "CRITICAL",
+    "component": "Riter:src/Riter/Core/Shape/RectangleDrawer.cs",
+    "project": "Riter",
+    "line": 11,
+    "hash": "baeaea815acec3c7fde904ae56bfa45f",
+    "textRange": {
+      "startLine": 11,
+      "endLine": 11,
+      "startOffset": 95,
+      "endOffset": 102
+    },
+    "flows": [],
+    "status": "OPEN",
+    "message": "Remove the default parameter value to match the signature of overridden method.",
+    "effort": "2min",
+    "debt": "2min",
+    "author": "mha.karimi@gmail.com",
+    "tags": [
+      "pitfall"
+    ],
+    "creationDate": "2024-11-22T05:32:15+0000",
+    "updateDate": "2025-04-13T15:59:27+0000",
+    "type": "CODE_SMELL",
+    "scope": "MAIN",
+    "quickFixAvailable": false,
+    "messageFormattings": [],
+    "codeVariants": [],
+    "cleanCodeAttribute": "CLEAR",
+    "cleanCodeAttributeCategory": "INTENTIONAL",
+    "impacts": [
+      {
+        "softwareQuality": "MAINTAINABILITY",
+        "severity": "HIGH"
+      }
+    ],
+    "issueStatus": "OPEN",
+    "prioritizedRule": false
+  },
+  {
+    "key": "f172e270-2347-4d9d-befc-619f082cf8d2",
+    "rule": "csharpsquid:S1118",
+    "severity": "MAJOR",
+    "component": "Riter:src/Riter/Core/IO/FileStorage.cs",
+    "project": "Riter",
+    "line": 8,
+    "hash": "498462a042e709bb6260fc11a6795d6a",
+    "textRange": {
+      "startLine": 8,
+      "endLine": 8,
+      "startOffset": 13,
+      "endOffset": 24
+    },
+    "flows": [],
+    "status": "OPEN",
+    "message": "Add a 'protected' constructor or the 'static' keyword to the class declaration.",
+    "effort": "10min",
+    "debt": "10min",
+    "author": "mha.karimi@gmail.com",
+    "tags": [
+      "design"
+    ],
+    "creationDate": "2024-11-21T03:58:26+0000",
+    "updateDate": "2025-04-13T15:59:27+0000",
+    "type": "CODE_SMELL",
+    "scope": "MAIN",
+    "quickFixAvailable": false,
+    "messageFormattings": [],
+    "codeVariants": [],
+    "cleanCodeAttribute": "CLEAR",
+    "cleanCodeAttributeCategory": "INTENTIONAL",
+    "impacts": [
+      {
+        "softwareQuality": "MAINTAINABILITY",
+        "severity": "MEDIUM"
+      }
+    ],
+    "issueStatus": "OPEN",
+    "prioritizedRule": false
+  },
+  {
+    "key": "e243d117-29e1-42d8-836f-12d8cb14d340",
+    "rule": "csharpsquid:S3604",
+    "severity": "MINOR",
+    "component": "Riter:src/Riter/Core/UI/SubPanels/KeyboardHotKeys.xaml.cs",
+    "project": "Riter",
+    "line": 14,
+    "hash": "cbed73f7fcfdc789d0df868d52c63ad6",
+    "textRange": {
+      "startLine": 14,
+      "endLine": 14,
+      "startOffset": 57,
+      "endOffset": 61
+    },
+    "flows": [],
+    "status": "OPEN",
+    "message": "Remove the member initializer, all constructors set an initial value for the member.",
+    "effort": "1min",
+    "debt": "1min",
+    "author": "mha.karimi@gmail.com",
+    "tags": [],
+    "creationDate": "2024-11-11T12:54:56+0000",
+    "updateDate": "2025-04-13T15:59:27+0000",
+    "type": "CODE_SMELL",
+    "scope": "MAIN",
+    "quickFixAvailable": false,
+    "messageFormattings": [],
+    "codeVariants": [],
+    "cleanCodeAttribute": "CLEAR",
+    "cleanCodeAttributeCategory": "INTENTIONAL",
+    "impacts": [
+      {
+        "softwareQuality": "MAINTAINABILITY",
+        "severity": "LOW"
+      }
+    ],
+    "issueStatus": "OPEN",
+    "prioritizedRule": false
+  },
+  {
+    "key": "2312c054-ffa2-4ae7-8887-36bd60b79f60",
+    "rule": "external_roslyn:SYSLIB1054",
+    "severity": "INFO",
+    "component": "Riter:src/Riter/MainWindow.xaml.cs",
+    "project": "Riter",
+    "line": 56,
+    "hash": "f7ea508fbcbf142a86af8a463c2ab19b",
+    "textRange": {
+      "startLine": 56,
+      "endLine": 56,
+      "startOffset": 33,
+      "endOffset": 49
+    },
+    "flows": [],
+    "status": "OPEN",
+    "message": "Mark the method 'SetWindowsHookEx' with 'LibraryImportAttribute' instead of 'DllImportAttribute' to generate P/Invoke marshalling code at compile time",
+    "effort": "0min",
+    "debt": "0min",
+    "author": "mha.karimi@gmail.com",
+    "tags": [],
+    "creationDate": "2024-11-11T11:22:13+0000",
+    "updateDate": "2025-04-13T15:59:27+0000",
+    "type": "CODE_SMELL",
+    "externalRuleEngine": "roslyn",
+    "scope": "MAIN",
+    "quickFixAvailable": false,
+    "messageFormattings": [],
+    "codeVariants": [],
+    "cleanCodeAttribute": "CONVENTIONAL",
+    "cleanCodeAttributeCategory": "CONSISTENT",
+    "impacts": [
+      {
+        "softwareQuality": "MAINTAINABILITY",
+        "severity": "INFO"
+      }
+    ],
+    "issueStatus": "OPEN",
+    "prioritizedRule": false
+  },
+  {
+    "key": "a9cc4041-f91f-4c8b-9b28-f6cb71bd1b44",
+    "rule": "external_roslyn:SYSLIB1054",
+    "severity": "INFO",
+    "component": "Riter:src/Riter/MainWindow.xaml.cs",
+    "project": "Riter",
+    "line": 60,
+    "hash": "1689c5d52cdd10f4dc28e5c92edaac0c",
+    "textRange": {
+      "startLine": 60,
+      "endLine": 60,
+      "startOffset": 31,
+      "endOffset": 50
+    },
+    "flows": [],
+    "status": "OPEN",
+    "message": "Mark the method 'UnhookWindowsHookEx' with 'LibraryImportAttribute' instead of 'DllImportAttribute' to generate P/Invoke marshalling code at compile time",
+    "effort": "0min",
+    "debt": "0min",
+    "author": "mha.karimi@gmail.com",
+    "tags": [],
+    "creationDate": "2024-11-11T11:22:13+0000",
+    "updateDate": "2025-04-13T15:59:27+0000",
+    "type": "CODE_SMELL",
+    "externalRuleEngine": "roslyn",
+    "scope": "MAIN",
+    "quickFixAvailable": false,
+    "messageFormattings": [],
+    "codeVariants": [],
+    "cleanCodeAttribute": "CONVENTIONAL",
+    "cleanCodeAttributeCategory": "CONSISTENT",
+    "impacts": [
+      {
+        "softwareQuality": "MAINTAINABILITY",
+        "severity": "INFO"
+      }
+    ],
+    "issueStatus": "OPEN",
+    "prioritizedRule": false
+  },
+  {
+    "key": "0b4e3368-6840-44e1-91a0-cd867b571e01",
+    "rule": "external_roslyn:SYSLIB1054",
+    "severity": "INFO",
+    "component": "Riter:src/Riter/MainWindow.xaml.cs",
+    "project": "Riter",
+    "line": 63,
+    "hash": "0ab837947955a008a3a18262074881e0",
+    "textRange": {
+      "startLine": 63,
+      "endLine": 63,
+      "startOffset": 33,
+      "endOffset": 47
+    },
+    "flows": [],
+    "status": "OPEN",
+    "message": "Mark the method 'CallNextHookEx' with 'LibraryImportAttribute' instead of 'DllImportAttribute' to generate P/Invoke marshalling code at compile time",
+    "effort": "0min",
+    "debt": "0min",
+    "author": "mha.karimi@gmail.com",
+    "tags": [],
+    "creationDate": "2024-11-11T11:22:13+0000",
+    "updateDate": "2025-04-13T15:59:27+0000",
+    "type": "CODE_SMELL",
+    "externalRuleEngine": "roslyn",
+    "scope": "MAIN",
+    "quickFixAvailable": false,
+    "messageFormattings": [],
+    "codeVariants": [],
+    "cleanCodeAttribute": "CONVENTIONAL",
+    "cleanCodeAttributeCategory": "CONSISTENT",
+    "impacts": [
+      {
+        "softwareQuality": "MAINTAINABILITY",
+        "severity": "INFO"
+      }
+    ],
+    "issueStatus": "OPEN",
+    "prioritizedRule": false
+  },
+  {
+    "key": "f765d47c-267c-4761-b26e-c6f1ebfaabc5",
+    "rule": "external_roslyn:CA2101",
+    "severity": "INFO",
+    "component": "Riter:src/Riter/MainWindow.xaml.cs",
+    "project": "Riter",
+    "line": 65,
+    "hash": "deccd914636e1c177ebdef27cb646b6e",
+    "textRange": {
+      "startLine": 65,
+      "endLine": 65,
+      "startOffset": 5,
+      "endOffset": 75
+    },
+    "flows": [],
+    "status": "OPEN",
+    "message": "Specify marshaling for P/Invoke string arguments",
+    "effort": "0min",
+    "debt": "0min",
+    "author": "mha.karimi@gmail.com",
+    "tags": [],
+    "creationDate": "2024-11-11T11:22:13+0000",
+    "updateDate": "2025-04-13T15:59:27+0000",
+    "type": "CODE_SMELL",
+    "externalRuleEngine": "roslyn",
+    "scope": "MAIN",
+    "quickFixAvailable": false,
+    "messageFormattings": [],
+    "codeVariants": [],
+    "cleanCodeAttribute": "CONVENTIONAL",
+    "cleanCodeAttributeCategory": "CONSISTENT",
+    "impacts": [
+      {
+        "softwareQuality": "MAINTAINABILITY",
+        "severity": "INFO"
+      }
+    ],
+    "issueStatus": "OPEN",
+    "prioritizedRule": false
+  },
+  {
+    "key": "2152f24c-693c-4eee-b533-243361a3fc5c",
+    "rule": "external_roslyn:SYSLIB1054",
+    "severity": "INFO",
+    "component": "Riter:src/Riter/MainWindow.xaml.cs",
+    "project": "Riter",
+    "line": 66,
+    "hash": "96140794d7cc09d74c52ac063d148d06",
+    "textRange": {
+      "startLine": 66,
+      "endLine": 66,
+      "startOffset": 33,
+      "endOffset": 48
+    },
+    "flows": [],
+    "status": "OPEN",
+    "message": "Mark the method 'GetModuleHandle' with 'LibraryImportAttribute' instead of 'DllImportAttribute' to generate P/Invoke marshalling code at compile time",
+    "effort": "0min",
+    "debt": "0min",
+    "author": "mha.karimi@gmail.com",
+    "tags": [],
+    "creationDate": "2024-11-11T11:22:13+0000",
+    "updateDate": "2025-04-13T15:59:27+0000",
+    "type": "CODE_SMELL",
+    "externalRuleEngine": "roslyn",
+    "scope": "MAIN",
+    "quickFixAvailable": false,
+    "messageFormattings": [],
+    "codeVariants": [],
+    "cleanCodeAttribute": "CONVENTIONAL",
+    "cleanCodeAttributeCategory": "CONSISTENT",
+    "impacts": [
+      {
+        "softwareQuality": "MAINTAINABILITY",
+        "severity": "INFO"
+      }
+    ],
+    "issueStatus": "OPEN",
+    "prioritizedRule": false
+  },
+  {
+    "key": "4009c7dd-ef0d-4f89-a6be-955f16250deb",
+    "rule": "csharpsquid:S3010",
+    "severity": "MAJOR",
+    "component": "Riter:src/Riter/MainWindow.xaml.cs",
+    "project": "Riter",
+    "line": 31,
+    "hash": "b89615f186a3f4186b207ad56858f4bd",
+    "textRange": {
+      "startLine": 31,
+      "endLine": 31,
+      "startOffset": 8,
+      "endOffset": 32
+    },
+    "flows": [
+      {
+        "locations": [
+          {
+            "component": "Riter:src/Riter/MainWindow.xaml.cs",
+            "textRange": {
+              "startLine": 21,
+              "endLine": 21,
+              "startOffset": 53,
+              "endOffset": 75
+            },
+            "msgFormattings": []
+          }
+        ]
+      }
+    ],
+    "status": "OPEN",
+    "message": "Remove this assignment of '_orchestratorViewModel' or initialize it statically.",
+    "effort": "20min",
+    "debt": "20min",
+    "author": "mha.karimi@gmail.com",
+    "tags": [],
+    "creationDate": "2024-11-04T14:04:03+0000",
+    "updateDate": "2025-04-13T15:59:27+0000",
+    "type": "CODE_SMELL",
+    "scope": "MAIN",
+    "quickFixAvailable": false,
+    "messageFormattings": [],
+    "codeVariants": [],
+    "cleanCodeAttribute": "LOGICAL",
+    "cleanCodeAttributeCategory": "INTENTIONAL",
+    "impacts": [
+      {
+        "softwareQuality": "MAINTAINABILITY",
+        "severity": "MEDIUM"
+      }
+    ],
+    "issueStatus": "OPEN",
+    "prioritizedRule": false
+  },
+  {
+    "key": "c7504b19-947d-45bf-ac93-4a1d3b2043cb",
+    "rule": "csharpsquid:S3776",
+    "severity": "CRITICAL",
+    "component": "Riter:src/Riter/MainWindow.xaml.cs",
+    "project": "Riter",
+    "line": 75,
+    "hash": "23a47035411c0fef8c8308828c31afa9",
+    "textRange": {
+      "startLine": 75,
+      "endLine": 75,
+      "startOffset": 26,
+      "endOffset": 38
+    },
+    "flows": [
+      {
+        "locations": [
+          {
+            "component": "Riter:src/Riter/MainWindow.xaml.cs",
+            "textRange": {
+              "startLine": 78,
+              "endLine": 78,
+              "startOffset": 8,
+              "endOffset": 10
+            },
+            "msg": "+1",
+            "msgFormattings": []
+          }
+        ]
+      },
+      {
+        "locations": [
+          {
+            "component": "Riter:src/Riter/MainWindow.xaml.cs",
+            "textRange": {
+              "startLine": 78,
+              "endLine": 78,
+              "startOffset": 23,
+              "endOffset": 25
+            },
+            "msg": "+1",
+            "msgFormattings": []
+          }
+        ]
+      },
+      {
+        "locations": [
+          {
+            "component": "Riter:src/Riter/MainWindow.xaml.cs",
+            "textRange": {
+              "startLine": 78,
+              "endLine": 78,
+              "startOffset": 47,
+              "endOffset": 49
+            },
+            "msg": "+1",
+            "msgFormattings": []
+          }
+        ]
+      },
+      {
+        "locations": [
+          {
+            "component": "Riter:src/Riter/MainWindow.xaml.cs",
+            "textRange": {
+              "startLine": 82,
+              "endLine": 82,
+              "startOffset": 12,
+              "endOffset": 14
+            },
+            "msg": "+2 (incl 1 for nesting)",
+            "msgFormattings": []
+          }
+        ]
+      },
+      {
+        "locations": [
+          {
+            "component": "Riter:src/Riter/MainWindow.xaml.cs",
+            "textRange": {
+              "startLine": 84,
+              "endLine": 84,
+              "startOffset": 16,
+              "endOffset": 18
+            },
+            "msg": "+3 (incl 2 for nesting)",
+            "msgFormattings": []
+          }
+        ]
+      },
+      {
+        "locations": [
+          {
+            "component": "Riter:src/Riter/MainWindow.xaml.cs",
+            "textRange": {
+              "startLine": 84,
+              "endLine": 84,
+              "startOffset": 73,
+              "endOffset": 75
+            },
+            "msg": "+1",
+            "msgFormattings": []
+          }
+        ]
+      },
+      {
+        "locations": [
+          {
+            "component": "Riter:src/Riter/MainWindow.xaml.cs",
+            "textRange": {
+              "startLine": 90,
+              "endLine": 90,
+              "startOffset": 16,
+              "endOffset": 18
+            },
+            "msg": "+3 (incl 2 for nesting)",
+            "msgFormattings": []
+          }
+        ]
+      },
+      {
+        "locations": [
+          {
+            "component": "Riter:src/Riter/MainWindow.xaml.cs",
+            "textRange": {
+              "startLine": 90,
+              "endLine": 90,
+              "startOffset": 74,
+              "endOffset": 76
+            },
+            "msg": "+1",
+            "msgFormattings": []
+          }
+        ]
+      },
+      {
+        "locations": [
+          {
+            "component": "Riter:src/Riter/MainWindow.xaml.cs",
+            "textRange": {
+              "startLine": 96,
+              "endLine": 96,
+              "startOffset": 16,
+              "endOffset": 18
+            },
+            "msg": "+3 (incl 2 for nesting)",
+            "msgFormattings": []
+          }
+        ]
+      },
+      {
+        "locations": [
+          {
+            "component": "Riter:src/Riter/MainWindow.xaml.cs",
+            "textRange": {
+              "startLine": 103,
+              "endLine": 103,
+              "startOffset": 12,
+              "endOffset": 16
+            },
+            "msg": "+1",
+            "msgFormattings": []
+          }
+        ]
+      },
+      {
+        "locations": [
+          {
+            "component": "Riter:src/Riter/MainWindow.xaml.cs",
+            "textRange": {
+              "startLine": 105,
+              "endLine": 105,
+              "startOffset": 16,
+              "endOffset": 18
+            },
+            "msg": "+3 (incl 2 for nesting)",
+            "msgFormattings": []
+          }
+        ]
+      },
+      {
+        "locations": [
+          {
+            "component": "Riter:src/Riter/MainWindow.xaml.cs",
+            "textRange": {
+              "startLine": 105,
+              "endLine": 105,
+              "startOffset": 73,
+              "endOffset": 75
+            },
+            "msg": "+1",
+            "msgFormattings": []
+          }
+        ]
+      },
+      {
+        "locations": [
+          {
+            "component": "Riter:src/Riter/MainWindow.xaml.cs",
+            "textRange": {
+              "startLine": 110,
+              "endLine": 110,
+              "startOffset": 16,
+              "endOffset": 18
+            },
+            "msg": "+3 (incl 2 for nesting)",
+            "msgFormattings": []
+          }
+        ]
+      },
+      {
+        "locations": [
+          {
+            "component": "Riter:src/Riter/MainWindow.xaml.cs",
+            "textRange": {
+              "startLine": 110,
+              "endLine": 110,
+              "startOffset": 74,
+              "endOffset": 76
+            },
+            "msg": "+1",
+            "msgFormattings": []
+          }
+        ]
+      }
+    ],
+    "status": "OPEN",
+    "message": "Refactor this method to reduce its Cognitive Complexity from 25 to the 15 allowed.",
+    "effort": "6min",
+    "debt": "6min",
+    "author": "mha.karimi@gmail.com",
+    "tags": [
+      "brain-overload"
+    ],
+    "creationDate": "2024-11-04T14:04:03+0000",
+    "updateDate": "2025-04-13T15:59:27+0000",
+    "type": "CODE_SMELL",
+    "scope": "MAIN",
+    "quickFixAvailable": false,
+    "messageFormattings": [],
+    "codeVariants": [],
+    "cleanCodeAttribute": "FOCUSED",
+    "cleanCodeAttributeCategory": "ADAPTABLE",
+    "impacts": [
+      {
+        "softwareQuality": "MAINTAINABILITY",
+        "severity": "HIGH"
+      }
+    ],
+    "issueStatus": "OPEN",
+    "prioritizedRule": false
+  },
+  {
+    "key": "1c35433c-2542-44b0-885d-f8cff6e69ef6",
+    "rule": "csharpsquid:S2386",
+    "severity": "MINOR",
+    "component": "Riter:src/Riter/Core/Drawing/ColorPalette.cs",
+    "project": "Riter",
+    "line": 7,
+    "hash": "65539ee008f63bf03a41bb0dd84c70c7",
+    "textRange": {
+      "startLine": 7,
+      "endLine": 7,
+      "startOffset": 27,
+      "endOffset": 74
+    },
+    "flows": [],
+    "status": "OPEN",
+    "message": "Use an immutable collection or reduce the accessibility of the public static field 'Colors'.",
+    "effort": "15min",
+    "debt": "15min",
+    "author": "mha.karimi@gmail.com",
+    "tags": [
+      "cwe",
+      "unpredictable"
+    ],
+    "creationDate": "2024-10-30T03:29:01+0000",
+    "updateDate": "2025-04-13T15:59:27+0000",
+    "type": "CODE_SMELL",
+    "scope": "MAIN",
+    "quickFixAvailable": false,
+    "messageFormattings": [],
+    "codeVariants": [],
+    "cleanCodeAttribute": "CONVENTIONAL",
+    "cleanCodeAttributeCategory": "CONSISTENT",
+    "impacts": [
+      {
+        "softwareQuality": "MAINTAINABILITY",
+        "severity": "LOW"
+      }
+    ],
+    "issueStatus": "OPEN",
+    "prioritizedRule": false
+  },
+  {
+    "key": "6ed34941-a423-46d4-9249-06a0adb77891",
+    "rule": "csharpsquid:S3963",
+    "severity": "MINOR",
+    "component": "Riter:src/Riter/ViewModel/StateHandlers/ButtonSelectedStateHandler.cs",
+    "project": "Riter",
+    "line": 10,
+    "hash": "3682ec4250b64360b5fac7acdb25150c",
+    "textRange": {
+      "startLine": 10,
+      "endLine": 10,
+      "startOffset": 11,
+      "endOffset": 37
+    },
+    "flows": [],
+    "status": "OPEN",
+    "message": "Initialize all 'static fields' inline and remove the 'static constructor'.",
+    "effort": "5min",
+    "debt": "5min",
+    "author": "mha.karimi@gmail.com",
+    "tags": [],
+    "creationDate": "2024-10-28T02:54:46+0000",
+    "updateDate": "2025-04-13T15:59:27+0000",
+    "type": "CODE_SMELL",
+    "scope": "MAIN",
+    "quickFixAvailable": false,
+    "messageFormattings": [],
+    "codeVariants": [],
+    "cleanCodeAttribute": "EFFICIENT",
+    "cleanCodeAttributeCategory": "INTENTIONAL",
+    "impacts": [
+      {
+        "softwareQuality": "MAINTAINABILITY",
+        "severity": "LOW"
+      }
+    ],
+    "issueStatus": "OPEN",
+    "prioritizedRule": false
+  },
+  {
+    "key": "c82298fa-af9d-4206-bf51-51b2189abbd2",
+    "rule": "csharpsquid:S2696",
+    "severity": "CRITICAL",
+    "component": "Riter:src/Riter/ViewModel/StateHandlers/ButtonSelectedStateHandler.cs",
+    "project": "Riter",
+    "line": 36,
+    "hash": "90eb5c5a58294b8c10bb2177c36b8be6",
+    "textRange": {
+      "startLine": 36,
+      "endLine": 36,
+      "startOffset": 8,
+      "endOffset": 37
+    },
+    "flows": [
+      {
+        "locations": [
+          {
+            "component": "Riter:src/Riter/ViewModel/StateHandlers/ButtonSelectedStateHandler.cs",
+            "textRange": {
+              "startLine": 8,
+              "endLine": 8,
+              "startOffset": 26,
+              "endOffset": 68
+            },
+            "msgFormattings": []
+          }
+        ]
+      }
+    ],
+    "status": "OPEN",
+    "message": "Remove this set, which updates a 'static' field from an instance method.",
+    "effort": "20min",
+    "debt": "20min",
+    "author": "mha.karimi@gmail.com",
+    "tags": [
+      "multi-threading"
+    ],
+    "creationDate": "2024-10-28T02:54:46+0000",
+    "updateDate": "2025-04-13T15:59:27+0000",
+    "type": "CODE_SMELL",
+    "scope": "MAIN",
+    "quickFixAvailable": false,
+    "messageFormattings": [],
+    "codeVariants": [],
+    "cleanCodeAttribute": "COMPLETE",
+    "cleanCodeAttributeCategory": "INTENTIONAL",
+    "impacts": [
+      {
+        "softwareQuality": "MAINTAINABILITY",
+        "severity": "HIGH"
+      }
+    ],
+    "issueStatus": "OPEN",
+    "prioritizedRule": false
+  },
+  {
+    "key": "fe326668-e2d4-4214-95cd-e463f05cda7c",
+    "rule": "csharpsquid:S2696",
+    "severity": "CRITICAL",
+    "component": "Riter:src/Riter/ViewModel/StateHandlers/ButtonSelectedStateHandler.cs",
+    "project": "Riter",
+    "line": 43,
+    "hash": "6a82442a826058a2baf31b36fc1b7d47",
+    "textRange": {
+      "startLine": 43,
+      "endLine": 43,
+      "startOffset": 12,
+      "endOffset": 41
+    },
+    "flows": [
+      {
+        "locations": [
+          {
+            "component": "Riter:src/Riter/ViewModel/StateHandlers/ButtonSelectedStateHandler.cs",
+            "textRange": {
+              "startLine": 8,
+              "endLine": 8,
+              "startOffset": 26,
+              "endOffset": 68
+            },
+            "msgFormattings": []
+          }
+        ]
+      }
+    ],
+    "status": "OPEN",
+    "message": "Remove this set, which updates a 'static' field from an instance method.",
+    "effort": "20min",
+    "debt": "20min",
+    "author": "mha.karimi@gmail.com",
+    "tags": [
+      "multi-threading"
+    ],
+    "creationDate": "2024-10-28T02:54:46+0000",
+    "updateDate": "2025-04-13T15:59:27+0000",
+    "type": "CODE_SMELL",
+    "scope": "MAIN",
+    "quickFixAvailable": false,
+    "messageFormattings": [],
+    "codeVariants": [],
+    "cleanCodeAttribute": "COMPLETE",
+    "cleanCodeAttributeCategory": "INTENTIONAL",
+    "impacts": [
+      {
+        "softwareQuality": "MAINTAINABILITY",
+        "severity": "HIGH"
+      }
+    ],
+    "issueStatus": "OPEN",
+    "prioritizedRule": false
+  },
+  {
+    "key": "80d0a81f-fe7f-439d-b94c-97e2755784b4",
+    "rule": "csharpsquid:S2292",
+    "severity": "MINOR",
+    "component": "Riter:src/Riter/Services/StrokeHistoryService.cs",
+    "project": "Riter",
+    "line": 24,
+    "hash": "27b7149c188c43dbf940576b732913bf",
+    "textRange": {
+      "startLine": 24,
+      "endLine": 24,
+      "startOffset": 16,
+      "endOffset": 35
+    },
+    "flows": [],
+    "status": "OPEN",
+    "message": "Make this an auto-implemented property and remove its backing field.",
+    "effort": "5min",
+    "debt": "5min",
+    "author": "mha.karimi@gmail.com",
+    "tags": [
+      "clumsy"
+    ],
+    "creationDate": "2024-10-19T08:47:29+0000",
+    "updateDate": "2025-04-13T15:59:27+0000",
+    "type": "CODE_SMELL",
+    "scope": "MAIN",
+    "quickFixAvailable": false,
+    "messageFormattings": [],
+    "codeVariants": [],
+    "cleanCodeAttribute": "CLEAR",
+    "cleanCodeAttributeCategory": "INTENTIONAL",
+    "impacts": [
+      {
+        "softwareQuality": "MAINTAINABILITY",
+        "severity": "LOW"
+      }
+    ],
+    "issueStatus": "OPEN",
+    "prioritizedRule": false
+  },
+  {
+    "key": "cb1e7ca0-1d38-4b78-b9fd-a5cb10c5697a",
+    "rule": "csharpsquid:S1118",
+    "severity": "MAJOR",
+    "component": "Riter:src/Riter/Core/Consts/ButtonNames.cs",
+    "project": "Riter",
+    "line": 4,
+    "hash": "d37917f2542546a21c67513e9aaabeae",
+    "textRange": {
+      "startLine": 4,
+      "endLine": 4,
+      "startOffset": 13,
+      "endOffset": 24
+    },
+    "flows": [],
+    "status": "OPEN",
+    "message": "Add a 'protected' constructor or the 'static' keyword to the class declaration.",
+    "effort": "10min",
+    "debt": "10min",
+    "author": "mha.karimi@gmail.com",
+    "tags": [
+      "design"
+    ],
+    "creationDate": "2024-10-10T05:25:54+0000",
+    "updateDate": "2025-04-13T15:59:27+0000",
+    "type": "CODE_SMELL",
+    "scope": "MAIN",
+    "quickFixAvailable": false,
+    "messageFormattings": [],
+    "codeVariants": [],
+    "cleanCodeAttribute": "CLEAR",
+    "cleanCodeAttributeCategory": "INTENTIONAL",
+    "impacts": [
+      {
+        "softwareQuality": "MAINTAINABILITY",
+        "severity": "MEDIUM"
+      }
+    ],
+    "issueStatus": "OPEN",
+    "prioritizedRule": false
+  },
+  {
+    "key": "24fc1f0b-b389-4c07-8956-c15188473c20",
+    "rule": "csharpsquid:S3887",
+    "severity": "MINOR",
+    "component": "Riter:src/Riter/Core/Drawing/ColorPalette.cs",
+    "project": "Riter",
+    "line": 7,
+    "hash": "65539ee008f63bf03a41bb0dd84c70c7",
+    "textRange": {
+      "startLine": 7,
+      "endLine": 7,
+      "startOffset": 27,
+      "endOffset": 74
+    },
+    "flows": [],
+    "status": "OPEN",
+    "message": "Use an immutable collection or reduce the accessibility of the non-private readonly field 'Colors'.",
+    "effort": "15min",
+    "debt": "15min",
+    "author": "mha.karimi@gmail.com",
+    "tags": [],
+    "creationDate": "2024-10-30T03:29:01+0000",
+    "updateDate": "2025-04-13T15:59:27+0000",
+    "type": "BUG",
+    "scope": "MAIN",
+    "quickFixAvailable": false,
+    "messageFormattings": [],
+    "codeVariants": [],
+    "cleanCodeAttribute": "CLEAR",
+    "cleanCodeAttributeCategory": "INTENTIONAL",
+    "impacts": [
+      {
+        "softwareQuality": "RELIABILITY",
+        "severity": "LOW"
+      }
+    ],
+    "issueStatus": "OPEN",
+    "prioritizedRule": false
+  }
+]

@@ -1,0 +1,244 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII" />
+  <title>Uuid.cs</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <script src="../jquery-3.5.1.min.js"></script>
+</head>
+<body>
+<pre><code class = "cs">
+<a name="ln1">#region License</a>
+<a name="ln2"> </a>
+<a name="ln3">/*</a>
+<a name="ln4">    Adapted work from:</a>
+<a name="ln5"> </a>
+<a name="ln6">    DirectShowLib - Provide access to DirectShow interfaces via .NET</a>
+<a name="ln7">    Copyright (C) 2007</a>
+<a name="ln8">    http://sourceforge.net/projects/directshownet/</a>
+<a name="ln9">    This library is free software; you can redistribute it and/or</a>
+<a name="ln10">    modify it under the terms of the GNU Lesser General Public</a>
+<a name="ln11">    License as published by the Free Software Foundation; either</a>
+<a name="ln12">    version 2.1 of the License, or (at your option) any later version.</a>
+<a name="ln13">    This library is distributed in the hope that it will be useful,</a>
+<a name="ln14">    but WITHOUT ANY WARRANTY; without even the implied warranty of</a>
+<a name="ln15">    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU</a>
+<a name="ln16">    Lesser General Public License for more details.</a>
+<a name="ln17">    You should have received a copy of the GNU Lesser General Public</a>
+<a name="ln18">    License along with this library; if not, write to the Free Software</a>
+<a name="ln19">    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA</a>
+<a name="ln20">*/</a>
+<a name="ln21"> </a>
+<a name="ln22">#endregion</a>
+<a name="ln23"> </a>
+<a name="ln24">using System;</a>
+<a name="ln25">using System.Runtime.InteropServices;</a>
+<a name="ln26"> </a>
+<a name="ln27">namespace ScreenToGif.Webcam.DirectShow;</a>
+<a name="ln28"> </a>
+<a name="ln29">public class Uuid</a>
+<a name="ln30">{</a>
+<a name="ln31">    /// &lt;summary&gt;</a>
+<a name="ln32">    /// uuids.h</a>
+<a name="ln33">    /// CLSID_*</a>
+<a name="ln34">    /// &lt;/summary&gt;</a>
+<a name="ln35">    [ComVisible(false)]</a>
+<a name="ln36">    public class FilterCategory</a>
+<a name="ln37">    {</a>
+<a name="ln38">        /// &lt;summary&gt; CLSID_AudioInputDeviceCategory, audio capture category &lt;/summary&gt;</a>
+<a name="ln39">        public static readonly Guid AudioInputDevice = new Guid(0x33d9a762, 0x90c8, 0x11d0, 0xbd, 0x43, 0x00, 0xa0, 0xc9, 0x11, 0xce, 0x86);</a>
+<a name="ln40"> </a>
+<a name="ln41">        /// &lt;summary&gt; CLSID_VideoInputDeviceCategory, video capture category &lt;/summary&gt;</a>
+<a name="ln42">        public static readonly Guid VideoInputDevice = new Guid(0x860BB310, 0x5D01, 0x11d0, 0xBD, 0x3B, 0x00, 0xA0, 0xC9, 0x11, 0xCE, 0x86);</a>
+<a name="ln43"> </a>
+<a name="ln44">        /// &lt;summary&gt; CLSID_VideoCompressorCategory, video compressor category &lt;/summary&gt;</a>
+<a name="ln45">        public static readonly Guid VideoCompressorCategory = new Guid(0x33d9a760, 0x90c8, 0x11d0, 0xbd, 0x43, 0x0, 0xa0, 0xc9, 0x11, 0xce, 0x86);</a>
+<a name="ln46"> </a>
+<a name="ln47">        /// &lt;summary&gt; CLSID_AudioCompressorCategory, audio compressor category &lt;/summary&gt;</a>
+<a name="ln48">        public static readonly Guid AudioCompressorCategory = new Guid(0x33d9a761, 0x90c8, 0x11d0, 0xbd, 0x43, 0x0, 0xa0, 0xc9, 0x11, 0xce, 0x86);</a>
+<a name="ln49"> </a>
+<a name="ln50">        ///&lt;summary&gt; CLSID_LegacyAmFilterCategory, legacy filters &lt;/summary&gt;</a>
+<a name="ln51">        public static readonly Guid LegacyAmFilterCategory = new Guid(0x083863F1, 0x70DE, 0x11d0, 0xBD, 0x40, 0x00, 0xA0, 0xC9, 0x11, 0xCE, 0x86);</a>
+<a name="ln52">    }</a>
+<a name="ln53"> </a>
+<a name="ln54">    /// &lt;summary&gt;</a>
+<a name="ln55">    /// uuids.h</a>
+<a name="ln56">    /// CLSID_*</a>
+<a name="ln57">    /// &lt;/summary&gt;</a>
+<a name="ln58">    [ComVisible(false)]</a>
+<a name="ln59">    public class Clsid</a>
+<a name="ln60">    {</a>
+<a name="ln61">        /// &lt;summary&gt; CLSID_SystemDeviceEnum for ICreateDevEnum &lt;/summary&gt;</a>
+<a name="ln62">        public static readonly Guid SystemDeviceEnum = new Guid(0x62BE5D10, 0x60EB, 0x11d0, 0xBD, 0x3B, 0x00, 0xA0, 0xC9, 0x11, 0xCE, 0x86);</a>
+<a name="ln63"> </a>
+<a name="ln64">        /// &lt;summary&gt; CLSID_FilterGraph, filter Graph &lt;/summary&gt;</a>
+<a name="ln65">        public static readonly Guid FilterGraph = new Guid(0xe436ebb3, 0x524f, 0x11ce, 0x9f, 0x53, 0x00, 0x20, 0xaf, 0x0b, 0xa7, 0x70);</a>
+<a name="ln66"> </a>
+<a name="ln67">        /// &lt;summary&gt; CLSID_CaptureGraphBuilder2, new Capture graph building &lt;/summary&gt;</a>
+<a name="ln68">        public static readonly Guid CaptureGraphBuilder2 = new Guid(0xBF87B6E1, 0x8C27, 0x11d0, 0xB3, 0xF0, 0x0, 0xAA, 0x00, 0x37, 0x61, 0xC5);</a>
+<a name="ln69"> </a>
+<a name="ln70">        /// &lt;summary&gt; CLSID_SampleGrabber, Sample Grabber filter &lt;/summary&gt;</a>
+<a name="ln71">        public static readonly Guid SampleGrabber = new Guid(0xC1F400A0, 0x3F08, 0x11D3, 0x9F, 0x0B, 0x00, 0x60, 0x08, 0x03, 0x9E, 0x37);</a>
+<a name="ln72"> </a>
+<a name="ln73">        /// &lt;summary&gt; CLSID_DvdGraphBuilder, DVD graph builder &lt;/summary&gt;</a>
+<a name="ln74">        public static readonly Guid DvdGraphBuilder = new Guid(0xFCC152B7, 0xF372, 0x11d0, 0x8E, 0x00, 0x00, 0xC0, 0x4F, 0xD7, 0xC0, 0x8B);</a>
+<a name="ln75"> </a>
+<a name="ln76">        /// &lt;summary&gt; CLSID_StreamBufferSink, stream buffer sink &lt;/summary&gt;</a>
+<a name="ln77">        public static readonly Guid StreamBufferSink = new Guid(&quot;2db47ae5-cf39-43c2-b4d6-0cd8d90946f4&quot;);</a>
+<a name="ln78"> </a>
+<a name="ln79">        /// &lt;summary&gt; CLSID_StreamBufferSource, stream buffer sink &lt;/summary&gt;</a>
+<a name="ln80">        public static readonly Guid StreamBufferSource = new Guid(&quot;c9f5fe02-f851-4eb5-99ee-ad602af1e619&quot;);</a>
+<a name="ln81"> </a>
+<a name="ln82">        /// &lt;summary&gt; CLSID_VideoMixingRenderer, video mixing renderer 7 &lt;/summary&gt;</a>
+<a name="ln83">        public static readonly Guid VideoMixingRenderer = new Guid(0xB87BEB7B, 0x8D29, 0x423f, 0xAE, 0x4D, 0x65, 0x82, 0xC1, 0x01, 0x75, 0xAC);</a>
+<a name="ln84"> </a>
+<a name="ln85">        /// &lt;summary&gt; CLSID_VideoMixingRenderer9, video mixing renderer 9 &lt;/summary&gt;</a>
+<a name="ln86">        public static readonly Guid VideoMixingRenderer9 = new Guid(0x51b4abf3, 0x748f, 0x4e3b, 0xa2, 0x76, 0xc8, 0x28, 0x33, 0x0e, 0x92, 0x6a);</a>
+<a name="ln87"> </a>
+<a name="ln88">        /// &lt;summary&gt; CLSID_VideoRendererDefault, default vmr renderer &lt;/summary&gt;</a>
+<a name="ln89">        public static readonly Guid VideoRendererDefault = new Guid(0x6BC1CFFA, 0x8FC1, 0x4261, 0xAC, 0x22, 0xCF, 0xB4, 0xCC, 0x38, 0xDB, 0x50);</a>
+<a name="ln90"> </a>
+<a name="ln91">        /// &lt;summary&gt; CLSID_AviSplitter, split an AVI stream into separate video and audio streams &lt;/summary&gt;</a>
+<a name="ln92">        public static readonly Guid AviSplitter = new Guid(0x1b544c20, 0xfd0b, 0x11ce, 0x8c, 0x63, 0x0, 0xaa, 0x00, 0x44, 0xb5, 0x1e);</a>
+<a name="ln93"> </a>
+<a name="ln94">        /// &lt;summary&gt; CLSID_SmartTee, create a preview stream when device only provides a capture stream. &lt;/summary&gt;</a>
+<a name="ln95">        public static readonly Guid SmartTee = new Guid(0xcc58e280, 0x8aa1, 0x11d1, 0xb3, 0xf1, 0x0, 0xaa, 0x0, 0x37, 0x61, 0xc5);</a>
+<a name="ln96">    }</a>
+<a name="ln97"> </a>
+<a name="ln98">    /// &lt;summary&gt;</a>
+<a name="ln99">    /// MEDIATYPE_*</a>
+<a name="ln100">    /// &lt;/summary&gt;</a>
+<a name="ln101">    [ComVisible(false)]</a>
+<a name="ln102">    public class MediaType</a>
+<a name="ln103">    {</a>
+<a name="ln104">        /// &lt;summary&gt; MEDIATYPE_Video 'vids' &lt;/summary&gt;</a>
+<a name="ln105">        public static readonly Guid Video = new Guid(0x73646976, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71);</a>
+<a name="ln106"> </a>
+<a name="ln107">        /// &lt;summary&gt; MEDIATYPE_Interleaved 'iavs' &lt;/summary&gt;</a>
+<a name="ln108">        public static readonly Guid Interleaved = new Guid(0x73766169, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71);</a>
+<a name="ln109"> </a>
+<a name="ln110">        /// &lt;summary&gt; MEDIATYPE_Audio 'auds' &lt;/summary&gt;</a>
+<a name="ln111">        public static readonly Guid Audio = new Guid(0x73647561, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71);</a>
+<a name="ln112"> </a>
+<a name="ln113">        /// &lt;summary&gt; MEDIATYPE_Text 'txts' &lt;/summary&gt;</a>
+<a name="ln114">        public static readonly Guid Text = new Guid(0x73747874, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71);</a>
+<a name="ln115"> </a>
+<a name="ln116">        /// &lt;summary&gt; MEDIATYPE_Stream &lt;/summary&gt;</a>
+<a name="ln117">        public static readonly Guid Stream = new Guid(0xe436eb83, 0x524f, 0x11ce, 0x9f, 0x53, 0x00, 0x20, 0xaf, 0x0b, 0xa7, 0x70);</a>
+<a name="ln118">    }</a>
+<a name="ln119"> </a>
+<a name="ln120">    /// &lt;summary&gt;</a>
+<a name="ln121">    /// MEDIASUBTYPE_*</a>
+<a name="ln122">    /// &lt;/summary&gt;</a>
+<a name="ln123">    [ComVisible(false)]</a>
+<a name="ln124">    public class MediaSubType</a>
+<a name="ln125">    {</a>
+<a name="ln126">        /// &lt;summary&gt; MEDIASUBTYPE_YUYV 'YUYV' &lt;/summary&gt;</a>
+<a name="ln127">        public static readonly Guid YUYV = new Guid(0x56595559, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71);</a>
+<a name="ln128"> </a>
+<a name="ln129">        /// &lt;summary&gt; MEDIASUBTYPE_IYUV 'IYUV' &lt;/summary&gt;</a>
+<a name="ln130">        public static readonly Guid IYUV = new Guid(0x56555949, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71);</a>
+<a name="ln131"> </a>
+<a name="ln132">        /// &lt;summary&gt; MEDIASUBTYPE_DVSD 'DVSD' &lt;/summary&gt;</a>
+<a name="ln133">        public static readonly Guid DVSD = new Guid(0x44535644, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71);</a>
+<a name="ln134"> </a>
+<a name="ln135">        /// &lt;summary&gt; MEDIASUBTYPE_RGB1 'RGB1' &lt;/summary&gt;</a>
+<a name="ln136">        public static readonly Guid RGB1 = new Guid(0xe436eb78, 0x524f, 0x11ce, 0x9f, 0x53, 0x00, 0x20, 0xaf, 0x0b, 0xa7, 0x70);</a>
+<a name="ln137"> </a>
+<a name="ln138">        /// &lt;summary&gt; MEDIASUBTYPE_RGB4 'RGB4' &lt;/summary&gt;</a>
+<a name="ln139">        public static readonly Guid RGB4 = new Guid(0xe436eb79, 0x524f, 0x11ce, 0x9f, 0x53, 0x00, 0x20, 0xaf, 0x0b, 0xa7, 0x70);</a>
+<a name="ln140"> </a>
+<a name="ln141">        /// &lt;summary&gt; MEDIASUBTYPE_RGB8 'RGB8' &lt;/summary&gt;</a>
+<a name="ln142">        public static readonly Guid RGB8 = new Guid(0xe436eb7a, 0x524f, 0x11ce, 0x9f, 0x53, 0x00, 0x20, 0xaf, 0x0b, 0xa7, 0x70);</a>
+<a name="ln143"> </a>
+<a name="ln144">        /// &lt;summary&gt; MEDIASUBTYPE_RGB565 'RGB565' &lt;/summary&gt;</a>
+<a name="ln145">        public static readonly Guid RGB565 = new Guid(0xe436eb7b, 0x524f, 0x11ce, 0x9f, 0x53, 0x00, 0x20, 0xaf, 0x0b, 0xa7, 0x70);</a>
+<a name="ln146"> </a>
+<a name="ln147">        /// &lt;summary&gt; MEDIASUBTYPE_RGB555 'RGB555' &lt;/summary&gt;</a>
+<a name="ln148">        public static readonly Guid RGB555 = new Guid(0xe436eb7c, 0x524f, 0x11ce, 0x9f, 0x53, 0x00, 0x20, 0xaf, 0x0b, 0xa7, 0x70);</a>
+<a name="ln149"> </a>
+<a name="ln150">        /// &lt;summary&gt; MEDIASUBTYPE_RGB24 'RGB24' &lt;/summary&gt;</a>
+<a name="ln151">        public static readonly Guid RGB24 = new Guid(0xe436eb7d, 0x524f, 0x11ce, 0x9f, 0x53, 0x00, 0x20, 0xaf, 0x0b, 0xa7, 0x70);</a>
+<a name="ln152"> </a>
+<a name="ln153">        /// &lt;summary&gt; MEDIASUBTYPE_RGB32 'RGB32' &lt;/summary&gt;</a>
+<a name="ln154">        public static readonly Guid RGB32 = new Guid(0xe436eb7e, 0x524f, 0x11ce, 0x9f, 0x53, 0x00, 0x20, 0xaf, 0x0b, 0xa7, 0x70);</a>
+<a name="ln155"> </a>
+<a name="ln156"> </a>
+<a name="ln157">        /// &lt;summary&gt; MEDIASUBTYPE_Avi &lt;/summary&gt;</a>
+<a name="ln158">        public static readonly Guid Avi = new Guid(0xe436eb88, 0x524f, 0x11ce, 0x9f, 0x53, 0x00, 0x20, 0xaf, 0x0b, 0xa7, 0x70);</a>
+<a name="ln159"> </a>
+<a name="ln160">        /// &lt;summary&gt; MEDIASUBTYPE_Asf &lt;/summary&gt;</a>
+<a name="ln161">        public static readonly Guid Asf = new Guid(0x3db80f90, 0x9412, 0x11d1, 0xad, 0xed, 0x0, 0x0, 0xf8, 0x75, 0x4b, 0x99);</a>
+<a name="ln162">    }</a>
+<a name="ln163"> </a>
+<a name="ln164">    /// &lt;summary&gt;</a>
+<a name="ln165">    /// FORMAT_*</a>
+<a name="ln166">    /// &lt;/summary&gt;</a>
+<a name="ln167">    [ComVisible(false)]</a>
+<a name="ln168">    public class FormatType</a>
+<a name="ln169">    {</a>
+<a name="ln170">        /// &lt;summary&gt; FORMAT_None &lt;/summary&gt;</a>
+<a name="ln171">        public static readonly Guid None = new Guid(0x0F6417D6, 0xc318, 0x11d0, 0xa4, 0x3f, 0x00, 0xa0, 0xc9, 0x22, 0x31, 0x96);</a>
+<a name="ln172"> </a>
+<a name="ln173">        /// &lt;summary&gt; FORMAT_VideoInfo &lt;/summary&gt;</a>
+<a name="ln174">        public static readonly Guid VideoInfo = new Guid(0x05589f80, 0xc356, 0x11ce, 0xbf, 0x01, 0x00, 0xaa, 0x00, 0x55, 0x59, 0x5a);</a>
+<a name="ln175"> </a>
+<a name="ln176">        /// &lt;summary&gt; FORMAT_VideoInfo2 &lt;/summary&gt;</a>
+<a name="ln177">        public static readonly Guid VideoInfo2 = new Guid(0xf72a76A0, 0xeb0a, 0x11d0, 0xac, 0xe4, 0x00, 0x00, 0xc0, 0xcc, 0x16, 0xba);</a>
+<a name="ln178"> </a>
+<a name="ln179">        /// &lt;summary&gt; FORMAT_WaveFormatEx &lt;/summary&gt;</a>
+<a name="ln180">        public static readonly Guid WaveEx = new Guid(0x05589f81, 0xc356, 0x11ce, 0xbf, 0x01, 0x00, 0xaa, 0x00, 0x55, 0x59, 0x5a);</a>
+<a name="ln181"> </a>
+<a name="ln182">        /// &lt;summary&gt; FORMAT_MPEGVideo &lt;/summary&gt;</a>
+<a name="ln183">        public static readonly Guid MpegVideo = new Guid(0x05589f82, 0xc356, 0x11ce, 0xbf, 0x01, 0x00, 0xaa, 0x00, 0x55, 0x59, 0x5a);</a>
+<a name="ln184"> </a>
+<a name="ln185">        /// &lt;summary&gt; FORMAT_MPEGStreams &lt;/summary&gt;</a>
+<a name="ln186">        public static readonly Guid MpegStreams = new Guid(0x05589f83, 0xc356, 0x11ce, 0xbf, 0x01, 0x00, 0xaa, 0x00, 0x55, 0x59, 0x5a);</a>
+<a name="ln187"> </a>
+<a name="ln188">        /// &lt;summary&gt; FORMAT_DvInfo &lt;/summary&gt;</a>
+<a name="ln189">        public static readonly Guid DvInfo = new Guid(0x05589f84, 0xc356, 0x11ce, 0xbf, 0x01, 0x00, 0xaa, 0x00, 0x55, 0x59, 0x5a);</a>
+<a name="ln190">    }</a>
+<a name="ln191"> </a>
+<a name="ln192">    /// &lt;summary&gt;</a>
+<a name="ln193">    /// PIN_CATEGORY_*</a>
+<a name="ln194">    /// &lt;/summary&gt;</a>
+<a name="ln195">    [ComVisible(false)]</a>
+<a name="ln196">    public class PinCategory</a>
+<a name="ln197">    {</a>
+<a name="ln198">        /// &lt;summary&gt; PIN_CATEGORY_CAPTURE &lt;/summary&gt;</a>
+<a name="ln199">        public static readonly Guid Capture = new Guid(0xfb6c4281, 0x0353, 0x11d1, 0x90, 0x5f, 0x00, 0x00, 0xc0, 0xcc, 0x16, 0xba);</a>
+<a name="ln200"> </a>
+<a name="ln201">        /// &lt;summary&gt; PIN_CATEGORY_PREVIEW &lt;/summary&gt;</a>
+<a name="ln202">        public static readonly Guid Preview = new Guid(0xfb6c4282, 0x0353, 0x11d1, 0x90, 0x5f, 0x00, 0x00, 0xc0, 0xcc, 0x16, 0xba);</a>
+<a name="ln203">    }</a>
+<a name="ln204">}</a>
+</code></pre>
+<div class="balloon" rel="16"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3144/" target="_blank">V3144</a> This file is marked with copyleft license, which requires you to open the derived source code.</p></div>
+<link rel="stylesheet" href="highlight.css">
+<script src="highlight.pack.js"></script>
+<script src="highlightjs-line-numbers.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script>hljs.initLineNumbersOnLoad();</script>
+<script>
+  $(document).ready(function() {
+      $('.balloon').each(function () {
+          var bl = $(this);
+          var line = bl.attr('rel');
+          var text = $('a[name="ln'+line+'"]').text();
+
+          var space_count = 0;
+          for(var i = 0; i<text.length; i++){
+              var char = text[i];
+              if((char !== ' ')&&(char !== '\t'))break;
+              if(char === '\t')space_count++;
+              space_count++;
+          }
+
+          bl.css('margin-left', space_count*8);
+          $('a[name="ln'+line+'"]').after(bl);
+      });
+
+      window.location = window.location;
+  });
+</script>
+</body>
+</html>

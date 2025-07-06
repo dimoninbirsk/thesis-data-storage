@@ -1,0 +1,306 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII" />
+  <title>ImageChannelData.cs</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <script src="../jquery-3.5.1.min.js"></script>
+</head>
+<body>
+<pre><code class = "cs">
+<a name="ln1">using System.IO;</a>
+<a name="ln2">using System.IO.Compression;</a>
+<a name="ln3"> </a>
+<a name="ln4">namespace ScreenToGif.Util.Codification.Psd;</a>
+<a name="ln5"> </a>
+<a name="ln6">internal class ImageChannelData : IPsdContent</a>
+<a name="ln7">{</a>
+<a name="ln8">    /// &lt;summary&gt;</a>
+<a name="ln9">    /// 0 = Raw Data</a>
+<a name="ln10">    /// 1 = RLE compressed</a>
+<a name="ln11">    /// 2 = ZIP without prediction</a>
+<a name="ln12">    /// 3 = ZIP with prediction.</a>
+<a name="ln13">    /// &lt;/summary&gt;</a>
+<a name="ln14">    internal ushort Encoding { get; set; }</a>
+<a name="ln15"> </a>
+<a name="ln16">    internal List&lt;Channel&gt; ChannelList { get; set; } = new();</a>
+<a name="ln17"> </a>
+<a name="ln18">    public long Length =&gt; Content?.Length ?? 0;</a>
+<a name="ln19"> </a>
+<a name="ln20">    public byte[] Content</a>
+<a name="ln21">    {</a>
+<a name="ln22">        get</a>
+<a name="ln23">        {</a>
+<a name="ln24">            using (var stream = new MemoryStream())</a>
+<a name="ln25">            {</a>
+<a name="ln26">                foreach (var channel in ChannelList)</a>
+<a name="ln27">                {</a>
+<a name="ln28">                    stream.WriteUInt16(BitHelper.ConvertEndian(Encoding)); //Encoding type, 2 bytes.</a>
+<a name="ln29">                    stream.WriteBytes(channel.Content); //Channel data, XX bytes.                        </a>
+<a name="ln30">                }</a>
+<a name="ln31"> </a>
+<a name="ln32">                return stream.ToArray();</a>
+<a name="ln33">            }</a>
+<a name="ln34">        }</a>
+<a name="ln35">    }</a>
+<a name="ln36"> </a>
+<a name="ln37">    public ImageChannelData(int depth, byte[] pixels, int rows, int columns, bool compress)</a>
+<a name="ln38">    {</a>
+<a name="ln39">        Encoding = (ushort)(compress ? 1 : 0);</a>
+<a name="ln40"> </a>
+<a name="ln41">        var alpha = new List&lt;byte&gt;();</a>
+<a name="ln42">        var blue = new List&lt;byte&gt;();</a>
+<a name="ln43">        var green = new List&lt;byte&gt;();</a>
+<a name="ln44">        var red = new List&lt;byte&gt;();</a>
+<a name="ln45"> </a>
+<a name="ln46">        if (depth == 32)</a>
+<a name="ln47">        {</a>
+<a name="ln48">            for (var i = 0; i &lt; pixels.Length - 3; i += 4)</a>
+<a name="ln49">            {</a>
+<a name="ln50">                blue.Add(pixels[i]);        //Blue</a>
+<a name="ln51">                green.Add(pixels[i + 1]);   //Green</a>
+<a name="ln52">                red.Add(pixels[i + 2]);     //Red</a>
+<a name="ln53">                alpha.Add(pixels[i + 3]);   //Alpha</a>
+<a name="ln54">            }</a>
+<a name="ln55">        }</a>
+<a name="ln56">        else //24</a>
+<a name="ln57">        {</a>
+<a name="ln58">            for (var i = 0; i &lt; pixels.Length - 2; i += 3)</a>
+<a name="ln59">            {</a>
+<a name="ln60">                blue.Add(pixels[i]);        //Blue</a>
+<a name="ln61">                green.Add(pixels[i + 1]);   //Green</a>
+<a name="ln62">                red.Add(pixels[i + 2]);     //Red</a>
+<a name="ln63">                alpha.Add(255);             //Alpha</a>
+<a name="ln64">            }</a>
+<a name="ln65">        }</a>
+<a name="ln66"> </a>
+<a name="ln67">        if (Encoding == 0)</a>
+<a name="ln68">        {</a>
+<a name="ln69">            ChannelList.Add(new Channel(alpha.ToArray()));</a>
+<a name="ln70">            ChannelList.Add(new Channel(red.ToArray()));</a>
+<a name="ln71">            ChannelList.Add(new Channel(green.ToArray()));</a>
+<a name="ln72">            ChannelList.Add(new Channel(blue.ToArray()));</a>
+<a name="ln73">        }</a>
+<a name="ln74">        else</a>
+<a name="ln75">        {</a>
+<a name="ln76">            ChannelList.Add(new Channel(RleCompression(alpha.ToArray(), rows, columns)));</a>
+<a name="ln77">            ChannelList.Add(new Channel(RleCompression(red.ToArray(), rows, columns)));</a>
+<a name="ln78">            ChannelList.Add(new Channel(RleCompression(green.ToArray(), rows, columns)));</a>
+<a name="ln79">            ChannelList.Add(new Channel(RleCompression(blue.ToArray(), rows, columns)));</a>
+<a name="ln80">        }</a>
+<a name="ln81">    }</a>
+<a name="ln82"> </a>
+<a name="ln83">    internal static byte[][] RleCompression(byte[] pixels, int rows, int columns)</a>
+<a name="ln84">    {</a>
+<a name="ln85">        var scanlines = new List&lt;byte[]&gt;();</a>
+<a name="ln86"> </a>
+<a name="ln87">        //For each scanline of this channel.</a>
+<a name="ln88">        for (var r = 0; r &lt; rows; r++)</a>
+<a name="ln89">            scanlines.Add(Pack(SubArray(pixels, r * columns, columns)));</a>
+<a name="ln90">            </a>
+<a name="ln91">        return scanlines.ToArray();</a>
+<a name="ln92">    }</a>
+<a name="ln93"> </a>
+<a name="ln94">    public static byte[] Compress(byte[] buffer)</a>
+<a name="ln95">    {</a>
+<a name="ln96">        byte[] compressed;</a>
+<a name="ln97">        using (var ms = new MemoryStream())</a>
+<a name="ln98">        {</a>
+<a name="ln99">            using (var zip = new GZipStream(ms, CompressionMode.Compress, true))</a>
+<a name="ln100">            {</a>
+<a name="ln101">                zip.Write(buffer, 0, buffer.Length);</a>
+<a name="ln102">                zip.Close();</a>
+<a name="ln103">            }</a>
+<a name="ln104"> </a>
+<a name="ln105">            ms.Position = 0;</a>
+<a name="ln106"> </a>
+<a name="ln107">            compressed = new byte[ms.Length];</a>
+<a name="ln108">            ms.Read(compressed, 0, compressed.Length);</a>
+<a name="ln109">        }</a>
+<a name="ln110"> </a>
+<a name="ln111">        //var gzBuffer = new byte[compressed.Length + 4];</a>
+<a name="ln112">        //Buffer.BlockCopy(compressed, 0, gzBuffer, 4, compressed.Length);</a>
+<a name="ln113">        //Buffer.BlockCopy(BitConverter.GetBytes(buffer.Length), 0, gzBuffer, 0, 4);</a>
+<a name="ln114">        //return gzBuffer;</a>
+<a name="ln115"> </a>
+<a name="ln116">        return compressed;</a>
+<a name="ln117">    }</a>
+<a name="ln118"> </a>
+<a name="ln119">    public static byte[] Compress2(byte[] data)</a>
+<a name="ln120">    {</a>
+<a name="ln121">        using (var compressedStream = new MemoryStream())</a>
+<a name="ln122">        using (var zipStream = new GZipStream(compressedStream, CompressionMode.Compress))</a>
+<a name="ln123">        {</a>
+<a name="ln124">            zipStream.Write(data, 0, data.Length);</a>
+<a name="ln125">            zipStream.Close();</a>
+<a name="ln126">            return compressedStream.ToArray();</a>
+<a name="ln127">        }</a>
+<a name="ln128">    }</a>
+<a name="ln129"> </a>
+<a name="ln130">    public static byte[] Compress3(byte[] data)</a>
+<a name="ln131">    {</a>
+<a name="ln132">        byte[] compressArray = null;</a>
+<a name="ln133"> </a>
+<a name="ln134">        try</a>
+<a name="ln135">        {</a>
+<a name="ln136">            using (var memoryStream = new MemoryStream())</a>
+<a name="ln137">            {</a>
+<a name="ln138">                using (var deflateStream = new DeflateStream(memoryStream, CompressionMode.Compress))</a>
+<a name="ln139">                {</a>
+<a name="ln140">                    deflateStream.Write(data, 0, data.Length);</a>
+<a name="ln141">                    deflateStream.Close(); //Must!</a>
+<a name="ln142">                }</a>
+<a name="ln143"> </a>
+<a name="ln144">                compressArray = memoryStream.ToArray();</a>
+<a name="ln145">            }</a>
+<a name="ln146">        }</a>
+<a name="ln147">        catch (Exception ex)</a>
+<a name="ln148">        {</a>
+<a name="ln149">            LogWriter.Log(ex, &quot;Error while compressing the channel.&quot;);</a>
+<a name="ln150">        }</a>
+<a name="ln151"> </a>
+<a name="ln152">        return compressArray;</a>
+<a name="ln153">    }</a>
+<a name="ln154"> </a>
+<a name="ln155">    public static byte[] Decompress(byte[] gzBuffer)</a>
+<a name="ln156">    {</a>
+<a name="ln157">        byte[] buffer;</a>
+<a name="ln158">        using (var ms = new MemoryStream())</a>
+<a name="ln159">        {</a>
+<a name="ln160">            var msgLength = BitConverter.ToInt32(gzBuffer, 0);</a>
+<a name="ln161">            ms.Write(gzBuffer, 4, gzBuffer.Length - 4);</a>
+<a name="ln162"> </a>
+<a name="ln163">            buffer = new byte[msgLength];</a>
+<a name="ln164"> </a>
+<a name="ln165">            ms.Position = 0;</a>
+<a name="ln166">            using (var zip = new GZipStream(ms, CompressionMode.Decompress))</a>
+<a name="ln167">                zip.Read(buffer, 0, buffer.Length);</a>
+<a name="ln168">        }</a>
+<a name="ln169"> </a>
+<a name="ln170">        return buffer;</a>
+<a name="ln171">    }</a>
+<a name="ln172"> </a>
+<a name="ln173">    /// &lt;summary&gt; </a>
+<a name="ln174">    /// Packs the specified byte array using the packbits algorithm. </a>
+<a name="ln175">    /// &lt;/summary&gt; </a>
+<a name="ln176">    /// &lt;param name=&quot;source&quot;&gt;The source byte[] to pack.&lt;/param&gt; </a>
+<a name="ln177">    /// &lt;returns&gt;A byte[] array that has been compressed.&lt;/returns&gt; </a>
+<a name="ln178">    public static byte[] Pack(byte[] source)</a>
+<a name="ln179">    {</a>
+<a name="ln180">        IList&lt;byte&gt; result = new List&lt;byte&gt;(source.Length);</a>
+<a name="ln181">        const int maxLength = 127;</a>
+<a name="ln182">        IList&lt;byte&gt; literals = new List&lt;byte&gt;(maxLength);</a>
+<a name="ln183"> </a>
+<a name="ln184">        for (var i = 0; i &lt; source.Length; i++)</a>
+<a name="ln185">        {</a>
+<a name="ln186">            var current = source[i];</a>
+<a name="ln187"> </a>
+<a name="ln188">            if (i + 1 != source.Length)</a>
+<a name="ln189">            {</a>
+<a name="ln190">                var next = source[i + 1];</a>
+<a name="ln191"> </a>
+<a name="ln192">                if (next == current)</a>
+<a name="ln193">                {</a>
+<a name="ln194">                    AddLiterals(result, literals);</a>
+<a name="ln195"> </a>
+<a name="ln196">                    var max = i + maxLength &gt;= source.Length ? source.Length - i - 1 : maxLength;</a>
+<a name="ln197">                    var hitMax = true;</a>
+<a name="ln198">                    byte runLength = 1;</a>
+<a name="ln199"> </a>
+<a name="ln200">                    for (var j = 2; j &lt;= max; j++)</a>
+<a name="ln201">                    {</a>
+<a name="ln202">                        var run = source[i + j];</a>
+<a name="ln203"> </a>
+<a name="ln204">                        if (run != current)</a>
+<a name="ln205">                        {</a>
+<a name="ln206">                            hitMax = false;</a>
+<a name="ln207">                            var count = (byte)(0 - runLength);</a>
+<a name="ln208">                            i = i + j - 1;</a>
+<a name="ln209">                            result.Add(count);</a>
+<a name="ln210">                            result.Add(current);</a>
+<a name="ln211">                            break;</a>
+<a name="ln212">                        }</a>
+<a name="ln213"> </a>
+<a name="ln214">                        runLength++;</a>
+<a name="ln215">                    }</a>
+<a name="ln216"> </a>
+<a name="ln217">                    if (hitMax)</a>
+<a name="ln218">                    {</a>
+<a name="ln219">                        result.Add((byte)(sbyte)(0 - max));</a>
+<a name="ln220">                        result.Add(current);</a>
+<a name="ln221">                        i = i + max;</a>
+<a name="ln222">                    }</a>
+<a name="ln223">                }</a>
+<a name="ln224">                else</a>
+<a name="ln225">                {</a>
+<a name="ln226">                    literals.Add(current);</a>
+<a name="ln227"> </a>
+<a name="ln228">                    if (literals.Count == maxLength)</a>
+<a name="ln229">                        AddLiterals(result, literals);</a>
+<a name="ln230">                }</a>
+<a name="ln231">            }</a>
+<a name="ln232">            else</a>
+<a name="ln233">            {</a>
+<a name="ln234">                literals.Add(current);</a>
+<a name="ln235">                AddLiterals(result, literals);</a>
+<a name="ln236">            }</a>
+<a name="ln237">        }</a>
+<a name="ln238"> </a>
+<a name="ln239">        return result.ToArray();</a>
+<a name="ln240">    }</a>
+<a name="ln241"> </a>
+<a name="ln242">    /// &lt;summary&gt; </a>
+<a name="ln243">    /// Adds the literal run to the result </a>
+<a name="ln244">    /// &lt;/summary&gt; </a>
+<a name="ln245">    /// &lt;param name=&quot;result&quot;&gt;The result where the literals should be added.&lt;/param&gt; </a>
+<a name="ln246">    /// &lt;param name=&quot;literals&quot;&gt;The list of literals that will be appended to the result.&lt;/param&gt; </a>
+<a name="ln247">    private static void AddLiterals(IList&lt;byte&gt; result, IList&lt;byte&gt; literals)</a>
+<a name="ln248">    {</a>
+<a name="ln249">        if (literals.Count &gt; 0)</a>
+<a name="ln250">        {</a>
+<a name="ln251">            result.Add((byte)(literals.Count - 1));</a>
+<a name="ln252"> </a>
+<a name="ln253">            foreach (var literal in literals)</a>
+<a name="ln254">                result.Add(literal);</a>
+<a name="ln255">        }</a>
+<a name="ln256"> </a>
+<a name="ln257">        literals.Clear();</a>
+<a name="ln258">    }</a>
+<a name="ln259"> </a>
+<a name="ln260">    public static T[] SubArray&lt;T&gt;(T[] data, int index, int length)</a>
+<a name="ln261">    {</a>
+<a name="ln262">        T[] result = new T[length];</a>
+<a name="ln263">        Array.Copy(data, index, result, 0, length);</a>
+<a name="ln264">        return result;</a>
+<a name="ln265">    }</a>
+<a name="ln266">}</a>
+</code></pre>
+<div class="balloon" rel="18"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3022/" target="_blank">V3022</a> Expression 'Content?.Length' is always not null. The operator '??' is excessive.</p></div>
+<link rel="stylesheet" href="highlight.css">
+<script src="highlight.pack.js"></script>
+<script src="highlightjs-line-numbers.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script>hljs.initLineNumbersOnLoad();</script>
+<script>
+  $(document).ready(function() {
+      $('.balloon').each(function () {
+          var bl = $(this);
+          var line = bl.attr('rel');
+          var text = $('a[name="ln'+line+'"]').text();
+
+          var space_count = 0;
+          for(var i = 0; i<text.length; i++){
+              var char = text[i];
+              if((char !== ' ')&&(char !== '\t'))break;
+              if(char === '\t')space_count++;
+              space_count++;
+          }
+
+          bl.css('margin-left', space_count*8);
+          $('a[name="ln'+line+'"]').after(bl);
+      });
+
+      window.location = window.location;
+  });
+</script>
+</body>
+</html>

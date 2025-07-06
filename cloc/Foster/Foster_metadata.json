@@ -1,0 +1,94 @@
+{"header" : {
+  "cloc_url"           : "github.com/AlDanial/cloc",
+  "cloc_version"       : "2.04",
+  "elapsed_seconds"    : 0.488300085067749,
+  "n_files"            : 154,
+  "n_lines"            : 109768,
+  "files_per_second"   : 315.379834469276,
+  "lines_per_second"   : 224796.19266249,
+  "report_file"        : "C:\\Users\\dimoninbirsk\\source\\thesis\\cloc\\Foster\\metadata.json"},
+"JSON" :{
+  "nFiles": 9,
+  "blank": 0,
+  "comment": 0,
+  "code": 58074},
+"C#" :{
+  "nFiles": 107,
+  "blank": 4147,
+  "comment": 3181,
+  "code": 19761},
+"C/C++ Header" :{
+  "nFiles": 5,
+  "blank": 1839,
+  "comment": 2738,
+  "code": 10916},
+"XML" :{
+  "nFiles": 13,
+  "blank": 3,
+  "comment": 0,
+  "code": 8082},
+"Properties" :{
+  "nFiles": 1,
+  "blank": 5,
+  "comment": 0,
+  "code": 158},
+"Text" :{
+  "nFiles": 4,
+  "blank": 0,
+  "comment": 0,
+  "code": 155},
+"C" :{
+  "nFiles": 1,
+  "blank": 33,
+  "comment": 6,
+  "code": 150},
+"YAML" :{
+  "nFiles": 2,
+  "blank": 5,
+  "comment": 0,
+  "code": 106},
+"CMake" :{
+  "nFiles": 1,
+  "blank": 9,
+  "comment": 8,
+  "code": 78},
+"MSBuild script" :{
+  "nFiles": 1,
+  "blank": 9,
+  "comment": 1,
+  "code": 77},
+"HLSL" :{
+  "nFiles": 2,
+  "blank": 10,
+  "comment": 0,
+  "code": 67},
+"Markdown" :{
+  "nFiles": 3,
+  "blank": 10,
+  "comment": 0,
+  "code": 38},
+"INI" :{
+  "nFiles": 2,
+  "blank": 3,
+  "comment": 0,
+  "code": 34},
+"Visual Studio Solution" :{
+  "nFiles": 1,
+  "blank": 1,
+  "comment": 1,
+  "code": 20},
+"Bourne Shell" :{
+  "nFiles": 1,
+  "blank": 2,
+  "comment": 0,
+  "code": 16},
+"C# Generated" :{
+  "nFiles": 1,
+  "blank": 4,
+  "comment": 9,
+  "code": 12},
+"SUM": {
+  "blank": 6080,
+  "comment": 5944,
+  "code": 97744,
+  "nFiles": 154} }

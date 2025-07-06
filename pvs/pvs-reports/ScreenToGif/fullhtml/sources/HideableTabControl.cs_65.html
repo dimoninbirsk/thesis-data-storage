@@ -1,0 +1,401 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII" />
+  <title>HideableTabControl.cs</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <script src="../jquery-3.5.1.min.js"></script>
+</head>
+<body>
+<pre><code class = "cs">
+<a name="ln1">using System;</a>
+<a name="ln2">using System.Linq;</a>
+<a name="ln3">using System.Windows;</a>
+<a name="ln4">using System.Windows.Controls;</a>
+<a name="ln5">using System.Windows.Controls.Primitives;</a>
+<a name="ln6">using System.Windows.Input;</a>
+<a name="ln7">using System.Windows.Media;</a>
+<a name="ln8">using System.Windows.Media.Animation;</a>
+<a name="ln9">using ScreenToGif.Domain.Enums;</a>
+<a name="ln10">using ScreenToGif.Util;</a>
+<a name="ln11">using ScreenToGif.Util.Settings;</a>
+<a name="ln12"> </a>
+<a name="ln13">namespace ScreenToGif.Controls;</a>
+<a name="ln14"> </a>
+<a name="ln15">/// &lt;summary&gt;</a>
+<a name="ln16">/// Basic class of a Hideable TabControl.</a>
+<a name="ln17">/// &lt;/summary&gt;</a>
+<a name="ln18">public class HideableTabControl : TabControl</a>
+<a name="ln19">{</a>
+<a name="ln20">    #region Variables</a>
+<a name="ln21"> </a>
+<a name="ln22">    private Button _hideButton;</a>
+<a name="ln23">    private ExtendedMenuItem _extrasMenuItem;</a>
+<a name="ln24">    private TabPanel _tabPanel;</a>
+<a name="ln25">    private Border _border;</a>
+<a name="ln26">    private ExtendedToggleButton _notificationButton;</a>
+<a name="ln27">    private NotificationBox _notificationBox;</a>
+<a name="ln28"> </a>
+<a name="ln29">    #endregion</a>
+<a name="ln30"> </a>
+<a name="ln31">    #region Dependency Properties</a>
+<a name="ln32"> </a>
+<a name="ln33">    public static DependencyProperty OptionsCommandProperty = DependencyProperty.Register(&quot;OptionsCommand&quot;, typeof(ICommand), typeof(HideableTabControl), new PropertyMetadata(null));</a>
+<a name="ln34"> </a>
+<a name="ln35">    public static DependencyProperty FeedbackCommandProperty = DependencyProperty.Register(&quot;FeedbackCommand&quot;, typeof(ICommand), typeof(HideableTabControl), new PropertyMetadata(null));</a>
+<a name="ln36"> </a>
+<a name="ln37">    public static DependencyProperty TroubleshootCommandProperty = DependencyProperty.Register(&quot;TroubleshootCommand&quot;, typeof(ICommand), typeof(HideableTabControl), new PropertyMetadata(null));</a>
+<a name="ln38"> </a>
+<a name="ln39">    public static DependencyProperty HelpCommandProperty = DependencyProperty.Register(&quot;HelpCommand&quot;, typeof(ICommand), typeof(HideableTabControl), new PropertyMetadata(null));</a>
+<a name="ln40"> </a>
+<a name="ln41">    #endregion</a>
+<a name="ln42"> </a>
+<a name="ln43">    #region Properties</a>
+<a name="ln44"> </a>
+<a name="ln45">    public ICommand OptionsCommand</a>
+<a name="ln46">    {</a>
+<a name="ln47">        get =&gt; (ICommand)GetValue(OptionsCommandProperty);</a>
+<a name="ln48">        set =&gt; SetValue(OptionsCommandProperty, value);</a>
+<a name="ln49">    }</a>
+<a name="ln50"> </a>
+<a name="ln51">    public ICommand FeedbackCommand</a>
+<a name="ln52">    {</a>
+<a name="ln53">        get =&gt; (ICommand)GetValue(FeedbackCommandProperty);</a>
+<a name="ln54">        set =&gt; SetValue(FeedbackCommandProperty, value);</a>
+<a name="ln55">    }</a>
+<a name="ln56"> </a>
+<a name="ln57">    public ICommand TroubleshootCommand</a>
+<a name="ln58">    {</a>
+<a name="ln59">        get =&gt; (ICommand)GetValue(TroubleshootCommandProperty);</a>
+<a name="ln60">        set =&gt; SetValue(TroubleshootCommandProperty, value);</a>
+<a name="ln61">    }</a>
+<a name="ln62"> </a>
+<a name="ln63">    public ICommand HelpCommand</a>
+<a name="ln64">    {</a>
+<a name="ln65">        get =&gt; (ICommand)GetValue(HelpCommandProperty);</a>
+<a name="ln66">        set =&gt; SetValue(HelpCommandProperty, value);</a>
+<a name="ln67">    }</a>
+<a name="ln68"> </a>
+<a name="ln69">    #endregion</a>
+<a name="ln70"> </a>
+<a name="ln71">    static HideableTabControl()</a>
+<a name="ln72">    {</a>
+<a name="ln73">        DefaultStyleKeyProperty.OverrideMetadata(typeof(HideableTabControl), new FrameworkPropertyMetadata(typeof(HideableTabControl)));</a>
+<a name="ln74">    }</a>
+<a name="ln75"> </a>
+<a name="ln76">    public override void OnApplyTemplate()</a>
+<a name="ln77">    {</a>
+<a name="ln78">        base.OnApplyTemplate();</a>
+<a name="ln79"> </a>
+<a name="ln80">        _tabPanel = Template.FindName(&quot;TabPanel&quot;, this) as TabPanel;</a>
+<a name="ln81">        _border = Template.FindName(&quot;ContentBorder&quot;, this) as Border;</a>
+<a name="ln82"> </a>
+<a name="ln83">        _notificationButton = Template.FindName(&quot;NotificationsButton&quot;, this) as ExtendedToggleButton;</a>
+<a name="ln84">        _notificationBox = Template.FindName(&quot;NotificationBox&quot;, this) as NotificationBox;</a>
+<a name="ln85">        _extrasMenuItem = Template.FindName(&quot;ExtrasMenuItem&quot;, this) as ExtendedMenuItem;</a>
+<a name="ln86"> </a>
+<a name="ln87">        _hideButton = Template.FindName(&quot;HideGridButton&quot;, this) as Button;</a>
+<a name="ln88"> </a>
+<a name="ln89">        //Hide button.</a>
+<a name="ln90">        if (_hideButton != null)</a>
+<a name="ln91">            _hideButton.Click += HideButton_Clicked;</a>
+<a name="ln92"> </a>
+<a name="ln93">        //Show tab (if hidden).</a>
+<a name="ln94">        if (_tabPanel != null)</a>
+<a name="ln95">        {</a>
+<a name="ln96">            foreach (TabItem tabItem in _tabPanel.Children)</a>
+<a name="ln97">                tabItem.PreviewMouseDown += TabItem_PreviewMouseDown;</a>
+<a name="ln98"> </a>
+<a name="ln99">            _tabPanel.PreviewMouseWheel += TabControl_PreviewMouseWheel;</a>
+<a name="ln100">        }</a>
+<a name="ln101"> </a>
+<a name="ln102">        if (_notificationButton != null)</a>
+<a name="ln103">            _notificationButton.Checked += NotificationButton_Checked;</a>
+<a name="ln104"> </a>
+<a name="ln105">        UpdateVisual();</a>
+<a name="ln106">        AnimateOrNot();</a>
+<a name="ln107">    }</a>
+<a name="ln108"> </a>
+<a name="ln109">    #region Events</a>
+<a name="ln110"> </a>
+<a name="ln111">    private void TabControl_PreviewMouseWheel(object sender, MouseWheelEventArgs e)</a>
+<a name="ln112">    {</a>
+<a name="ln113">        if (e.Delta &gt; 0)</a>
+<a name="ln114">        {</a>
+<a name="ln115">            if (SelectedIndex &lt; Items.Count - 1)</a>
+<a name="ln116">                SelectedIndex++;</a>
+<a name="ln117">            else</a>
+<a name="ln118">                SelectedIndex = 0;</a>
+<a name="ln119">        }</a>
+<a name="ln120">        else</a>
+<a name="ln121">        {</a>
+<a name="ln122"> </a>
+<a name="ln123">            if (SelectedIndex &gt; 0)</a>
+<a name="ln124">                SelectedIndex--;</a>
+<a name="ln125">            else</a>
+<a name="ln126">                SelectedIndex = Items.Count - 1;</a>
+<a name="ln127">        }</a>
+<a name="ln128"> </a>
+<a name="ln129">        if (!_tabPanel.Children[SelectedIndex].IsEnabled)</a>
+<a name="ln130">        {</a>
+<a name="ln131">            if (_tabPanel.Children.OfType&lt;TabItem&gt;().All(x =&gt; !x.IsEnabled))</a>
+<a name="ln132">            {</a>
+<a name="ln133">                SelectedIndex = -1;</a>
+<a name="ln134">                return;</a>
+<a name="ln135">            }</a>
+<a name="ln136"> </a>
+<a name="ln137">            TabControl_PreviewMouseWheel(sender, e);</a>
+<a name="ln138">        }</a>
+<a name="ln139"> </a>
+<a name="ln140">        TabItem_PreviewMouseDown(sender, null);</a>
+<a name="ln141">        ChangeVisibility();</a>
+<a name="ln142">    }</a>
+<a name="ln143"> </a>
+<a name="ln144">    private void TabItem_PreviewMouseDown(object sender, MouseButtonEventArgs e)</a>
+<a name="ln145">    {</a>
+<a name="ln146">        if (sender is TabItem selected)</a>
+<a name="ln147">            selected.IsSelected = true;</a>
+<a name="ln148"> </a>
+<a name="ln149">        if (Math.Abs(_border.ActualHeight - 100) &lt; 0)</a>
+<a name="ln150">            return;</a>
+<a name="ln151"> </a>
+<a name="ln152">        var animation = new DoubleAnimation(_border.ActualHeight, 100, new Duration(new TimeSpan(0, 0, 0, 1)))</a>
+<a name="ln153">        {</a>
+<a name="ln154">            EasingFunction = new PowerEase { Power = 8 }</a>
+<a name="ln155">        };</a>
+<a name="ln156">        _border.BeginAnimation(HeightProperty, animation);</a>
+<a name="ln157"> </a>
+<a name="ln158">        var opacityAnimation = new DoubleAnimation(_border.Opacity, 1, new Duration(new TimeSpan(0, 0, 0, 1)))</a>
+<a name="ln159">        {</a>
+<a name="ln160">            EasingFunction = new PowerEase { Power = 8 }</a>
+<a name="ln161">        };</a>
+<a name="ln162">        _border.BeginAnimation(OpacityProperty, opacityAnimation);</a>
+<a name="ln163"> </a>
+<a name="ln164">        var visibilityAnimation = new ObjectAnimationUsingKeyFrames();</a>
+<a name="ln165">        visibilityAnimation.KeyFrames.Add(new DiscreteObjectKeyFrame(Visibility.Visible, KeyTime.FromTimeSpan(TimeSpan.FromSeconds(0.5))));</a>
+<a name="ln166">        _hideButton.BeginAnimation(VisibilityProperty, visibilityAnimation);</a>
+<a name="ln167"> </a>
+<a name="ln168">        //Margin = 5,5,0,-1</a>
+<a name="ln169">        var marginAnimation = new ThicknessAnimation(_tabPanel.Margin, new Thickness(5, 5, 0, -1), new Duration(new TimeSpan(0, 0, 0, 0, 1)))</a>
+<a name="ln170">        {</a>
+<a name="ln171">            EasingFunction = new PowerEase { Power = 8 }</a>
+<a name="ln172">        };</a>
+<a name="ln173">        _tabPanel.BeginAnimation(MarginProperty, marginAnimation);</a>
+<a name="ln174">    }</a>
+<a name="ln175"> </a>
+<a name="ln176">    private void HideButton_Clicked(object sender, RoutedEventArgs routedEventArgs)</a>
+<a name="ln177">    {</a>
+<a name="ln178">        //ActualHeight = 0</a>
+<a name="ln179">        var animation = new DoubleAnimation(_border.ActualHeight, 0, new Duration(new TimeSpan(0, 0, 0, 1)))</a>
+<a name="ln180">        {</a>
+<a name="ln181">            EasingFunction = new PowerEase { Power = 8 }</a>
+<a name="ln182">        };</a>
+<a name="ln183">        _border.BeginAnimation(HeightProperty, animation);</a>
+<a name="ln184"> </a>
+<a name="ln185">        //Opacity = 0</a>
+<a name="ln186">        var opacityAnimation = new DoubleAnimation(_border.Opacity, 0, new Duration(new TimeSpan(0, 0, 0, 1)))</a>
+<a name="ln187">        {</a>
+<a name="ln188">            EasingFunction = new PowerEase { Power = 8 }</a>
+<a name="ln189">        };</a>
+<a name="ln190">        _border.BeginAnimation(OpacityProperty, opacityAnimation);</a>
+<a name="ln191"> </a>
+<a name="ln192">        //SelectedItem = null</a>
+<a name="ln193">        var objectAnimation = new ObjectAnimationUsingKeyFrames();</a>
+<a name="ln194">        objectAnimation.KeyFrames.Add(new DiscreteObjectKeyFrame(null, KeyTime.FromTimeSpan(TimeSpan.FromSeconds(0))));</a>
+<a name="ln195">        BeginAnimation(SelectedItemProperty, objectAnimation);</a>
+<a name="ln196"> </a>
+<a name="ln197">        //Visibility = Visibility.Collapsed</a>
+<a name="ln198">        var visibilityAnimation = new ObjectAnimationUsingKeyFrames();</a>
+<a name="ln199">        visibilityAnimation.KeyFrames.Add(new DiscreteObjectKeyFrame(Visibility.Collapsed, KeyTime.FromTimeSpan(TimeSpan.FromSeconds(0))));</a>
+<a name="ln200">        _hideButton.BeginAnimation(VisibilityProperty, visibilityAnimation);</a>
+<a name="ln201"> </a>
+<a name="ln202">        //Margin = 5,5,0,5</a>
+<a name="ln203">        var marginAnimation = new ThicknessAnimation(_tabPanel.Margin, new Thickness(5, 5, 0, 5), new Duration(new TimeSpan(0, 0, 0, 0, 1)))</a>
+<a name="ln204">        {</a>
+<a name="ln205">            EasingFunction = new PowerEase { Power = 8 }</a>
+<a name="ln206">        };</a>
+<a name="ln207">        _tabPanel.BeginAnimation(MarginProperty, marginAnimation);</a>
+<a name="ln208">    }</a>
+<a name="ln209"> </a>
+<a name="ln210">    private void NotificationButton_Checked(object sender, RoutedEventArgs e)</a>
+<a name="ln211">    {</a>
+<a name="ln212">        if (!IsLoaded)</a>
+<a name="ln213">            return;</a>
+<a name="ln214"> </a>
+<a name="ln215">        if (_notificationButton.FindResource(&quot;NotificationStoryboard&quot;) is Storyboard story)</a>
+<a name="ln216">            story.Stop();</a>
+<a name="ln217">    }</a>
+<a name="ln218"> </a>
+<a name="ln219">    #endregion</a>
+<a name="ln220"> </a>
+<a name="ln221"> </a>
+<a name="ln222">    /// &lt;summary&gt;</a>
+<a name="ln223">    /// Changes the visibility of the Content.</a>
+<a name="ln224">    /// &lt;/summary&gt;</a>
+<a name="ln225">    /// &lt;param name=&quot;visible&quot;&gt;True to show the Content.&lt;/param&gt;</a>
+<a name="ln226">    public void ChangeVisibility(bool visible = true)</a>
+<a name="ln227">    {</a>
+<a name="ln228">        _border.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;</a>
+<a name="ln229">        _hideButton.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;</a>
+<a name="ln230">    }</a>
+<a name="ln231"> </a>
+<a name="ln232">    public void UpdateVisual(bool isActivated = true)</a>
+<a name="ln233">    {</a>
+<a name="ln234">        //Shows only a white foreground when:</a>
+<a name="ln235"> </a>
+<a name="ln236">        //var color = Glass.GlassColor;</a>
+<a name="ln237">        //var ness = Glass.GlassColor.GetBrightness();</a>
+<a name="ln238">        //var aa = color.ConvertRgbToHsv();</a>
+<a name="ln239"> </a>
+<a name="ln240">        //var darkForeground = !SystemParameters.IsGlassEnabled || !Other.IsGlassSupported() || Glass.GlassColor.GetBrightness() &gt; 973 || !isActivated;</a>
+<a name="ln241">        var darkForeground = !SystemParameters.IsGlassEnabled || !isActivated;</a>
+<a name="ln242">        //var darkForeground = !SystemParameters.IsGlassEnabled || !Other.IsWin8OrHigher() || aa.V &gt; 0.5 || !isActivated;</a>
+<a name="ln243">        var showBackground = true;// !Other.IsGlassSupported();</a>
+<a name="ln244"> </a>
+<a name="ln245">        //Console.WriteLine(&quot;!IsGlassEnabled: &quot; + !SystemParameters.IsGlassEnabled);</a>
+<a name="ln246">        //Console.WriteLine(&quot;!UsesColor: &quot; + !Glass.UsesColor);</a>
+<a name="ln247">        //Console.WriteLine(&quot;GlassColorBrightness &lt;= 137: &quot; + (Glass.GlassColor.GetBrightness() &lt;= 137));</a>
+<a name="ln248">        //Console.WriteLine(&quot;!IsWin8: &quot; + !Other.IsWin8OrHigher());</a>
+<a name="ln249">        //Console.WriteLine(&quot;IsActivated: &quot; + isActivated);</a>
+<a name="ln250">        //Console.WriteLine(&quot;IsDark: &quot; + isDark);</a>
+<a name="ln251"> </a>
+<a name="ln252">        //Update each tab.</a>
+<a name="ln253">        if (_tabPanel != null)</a>
+<a name="ln254">            foreach (var tab in _tabPanel.Children.OfType&lt;AwareTabItem&gt;())</a>
+<a name="ln255">            {</a>
+<a name="ln256">                //To force the change.</a>
+<a name="ln257">                if (tab.IsDark == !darkForeground)</a>
+<a name="ln258">                    tab.IsDark = !tab.IsDark;</a>
+<a name="ln259"> </a>
+<a name="ln260">                if (tab.ShowBackground == showBackground)</a>
+<a name="ln261">                    tab.ShowBackground = !tab.ShowBackground;</a>
+<a name="ln262"> </a>
+<a name="ln263">                tab.IsDark = !darkForeground;</a>
+<a name="ln264">                tab.ShowBackground = showBackground;</a>
+<a name="ln265">            }</a>
+<a name="ln266"> </a>
+<a name="ln267">        //Update the buttons.</a>
+<a name="ln268">        if (_notificationButton != null)</a>
+<a name="ln269">        {</a>
+<a name="ln270">            _notificationButton.DarkMode = !darkForeground;</a>
+<a name="ln271">            _notificationButton.IsOverNonClientArea = UserSettings.All.EditorExtendChrome;</a>
+<a name="ln272">        }</a>
+<a name="ln273"> </a>
+<a name="ln274">        if (_extrasMenuItem != null)</a>
+<a name="ln275">        {</a>
+<a name="ln276">            _extrasMenuItem.DarkMode = !darkForeground;</a>
+<a name="ln277">            _extrasMenuItem.IsOverNonClientArea = UserSettings.All.EditorExtendChrome;</a>
+<a name="ln278">        }</a>
+<a name="ln279">    }</a>
+<a name="ln280"> </a>
+<a name="ln281"> </a>
+<a name="ln282">    public void UpdateNotifications(int? id = null)</a>
+<a name="ln283">    {</a>
+<a name="ln284">        _notificationBox?.UpdateNotification(id);</a>
+<a name="ln285"> </a>
+<a name="ln286">        AnimateOrNot();</a>
+<a name="ln287">    }</a>
+<a name="ln288"> </a>
+<a name="ln289">    public EncoderListViewItem AddEncoding(int id, bool isActive = false)</a>
+<a name="ln290">    {</a>
+<a name="ln291">        //Display the popup (if the editor is active) and animate the button.</a>
+<a name="ln292">        if (isActive)</a>
+<a name="ln293">            _notificationButton.IsChecked = true;</a>
+<a name="ln294"> </a>
+<a name="ln295">        AnimateOrNot(true);</a>
+<a name="ln296"> </a>
+<a name="ln297">        return _notificationBox.AddEncoding(id);</a>
+<a name="ln298">    }</a>
+<a name="ln299"> </a>
+<a name="ln300">    public void UpdateEncoding(int? id = null, bool onlyStatus = false)</a>
+<a name="ln301">    {</a>
+<a name="ln302">        if (!onlyStatus)</a>
+<a name="ln303">            _notificationBox?.UpdateEncoding(id);</a>
+<a name="ln304"> </a>
+<a name="ln305">        AnimateOrNot();</a>
+<a name="ln306">    }</a>
+<a name="ln307"> </a>
+<a name="ln308">    public EncoderListViewItem RemoveEncoding(int id)</a>
+<a name="ln309">    {</a>
+<a name="ln310">        try</a>
+<a name="ln311">        {</a>
+<a name="ln312">            return _notificationBox.RemoveEncoding(id);</a>
+<a name="ln313">        }</a>
+<a name="ln314">        finally</a>
+<a name="ln315">        {</a>
+<a name="ln316">            AnimateOrNot();</a>
+<a name="ln317">        }</a>
+<a name="ln318">    }</a>
+<a name="ln319"> </a>
+<a name="ln320">    private void AnimateOrNot(bool add = false)</a>
+<a name="ln321">    {</a>
+<a name="ln322">        var story = _notificationButton.FindResource(&quot;NotificationStoryboard&quot;) as Storyboard;</a>
+<a name="ln323"> </a>
+<a name="ln324">        if (story != null)</a>
+<a name="ln325">        {</a>
+<a name="ln326">            story.Stop();</a>
+<a name="ln327"> </a>
+<a name="ln328">            //Blink the button when an encoding is added.</a>
+<a name="ln329">            if (add)</a>
+<a name="ln330">                story.Begin();</a>
+<a name="ln331">        }</a>
+<a name="ln332"> </a>
+<a name="ln333">        var anyProcessing = EncodingManager.Encodings.Any(s =&gt; s.Status == EncodingStatus.Processing);</a>
+<a name="ln334">        var anyCompleted = EncodingManager.Encodings.Any(s =&gt; s.Status == EncodingStatus.Completed);</a>
+<a name="ln335">        var anyFaulty = EncodingManager.Encodings.Any(s =&gt; s.Status == EncodingStatus.Error);</a>
+<a name="ln336"> </a>
+<a name="ln337">        _notificationButton.Icon = anyProcessing ? FindResource(&quot;Vector.Progress&quot;) as Brush :</a>
+<a name="ln338">            anyCompleted ? FindResource(&quot;Vector.Ok.Round&quot;) as Brush :</a>
+<a name="ln339">            anyFaulty ? FindResource(&quot;Vector.Cancel.Round&quot;) as Brush : _notificationButton.Icon;</a>
+<a name="ln340">        _notificationButton.IsImportant = anyProcessing;</a>
+<a name="ln341">        _notificationButton.SetResourceReference(ExtendedToggleButton.TextProperty, anyProcessing ? &quot;S.Encoder.Encoding&quot; : anyCompleted ? &quot;S.Encoder.Completed&quot; : anyFaulty? &quot;S.Encoder.Error&quot; : &quot;S.Notifications&quot;);</a>
+<a name="ln342"> </a>
+<a name="ln343">        if (anyProcessing || anyCompleted || anyFaulty)</a>
+<a name="ln344">            return;</a>
+<a name="ln345"> </a>
+<a name="ln346">        //Animate the button for notifications, when there are no encodings.</a>
+<a name="ln347">        var most = NotificationManager.Notifications.Select(s =&gt; s.Kind).OrderByDescending(a =&gt; (int)a).FirstOrDefault();</a>
+<a name="ln348"> </a>
+<a name="ln349">        _notificationButton.Icon = TryFindResource(StatusBand.KindToString(most)) as Brush;</a>
+<a name="ln350">        _notificationButton.IsImportant = most != StatusType.None;</a>
+<a name="ln351">        _notificationButton.SetResourceReference(ExtendedToggleButton.TextProperty, &quot;S.Notifications&quot;);</a>
+<a name="ln352"> </a>
+<a name="ln353">        if(story != null)</a>
+<a name="ln354">        {</a>
+<a name="ln355">            story.Stop();</a>
+<a name="ln356"> </a>
+<a name="ln357">            if (most != StatusType.None)</a>
+<a name="ln358">                story.Begin();</a>
+<a name="ln359">        }</a>
+<a name="ln360">    }</a>
+<a name="ln361">}</a>
+</code></pre>
+<div class="balloon" rel="260"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3063/" target="_blank">V3063</a> A part of conditional expression is always true if it is evaluated: showBackground.</p></div>
+<link rel="stylesheet" href="highlight.css">
+<script src="highlight.pack.js"></script>
+<script src="highlightjs-line-numbers.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script>hljs.initLineNumbersOnLoad();</script>
+<script>
+  $(document).ready(function() {
+      $('.balloon').each(function () {
+          var bl = $(this);
+          var line = bl.attr('rel');
+          var text = $('a[name="ln'+line+'"]').text();
+
+          var space_count = 0;
+          for(var i = 0; i<text.length; i++){
+              var char = text[i];
+              if((char !== ' ')&&(char !== '\t'))break;
+              if(char === '\t')space_count++;
+              space_count++;
+          }
+
+          bl.css('margin-left', space_count*8);
+          $('a[name="ln'+line+'"]').after(bl);
+      });
+
+      window.location = window.location;
+  });
+</script>
+</body>
+</html>

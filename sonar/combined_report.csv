@@ -1,0 +1,234 @@
+﻿ID,Rule Name,Type,Severity,Total,Projects,Example
+csharpsquid:S4200,csharpsquid:S4200,CODE_SMELL,MAJOR,1077,"Foster, ScreenToGif",Make this native method private and provide a wrapper.
+external_roslyn:CA1401,external_roslyn:CA1401,CODE_SMELL,INFO,667,"Foster, ScreenToGif",P/Invoke method 'SDL_GetTrayEntryParent' should not be visible
+csharpsquid:S101,csharpsquid:S101,CODE_SMELL,MINOR,617,"Foster, Chloe, ScreenToGif","Rename class 'Compare_HandlerBase' to match pascal case naming rules, consider using 'CompareHandlerBase'."
+csharpsquid:S2325,csharpsquid:S2325,CODE_SMELL,MINOR,470,"Saunter, SoundFlow, lunr, ScreenToGif, Riter, Foster, Chloe",Make 'IsFreeTextShadowGroupExpanded' a static property.
+external_roslyn:CA1822,external_roslyn:CA1822,CODE_SMELL,INFO,439,"RestSharp, Saunter, SoundFlow, lunr, ScreenToGif, Riter, Foster",Member 'CursorFollowing' does not access instance data and can be marked as static
+csharpsquid:S125,csharpsquid:S125,CODE_SMELL,MAJOR,386,"RestSharp, Chloe, Saunter, ScreenToGif",Remove this commented out code.
+csharpsquid:S2933,csharpsquid:S2933,CODE_SMELL,MAJOR,372,"Chloe, lunr, ScreenToGif",Make '_typeDescriptor' 'readonly'.
+external_roslyn:RCS1261,external_roslyn:RCS1261,CODE_SMELL,INFO,259,spreadcheetah,Resource can be disposed asynchronously
+csharpsquid:S3776,csharpsquid:S3776,CODE_SMELL,CRITICAL,252,"Lynx, RestSharp, spreadcheetah, SoundFlow, lunr, ScreenToGif, Riter, Foster, Chloe",Refactor this method to reduce its Cognitive Complexity from 92 to the 15 allowed.
+csharpsquid:S112,csharpsquid:S112,CODE_SMELL,MAJOR,157,"Lynx, RestSharp, lunr, ScreenToGif, Riter, Foster, Chloe",'System.NullReferenceException' should not be thrown by user code.
+csharpsquid:S4136,csharpsquid:S4136,CODE_SMELL,MINOR,150,"RestSharp, lunr, ScreenToGif, Foster, Chloe",All 'Average' method overloads should be adjacent.
+csharpsquid:S1104,csharpsquid:S1104,CODE_SMELL,MINOR,143,"Foster, SoundFlow, lunr, ScreenToGif",Make this field 'private' and encapsulate it in a 'public' property.
+csharpsquid:S1135,csharpsquid:S1135,CODE_SMELL,INFO,138,"Foster, Chloe, SoundFlow, ScreenToGif",Complete the task associated to this 'TODO' comment.
+csharpsquid:S6608,csharpsquid:S6608,CODE_SMELL,MINOR,121,"RestSharp, Chloe, ScreenToGif","Indexing at 0 should be used instead of the ""Enumerable"" extension method ""First"""
+csharpsquid:S2342,csharpsquid:S2342,CODE_SMELL,MINOR,117,"spreadcheetah, SoundFlow, lunr, ScreenToGif, Foster, Chloe","Rename this enumeration to match the regular expression: '^([A-Z]{1,3}[a-z0-9]+)*([A-Z]{2})?$'."
+csharpsquid:S3358,csharpsquid:S3358,CODE_SMELL,MAJOR,104,"RestSharp, SoundFlow, lunr, ScreenToGif, Riter, Foster",Extract this nested ternary operation into an independent statement.
+external_roslyn:SYSLIB1054,external_roslyn:SYSLIB1054,CODE_SMELL,INFO,97,"Riter, ScreenToGif",Mark the method 'GetWindowLongPtr64' with 'LibraryImportAttribute' instead of 'DllImportAttribute' to generate P/Invoke marshalling code at compile time
+csharpsquid:S1192,csharpsquid:S1192,CODE_SMELL,MINOR,92,"Lynx, SoundFlow, lunr, ScreenToGif, Riter, Chloe",Define a constant instead of using this literal '-vsync ' 5 times.
+csharpsquid:S1481,csharpsquid:S1481,CODE_SMELL,MINOR,80,"Foster, Chloe, lunr, ScreenToGif",Remove the unused local variable 'mutex'.
+csharpsquid:S1133,csharpsquid:S1133,CODE_SMELL,INFO,80,"RestSharp, spreadcheetah, ScreenToGif, Foster, Chloe",Do not forget to remove this deprecated code someday.
+csharpsquid:S1244,csharpsquid:S1244,BUG,MAJOR,80,"Foster, SoundFlow, lunr, ScreenToGif","Do not check floating point inequality with exact values, use a range instead."
+csharpsquid:S2094,csharpsquid:S2094,CODE_SMELL,MINOR,79,"Saunter, Chloe, ScreenToGif","Remove this empty class, write its code or make it an ""interface""."
+csharpsquid:S6966,csharpsquid:S6966,CODE_SMELL,MAJOR,77,"RestSharp, Chloe, ScreenToGif",Await GetAsync instead.
+csharpsquid:S1215,csharpsquid:S1215,CODE_SMELL,CRITICAL,77,ScreenToGif,Refactor the code to remove this use of 'GC.Collect'.
+external_roslyn:CS1591,external_roslyn:CS1591,CODE_SMELL,MAJOR,71,SoundFlow,Missing XML comment for publicly visible type or member 'Result.NoDataAvailable'
+csharpsquid:S3881,csharpsquid:S3881,CODE_SMELL,MAJOR,70,"RestSharp, SoundFlow, ScreenToGif, Foster, Chloe",Fix this implementation of 'IDisposable' to conform to the dispose pattern.
+external_roslyn:CA1859,external_roslyn:CA1859,CODE_SMELL,INFO,66,"RestSharp, Chloe, ScreenToGif",Change type of variable 'result' from 'System.Collections.Generic.IList<byte>' to 'System.Collections.Generic.List<byte>' for improved performance
+csharpsquid:S108,csharpsquid:S108,CODE_SMELL,MAJOR,57,"lunr, ScreenToGif, Riter, Foster, Chloe",Either remove or fill this block of code.
+csharpsquid:S1125,csharpsquid:S1125,CODE_SMELL,MINOR,57,"Chloe, ScreenToGif",Remove the unnecessary Boolean literal(s).
+external_roslyn:xUnit1042,external_roslyn:xUnit1042,CODE_SMELL,INFO,56,"RestSharp, spreadcheetah","The member referenced by the MemberData attribute returns untyped data rows, such as object[]. Consider using TheoryData<> as the return type to provide better type safety."
+csharpsquid:S1066,csharpsquid:S1066,CODE_SMELL,MAJOR,53,"RestSharp, SoundFlow, ScreenToGif, Riter, Foster, Chloe",Merge this if statement with the enclosing one.
+csharpsquid:S6562,csharpsquid:S6562,CODE_SMELL,MAJOR,52,"RestSharp, Chloe, ScreenToGif","Provide the ""DateTimeKind"" when creating this object."
+csharpsquid:S927,csharpsquid:S927,CODE_SMELL,CRITICAL,49,"RestSharp, SoundFlow, ScreenToGif, Foster, Chloe",Rename parameter 'lambda' to 'exp' to match the base class declaration.
+external_roslyn:CS8632,external_roslyn:CS8632,CODE_SMELL,MAJOR,49,Chloe,The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
+csharpsquid:S1118,csharpsquid:S1118,CODE_SMELL,MAJOR,48,"Saunter, lunr, ScreenToGif, Riter, Chloe",Add a 'protected' constructor or the 'static' keyword to the class declaration.
+external_roslyn:CA1834,external_roslyn:CA1834,CODE_SMELL,INFO,48,Chloe,Use 'StringBuilder.Append(char)' instead of 'StringBuilder.Append(string)' when the input is a constant unit string
+csharpsquid:S4663,csharpsquid:S4663,CODE_SMELL,MINOR,46,"Chloe, ScreenToGif",Remove this empty comment
+csharpsquid:S1144,csharpsquid:S1144,CODE_SMELL,MAJOR,45,"RestSharp, SoundFlow, lunr, ScreenToGif, Foster, Chloe",Remove the unused private method 'GenerateCommandFactorWithoutCache'.
+csharpsquid:S6580,csharpsquid:S6580,CODE_SMELL,MAJOR,45,"RestSharp, Chloe, ScreenToGif",Use a format provider when parsing date and time.
+csharpsquid:S3267,csharpsquid:S3267,CODE_SMELL,MINOR,44,"SoundFlow, lunr, ScreenToGif, Riter, Foster, Chloe",Loop should be simplified by calling Select(layer => layer.ChannelList))
+external_roslyn:IDE0046,external_roslyn:IDE0046,CODE_SMELL,INFO,43,spreadcheetah,'if' statement can be simplified
+csharpsquid:S1939,csharpsquid:S1939,CODE_SMELL,MINOR,42,"Foster, Chloe, ScreenToGif",'IDbConnection' implements 'IDisposable' so 'IDisposable' can be removed from the inheritance list.
+external_roslyn:CA1069,external_roslyn:CA1069,CODE_SMELL,INFO,42,"Foster, ScreenToGif",The enum member 'B' has the same constant value '1' as member 'East'
+external_roslyn:MA0038,external_roslyn:MA0038,CODE_SMELL,INFO,39,spreadcheetah,"Make method static (deprecated, use CA1822 instead)"
+csharpsquid:S907,csharpsquid:S907,CODE_SMELL,MAJOR,37,"Foster, Chloe, ScreenToGif",Remove this use of 'goto'.
+csharpsquid:S2971,csharpsquid:S2971,CODE_SMELL,MAJOR,34,"Chloe, Riter, ScreenToGif",Drop 'Where' and move the condition into the 'Any'.
+external_roslyn:IDE0057,external_roslyn:IDE0057,CODE_SMELL,INFO,34,spreadcheetah,Substring can be simplified
+csharpsquid:S1172,csharpsquid:S1172,CODE_SMELL,MAJOR,31,"Foster, Chloe, SoundFlow, ScreenToGif",Remove this unused method parameter 'wParam'.
+external_roslyn:MA0042,external_roslyn:MA0042,CODE_SMELL,INFO,31,spreadcheetah,Prefer using 'await using'
+csharpsquid:S1450,csharpsquid:S1450,CODE_SMELL,MINOR,29,"Foster, Chloe, lunr, ScreenToGif",Remove the field 'dataLength' and declare it as a local variable in the relevant methods.
+external_roslyn:CA2208,external_roslyn:CA2208,CODE_SMELL,INFO,29,"RestSharp, Chloe, ScreenToGif",Method ConvertToByte passes parameter name 'bits' as the message argument to a ArgumentException constructor. Replace this argument with a descriptive message and pass the parameter name in the correct position.
+csharpsquid:S1199,csharpsquid:S1199,CODE_SMELL,MINOR,29,"Foster, ScreenToGif",Extract this nested code block into a separate method.
+csharpsquid:S107,csharpsquid:S107,CODE_SMELL,MAJOR,28,"spreadcheetah, lunr, ScreenToGif, Riter, Foster, Chloe","Constructor has 13 parameters, which is greater than the 7 authorized."
+csharpsquid:S3928,csharpsquid:S3928,CODE_SMELL,MAJOR,28,"RestSharp, Chloe, SoundFlow, ScreenToGif",The parameter name 'Type' is not declared in the argument list.
+external_roslyn:CA1816,external_roslyn:CA1816,CODE_SMELL,INFO,27,"SoundFlow, lunr, ScreenToGif, Foster, Chloe",Change SpectrumVisualizer.Dispose() to call GC.SuppressFinalize(object). This will prevent derived types that introduce a finalizer from needing to re-implement 'IDisposable' to call it.
+csharpsquid:S1006,csharpsquid:S1006,CODE_SMELL,CRITICAL,26,"Chloe, Foster, Riter",Add the default parameter value defined in the overridden method.
+csharpsquid:S2486,csharpsquid:S2486,CODE_SMELL,MINOR,25,"Chloe, Foster, Riter, ScreenToGif",Handle the exception or explain in a comment why it can be ignored.
+csharpsquid:S1854,csharpsquid:S1854,CODE_SMELL,MAJOR,25,"Foster, Chloe, ScreenToGif",Remove this useless assignment to local variable 'imageAux1'.
+csharpsquid:S1121,csharpsquid:S1121,CODE_SMELL,MAJOR,25,"Foster, SoundFlow, lunr, ScreenToGif",Extract the assignment of '_readCallback' from this expression.
+csharpsquid:S2223,csharpsquid:S2223,CODE_SMELL,CRITICAL,24,"Foster, Chloe, lunr, ScreenToGif",Change the visibility of 'FeedbackCommandProperty' or make it 'const' or 'readonly'.
+csharpsquid:S1075,csharpsquid:S1075,CODE_SMELL,MINOR,22,"RestSharp, Saunter, SoundFlow, ScreenToGif, Riter",Refactor your code not to use hardcoded absolute paths or URIs.
+external_roslyn:CA2211,external_roslyn:CA2211,CODE_SMELL,INFO,22,"Foster, lunr, ScreenToGif",Non-constant fields should not be visible
+external_roslyn:CA1806,external_roslyn:CA1806,CODE_SMELL,INFO,21,"Chloe, ScreenToGif","EnableMaximize calls SetWindowLong but does not use the HRESULT or error code that the method returns. This could lead to unexpected behavior in error conditions or low-resource situations. Use the result in a conditional statement, assign the result to a variable, or pass it as an argument to another method."
+csharpsquid:S127,csharpsquid:S127,CODE_SMELL,MAJOR,21,"Foster, SoundFlow, lunr, ScreenToGif",Do not update the loop counter 'j' within the loop body.
+csharpsquid:S3963,csharpsquid:S3963,CODE_SMELL,MINOR,20,"RestSharp, lunr, ScreenToGif, Riter, Chloe",Initialize all 'static fields' inline and remove the 'static constructor'.
+csharpsquid:S2436,csharpsquid:S2436,CODE_SMELL,MAJOR,20,Chloe,Reduce the number of generic parameters in the 'JoinResult' class to no more than the 2 authorized.
+external_roslyn:SYSLIB1045,external_roslyn:SYSLIB1045,CODE_SMELL,INFO,19,ScreenToGif,Use 'GeneratedRegexAttribute' to generate the regular expression implementation at compile-time.
+external_roslyn:MA0028,external_roslyn:MA0028,CODE_SMELL,INFO,19,spreadcheetah,Replace string interpolation with multiple AppendLine calls or use an interpolated string
+csharpsquid:S2696,csharpsquid:S2696,CODE_SMELL,CRITICAL,18,"RestSharp, Saunter, SoundFlow, ScreenToGif, Riter, Foster","Remove this set, which updates a 'static' field from an instance method."
+csharpsquid:S1905,csharpsquid:S1905,CODE_SMELL,MINOR,18,"Foster, Chloe, ScreenToGif",Remove this unnecessary cast to 'object'.
+csharpsquid:S3247,csharpsquid:S3247,CODE_SMELL,MINOR,18,"Chloe, ScreenToGif",Replace this type-check-and-cast sequence to use pattern matching.
+external_roslyn:CA1507,external_roslyn:CA1507,CODE_SMELL,INFO,18,Chloe,Use nameof in place of string literal 'orderString'
+external_roslyn:CA1510,external_roslyn:CA1510,CODE_SMELL,INFO,18,"RestSharp, Chloe, ScreenToGif",Use 'ArgumentNullException.ThrowIfNull' instead of explicitly throwing a new exception instance
+csharpsquid:S1871,csharpsquid:S1871,CODE_SMELL,MAJOR,18,"Foster, ScreenToGif",Either merge this case with the identical one on line 1386 or change one of the implementations.
+csharpsquid:S2344,csharpsquid:S2344,CODE_SMELL,MINOR,18,"Foster, ScreenToGif",Rename this enumeration to remove the 'Flags' suffix.
+external_roslyn:CA1860,external_roslyn:CA1860,CODE_SMELL,INFO,18,"RestSharp, ScreenToGif","Prefer comparing 'Count' to 0 rather than using 'Any()', both for clarity and for performance"
+external_roslyn:SYSLIB1096,external_roslyn:SYSLIB1096,CODE_SMELL,INFO,18,ScreenToGif,Mark the type 'IEnumFilters' with 'GeneratedComInterfaceAttribute' instead of 'ComImportAttribute' to generate COM marshalling code at compile time
+csharpsquid:S4487,csharpsquid:S4487,CODE_SMELL,CRITICAL,17,"Foster, Chloe, SoundFlow, ScreenToGif",Remove this unread private field '_result' or refactor the code to use its value.
+csharpsquid:S3260,csharpsquid:S3260,CODE_SMELL,MINOR,16,"Foster, SoundFlow, lunr, ScreenToGif",Private classes which are not derived in the current assembly should be marked as 'sealed'.
+external_roslyn:IDE0007,external_roslyn:IDE0007,CODE_SMELL,INFO,16,spreadcheetah,use 'var' instead of explicit type
+csharpsquid:S3626,csharpsquid:S3626,CODE_SMELL,MINOR,15,"RestSharp, Chloe, SoundFlow, ScreenToGif",Remove this redundant jump.
+csharpsquid:S3457,csharpsquid:S3457,CODE_SMELL,MAJOR,15,"Chloe, ScreenToGif",Remove this formatting call and simply use the input string.
+csharpsquid:S3168,csharpsquid:S3168,BUG,MAJOR,15,"SoundFlow, ScreenToGif",Return 'Task' instead.
+external_roslyn:RCS1123,external_roslyn:RCS1123,CODE_SMELL,INFO,15,spreadcheetah,Add parentheses when necessary
+csharpsquid:S6610,csharpsquid:S6610,CODE_SMELL,MINOR,14,Chloe,"""EndsWith"" overloads that take a ""char"" should be used"
+external_roslyn:CA1866,external_roslyn:CA1866,CODE_SMELL,INFO,14,Chloe,Use 'string.EndsWith(char)' instead of 'string.EndsWith(string)' when you have a string with a single char
+external_roslyn:SYSLIB0014,external_roslyn:SYSLIB0014,CODE_SMELL,MAJOR,14,ScreenToGif,"'WebClient.WebClient()' is obsolete: 'WebRequest, HttpWebRequest, ServicePoint, and WebClient are obsolete. Use HttpClient instead.'"
+external_roslyn:CS1998,external_roslyn:CS1998,CODE_SMELL,MAJOR,13,Chloe,"This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread."
+csharpsquid:S3220,csharpsquid:S3220,CODE_SMELL,MINOR,13,"Chloe, ScreenToGif","Review this call, which partially matches an overload without 'params'. The partial match is 'List<T> IDbContext.SqlQuery<T>(string sql, object parameter)'."
+csharpsquid:S1117,csharpsquid:S1117,CODE_SMELL,MAJOR,13,"RestSharp, Foster",Rename 'ptr' which hides the field with the same name.
+external_roslyn:CA1861,external_roslyn:CA1861,CODE_SMELL,INFO,12,"Chloe, ScreenToGif",Prefer 'static readonly' fields over constant array arguments if the called method is called repeatedly and is not mutating the passed array
+csharpsquid:S1168,csharpsquid:S1168,CODE_SMELL,MAJOR,12,"Chloe, ScreenToGif",Return an empty collection instead of null.
+external_roslyn:CA1847,external_roslyn:CA1847,CODE_SMELL,INFO,11,"Chloe, ScreenToGif",Use 'string.Contains(char)' instead of 'string.Contains(string)' when searching for a single character
+external_roslyn:CA2012,external_roslyn:CA2012,CODE_SMELL,INFO,11,"RestSharp, Chloe, lunr","ValueTask instances should not have their result directly accessed unless the instance has already completed. Unlike Tasks, calling Result or GetAwaiter().GetResult() on a ValueTask is not guaranteed to block until the operation completes. If you can't simply await the instance, consider first checking its IsCompleted property (or asserting it's true if you know that to be the case)."
+csharpsquid:S3878,csharpsquid:S3878,CODE_SMELL,MINOR,10,"Chloe, SoundFlow",Remove this array creation and simply pass the elements.
+csharpsquid:S2292,csharpsquid:S2292,CODE_SMELL,MINOR,9,"Foster, Riter, SoundFlow",Make this an auto-implemented property and remove its backing field.
+csharpsquid:S3993,csharpsquid:S3993,CODE_SMELL,MAJOR,9,"Saunter, Chloe","Specify AttributeUsage on 'SubscribeOperationAttribute' to improve readability, even though it inherits it from its base type."
+csharpsquid:S1186,csharpsquid:S1186,CODE_SMELL,CRITICAL,9,"Saunter, Chloe, ScreenToGif","Add a nested comment explaining why this method is empty, throw a 'NotSupportedException' or complete the implementation."
+csharpsquid:S6561,csharpsquid:S6561,CODE_SMELL,MAJOR,9,"Chloe, SoundFlow, ScreenToGif","Avoid using ""DateTime.Now"" for benchmarking or timespan calculation operations."
+secrets:S6703,secrets:S6703,VULNERABILITY,BLOCKER,8,Chloe,Make sure this database password gets changed and removed from the code.
+csharpsquid:S2372,csharpsquid:S2372,CODE_SMELL,MAJOR,8,Foster,"Remove the exception throwing from this property getter, or refactor the property into a method."
+external_roslyn:CS0612,external_roslyn:CS0612,CODE_SMELL,MAJOR,8,ScreenToGif,'RecorderStages.Snapping' is obsolete
+external_roslyn:RCS1251,external_roslyn:RCS1251,CODE_SMELL,INFO,8,spreadcheetah,Remove unnecessary braces
+csharpsquid:S6664,csharpsquid:S6664,CODE_SMELL,MINOR,7,Lynx,Reduce the number of Error logging calls within this code block from 2 to the 1 allowed.
+csharpsquid:S2346,csharpsquid:S2346,CODE_SMELL,CRITICAL,7,"Foster, Chloe, ScreenToGif",Rename 'ByCommand' to 'None'.
+external_roslyn:CA1018,external_roslyn:CA1018,CODE_SMELL,INFO,7,Chloe,Specify AttributeUsage on DataTypeAttribute
+csharpsquid:S3011,csharpsquid:S3011,CODE_SMELL,MAJOR,7,"Chloe, ScreenToGif",Make sure that this accessibility bypass is safe here.
+csharpsquid:S1643,csharpsquid:S1643,CODE_SMELL,MINOR,7,"Chloe, ScreenToGif",Use a StringBuilder instead.
+csharpsquid:S3442,csharpsquid:S3442,CODE_SMELL,MAJOR,7,"Foster, Chloe",Change the visibility of this constructor to 'protected'.
+external_roslyn:CA1845,external_roslyn:CA1845,CODE_SMELL,INFO,7,"Chloe, lunr, ScreenToGif",Use span-based 'string.Concat' and 'AsSpan' instead of 'Substring'
+csharpsquid:S2551,csharpsquid:S2551,BUG,CRITICAL,7,"Chloe, ScreenToGif",Lock on a dedicated object instance instead.
+csharpsquid:S3459,csharpsquid:S3459,CODE_SMELL,MINOR,7,"Foster, ScreenToGif","Remove unassigned field '_lastPosition', or set its value."
+external_roslyn:IDE0305,external_roslyn:IDE0305,CODE_SMELL,MAJOR,7,spreadcheetah,Collection initialization can be simplified
+external_roslyn:CA2101,external_roslyn:CA2101,CODE_SMELL,INFO,6,"Riter, ScreenToGif",Specify marshaling for P/Invoke string arguments
+csharpsquid:S2674,csharpsquid:S2674,BUG,MINOR,6,ScreenToGif,Check the return value of the 'Read' call to see how many bytes were read.
+external_roslyn:CA1825,external_roslyn:CA1825,CODE_SMELL,INFO,5,"Chloe, ScreenToGif",Avoid unnecessary zero-length array allocations.  Use Array.Empty<string>() instead.
+csharpsquid:S3427,csharpsquid:S3427,CODE_SMELL,BLOCKER,5,"RestSharp, Chloe, ScreenToGif","This method signature overlaps the one defined on line 41, the default parameter value can't be used."
+csharpsquid:S3241,csharpsquid:S3241,CODE_SMELL,MINOR,5,"Foster, Chloe, lunr, ScreenToGif",Change return type to 'void'; not a single caller uses the returned value.
+csharpsquid:S1185,csharpsquid:S1185,CODE_SMELL,MINOR,5,Chloe,Remove this method 'VisitMethodCall' to simply inherit its behavior.
+csharpsquid:S2184,csharpsquid:S2184,BUG,MINOR,5,"Foster, Chloe",Cast one of the operands of this division to 'float'.
+csharpsquid:S2699,csharpsquid:S2699,CODE_SMELL,BLOCKER,5,RestSharp,Add at least one assertion to this test case.
+docker:S6587,docker:S6587,CODE_SMELL,MAJOR,5,RestSharp,Remove cache after installing packages or store it in a cache mount.
+external_roslyn:CA1846,external_roslyn:CA1846,CODE_SMELL,INFO,5,ScreenToGif,Prefer 'AsSpan' over 'Substring' when span-based overloads are available
+external_roslyn:CS0168,external_roslyn:CS0168,CODE_SMELL,MAJOR,5,ScreenToGif,The variable 'ex' is declared but never used
+external_roslyn:IDE0290,external_roslyn:IDE0290,CODE_SMELL,INFO,5,spreadcheetah,Use primary constructor
+csharpsquid:S3604,csharpsquid:S3604,CODE_SMELL,MINOR,4,"Chloe, Foster, Riter","Remove the member initializer, all constructors set an initial value for the member."
+external_roslyn:CS3021,external_roslyn:CS3021,CODE_SMELL,MAJOR,4,Chloe,"'BitOperations.RotateLeft(uint, int)' does not need a CLSCompliant attribute because the assembly does not have a CLSCompliant attribute"
+csharpsquid:S1116,csharpsquid:S1116,CODE_SMELL,MINOR,4,"Foster, Chloe, ScreenToGif",Remove this empty statement.
+csharpsquid:S1155,csharpsquid:S1155,CODE_SMELL,MINOR,4,"Chloe, ScreenToGif",Use '.Any()' to test whether this 'IEnumerable<System.Windows.Window>' is empty or not.
+external_roslyn:CA1827,external_roslyn:CA1827,CODE_SMELL,INFO,4,"Chloe, ScreenToGif",Count() is used where Any() could be used instead to improve performance
+csharpsquid:S1696,csharpsquid:S1696,CODE_SMELL,MAJOR,4,"Chloe, ScreenToGif",Do not catch NullReferenceException; test for null instead.
+csharpsquid:S2955,csharpsquid:S2955,BUG,MINOR,4,"Chloe, ScreenToGif",Use a comparison to 'default(T)' instead or add a constraint to 'T' so that it can't be a value type.
+external_roslyn:CA2249,external_roslyn:CA2249,CODE_SMELL,INFO,4,lunr,Use 'string.Contains' instead of 'string.IndexOf' to improve readability
+external_roslyn:xUnit2024,external_roslyn:xUnit2024,CODE_SMELL,INFO,4,RestSharp,"Do not use Assert.False to test equality against null, numeric, string, or enum literals. Use Assert.NotEqual instead."
+external_roslyn:CA1050,external_roslyn:CA1050,CODE_SMELL,INFO,4,Saunter,Declare types in namespaces
+csharpsquid:S3903,csharpsquid:S3903,BUG,MAJOR,4,Saunter,Move 'DocumentFilterContext' into a named namespace.
+csharpsquid:S3973,csharpsquid:S3973,CODE_SMELL,CRITICAL,4,ScreenToGif,Use curly braces or indentation to denote the code conditionally executed by this 'if'
+csharpsquid:S4070,csharpsquid:S4070,CODE_SMELL,MAJOR,4,ScreenToGif,Remove the 'FlagsAttribute' from this enum.
+external_roslyn:CS0169,external_roslyn:CS0169,CODE_SMELL,MAJOR,4,ScreenToGif,The field 'LzwEncoder._imgH' is never used
+csharpsquid:S1940,csharpsquid:S1940,CODE_SMELL,MINOR,4,"SoundFlow, ScreenToGif",Use the opposite operator ('>=') instead.
+csharpsquid:S2681,csharpsquid:S2681,CODE_SMELL,MAJOR,4,ScreenToGif,This line will not be executed conditionally; only the first line of this 1-line block will be. The rest will execute unconditionally.
+csharpsquid:S1751,csharpsquid:S1751,BUG,MAJOR,4,ScreenToGif,Refactor the containing loop to do more than one iteration.
+external_roslyn:IDE0130,external_roslyn:IDE0130,CODE_SMELL,INFO,4,spreadcheetah,"Namespace ""System"" does not match folder structure, expected ""SpreadCheetah.Helpers.Backporting"""
+external_roslyn:IDE0300,external_roslyn:IDE0300,CODE_SMELL,MAJOR,4,spreadcheetah,Collection initialization can be simplified
+csharpsquid:S3010,csharpsquid:S3010,CODE_SMELL,MAJOR,3,"Riter, SoundFlow, ScreenToGif",Remove this assignment of '_orchestratorViewModel' or initialize it statically.
+csharpsquid:S3887,csharpsquid:S3887,BUG,MINOR,3,"Chloe, Foster, Riter",Use an immutable collection or reduce the accessibility of the non-private readonly field 'EmptyArray'.
+external_roslyn:CA2231,external_roslyn:CA2231,CODE_SMELL,INFO,3,Chloe,Implement the equality operators and make their behavior identical to that of the Equals method
+csharpsquid:S3877,csharpsquid:S3877,CODE_SMELL,BLOCKER,3,"Foster, Chloe",Remove this 'throw' expression.
+csharpsquid:S2306,csharpsquid:S2306,CODE_SMELL,BLOCKER,3,Chloe,Rename 'async' to not use a contextual keyword as an identifier.
+external_roslyn:CA1830,external_roslyn:CA1830,CODE_SMELL,INFO,3,Chloe,Remove the ToString call in order to use a strongly-typed StringBuilder overload
+external_roslyn:CA1513,external_roslyn:CA1513,CODE_SMELL,INFO,3,Chloe,Use 'ObjectDisposedException.ThrowIf' instead of explicitly throwing a new exception instance
+csharpsquid:S2953,csharpsquid:S2953,CODE_SMELL,BLOCKER,3,Chloe,"Either implement 'IDisposable.Dispose', or totally rename this method to prevent confusion."
+csharpsquid:S2219,csharpsquid:S2219,CODE_SMELL,MINOR,3,"Chloe, ScreenToGif",Use the 'is' operator instead.
+csharpsquid:S3998,csharpsquid:S3998,CODE_SMELL,CRITICAL,3,Chloe,Replace this lock on 'Type' with a lock against an object that cannot be accessed across application domain boundaries.
+csharpsquid:S2365,csharpsquid:S2365,CODE_SMELL,CRITICAL,3,"Chloe, ScreenToGif","Refactor 'Values' into a method, properties should not copy collections."
+csharpsquid:S4275,csharpsquid:S4275,BUG,CRITICAL,3,Chloe,Refactor this getter so that it actually refers to the field '_type'.
+csharpsquid:S2701,csharpsquid:S2701,CODE_SMELL,CRITICAL,3,lunr,Remove or correct this assertion.
+csharpsquid:S1123,csharpsquid:S1123,CODE_SMELL,MAJOR,3,ScreenToGif,Add an explanation.
+csharpsquid:S4144,csharpsquid:S4144,CODE_SMELL,MAJOR,3,ScreenToGif,Update this method so that its implementation is not identical to 'IsAdornerVisible_PropertyChanged'.
+csharpsquid:S6618,csharpsquid:S6618,CODE_SMELL,MINOR,3,ScreenToGif,"Use ""string.Create"" instead of ""FormattableString""."
+external_roslyn:CA1865,external_roslyn:CA1865,CODE_SMELL,INFO,3,ScreenToGif,Use 'string.IndexOf(char)' instead of 'string.IndexOf(string)' when you have a string with a single char
+csharpsquid:S1206,csharpsquid:S1206,BUG,MINOR,3,ScreenToGif,This class overrides 'GetHashCode' and should therefore also override 'Equals'.
+csharpsquid:S4586,csharpsquid:S4586,BUG,CRITICAL,3,ScreenToGif,"Do not return null from this method, instead return 'Task.FromResult<T>(null)', 'Task.CompletedTask' or 'Task.Delay(0)'."
+csharpsquid:S5445,csharpsquid:S5445,VULNERABILITY,CRITICAL,3,ScreenToGif,'Path.GetTempFileName()' is insecure. Use 'Path.GetRandomFileName()' instead.
+external_roslyn:RCS1266,external_roslyn:RCS1266,CODE_SMELL,INFO,3,spreadcheetah,Use raw string literal
+external_roslyn:xUnit2032,external_roslyn:xUnit2032,CODE_SMELL,INFO,3,spreadcheetah,The naming of Assert.IsNotAssignableFrom can be confusing. An overload of Assert.IsNotType is available with an exact match flag which can be set to false to perform the same operation.
+csharpsquid:S2386,csharpsquid:S2386,CODE_SMELL,MINOR,2,"Chloe, Riter",Use an immutable collection or reduce the accessibility of the public static field 'EmptyArray'.
+csharpsquid:S3218,csharpsquid:S3218,CODE_SMELL,CRITICAL,2,"RestSharp, Chloe",Rename this method to not shadow the outer class' member with the same name.
+csharpsquid:S3261,csharpsquid:S3261,CODE_SMELL,MINOR,2,Chloe,Remove this empty namespace.
+csharpsquid:S3246,csharpsquid:S3246,CODE_SMELL,MAJOR,2,Chloe,Add the 'out' keyword to parameter 'T' to make it 'covariant'.
+external_roslyn:CA2016,external_roslyn:CA2016,CODE_SMELL,INFO,2,Chloe,Forward the 'cancellationToken' parameter to the '.ctor' method or pass in 'CancellationToken.None' explicitly to indicate intentionally not propagating the token
+external_roslyn:CA1862,external_roslyn:CA1862,CODE_SMELL,INFO,2,Chloe,"Prefer using 'string.Equals(string, StringComparison)' to perform a case-insensitive comparison, but keep in mind that this might cause subtle changes in behavior, so make sure to conduct thorough testing after applying the suggestion, or if culturally sensitive comparison is not required, consider using 'StringComparison.OrdinalIgnoreCase'"
+csharpsquid:S3971,csharpsquid:S3971,CODE_SMELL,MAJOR,2,Chloe,Do not call 'GC.SuppressFinalize'.
+csharpsquid:S3400,csharpsquid:S3400,CODE_SMELL,MINOR,2,Chloe,Remove this method and declare a constant for this value.
+csharpsquid:S2201,csharpsquid:S2201,BUG,MAJOR,2,Chloe,Use the return value of method 'First'.
+csharpsquid:S3236,csharpsquid:S3236,CODE_SMELL,MINOR,2,Foster,Remove this argument from the method call; it hides the caller information.
+csharpsquid:S4143,csharpsquid:S4143,BUG,MAJOR,2,lunr,Verify this is the index/key that was intended; a value has already been set for it.
+docker:S6584,docker:S6584,CODE_SMELL,MAJOR,2,RestSharp,Add consent flag so that this command doesn't require user confirmation.
+docker:S7020,docker:S7020,CODE_SMELL,MINOR,2,"RestSharp, Saunter",Split this RUN instruction line into multiple lines.
+docker:S6570,docker:S6570,CODE_SMELL,MAJOR,2,Saunter,"Surround this variable with double quotes; otherwise, it can lead to unexpected behavior."
+external_roslyn:CA1041,external_roslyn:CA1041,CODE_SMELL,INFO,2,ScreenToGif,Provide a message for the ObsoleteAttribute that marks GetFrames as Obsolete
+external_roslyn:CS0618,external_roslyn:CS0618,CODE_SMELL,MAJOR,2,ScreenToGif,"'FormattedText.FormattedText(string, CultureInfo, FlowDirection, Typeface, double, Brush, NumberSubstitution, TextFormattingMode)' is obsolete: 'Use the PixelsPerDip override'"
+css:S125,css:S125,CODE_SMELL,MAJOR,2,ScreenToGif,Remove this commented out code.
+external_roslyn:CA1841,external_roslyn:CA1841,CODE_SMELL,INFO,2,ScreenToGif,Prefer 'ContainsKey' over 'Keys.Contains' for dictionary type 'Dictionary'
+external_roslyn:MA0041,external_roslyn:MA0041,CODE_SMELL,INFO,2,spreadcheetah,"Make property static (deprecated, use CA1822 instead)"
+external_roslyn:MA0001,external_roslyn:MA0001,CODE_SMELL,INFO,2,spreadcheetah,Use an overload of 'Replace' that has a StringComparison parameter
+external_roslyn:EPS09,external_roslyn:EPS09,CODE_SMELL,INFO,1,Lynx,An argument for a parameter 'tt' may be passed explicitly
+csharpsquid:S3444,csharpsquid:S3444,CODE_SMELL,MINOR,1,Chloe,Rename or add member 'Current.get' to this interface to resolve ambiguities.
+csharpsquid:S5034,csharpsquid:S5034,CODE_SMELL,CRITICAL,1,Chloe,Refactor this 'ValueTask' usage to consume the result only if the operation has completed successfully.
+csharpsquid:S2234,csharpsquid:S2234,CODE_SMELL,MAJOR,1,Chloe,Parameters to 'SafeCompareTo' have the same names but not the same order as the method arguments.
+csharpsquid:S1694,csharpsquid:S1694,CODE_SMELL,MINOR,1,Chloe,Convert this 'abstract' class to an interface.
+csharpsquid:S2326,csharpsquid:S2326,CODE_SMELL,MAJOR,1,Chloe,'TProperty' is not used in the interface.
+external_roslyn:CS0114,external_roslyn:CS0114,CODE_SMELL,MAJOR,1,Chloe,"'AddMonths_Handler.Process(DbMethodCallExpression, SqlGeneratorBase)' hides inherited member 'MethodHandlerBase.Process(DbMethodCallExpression, SqlGeneratorBase)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword."
+csharpsquid:S1699,csharpsquid:S1699,CODE_SMELL,CRITICAL,1,Chloe,Remove this call from a constructor to the overridable 'CreateDbContext' method.
+csharpsquid:S4015,csharpsquid:S4015,CODE_SMELL,CRITICAL,1,Chloe,This member hides 'Chloe.DbExpressions.DbExpressionVisitor.MakeNewExpression(Chloe.DbExpressions.DbExpression)'. Make it non-private or seal the class.
+external_roslyn:CS0108,external_roslyn:CS0108,CODE_SMELL,MAJOR,1,Chloe,'EvaluableDbExpressionTransformer.MakeNewExpression(DbExpression)' hides inherited member 'DbExpressionVisitor.MakeNewExpression(DbExpression)'. Use the new keyword if hiding was intended.
+csharpsquid:S3415,csharpsquid:S3415,CODE_SMELL,MAJOR,1,lunr,"Make sure these 2 arguments are in the correct order: expected value, actual value."
+csharpsquid:S1134,csharpsquid:S1134,CODE_SMELL,MAJOR,1,lunr,Take the required action to fix the issue indicated by this 'FIXME' comment.
+csharpsquid:S3376,csharpsquid:S3376,CODE_SMELL,MINOR,1,RestSharp,Make this class name end with 'Attribute'.
+typescript:S6759,typescript:S6759,CODE_SMELL,MINOR,1,RestSharp,Mark the props of the component as read-only.
+typescript:S6479,typescript:S6479,CODE_SMELL,MAJOR,1,RestSharp,Do not use Array index in keys
+external_roslyn:CA2022,external_roslyn:CA2022,CODE_SMELL,MAJOR,1,RestSharp,"Avoid inexact read with 'System.IO.Stream.Read(byte[], int, int)'"
+csharpsquid:S4035,csharpsquid:S4035,CODE_SMELL,MAJOR,1,RestSharp,Seal class 'ContentType' or implement 'IEqualityComparer<T>' instead.
+external_roslyn:CA1850,external_roslyn:CA1850,CODE_SMELL,INFO,1,RestSharp,Prefer static 'System.Security.Cryptography.SHA1.HashData' method over 'ComputeHash'
+external_roslyn:CA1829,external_roslyn:CA1829,CODE_SMELL,INFO,1,RestSharp,"Use the ""Length"" property instead of Enumerable.Count()"
+docker:S7026,docker:S7026,CODE_SMELL,MINOR,1,RestSharp,"Replace this invocation of ""wget"" with the ADD instruction."
+csharpsquid:S6588,csharpsquid:S6588,CODE_SMELL,MINOR,1,RestSharp,"Use ""DateTime.UnixEpoch"" instead of creating DateTime instances that point to the unix epoch time"
+csharpsquid:S4426,csharpsquid:S4426,VULNERABILITY,CRITICAL,1,RestSharp,Use a key length of at least 2048 bits for RSA cipher algorithm.
+docker:S6596,docker:S6596,CODE_SMELL,MAJOR,1,Saunter,Use a specific version tag for the image.
+external_roslyn:SYSLIB0044,external_roslyn:SYSLIB0044,CODE_SMELL,MAJOR,1,ScreenToGif,'AssemblyName.CodeBase' is obsolete: 'AssemblyName.CodeBase and AssemblyName.EscapedCodeBase are obsolete. Using them for loading an assembly is not supported.'
+external_roslyn:CA1835,external_roslyn:CA1835,CODE_SMELL,INFO,1,ScreenToGif,"Change the 'ReadAsync' method call to use the 'Stream.ReadAsync(Memory<byte>, CancellationToken)' overload"
+csharpsquid:S3925,csharpsquid:S3925,CODE_SMELL,MAJOR,1,ScreenToGif,Update this implementation of 'ISerializable' to conform to the recommended serialization pattern. Make the serialization constructor 'protected'.
+external_roslyn:SYSLIB0051,external_roslyn:SYSLIB0051,CODE_SMELL,MAJOR,1,ScreenToGif,"'Exception.Exception(SerializationInfo, StreamingContext)' is obsolete: 'This API supports obsolete formatter-based serialization. It should not be called or extended by application code.'"
+external_roslyn:CA1854,external_roslyn:CA1854,CODE_SMELL,INFO,1,ScreenToGif,Prefer a 'TryGetValue' call over a Dictionary indexer access guarded by a 'ContainsKey' check to avoid double lookup
+csharpsquid:S1479,csharpsquid:S1479,CODE_SMELL,MAJOR,1,ScreenToGif,Consider reworking this 'switch' to reduce the number of 'case' clauses to at most 30 or have only one statement per 'case'.
+csharpsquid:S4456,csharpsquid:S4456,CODE_SMELL,MAJOR,1,ScreenToGif,"Split this method into two, one handling parameters check and the other handling the iterator."
+external_roslyn:CS0649,external_roslyn:CS0649,CODE_SMELL,MAJOR,1,ScreenToGif,"Field 'SelectControlOld._rectGrid' is never assigned to, and will always have its default value null"
+external_roslyn:CS9236,external_roslyn:CS9236,CODE_SMELL,INFO,1,ScreenToGif,"Compiling requires binding the lambda expression at least 100 times. Consider declaring the lambda expression with explicit parameter types, or if the containing method call is generic, consider using explicit type arguments."
+csharpsquid:S2437,csharpsquid:S2437,CODE_SMELL,BLOCKER,1,ScreenToGif,Remove this unnecessary bit operation.
+csharpsquid:S1994,csharpsquid:S1994,CODE_SMELL,CRITICAL,1,ScreenToGif,This loop's stop condition tests 'enumerator' but the incrementer updates 'i'.
+csharpsquid:S1210,csharpsquid:S1210,CODE_SMELL,MINOR,1,ScreenToGif,"When implementing IComparable, you should also override Equals, ==, !=, <, <=, >, and >=."
+csharpsquid:S4052,csharpsquid:S4052,CODE_SMELL,MINOR,1,ScreenToGif,Refactor this type not to derive from an outdated type 'System.Collections.CollectionBase'.
+csharpsquid:S3343,csharpsquid:S3343,BUG,MAJOR,1,ScreenToGif,Move 'key' to the end of the parameter list.
+csharpsquid:S2328,csharpsquid:S2328,BUG,MINOR,1,ScreenToGif,Refactor 'GetHashCode' to not reference mutable fields.
+csharpsquid:S4423,csharpsquid:S4423,VULNERABILITY,CRITICAL,1,ScreenToGif,Change this code to use a stronger protocol.
+csharpsquid:S3458,csharpsquid:S3458,CODE_SMELL,MINOR,1,SoundFlow,Remove this empty 'case' clause.
+external_roslyn:RCS1118,external_roslyn:RCS1118,CODE_SMELL,INFO,1,spreadcheetah,Mark local variable as const
+external_roslyn:RCS1214,external_roslyn:RCS1214,CODE_SMELL,INFO,1,spreadcheetah,Unnecessary interpolated string
+external_roslyn:IDE0042,external_roslyn:IDE0042,CODE_SMELL,INFO,1,spreadcheetah,Variable declaration can be deconstructed
+external_roslyn:IDE0061,external_roslyn:IDE0061,CODE_SMELL,INFO,1,spreadcheetah,Use expression body for local function
+external_roslyn:RCS1158,external_roslyn:RCS1158,CODE_SMELL,INFO,1,spreadcheetah,Static member in generic type should use a type parameter
+external_roslyn:RCS1001,external_roslyn:RCS1001,CODE_SMELL,INFO,1,spreadcheetah,Add braces to fixed statement (when expression spans over multiple lines)
+external_roslyn:MA0075,external_roslyn:MA0075,CODE_SMELL,INFO,1,spreadcheetah,Do not use implicit culture-sensitive ToString

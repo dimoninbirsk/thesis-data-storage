@@ -1,0 +1,84 @@
+﻿# .NET Package Report
+**Solution:** spreadcheetah
+**Generated:** 04/16/2025 17:58:56
+
+| Status | Package ID | Current Version | Latest Version | Reason |
+|--------|------------|-----------------|----------------|--------|
+| Outdated | Meziantou.Analyzer | 2.0.189 | 2.0.196 | New version available |
+| Outdated | Microsoft.Bcl.AsyncInterfaces | 8.0.0 | 9.0.4 | New version available |
+| Outdated | Polyfill | 7.13.0 | 7.27.0 | New version available |
+| Outdated | SonarAnalyzer.CSharp | 10.7.0.110445 | 10.8.0.113526 | New version available |
+| Outdated | System.Memory | 4.6.0 | 4.6.3 | New version available |
+| Outdated | Meziantou.Analyzer | 2.0.189 | 2.0.196 | New version available |
+| Outdated | Polyfill | 7.13.0 | 7.27.0 | New version available |
+| Outdated | SonarAnalyzer.CSharp | 10.7.0.110445 | 10.8.0.113526 | New version available |
+| Outdated | Meziantou.Analyzer | 2.0.189 | 2.0.196 | New version available |
+| Outdated | Polyfill | 7.13.0 | 7.27.0 | New version available |
+| Outdated | SonarAnalyzer.CSharp | 10.7.0.110445 | 10.8.0.113526 | New version available |
+| Outdated | Meziantou.Analyzer | 2.0.189 | 2.0.196 | New version available |
+| Outdated | Polyfill | 7.13.0 | 7.27.0 | New version available |
+| Outdated | SonarAnalyzer.CSharp | 10.7.0.110445 | 10.8.0.113526 | New version available |
+| Outdated | Bogus | 35.6.2 | 35.6.3 | New version available |
+| Outdated | Meziantou.Analyzer | 2.0.189 | 2.0.196 | New version available |
+| Outdated | SonarAnalyzer.CSharp | 10.7.0.110445 | 10.8.0.113526 | New version available |
+| Outdated | System.Collections.Immutable | 9.0.3 | 9.0.4 | New version available |
+| Outdated | System.Drawing.Common | 9.0.3 | 9.0.4 | New version available |
+| Outdated | Verify.Xunit | 28.16.0 | 29.2.0 | New version available |
+| Outdated | Xunit.Combinatorial | 1.6.24 | 2.0.24 | New version available |
+| Outdated | Bogus | 35.6.2 | 35.6.3 | New version available |
+| Outdated | Meziantou.Analyzer | 2.0.189 | 2.0.196 | New version available |
+| Outdated | SonarAnalyzer.CSharp | 10.7.0.110445 | 10.8.0.113526 | New version available |
+| Outdated | System.Drawing.Common | 9.0.3 | 9.0.4 | New version available |
+| Outdated | Verify.Xunit | 28.16.0 | 29.2.0 | New version available |
+| Outdated | Xunit.Combinatorial | 1.6.24 | 2.0.24 | New version available |
+| Outdated | Bogus | 35.6.2 | 35.6.3 | New version available |
+| Outdated | Meziantou.Analyzer | 2.0.189 | 2.0.196 | New version available |
+| Outdated | SonarAnalyzer.CSharp | 10.7.0.110445 | 10.8.0.113526 | New version available |
+| Outdated | System.Drawing.Common | 9.0.3 | 9.0.4 | New version available |
+| Outdated | Verify.Xunit | 28.16.0 | 29.2.0 | New version available |
+| Outdated | Xunit.Combinatorial | 1.6.24 | 2.0.24 | New version available |
+| Outdated | Meziantou.Analyzer | 2.0.189 | 2.0.196 | New version available |
+| Outdated | SonarAnalyzer.CSharp | 10.7.0.110445 | 10.8.0.113526 | New version available |
+| Outdated | System.Drawing.Common | 9.0.3 | 9.0.4 | New version available |
+| Outdated | System.Reflection.Metadata | 9.0.3 | 9.0.4 | New version available |
+| Outdated | Meziantou.Analyzer | 2.0.189 | 2.0.196 | New version available |
+| Outdated | SonarAnalyzer.CSharp | 10.7.0.110445 | 10.8.0.113526 | New version available |
+| Outdated | System.Drawing.Common | 9.0.3 | 9.0.4 | New version available |
+| Outdated | System.Reflection.Metadata | 9.0.3 | 9.0.4 | New version available |
+| Outdated | Meziantou.Analyzer | 2.0.189 | 2.0.196 | New version available |
+| Outdated | SonarAnalyzer.CSharp | 10.7.0.110445 | 10.8.0.113526 | New version available |
+| Outdated | System.Drawing.Common | 9.0.3 | 9.0.4 | New version available |
+| Outdated | System.Reflection.Metadata | 9.0.3 | 9.0.4 | New version available |
+| Outdated | Meziantou.Analyzer | 2.0.189 | 2.0.196 | New version available |
+| Outdated | SonarAnalyzer.CSharp | 10.7.0.110445 | 10.8.0.113526 | New version available |
+| Outdated | Meziantou.Analyzer | 2.0.189 | 2.0.196 | New version available |
+| Outdated | Microsoft.CodeAnalysis.Analyzers | 3.3.4 | 3.11.0 | New version available |
+| Outdated | Microsoft.CodeAnalysis.CSharp.Workspaces | 4.9.2 | 4.13.0 | New version available |
+| Outdated | Polyfill | 7.13.0 | 7.27.0 | New version available |
+| Outdated | SonarAnalyzer.CSharp | 10.7.0.110445 | 10.8.0.113526 | New version available |
+| Outdated | Meziantou.Analyzer | 2.0.189 | 2.0.196 | New version available |
+| Outdated | Polyfill | 7.13.0 | 7.27.0 | New version available |
+| Outdated | SonarAnalyzer.CSharp | 10.7.0.110445 | 10.8.0.113526 | New version available |
+| Outdated | Xunit.Combinatorial | 1.6.24 | 2.0.24 | New version available |
+| Outdated | Meziantou.Analyzer | 2.0.189 | 2.0.196 | New version available |
+| Outdated | Polyfill | 7.13.0 | 7.27.0 | New version available |
+| Outdated | SonarAnalyzer.CSharp | 10.7.0.110445 | 10.8.0.113526 | New version available |
+| Outdated | Xunit.Combinatorial | 1.6.24 | 2.0.24 | New version available |
+| Outdated | Meziantou.Analyzer | 2.0.189 | 2.0.196 | New version available |
+| Outdated | Polyfill | 7.13.0 | 7.27.0 | New version available |
+| Outdated | SonarAnalyzer.CSharp | 10.7.0.110445 | 10.8.0.113526 | New version available |
+| Outdated | Xunit.Combinatorial | 1.6.24 | 2.0.24 | New version available |
+| Outdated | Meziantou.Analyzer | 2.0.189 | 2.0.196 | New version available |
+| Outdated | Microsoft.CodeAnalysis.Analyzers | 3.3.4 | 3.11.0 | New version available |
+| Outdated | Microsoft.CodeAnalysis.CSharp.Workspaces | 4.9.2 | 4.13.0 | New version available |
+| Outdated | SonarAnalyzer.CSharp | 10.7.0.110445 | 10.8.0.113526 | New version available |
+| Outdated | System.Formats.Asn1 | 9.0.3 | 9.0.4 | New version available |
+| Outdated | Verify.Xunit | 28.16.0 | 29.2.0 | New version available |
+| Outdated | Meziantou.Analyzer | 2.0.189 | 2.0.196 | New version available |
+| Outdated | SonarAnalyzer.CSharp | 10.7.0.110445 | 10.8.0.113526 | New version available |
+| Outdated | Meziantou.Analyzer | 2.0.189 | 2.0.196 | New version available |
+| Outdated | SonarAnalyzer.CSharp | 10.7.0.110445 | 10.8.0.113526 | New version available |
+| Outdated | Meziantou.Analyzer | 2.0.189 | 2.0.196 | New version available |
+| Outdated | Polyfill | 7.13.0 | 7.27.0 | New version available |
+| Outdated | SonarAnalyzer.CSharp | 10.7.0.110445 | 10.8.0.113526 | New version available |
+

@@ -1,0 +1,1823 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII" />
+  <title>Position.cs</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <script src="../jquery-3.5.1.min.js"></script>
+</head>
+<body>
+<pre><code class = "cs">
+<a name="ln1">using System.Buffers;</a>
+<a name="ln2">using System.Diagnostics;</a>
+<a name="ln3">using System.Runtime.CompilerServices;</a>
+<a name="ln4">using System.Text;</a>
+<a name="ln5"> </a>
+<a name="ln6">using static Lynx.EvaluationConstants;</a>
+<a name="ln7">using static Lynx.EvaluationParams;</a>
+<a name="ln8">using static Lynx.EvaluationPSQTs;</a>
+<a name="ln9"> </a>
+<a name="ln10">namespace Lynx.Model;</a>
+<a name="ln11"> </a>
+<a name="ln12">public class Position : IDisposable</a>
+<a name="ln13">{</a>
+<a name="ln14">    private bool _disposedValue;</a>
+<a name="ln15"> </a>
+<a name="ln16">    private int _incrementalEvalAccumulator;</a>
+<a name="ln17">    private int _incrementalPhaseAccumulator;</a>
+<a name="ln18">    private bool _isIncrementalEval;</a>
+<a name="ln19"> </a>
+<a name="ln20">    public ulong UniqueIdentifier { get; private set; }</a>
+<a name="ln21"> </a>
+<a name="ln22">    private ulong _kingPawnUniqueIdentifier;</a>
+<a name="ln23"> </a>
+<a name="ln24">    /// &lt;summary&gt;</a>
+<a name="ln25">    /// Use &lt;see cref=&quot;Piece&quot;/&gt; as index</a>
+<a name="ln26">    /// &lt;/summary&gt;</a>
+<a name="ln27">    public BitBoard[] PieceBitBoards { get; }</a>
+<a name="ln28"> </a>
+<a name="ln29">    /// &lt;summary&gt;</a>
+<a name="ln30">    /// Black, White, Both</a>
+<a name="ln31">    /// &lt;/summary&gt;</a>
+<a name="ln32">    public BitBoard[] OccupancyBitBoards { get; }</a>
+<a name="ln33"> </a>
+<a name="ln34">    /// &lt;summary&gt;</a>
+<a name="ln35">    /// Piece location indexed by square</a>
+<a name="ln36">    /// &lt;/summary&gt;</a>
+<a name="ln37">    public int[] Board { get; }</a>
+<a name="ln38"> </a>
+<a name="ln39">    public Side Side { get; private set; }</a>
+<a name="ln40"> </a>
+<a name="ln41">    public BoardSquare EnPassant { get; private set; }</a>
+<a name="ln42"> </a>
+<a name="ln43">    /// &lt;summary&gt;</a>
+<a name="ln44">    /// See &lt;see cref=&quot;&lt;CastlingRights&quot;/&gt;</a>
+<a name="ln45">    /// &lt;/summary&gt;</a>
+<a name="ln46">    public byte Castle { get; private set; }</a>
+<a name="ln47"> </a>
+<a name="ln48">    public BitBoard Queens =&gt; PieceBitBoards[(int)Piece.Q] | PieceBitBoards[(int)Piece.q];</a>
+<a name="ln49">    public BitBoard Rooks =&gt; PieceBitBoards[(int)Piece.R] | PieceBitBoards[(int)Piece.r];</a>
+<a name="ln50">    public BitBoard Bishops =&gt; PieceBitBoards[(int)Piece.B] | PieceBitBoards[(int)Piece.b];</a>
+<a name="ln51">    public BitBoard Knights =&gt; PieceBitBoards[(int)Piece.N] | PieceBitBoards[(int)Piece.n];</a>
+<a name="ln52">    public BitBoard Kings =&gt; PieceBitBoards[(int)Piece.K] | PieceBitBoards[(int)Piece.k];</a>
+<a name="ln53"> </a>
+<a name="ln54">    /// &lt;summary&gt;</a>
+<a name="ln55">    /// Beware, half move counter isn't take into account</a>
+<a name="ln56">    /// Use alternative constructor instead and set it externally if relevant</a>
+<a name="ln57">    /// &lt;/summary&gt;</a>
+<a name="ln58">    public Position(string fen) : this(FENParser.ParseFEN(fen))</a>
+<a name="ln59">    {</a>
+<a name="ln60">    }</a>
+<a name="ln61"> </a>
+<a name="ln62">    public Position((BitBoard[] PieceBitBoards, BitBoard[] OccupancyBitBoards, int[] Board, Side Side, byte Castle, BoardSquare EnPassant,</a>
+<a name="ln63">        int _/*, int FullMoveCounter*/) parsedFEN)</a>
+<a name="ln64">    {</a>
+<a name="ln65">        PieceBitBoards = parsedFEN.PieceBitBoards;</a>
+<a name="ln66">        OccupancyBitBoards = parsedFEN.OccupancyBitBoards;</a>
+<a name="ln67">        Board = parsedFEN.Board;</a>
+<a name="ln68">        Side = parsedFEN.Side;</a>
+<a name="ln69">        Castle = parsedFEN.Castle;</a>
+<a name="ln70">        EnPassant = parsedFEN.EnPassant;</a>
+<a name="ln71"> </a>
+<a name="ln72">#pragma warning disable S3366 // &quot;this&quot; should not be exposed from constructors</a>
+<a name="ln73">        UniqueIdentifier = ZobristTable.PositionHash(this);</a>
+<a name="ln74">        _kingPawnUniqueIdentifier = ZobristTable.PawnKingHash(this);</a>
+<a name="ln75">#pragma warning restore S3366 // &quot;this&quot; should not be exposed from constructors</a>
+<a name="ln76"> </a>
+<a name="ln77">        _isIncrementalEval = false;</a>
+<a name="ln78">    }</a>
+<a name="ln79"> </a>
+<a name="ln80">    /// &lt;summary&gt;</a>
+<a name="ln81">    /// Clone constructor</a>
+<a name="ln82">    /// &lt;/summary&gt;</a>
+<a name="ln83">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln84">    public Position(Position position)</a>
+<a name="ln85">    {</a>
+<a name="ln86">        UniqueIdentifier = position.UniqueIdentifier;</a>
+<a name="ln87">        _kingPawnUniqueIdentifier = position._kingPawnUniqueIdentifier;</a>
+<a name="ln88">        PieceBitBoards = ArrayPool&lt;BitBoard&gt;.Shared.Rent(12);</a>
+<a name="ln89">        Array.Copy(position.PieceBitBoards, PieceBitBoards, position.PieceBitBoards.Length);</a>
+<a name="ln90"> </a>
+<a name="ln91">        OccupancyBitBoards = ArrayPool&lt;BitBoard&gt;.Shared.Rent(3);</a>
+<a name="ln92">        Array.Copy(position.OccupancyBitBoards, OccupancyBitBoards, position.OccupancyBitBoards.Length);</a>
+<a name="ln93"> </a>
+<a name="ln94">        Board = ArrayPool&lt;int&gt;.Shared.Rent(64);</a>
+<a name="ln95">        Array.Copy(position.Board, Board, position.Board.Length);</a>
+<a name="ln96"> </a>
+<a name="ln97">        Side = position.Side;</a>
+<a name="ln98">        Castle = position.Castle;</a>
+<a name="ln99">        EnPassant = position.EnPassant;</a>
+<a name="ln100"> </a>
+<a name="ln101">        _isIncrementalEval = position._isIncrementalEval;</a>
+<a name="ln102">        _incrementalEvalAccumulator = position._incrementalEvalAccumulator;</a>
+<a name="ln103">        _incrementalPhaseAccumulator = position._incrementalPhaseAccumulator;</a>
+<a name="ln104">    }</a>
+<a name="ln105"> </a>
+<a name="ln106">    #region Move making</a>
+<a name="ln107"> </a>
+<a name="ln108">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln109">    public GameState MakeMove(Move move)</a>
+<a name="ln110">    {</a>
+<a name="ln111">        byte castleCopy = Castle;</a>
+<a name="ln112">        BoardSquare enpassantCopy = EnPassant;</a>
+<a name="ln113">        ulong uniqueIdentifierCopy = UniqueIdentifier;</a>
+<a name="ln114">        ulong kingPawnKeyUniqueIdentifierCopy = _kingPawnUniqueIdentifier;</a>
+<a name="ln115">        int incrementalEvalAccumulatorCopy = _incrementalEvalAccumulator;</a>
+<a name="ln116">        int incrementalPhaseAccumulatorCopy = _incrementalPhaseAccumulator;</a>
+<a name="ln117">        // We also save a copy of _isIncrementalEval, so that current move doesn't affect 'sibling' moves exploration</a>
+<a name="ln118">        bool isIncrementalEvalCopy = _isIncrementalEval;</a>
+<a name="ln119"> </a>
+<a name="ln120">        var oldSide = (int)Side;</a>
+<a name="ln121">        var offset = Utils.PieceOffset(oldSide);</a>
+<a name="ln122">        var oppositeSide = Utils.OppositeSide(oldSide);</a>
+<a name="ln123"> </a>
+<a name="ln124">        int sourceSquare = move.SourceSquare();</a>
+<a name="ln125">        int targetSquare = move.TargetSquare();</a>
+<a name="ln126">        int piece = move.Piece();</a>
+<a name="ln127">        int promotedPiece = move.PromotedPiece();</a>
+<a name="ln128"> </a>
+<a name="ln129">        var newPiece = piece;</a>
+<a name="ln130">        int extraPhaseIfIncremental = 0;</a>
+<a name="ln131">        if (promotedPiece != default)</a>
+<a name="ln132">        {</a>
+<a name="ln133">            newPiece = promotedPiece;</a>
+<a name="ln134">            extraPhaseIfIncremental = GamePhaseByPiece[promotedPiece]; // - GamePhaseByPiece[piece];</a>
+<a name="ln135">        }</a>
+<a name="ln136"> </a>
+<a name="ln137">        PieceBitBoards[piece].PopBit(sourceSquare);</a>
+<a name="ln138">        OccupancyBitBoards[oldSide].PopBit(sourceSquare);</a>
+<a name="ln139">        Board[sourceSquare] = (int)Piece.None;</a>
+<a name="ln140"> </a>
+<a name="ln141">        PieceBitBoards[newPiece].SetBit(targetSquare);</a>
+<a name="ln142">        OccupancyBitBoards[oldSide].SetBit(targetSquare);</a>
+<a name="ln143">        Board[targetSquare] = newPiece;</a>
+<a name="ln144"> </a>
+<a name="ln145">        var sourcePieceHash = ZobristTable.PieceHash(sourceSquare, piece);</a>
+<a name="ln146">        var targetPieceHash = ZobristTable.PieceHash(targetSquare, newPiece);</a>
+<a name="ln147"> </a>
+<a name="ln148">        UniqueIdentifier ^=</a>
+<a name="ln149">            ZobristTable.SideHash()</a>
+<a name="ln150">            ^ sourcePieceHash</a>
+<a name="ln151">            ^ targetPieceHash</a>
+<a name="ln152">            ^ ZobristTable.EnPassantHash((int)EnPassant)            // We clear the existing enpassant square, if any</a>
+<a name="ln153">            ^ ZobristTable.CastleHash(Castle);                      // We clear the existing castle rights</a>
+<a name="ln154"> </a>
+<a name="ln155">        if (piece == (int)Piece.P || piece == (int)Piece.p)</a>
+<a name="ln156">        {</a>
+<a name="ln157">            _kingPawnUniqueIdentifier ^= sourcePieceHash;</a>
+<a name="ln158"> </a>
+<a name="ln159">            // In case of promotion, the promoted piece won't be a pawn or a king, so no need to update the key with it</a>
+<a name="ln160">            if (promotedPiece == default)</a>
+<a name="ln161">            {</a>
+<a name="ln162">                _kingPawnUniqueIdentifier ^= targetPieceHash;</a>
+<a name="ln163">            }</a>
+<a name="ln164">        }</a>
+<a name="ln165">        else if (piece == (int)Piece.K || piece == (int)Piece.k)</a>
+<a name="ln166">        {</a>
+<a name="ln167">            // King (and castling) moves require calculating king buckets twice and recalculating all related parameters, so skipping incremental eval for those cases for now</a>
+<a name="ln168">            // No need to check for move.IsCastle(), see CastlingMovesAreKingMoves test</a>
+<a name="ln169">            _isIncrementalEval = false;</a>
+<a name="ln170"> </a>
+<a name="ln171">            _kingPawnUniqueIdentifier ^=</a>
+<a name="ln172">                sourcePieceHash</a>
+<a name="ln173">                ^ targetPieceHash;</a>
+<a name="ln174">        }</a>
+<a name="ln175"> </a>
+<a name="ln176">        EnPassant = BoardSquare.noSquare;</a>
+<a name="ln177"> </a>
+<a name="ln178">        // _incrementalEvalAccumulator updates</a>
+<a name="ln179">        if (_isIncrementalEval)</a>
+<a name="ln180">        {</a>
+<a name="ln181">            var whiteKing = PieceBitBoards[(int)Piece.K].GetLS1BIndex();</a>
+<a name="ln182">            var blackKing = PieceBitBoards[(int)Piece.k].GetLS1BIndex();</a>
+<a name="ln183">            var whiteBucket = PSQTBucketLayout[whiteKing];</a>
+<a name="ln184">            var blackBucket = PSQTBucketLayout[blackKing ^ 56];</a>
+<a name="ln185"> </a>
+<a name="ln186">            int sameSideBucket = whiteBucket;</a>
+<a name="ln187">            int opposideSideBucket = blackBucket;</a>
+<a name="ln188">            if (Side == Side.Black)</a>
+<a name="ln189">            {</a>
+<a name="ln190">                (sameSideBucket, opposideSideBucket) = (opposideSideBucket, sameSideBucket);</a>
+<a name="ln191">            }</a>
+<a name="ln192"> </a>
+<a name="ln193">            _incrementalEvalAccumulator -= PSQT(0, sameSideBucket, piece, sourceSquare);</a>
+<a name="ln194">            _incrementalEvalAccumulator -= PSQT(1, opposideSideBucket, piece, sourceSquare);</a>
+<a name="ln195"> </a>
+<a name="ln196">            _incrementalEvalAccumulator += PSQT(0, sameSideBucket, newPiece, targetSquare);</a>
+<a name="ln197">            _incrementalEvalAccumulator += PSQT(1, opposideSideBucket, newPiece, targetSquare);</a>
+<a name="ln198"> </a>
+<a name="ln199">            _incrementalPhaseAccumulator += extraPhaseIfIncremental;</a>
+<a name="ln200"> </a>
+<a name="ln201">            switch (move.SpecialMoveFlag())</a>
+<a name="ln202">            {</a>
+<a name="ln203">                case SpecialMoveType.None:</a>
+<a name="ln204">                    {</a>
+<a name="ln205">                        if (move.IsCapture())</a>
+<a name="ln206">                        {</a>
+<a name="ln207">                            var capturedSquare = targetSquare;</a>
+<a name="ln208">                            var capturedPiece = move.CapturedPiece();</a>
+<a name="ln209"> </a>
+<a name="ln210">                            PieceBitBoards[capturedPiece].PopBit(capturedSquare);</a>
+<a name="ln211">                            OccupancyBitBoards[oppositeSide].PopBit(capturedSquare);</a>
+<a name="ln212"> </a>
+<a name="ln213">                            var capturedPieceHash = ZobristTable.PieceHash(capturedSquare, capturedPiece);</a>
+<a name="ln214">                            UniqueIdentifier ^= capturedPieceHash;</a>
+<a name="ln215"> </a>
+<a name="ln216">                            // Kings can't be captured</a>
+<a name="ln217">                            if (capturedPiece == (int)Piece.P || capturedPiece == (int)Piece.p)</a>
+<a name="ln218">                            {</a>
+<a name="ln219">                                _kingPawnUniqueIdentifier ^= capturedPieceHash;</a>
+<a name="ln220">                            }</a>
+<a name="ln221"> </a>
+<a name="ln222">                            _incrementalEvalAccumulator -= PSQT(0, opposideSideBucket, capturedPiece, capturedSquare);</a>
+<a name="ln223">                            _incrementalEvalAccumulator -= PSQT(1, sameSideBucket, capturedPiece, capturedSquare);</a>
+<a name="ln224"> </a>
+<a name="ln225">                            _incrementalPhaseAccumulator -= GamePhaseByPiece[capturedPiece];</a>
+<a name="ln226">                        }</a>
+<a name="ln227"> </a>
+<a name="ln228">                        break;</a>
+<a name="ln229">                    }</a>
+<a name="ln230">                case SpecialMoveType.DoublePawnPush:</a>
+<a name="ln231">                    {</a>
+<a name="ln232">                        var pawnPush = +8 - (oldSide * 16);</a>
+<a name="ln233">                        var enPassantSquare = sourceSquare + pawnPush;</a>
+<a name="ln234">                        Utils.Assert(Constants.EnPassantCaptureSquares.Length &gt; enPassantSquare &amp;&amp; Constants.EnPassantCaptureSquares[enPassantSquare] != 0, $&quot;Unexpected en passant square : {(BoardSquare)enPassantSquare}&quot;);</a>
+<a name="ln235"> </a>
+<a name="ln236">                        EnPassant = (BoardSquare)enPassantSquare;</a>
+<a name="ln237">                        UniqueIdentifier ^= ZobristTable.EnPassantHash(enPassantSquare);</a>
+<a name="ln238"> </a>
+<a name="ln239">                        break;</a>
+<a name="ln240">                    }</a>
+<a name="ln241">                case SpecialMoveType.ShortCastle:</a>
+<a name="ln242">                    {</a>
+<a name="ln243">                        var rookSourceSquare = Utils.ShortCastleRookSourceSquare(oldSide);</a>
+<a name="ln244">                        var rookTargetSquare = Utils.ShortCastleRookTargetSquare(oldSide);</a>
+<a name="ln245">                        var rookIndex = (int)Piece.R + offset;</a>
+<a name="ln246"> </a>
+<a name="ln247">                        PieceBitBoards[rookIndex].PopBit(rookSourceSquare);</a>
+<a name="ln248">                        OccupancyBitBoards[oldSide].PopBit(rookSourceSquare);</a>
+<a name="ln249">                        Board[rookSourceSquare] = (int)Piece.None;</a>
+<a name="ln250"> </a>
+<a name="ln251">                        PieceBitBoards[rookIndex].SetBit(rookTargetSquare);</a>
+<a name="ln252">                        OccupancyBitBoards[oldSide].SetBit(rookTargetSquare);</a>
+<a name="ln253">                        Board[rookTargetSquare] = rookIndex;</a>
+<a name="ln254"> </a>
+<a name="ln255">                        UniqueIdentifier ^=</a>
+<a name="ln256">                            ZobristTable.PieceHash(rookSourceSquare, rookIndex)</a>
+<a name="ln257">                            ^ ZobristTable.PieceHash(rookTargetSquare, rookIndex);</a>
+<a name="ln258"> </a>
+<a name="ln259">                        _incrementalEvalAccumulator -= PSQT(0, sameSideBucket, rookIndex, rookSourceSquare);</a>
+<a name="ln260">                        _incrementalEvalAccumulator -= PSQT(1, opposideSideBucket, rookIndex, rookSourceSquare);</a>
+<a name="ln261"> </a>
+<a name="ln262">                        _incrementalEvalAccumulator += PSQT(0, sameSideBucket, rookIndex, rookTargetSquare);</a>
+<a name="ln263">                        _incrementalEvalAccumulator += PSQT(1, opposideSideBucket, rookIndex, rookTargetSquare);</a>
+<a name="ln264"> </a>
+<a name="ln265">                        break;</a>
+<a name="ln266">                    }</a>
+<a name="ln267">                case SpecialMoveType.LongCastle:</a>
+<a name="ln268">                    {</a>
+<a name="ln269">                        var rookSourceSquare = Utils.LongCastleRookSourceSquare(oldSide);</a>
+<a name="ln270">                        var rookTargetSquare = Utils.LongCastleRookTargetSquare(oldSide);</a>
+<a name="ln271">                        var rookIndex = (int)Piece.R + offset;</a>
+<a name="ln272"> </a>
+<a name="ln273">                        PieceBitBoards[rookIndex].PopBit(rookSourceSquare);</a>
+<a name="ln274">                        OccupancyBitBoards[oldSide].PopBit(rookSourceSquare);</a>
+<a name="ln275">                        Board[rookSourceSquare] = (int)Piece.None;</a>
+<a name="ln276"> </a>
+<a name="ln277">                        PieceBitBoards[rookIndex].SetBit(rookTargetSquare);</a>
+<a name="ln278">                        OccupancyBitBoards[oldSide].SetBit(rookTargetSquare);</a>
+<a name="ln279">                        Board[rookTargetSquare] = rookIndex;</a>
+<a name="ln280"> </a>
+<a name="ln281">                        UniqueIdentifier ^=</a>
+<a name="ln282">                            ZobristTable.PieceHash(rookSourceSquare, rookIndex)</a>
+<a name="ln283">                            ^ ZobristTable.PieceHash(rookTargetSquare, rookIndex);</a>
+<a name="ln284"> </a>
+<a name="ln285">                        _incrementalEvalAccumulator -= PSQT(0, sameSideBucket, rookIndex, rookSourceSquare);</a>
+<a name="ln286">                        _incrementalEvalAccumulator -= PSQT(1, opposideSideBucket, rookIndex, rookSourceSquare);</a>
+<a name="ln287"> </a>
+<a name="ln288">                        _incrementalEvalAccumulator += PSQT(0, sameSideBucket, rookIndex, rookTargetSquare);</a>
+<a name="ln289">                        _incrementalEvalAccumulator += PSQT(1, opposideSideBucket, rookIndex, rookTargetSquare);</a>
+<a name="ln290"> </a>
+<a name="ln291">                        break;</a>
+<a name="ln292">                    }</a>
+<a name="ln293">                case SpecialMoveType.EnPassant:</a>
+<a name="ln294">                    {</a>
+<a name="ln295">                        var oppositePawnIndex = (int)Piece.p - offset;</a>
+<a name="ln296"> </a>
+<a name="ln297">                        var capturedSquare = Constants.EnPassantCaptureSquares[targetSquare];</a>
+<a name="ln298">                        var capturedPiece = oppositePawnIndex;</a>
+<a name="ln299">                        Utils.Assert(PieceBitBoards[oppositePawnIndex].GetBit(capturedSquare), $&quot;Expected {(Side)oppositeSide} pawn in {capturedSquare}&quot;);</a>
+<a name="ln300"> </a>
+<a name="ln301">                        PieceBitBoards[capturedPiece].PopBit(capturedSquare);</a>
+<a name="ln302">                        OccupancyBitBoards[oppositeSide].PopBit(capturedSquare);</a>
+<a name="ln303">                        Board[capturedSquare] = (int)Piece.None;</a>
+<a name="ln304"> </a>
+<a name="ln305">                        var capturedPawnHash = ZobristTable.PieceHash(capturedSquare, capturedPiece);</a>
+<a name="ln306">                        UniqueIdentifier ^= capturedPawnHash;</a>
+<a name="ln307">                        _kingPawnUniqueIdentifier ^= capturedPawnHash;</a>
+<a name="ln308"> </a>
+<a name="ln309">                        _incrementalEvalAccumulator -= PSQT(0, opposideSideBucket, capturedPiece, capturedSquare);</a>
+<a name="ln310">                        _incrementalEvalAccumulator -= PSQT(1, sameSideBucket, capturedPiece, capturedSquare);</a>
+<a name="ln311"> </a>
+<a name="ln312">                        //_incrementalPhaseAccumulator -= GamePhaseByPiece[capturedPiece];</a>
+<a name="ln313">                        break;</a>
+<a name="ln314">                    }</a>
+<a name="ln315">            }</a>
+<a name="ln316">        }</a>
+<a name="ln317">        // No _incrementalEvalAccumulator updates</a>
+<a name="ln318">        else</a>
+<a name="ln319">        {</a>
+<a name="ln320">            switch (move.SpecialMoveFlag())</a>
+<a name="ln321">            {</a>
+<a name="ln322">                case SpecialMoveType.None:</a>
+<a name="ln323">                    {</a>
+<a name="ln324">                        if (move.IsCapture())</a>
+<a name="ln325">                        {</a>
+<a name="ln326">                            var capturedSquare = targetSquare;</a>
+<a name="ln327">                            var capturedPiece = move.CapturedPiece();</a>
+<a name="ln328"> </a>
+<a name="ln329">                            PieceBitBoards[capturedPiece].PopBit(capturedSquare);</a>
+<a name="ln330">                            OccupancyBitBoards[oppositeSide].PopBit(capturedSquare);</a>
+<a name="ln331"> </a>
+<a name="ln332">                            ulong capturedPieceHash = ZobristTable.PieceHash(capturedSquare, capturedPiece);</a>
+<a name="ln333">                            UniqueIdentifier ^= capturedPieceHash;</a>
+<a name="ln334"> </a>
+<a name="ln335">                            // Kings can't be captured</a>
+<a name="ln336">                            if (capturedPiece == (int)Piece.P || capturedPiece == (int)Piece.p)</a>
+<a name="ln337">                            {</a>
+<a name="ln338">                                _kingPawnUniqueIdentifier ^= capturedPieceHash;</a>
+<a name="ln339">                            }</a>
+<a name="ln340">                        }</a>
+<a name="ln341"> </a>
+<a name="ln342">                        break;</a>
+<a name="ln343">                    }</a>
+<a name="ln344">                case SpecialMoveType.DoublePawnPush:</a>
+<a name="ln345">                    {</a>
+<a name="ln346">                        var pawnPush = +8 - (oldSide * 16);</a>
+<a name="ln347">                        var enPassantSquare = sourceSquare + pawnPush;</a>
+<a name="ln348">                        Utils.Assert(Constants.EnPassantCaptureSquares.Length &gt; enPassantSquare &amp;&amp; Constants.EnPassantCaptureSquares[enPassantSquare] != 0, $&quot;Unexpected en passant square : {(BoardSquare)enPassantSquare}&quot;);</a>
+<a name="ln349"> </a>
+<a name="ln350">                        EnPassant = (BoardSquare)enPassantSquare;</a>
+<a name="ln351">                        UniqueIdentifier ^= ZobristTable.EnPassantHash(enPassantSquare);</a>
+<a name="ln352"> </a>
+<a name="ln353">                        break;</a>
+<a name="ln354">                    }</a>
+<a name="ln355">                case SpecialMoveType.ShortCastle:</a>
+<a name="ln356">                    {</a>
+<a name="ln357">                        var rookSourceSquare = Utils.ShortCastleRookSourceSquare(oldSide);</a>
+<a name="ln358">                        var rookTargetSquare = Utils.ShortCastleRookTargetSquare(oldSide);</a>
+<a name="ln359">                        var rookIndex = (int)Piece.R + offset;</a>
+<a name="ln360"> </a>
+<a name="ln361">                        PieceBitBoards[rookIndex].PopBit(rookSourceSquare);</a>
+<a name="ln362">                        OccupancyBitBoards[oldSide].PopBit(rookSourceSquare);</a>
+<a name="ln363">                        Board[rookSourceSquare] = (int)Piece.None;</a>
+<a name="ln364"> </a>
+<a name="ln365">                        PieceBitBoards[rookIndex].SetBit(rookTargetSquare);</a>
+<a name="ln366">                        OccupancyBitBoards[oldSide].SetBit(rookTargetSquare);</a>
+<a name="ln367">                        Board[rookTargetSquare] = rookIndex;</a>
+<a name="ln368"> </a>
+<a name="ln369">                        UniqueIdentifier ^=</a>
+<a name="ln370">                            ZobristTable.PieceHash(rookSourceSquare, rookIndex)</a>
+<a name="ln371">                            ^ ZobristTable.PieceHash(rookTargetSquare, rookIndex);</a>
+<a name="ln372"> </a>
+<a name="ln373">                        break;</a>
+<a name="ln374">                    }</a>
+<a name="ln375">                case SpecialMoveType.LongCastle:</a>
+<a name="ln376">                    {</a>
+<a name="ln377">                        var rookSourceSquare = Utils.LongCastleRookSourceSquare(oldSide);</a>
+<a name="ln378">                        var rookTargetSquare = Utils.LongCastleRookTargetSquare(oldSide);</a>
+<a name="ln379">                        var rookIndex = (int)Piece.R + offset;</a>
+<a name="ln380"> </a>
+<a name="ln381">                        PieceBitBoards[rookIndex].PopBit(rookSourceSquare);</a>
+<a name="ln382">                        OccupancyBitBoards[oldSide].PopBit(rookSourceSquare);</a>
+<a name="ln383">                        Board[rookSourceSquare] = (int)Piece.None;</a>
+<a name="ln384"> </a>
+<a name="ln385">                        PieceBitBoards[rookIndex].SetBit(rookTargetSquare);</a>
+<a name="ln386">                        OccupancyBitBoards[oldSide].SetBit(rookTargetSquare);</a>
+<a name="ln387">                        Board[rookTargetSquare] = rookIndex;</a>
+<a name="ln388"> </a>
+<a name="ln389">                        UniqueIdentifier ^=</a>
+<a name="ln390">                            ZobristTable.PieceHash(rookSourceSquare, rookIndex)</a>
+<a name="ln391">                            ^ ZobristTable.PieceHash(rookTargetSquare, rookIndex);</a>
+<a name="ln392"> </a>
+<a name="ln393">                        break;</a>
+<a name="ln394">                    }</a>
+<a name="ln395">                case SpecialMoveType.EnPassant:</a>
+<a name="ln396">                    {</a>
+<a name="ln397">                        var oppositePawnIndex = (int)Piece.p - offset;</a>
+<a name="ln398"> </a>
+<a name="ln399">                        var capturedSquare = Constants.EnPassantCaptureSquares[targetSquare];</a>
+<a name="ln400">                        var capturedPiece = oppositePawnIndex;</a>
+<a name="ln401">                        Utils.Assert(PieceBitBoards[oppositePawnIndex].GetBit(capturedSquare), $&quot;Expected {(Side)oppositeSide} pawn in {capturedSquare}&quot;);</a>
+<a name="ln402"> </a>
+<a name="ln403">                        PieceBitBoards[capturedPiece].PopBit(capturedSquare);</a>
+<a name="ln404">                        OccupancyBitBoards[oppositeSide].PopBit(capturedSquare);</a>
+<a name="ln405">                        Board[capturedSquare] = (int)Piece.None;</a>
+<a name="ln406"> </a>
+<a name="ln407">                        ulong capturedPawnHash = ZobristTable.PieceHash(capturedSquare, capturedPiece);</a>
+<a name="ln408">                        UniqueIdentifier ^= capturedPawnHash;</a>
+<a name="ln409">                        _kingPawnUniqueIdentifier ^= capturedPawnHash;</a>
+<a name="ln410"> </a>
+<a name="ln411">                        break;</a>
+<a name="ln412">                    }</a>
+<a name="ln413">            }</a>
+<a name="ln414">        }</a>
+<a name="ln415"> </a>
+<a name="ln416">        Side = (Side)oppositeSide;</a>
+<a name="ln417">        OccupancyBitBoards[2] = OccupancyBitBoards[1] | OccupancyBitBoards[0];</a>
+<a name="ln418"> </a>
+<a name="ln419">        // Updating castling rights</a>
+<a name="ln420">        Castle &amp;= Constants.CastlingRightsUpdateConstants[sourceSquare];</a>
+<a name="ln421">        Castle &amp;= Constants.CastlingRightsUpdateConstants[targetSquare];</a>
+<a name="ln422"> </a>
+<a name="ln423">        UniqueIdentifier ^= ZobristTable.CastleHash(Castle);</a>
+<a name="ln424"> </a>
+<a name="ln425">        // Asserts won't work due to PassedPawnBonusNoEnemiesAheadBonus</a>
+<a name="ln426">        //Debug.Assert(ZobristTable.PositionHash(this) != UniqueIdentifier &amp;&amp; WasProduceByAValidMove());</a>
+<a name="ln427">        //Debug.Assert(ZobristTable.PawnKingHash(this) != _kingPawnUniqueIdentifier &amp;&amp; WasProduceByAValidMove());</a>
+<a name="ln428"> </a>
+<a name="ln429">        return new GameState(uniqueIdentifierCopy, kingPawnKeyUniqueIdentifierCopy, incrementalEvalAccumulatorCopy, incrementalPhaseAccumulatorCopy, enpassantCopy, castleCopy, isIncrementalEvalCopy);</a>
+<a name="ln430">    }</a>
+<a name="ln431"> </a>
+<a name="ln432">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln433">    public void UnmakeMove(Move move, GameState gameState)</a>
+<a name="ln434">    {</a>
+<a name="ln435">        var oppositeSide = (int)Side;</a>
+<a name="ln436">        var side = Utils.OppositeSide(oppositeSide);</a>
+<a name="ln437">        Side = (Side)side;</a>
+<a name="ln438">        var offset = Utils.PieceOffset(side);</a>
+<a name="ln439"> </a>
+<a name="ln440">        int sourceSquare = move.SourceSquare();</a>
+<a name="ln441">        int targetSquare = move.TargetSquare();</a>
+<a name="ln442">        int piece = move.Piece();</a>
+<a name="ln443">        int promotedPiece = move.PromotedPiece();</a>
+<a name="ln444"> </a>
+<a name="ln445">        var newPiece = piece;</a>
+<a name="ln446">        if (promotedPiece != default)</a>
+<a name="ln447">        {</a>
+<a name="ln448">            newPiece = promotedPiece;</a>
+<a name="ln449">        }</a>
+<a name="ln450"> </a>
+<a name="ln451">        PieceBitBoards[newPiece].PopBit(targetSquare);</a>
+<a name="ln452">        OccupancyBitBoards[side].PopBit(targetSquare);</a>
+<a name="ln453">        Board[targetSquare] = (int)Piece.None;</a>
+<a name="ln454"> </a>
+<a name="ln455">        PieceBitBoards[piece].SetBit(sourceSquare);</a>
+<a name="ln456">        OccupancyBitBoards[side].SetBit(sourceSquare);</a>
+<a name="ln457">        Board[sourceSquare] = piece;</a>
+<a name="ln458"> </a>
+<a name="ln459">        switch (move.SpecialMoveFlag())</a>
+<a name="ln460">        {</a>
+<a name="ln461">            case SpecialMoveType.None:</a>
+<a name="ln462">                {</a>
+<a name="ln463">                    if (move.IsCapture())</a>
+<a name="ln464">                    {</a>
+<a name="ln465">                        var capturedPiece = move.CapturedPiece();</a>
+<a name="ln466"> </a>
+<a name="ln467">                        PieceBitBoards[capturedPiece].SetBit(targetSquare);</a>
+<a name="ln468">                        OccupancyBitBoards[oppositeSide].SetBit(targetSquare);</a>
+<a name="ln469">                        Board[targetSquare] = capturedPiece;</a>
+<a name="ln470">                    }</a>
+<a name="ln471"> </a>
+<a name="ln472">                    break;</a>
+<a name="ln473">                }</a>
+<a name="ln474">            case SpecialMoveType.ShortCastle:</a>
+<a name="ln475">                {</a>
+<a name="ln476">                    var rookSourceSquare = Utils.ShortCastleRookSourceSquare(side);</a>
+<a name="ln477">                    var rookTargetSquare = Utils.ShortCastleRookTargetSquare(side);</a>
+<a name="ln478">                    var rookIndex = (int)Piece.R + offset;</a>
+<a name="ln479"> </a>
+<a name="ln480">                    PieceBitBoards[rookIndex].SetBit(rookSourceSquare);</a>
+<a name="ln481">                    OccupancyBitBoards[side].SetBit(rookSourceSquare);</a>
+<a name="ln482">                    Board[rookSourceSquare] = rookIndex;</a>
+<a name="ln483"> </a>
+<a name="ln484">                    PieceBitBoards[rookIndex].PopBit(rookTargetSquare);</a>
+<a name="ln485">                    OccupancyBitBoards[side].PopBit(rookTargetSquare);</a>
+<a name="ln486">                    Board[rookTargetSquare] = (int)Piece.None;</a>
+<a name="ln487"> </a>
+<a name="ln488">                    break;</a>
+<a name="ln489">                }</a>
+<a name="ln490">            case SpecialMoveType.LongCastle:</a>
+<a name="ln491">                {</a>
+<a name="ln492">                    var rookSourceSquare = Utils.LongCastleRookSourceSquare(side);</a>
+<a name="ln493">                    var rookTargetSquare = Utils.LongCastleRookTargetSquare(side);</a>
+<a name="ln494">                    var rookIndex = (int)Piece.R + offset;</a>
+<a name="ln495"> </a>
+<a name="ln496">                    PieceBitBoards[rookIndex].SetBit(rookSourceSquare);</a>
+<a name="ln497">                    OccupancyBitBoards[side].SetBit(rookSourceSquare);</a>
+<a name="ln498">                    Board[rookSourceSquare] = rookIndex;</a>
+<a name="ln499"> </a>
+<a name="ln500">                    PieceBitBoards[rookIndex].PopBit(rookTargetSquare);</a>
+<a name="ln501">                    OccupancyBitBoards[side].PopBit(rookTargetSquare);</a>
+<a name="ln502">                    Board[rookTargetSquare] = (int)Piece.None;</a>
+<a name="ln503"> </a>
+<a name="ln504">                    break;</a>
+<a name="ln505">                }</a>
+<a name="ln506">            case SpecialMoveType.EnPassant:</a>
+<a name="ln507">                {</a>
+<a name="ln508">                    Debug.Assert(move.IsEnPassant());</a>
+<a name="ln509"> </a>
+<a name="ln510">                    var oppositePawnIndex = (int)Piece.p - offset;</a>
+<a name="ln511">                    var capturedPawnSquare = Constants.EnPassantCaptureSquares[targetSquare];</a>
+<a name="ln512"> </a>
+<a name="ln513">                    Utils.Assert(OccupancyBitBoards[(int)Side.Both].GetBit(capturedPawnSquare) == default,</a>
+<a name="ln514">                        $&quot;Expected empty {capturedPawnSquare}&quot;);</a>
+<a name="ln515"> </a>
+<a name="ln516">                    PieceBitBoards[oppositePawnIndex].SetBit(capturedPawnSquare);</a>
+<a name="ln517">                    OccupancyBitBoards[oppositeSide].SetBit(capturedPawnSquare);</a>
+<a name="ln518">                    Board[capturedPawnSquare] = oppositePawnIndex;</a>
+<a name="ln519"> </a>
+<a name="ln520">                    break;</a>
+<a name="ln521">                }</a>
+<a name="ln522">        }</a>
+<a name="ln523"> </a>
+<a name="ln524">        OccupancyBitBoards[2] = OccupancyBitBoards[1] | OccupancyBitBoards[0];</a>
+<a name="ln525"> </a>
+<a name="ln526">        // Updating saved values</a>
+<a name="ln527">        Castle = gameState.Castle;</a>
+<a name="ln528">        EnPassant = gameState.EnPassant;</a>
+<a name="ln529">        UniqueIdentifier = gameState.ZobristKey;</a>
+<a name="ln530">        _kingPawnUniqueIdentifier = gameState.KingPawnKey;</a>
+<a name="ln531">        _incrementalEvalAccumulator = gameState.IncremetalEvalAccumulator;</a>
+<a name="ln532">        _incrementalPhaseAccumulator = gameState.IncrementalPhaseAccumulator;</a>
+<a name="ln533">        _isIncrementalEval = gameState.IsIncrementalEval;</a>
+<a name="ln534">    }</a>
+<a name="ln535"> </a>
+<a name="ln536">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln537">    public GameState MakeNullMove()</a>
+<a name="ln538">    {</a>
+<a name="ln539">        Side = (Side)Utils.OppositeSide(Side);</a>
+<a name="ln540">        var oldEnPassant = EnPassant;</a>
+<a name="ln541">        var oldUniqueIdentifier = UniqueIdentifier;</a>
+<a name="ln542">        EnPassant = BoardSquare.noSquare;</a>
+<a name="ln543"> </a>
+<a name="ln544">        UniqueIdentifier ^=</a>
+<a name="ln545">            ZobristTable.SideHash()</a>
+<a name="ln546">            ^ ZobristTable.EnPassantHash((int)oldEnPassant);</a>
+<a name="ln547"> </a>
+<a name="ln548">        return new GameState(oldUniqueIdentifier, _kingPawnUniqueIdentifier, _incrementalEvalAccumulator, _incrementalPhaseAccumulator, oldEnPassant, byte.MaxValue, _isIncrementalEval);</a>
+<a name="ln549">    }</a>
+<a name="ln550"> </a>
+<a name="ln551">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln552">    public void UnMakeNullMove(GameState gameState)</a>
+<a name="ln553">    {</a>
+<a name="ln554">        Side = (Side)Utils.OppositeSide(Side);</a>
+<a name="ln555">        EnPassant = gameState.EnPassant;</a>
+<a name="ln556">        UniqueIdentifier = gameState.ZobristKey;</a>
+<a name="ln557">        _kingPawnUniqueIdentifier = gameState.KingPawnKey;</a>
+<a name="ln558">        _incrementalEvalAccumulator = gameState.IncremetalEvalAccumulator;</a>
+<a name="ln559">        _incrementalPhaseAccumulator = gameState.IncrementalPhaseAccumulator;</a>
+<a name="ln560">        _isIncrementalEval = gameState.IsIncrementalEval;</a>
+<a name="ln561">    }</a>
+<a name="ln562"> </a>
+<a name="ln563">    /// &lt;summary&gt;</a>
+<a name="ln564">    /// False if any of the kings has been captured, or if the opponent king is in check.</a>
+<a name="ln565">    /// &lt;/summary&gt;</a>
+<a name="ln566">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln567">    internal bool IsValid()</a>
+<a name="ln568">    {</a>
+<a name="ln569">        var offset = Utils.PieceOffset(Side);</a>
+<a name="ln570"> </a>
+<a name="ln571">        var kingBitBoard = PieceBitBoards[(int)Piece.K + offset];</a>
+<a name="ln572">        var kingSquare = kingBitBoard == default ? -1 : kingBitBoard.GetLS1BIndex();</a>
+<a name="ln573"> </a>
+<a name="ln574">        var oppositeKingBitBoard = PieceBitBoards[(int)Piece.k - offset];</a>
+<a name="ln575">        var oppositeKingSquare = oppositeKingBitBoard == default ? -1 : oppositeKingBitBoard.GetLS1BIndex();</a>
+<a name="ln576"> </a>
+<a name="ln577">        return kingSquare &gt;= 0 &amp;&amp; oppositeKingSquare &gt;= 0</a>
+<a name="ln578">            &amp;&amp; !IsSquareAttacked(oppositeKingSquare, Side);</a>
+<a name="ln579">    }</a>
+<a name="ln580"> </a>
+<a name="ln581">    /// &lt;summary&gt;</a>
+<a name="ln582">    /// Lightweight version of &lt;see cref=&quot;IsValid&quot;/&gt;</a>
+<a name="ln583">    /// False if the opponent king is in check.</a>
+<a name="ln584">    /// This method is meant to be invoked only after a pseudolegal &lt;see cref=&quot;MakeMove(int)&quot;/&gt;.</a>
+<a name="ln585">    /// i.e. it doesn't ensure that both kings are on the board</a>
+<a name="ln586">    /// &lt;/summary&gt;</a>
+<a name="ln587">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln588">    public bool WasProduceByAValidMove()</a>
+<a name="ln589">    {</a>
+<a name="ln590">        Debug.Assert(PieceBitBoards[(int)Piece.k - Utils.PieceOffset(Side)].CountBits() == 1);</a>
+<a name="ln591">        var oppositeKingSquare = PieceBitBoards[(int)Piece.k - Utils.PieceOffset(Side)].GetLS1BIndex();</a>
+<a name="ln592"> </a>
+<a name="ln593">        return !IsSquareAttacked(oppositeKingSquare, Side);</a>
+<a name="ln594">    }</a>
+<a name="ln595"> </a>
+<a name="ln596">    #endregion</a>
+<a name="ln597"> </a>
+<a name="ln598">    #region Evaluation</a>
+<a name="ln599"> </a>
+<a name="ln600">    /// &lt;summary&gt;</a>
+<a name="ln601">    /// Evaluates material and position in a NegaMax style.</a>
+<a name="ln602">    /// That is, positive scores always favour playing &lt;see cref=&quot;Side&quot;/&gt;.</a>
+<a name="ln603">    /// &lt;/summary&gt;</a>
+<a name="ln604">    public (int Score, int Phase) StaticEvaluation() =&gt; StaticEvaluation(0);</a>
+<a name="ln605"> </a>
+<a name="ln606">    /// &lt;summary&gt;</a>
+<a name="ln607">    /// Evaluates material and position in a NegaMax style.</a>
+<a name="ln608">    /// That is, positive scores always favour playing &lt;see cref=&quot;Side&quot;/&gt;.</a>
+<a name="ln609">    /// &lt;/summary&gt;</a>
+<a name="ln610">    public (int Score, int Phase) StaticEvaluation(int movesWithoutCaptureOrPawnMove)</a>
+<a name="ln611">    {</a>
+<a name="ln612">        var kingPawnTable = new PawnTableElement[Constants.KingPawnHashSize];</a>
+<a name="ln613"> </a>
+<a name="ln614">        return StaticEvaluation(movesWithoutCaptureOrPawnMove, kingPawnTable);</a>
+<a name="ln615">    }</a>
+<a name="ln616"> </a>
+<a name="ln617">    /// &lt;summary&gt;</a>
+<a name="ln618">    /// Evaluates material and position in a NegaMax style.</a>
+<a name="ln619">    /// That is, positive scores always favour playing &lt;see cref=&quot;Side&quot;/&gt;.</a>
+<a name="ln620">    /// &lt;/summary&gt;</a>
+<a name="ln621">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln622">    public (int Score, int Phase) StaticEvaluation(int movesWithoutCaptureOrPawnMove, PawnTableElement[] pawnEvalTable)</a>
+<a name="ln623">    {</a>
+<a name="ln624">        //var result = OnlineTablebaseProber.EvaluationSearch(this, movesWithoutCaptureOrPawnMove, cancellationToken);</a>
+<a name="ln625">        //Debug.Assert(result &lt; CheckMateBaseEvaluation, $&quot;position {FEN()} returned tb eval out of bounds: {result}&quot;);</a>
+<a name="ln626">        //Debug.Assert(result &gt; -CheckMateBaseEvaluation, $&quot;position {FEN()} returned tb eval out of bounds: {result}&quot;);</a>
+<a name="ln627"> </a>
+<a name="ln628">        //if (result != OnlineTablebaseProber.NoResult)</a>
+<a name="ln629">        //{</a>
+<a name="ln630">        //    return result;</a>
+<a name="ln631">        //}</a>
+<a name="ln632"> </a>
+<a name="ln633">        int packedScore = 0;</a>
+<a name="ln634">        int gamePhase = 0;</a>
+<a name="ln635"> </a>
+<a name="ln636">        var whitePawns = PieceBitBoards[(int)Piece.P];</a>
+<a name="ln637">        var blackPawns = PieceBitBoards[(int)Piece.p];</a>
+<a name="ln638"> </a>
+<a name="ln639">        BitBoard whitePawnAttacks = whitePawns.ShiftUpRight() | whitePawns.ShiftUpLeft();</a>
+<a name="ln640">        BitBoard blackPawnAttacks = blackPawns.ShiftDownRight() | blackPawns.ShiftDownLeft();</a>
+<a name="ln641"> </a>
+<a name="ln642">        var whiteKing = PieceBitBoards[(int)Piece.K].GetLS1BIndex();</a>
+<a name="ln643">        var blackKing = PieceBitBoards[(int)Piece.k].GetLS1BIndex();</a>
+<a name="ln644"> </a>
+<a name="ln645">        var whiteBucket = PSQTBucketLayout[whiteKing];</a>
+<a name="ln646">        var blackBucket = PSQTBucketLayout[blackKing ^ 56];</a>
+<a name="ln647"> </a>
+<a name="ln648">        if (_isIncrementalEval)</a>
+<a name="ln649">        {</a>
+<a name="ln650">            packedScore = _incrementalEvalAccumulator;</a>
+<a name="ln651">            gamePhase = _incrementalPhaseAccumulator;</a>
+<a name="ln652"> </a>
+<a name="ln653">            var kingPawnIndex = _kingPawnUniqueIdentifier &amp; Constants.KingPawnHashMask;</a>
+<a name="ln654">            ref var entry = ref pawnEvalTable[kingPawnIndex];</a>
+<a name="ln655"> </a>
+<a name="ln656">            // pawnEvalTable hit: We can reuse cached eval for pawn additional evaluation + PieceProtectedByPawnBonus + KingShieldBonus</a>
+<a name="ln657">            if (entry.Key == _kingPawnUniqueIdentifier)</a>
+<a name="ln658">            {</a>
+<a name="ln659">                packedScore += entry.PackedScore;</a>
+<a name="ln660">            }</a>
+<a name="ln661">            // Not hit in pawnEvalTable table</a>
+<a name="ln662">            else</a>
+<a name="ln663">            {</a>
+<a name="ln664">                var pawnScore = 0;</a>
+<a name="ln665"> </a>
+<a name="ln666">                // White pawns</a>
+<a name="ln667"> </a>
+<a name="ln668">                // King pawn shield bonus</a>
+<a name="ln669">                pawnScore += KingPawnShield(whiteKing, whitePawns);</a>
+<a name="ln670"> </a>
+<a name="ln671">                // Pieces protected by pawns bonus</a>
+<a name="ln672">                pawnScore += PieceProtectedByPawnBonus[whiteBucket][(int)Piece.P] * (whitePawnAttacks &amp; whitePawns).CountBits();</a>
+<a name="ln673"> </a>
+<a name="ln674">                // Bitboard copy that we 'empty'</a>
+<a name="ln675">                var whitePawnsCopy = whitePawns;</a>
+<a name="ln676">                while (whitePawnsCopy != default)</a>
+<a name="ln677">                {</a>
+<a name="ln678">                    whitePawnsCopy = whitePawnsCopy.WithoutLS1B(out var pieceSquareIndex);</a>
+<a name="ln679"> </a>
+<a name="ln680">                    pawnScore += PawnAdditionalEvaluation(whiteBucket, blackBucket, pieceSquareIndex, (int)Piece.P, whiteKing, blackKing);</a>
+<a name="ln681">                }</a>
+<a name="ln682"> </a>
+<a name="ln683">                // Black pawns</a>
+<a name="ln684"> </a>
+<a name="ln685">                // King pawn shield bonus</a>
+<a name="ln686">                pawnScore -= KingPawnShield(blackKing, blackPawns);</a>
+<a name="ln687"> </a>
+<a name="ln688">                // Pieces protected by pawns bonus</a>
+<a name="ln689">                pawnScore -= PieceProtectedByPawnBonus[blackBucket][(int)Piece.P] * (blackPawnAttacks &amp; blackPawns).CountBits();</a>
+<a name="ln690"> </a>
+<a name="ln691">                // Bitboard copy that we 'empty'</a>
+<a name="ln692">                var blackPawnsCopy = blackPawns;</a>
+<a name="ln693">                while (blackPawnsCopy != default)</a>
+<a name="ln694">                {</a>
+<a name="ln695">                    blackPawnsCopy = blackPawnsCopy.WithoutLS1B(out var pieceSquareIndex);</a>
+<a name="ln696"> </a>
+<a name="ln697">                    pawnScore -= PawnAdditionalEvaluation(blackBucket, whiteBucket, pieceSquareIndex, (int)Piece.p, blackKing, whiteKing);</a>
+<a name="ln698">                }</a>
+<a name="ln699"> </a>
+<a name="ln700">                // Pawn islands</a>
+<a name="ln701">                pawnScore += PawnIslands(whitePawns, blackPawns);</a>
+<a name="ln702"> </a>
+<a name="ln703">                entry.Update(_kingPawnUniqueIdentifier, pawnScore);</a>
+<a name="ln704">                packedScore += pawnScore;</a>
+<a name="ln705">            }</a>
+<a name="ln706"> </a>
+<a name="ln707">            // White pieces additional eval and pawn attacks, except pawn and king</a>
+<a name="ln708">            for (int pieceIndex = (int)Piece.N; pieceIndex &lt; (int)Piece.K; ++pieceIndex)</a>
+<a name="ln709">            {</a>
+<a name="ln710">                // Bitboard copy that we 'empty'</a>
+<a name="ln711">                var bitboard = PieceBitBoards[pieceIndex];</a>
+<a name="ln712"> </a>
+<a name="ln713">                packedScore += PieceProtectedByPawnBonus[whiteBucket][pieceIndex] * (whitePawnAttacks &amp; bitboard).CountBits();</a>
+<a name="ln714"> </a>
+<a name="ln715">                while (bitboard != default)</a>
+<a name="ln716">                {</a>
+<a name="ln717">                    bitboard = bitboard.WithoutLS1B(out var pieceSquareIndex);</a>
+<a name="ln718"> </a>
+<a name="ln719">                    packedScore += AdditionalPieceEvaluation(pieceSquareIndex, pieceIndex, (int)Side.White, blackKing, blackPawnAttacks);</a>
+<a name="ln720">                }</a>
+<a name="ln721">            }</a>
+<a name="ln722"> </a>
+<a name="ln723">            // Black pieces additional eval and pawn attacks, except pawn and king</a>
+<a name="ln724">            for (int pieceIndex = (int)Piece.n; pieceIndex &lt; (int)Piece.k; ++pieceIndex)</a>
+<a name="ln725">            {</a>
+<a name="ln726">                // Bitboard copy that we 'empty'</a>
+<a name="ln727">                var bitboard = PieceBitBoards[pieceIndex];</a>
+<a name="ln728"> </a>
+<a name="ln729">                // Pieces protected by pawns bonus</a>
+<a name="ln730">                packedScore -= PieceProtectedByPawnBonus[blackBucket][pieceIndex - 6] * (blackPawnAttacks &amp; bitboard).CountBits();</a>
+<a name="ln731"> </a>
+<a name="ln732">                while (bitboard != default)</a>
+<a name="ln733">                {</a>
+<a name="ln734">                    bitboard = bitboard.WithoutLS1B(out var pieceSquareIndex);</a>
+<a name="ln735"> </a>
+<a name="ln736">                    packedScore -= AdditionalPieceEvaluation(pieceSquareIndex, pieceIndex, (int)Side.Black, whiteKing, whitePawnAttacks);</a>
+<a name="ln737">                }</a>
+<a name="ln738">            }</a>
+<a name="ln739">        }</a>
+<a name="ln740">        else</a>
+<a name="ln741">        {</a>
+<a name="ln742">            _incrementalEvalAccumulator = 0;</a>
+<a name="ln743">            _incrementalPhaseAccumulator = 0;</a>
+<a name="ln744"> </a>
+<a name="ln745">            var kingPawnIndex = _kingPawnUniqueIdentifier &amp; Constants.KingPawnHashMask;</a>
+<a name="ln746">            ref var entry = ref pawnEvalTable[kingPawnIndex];</a>
+<a name="ln747"> </a>
+<a name="ln748">            // pawnTable hit: We can reuse cached eval for pawn additional evaluation + PieceProtectedByPawnBonus + KingShieldBonus</a>
+<a name="ln749">            if (entry.Key == _kingPawnUniqueIdentifier)</a>
+<a name="ln750">            {</a>
+<a name="ln751">                packedScore += entry.PackedScore;</a>
+<a name="ln752"> </a>
+<a name="ln753">                // White pawns</a>
+<a name="ln754">                // No PieceProtectedByPawnBonus - included in pawn table | packedScore += PieceProtectedByPawnBonus[...]</a>
+<a name="ln755"> </a>
+<a name="ln756">                // Bitboard copy that we 'empty'</a>
+<a name="ln757">                var whitePawnsCopy = PieceBitBoards[(int)Piece.P];</a>
+<a name="ln758">                while (whitePawnsCopy != default)</a>
+<a name="ln759">                {</a>
+<a name="ln760">                    whitePawnsCopy = whitePawnsCopy.WithoutLS1B(out var pieceSquareIndex);</a>
+<a name="ln761"> </a>
+<a name="ln762">                    _incrementalEvalAccumulator += PSQT(0, whiteBucket, (int)Piece.P, pieceSquareIndex)</a>
+<a name="ln763">                                                + PSQT(1, blackBucket, (int)Piece.P, pieceSquareIndex);</a>
+<a name="ln764"> </a>
+<a name="ln765">                    // No incremental eval - included in pawn table | packedScore += AdditionalPieceEvaluation(...);</a>
+<a name="ln766">                }</a>
+<a name="ln767"> </a>
+<a name="ln768">                // Black pawns</a>
+<a name="ln769">                // No PieceProtectedByPawnBonus - included in pawn table | packedScore -= PieceProtectedByPawnBonus .Length[...]</a>
+<a name="ln770"> </a>
+<a name="ln771">                // Bitboard copy that we 'empty'</a>
+<a name="ln772">                var blackPawnsCopy = PieceBitBoards[(int)Piece.p];</a>
+<a name="ln773">                while (blackPawnsCopy != default)</a>
+<a name="ln774">                {</a>
+<a name="ln775">                    blackPawnsCopy = blackPawnsCopy.WithoutLS1B(out var pieceSquareIndex);</a>
+<a name="ln776"> </a>
+<a name="ln777">                    _incrementalEvalAccumulator += PSQT(0, blackBucket, (int)Piece.p, pieceSquareIndex)</a>
+<a name="ln778">                                                + PSQT(1, whiteBucket, (int)Piece.p, pieceSquareIndex);</a>
+<a name="ln779"> </a>
+<a name="ln780">                    // No incremental eval - included in pawn table | packedScore -= AdditionalPieceEvaluation(...);</a>
+<a name="ln781">                }</a>
+<a name="ln782">            }</a>
+<a name="ln783">            // Not hit in pawnTable table</a>
+<a name="ln784">            else</a>
+<a name="ln785">            {</a>
+<a name="ln786">                var pawnScore = 0;</a>
+<a name="ln787"> </a>
+<a name="ln788">                // White pawns</a>
+<a name="ln789"> </a>
+<a name="ln790">                // King pawn shield bonus</a>
+<a name="ln791">                pawnScore += KingPawnShield(whiteKing, whitePawns);</a>
+<a name="ln792"> </a>
+<a name="ln793">                // Pieces protected by pawns bonus</a>
+<a name="ln794">                pawnScore += PieceProtectedByPawnBonus[whiteBucket][(int)Piece.P] * (whitePawnAttacks &amp; whitePawns).CountBits();</a>
+<a name="ln795"> </a>
+<a name="ln796">                // Bitboard copy that we 'empty'</a>
+<a name="ln797">                var whitePawnsCopy = PieceBitBoards[(int)Piece.P];</a>
+<a name="ln798">                while (whitePawnsCopy != default)</a>
+<a name="ln799">                {</a>
+<a name="ln800">                    whitePawnsCopy = whitePawnsCopy.WithoutLS1B(out var pieceSquareIndex);</a>
+<a name="ln801"> </a>
+<a name="ln802">                    _incrementalEvalAccumulator += PSQT(0, whiteBucket, (int)Piece.P, pieceSquareIndex)</a>
+<a name="ln803">                                                + PSQT(1, blackBucket, (int)Piece.P, pieceSquareIndex);</a>
+<a name="ln804"> </a>
+<a name="ln805">                    pawnScore += PawnAdditionalEvaluation(whiteBucket, blackBucket, pieceSquareIndex, (int)Piece.P, whiteKing, blackKing);</a>
+<a name="ln806">                }</a>
+<a name="ln807"> </a>
+<a name="ln808">                // Black pawns</a>
+<a name="ln809"> </a>
+<a name="ln810">                // King pawn shield bonus</a>
+<a name="ln811">                pawnScore -= KingPawnShield(blackKing, blackPawns);</a>
+<a name="ln812"> </a>
+<a name="ln813">                // Pieces protected by pawns bonus</a>
+<a name="ln814">                pawnScore -= PieceProtectedByPawnBonus[blackBucket][(int)Piece.P] * (blackPawnAttacks &amp; blackPawns).CountBits();</a>
+<a name="ln815"> </a>
+<a name="ln816">                // Bitboard copy that we 'empty'</a>
+<a name="ln817">                var blackPawnsCopy = PieceBitBoards[(int)Piece.p];</a>
+<a name="ln818">                while (blackPawnsCopy != default)</a>
+<a name="ln819">                {</a>
+<a name="ln820">                    blackPawnsCopy = blackPawnsCopy.WithoutLS1B(out var pieceSquareIndex);</a>
+<a name="ln821"> </a>
+<a name="ln822">                    _incrementalEvalAccumulator += PSQT(0, blackBucket, (int)Piece.p, pieceSquareIndex)</a>
+<a name="ln823">                                                + PSQT(1, whiteBucket, (int)Piece.p, pieceSquareIndex);</a>
+<a name="ln824"> </a>
+<a name="ln825">                    pawnScore -= PawnAdditionalEvaluation(blackBucket, whiteBucket, pieceSquareIndex, (int)Piece.p, blackKing, whiteKing);</a>
+<a name="ln826">                }</a>
+<a name="ln827"> </a>
+<a name="ln828">                // Pawn islands</a>
+<a name="ln829">                pawnScore += PawnIslands(whitePawns, blackPawns);</a>
+<a name="ln830"> </a>
+<a name="ln831">                entry.Update(_kingPawnUniqueIdentifier, pawnScore);</a>
+<a name="ln832">                packedScore += pawnScore;</a>
+<a name="ln833">            }</a>
+<a name="ln834"> </a>
+<a name="ln835">            // White pieces PSQTs and additional eval and pawn attacks, except king and pawn</a>
+<a name="ln836">            for (int pieceIndex = (int)Piece.N; pieceIndex &lt; (int)Piece.K; ++pieceIndex)</a>
+<a name="ln837">            {</a>
+<a name="ln838">                // Bitboard copy that we 'empty'</a>
+<a name="ln839">                var bitboard = PieceBitBoards[pieceIndex];</a>
+<a name="ln840"> </a>
+<a name="ln841">                packedScore += PieceProtectedByPawnBonus[whiteBucket][pieceIndex] * (whitePawnAttacks &amp; bitboard).CountBits();</a>
+<a name="ln842"> </a>
+<a name="ln843">                while (bitboard != default)</a>
+<a name="ln844">                {</a>
+<a name="ln845">                    bitboard = bitboard.WithoutLS1B(out var pieceSquareIndex);</a>
+<a name="ln846"> </a>
+<a name="ln847">                    _incrementalEvalAccumulator += PSQT(0, whiteBucket, pieceIndex, pieceSquareIndex)</a>
+<a name="ln848">                                                + PSQT(1, blackBucket, pieceIndex, pieceSquareIndex);</a>
+<a name="ln849"> </a>
+<a name="ln850">                    _incrementalPhaseAccumulator += GamePhaseByPiece[pieceIndex];</a>
+<a name="ln851"> </a>
+<a name="ln852">                    packedScore += AdditionalPieceEvaluation(pieceSquareIndex, pieceIndex, (int)Side.White, blackKing, blackPawnAttacks);</a>
+<a name="ln853">                }</a>
+<a name="ln854">            }</a>
+<a name="ln855"> </a>
+<a name="ln856">            // Black pieces PSQTs and additional eval and pawn attacks, except king and pawn</a>
+<a name="ln857">            for (int pieceIndex = (int)Piece.n; pieceIndex &lt; (int)Piece.k; ++pieceIndex)</a>
+<a name="ln858">            {</a>
+<a name="ln859">                // Bitboard copy that we 'empty'</a>
+<a name="ln860">                var bitboard = PieceBitBoards[pieceIndex];</a>
+<a name="ln861"> </a>
+<a name="ln862">                // Pieces protected by pawns bonus</a>
+<a name="ln863">                packedScore -= PieceProtectedByPawnBonus[blackBucket][pieceIndex - 6] * (blackPawnAttacks &amp; bitboard).CountBits();</a>
+<a name="ln864"> </a>
+<a name="ln865">                while (bitboard != default)</a>
+<a name="ln866">                {</a>
+<a name="ln867">                    bitboard = bitboard.WithoutLS1B(out var pieceSquareIndex);</a>
+<a name="ln868"> </a>
+<a name="ln869">                    _incrementalEvalAccumulator += PSQT(0, blackBucket, pieceIndex, pieceSquareIndex)</a>
+<a name="ln870">                                                + PSQT(1, whiteBucket, pieceIndex, pieceSquareIndex);</a>
+<a name="ln871"> </a>
+<a name="ln872">                    _incrementalPhaseAccumulator += GamePhaseByPiece[pieceIndex];</a>
+<a name="ln873"> </a>
+<a name="ln874">                    packedScore -= AdditionalPieceEvaluation(pieceSquareIndex, pieceIndex, (int)Side.Black, whiteKing, whitePawnAttacks);</a>
+<a name="ln875">                }</a>
+<a name="ln876">            }</a>
+<a name="ln877"> </a>
+<a name="ln878">            packedScore += _incrementalEvalAccumulator;</a>
+<a name="ln879">            gamePhase += _incrementalPhaseAccumulator;</a>
+<a name="ln880">            _isIncrementalEval = true;</a>
+<a name="ln881">        }</a>
+<a name="ln882"> </a>
+<a name="ln883">        // Kings - they can't be incremental due to the king buckets</a>
+<a name="ln884">        packedScore +=</a>
+<a name="ln885">            PSQT(0, whiteBucket, (int)Piece.K, whiteKing)</a>
+<a name="ln886">            + PSQT(1, blackBucket, (int)Piece.K, whiteKing)</a>
+<a name="ln887">            + PSQT(0, blackBucket, (int)Piece.k, blackKing)</a>
+<a name="ln888">            + PSQT(1, whiteBucket, (int)Piece.k, blackKing);</a>
+<a name="ln889"> </a>
+<a name="ln890">        packedScore +=</a>
+<a name="ln891">            KingAdditionalEvaluation(whiteKing, (int)Side.White, blackPawnAttacks)</a>
+<a name="ln892">            - KingAdditionalEvaluation(blackKing, (int)Side.Black, whitePawnAttacks);</a>
+<a name="ln893"> </a>
+<a name="ln894">        // Bishop pair bonus</a>
+<a name="ln895">        if (PieceBitBoards[(int)Piece.B].CountBits() &gt;= 2)</a>
+<a name="ln896">        {</a>
+<a name="ln897">            packedScore += BishopPairBonus;</a>
+<a name="ln898">        }</a>
+<a name="ln899"> </a>
+<a name="ln900">        if (PieceBitBoards[(int)Piece.b].CountBits() &gt;= 2)</a>
+<a name="ln901">        {</a>
+<a name="ln902">            packedScore -= BishopPairBonus;</a>
+<a name="ln903">        }</a>
+<a name="ln904"> </a>
+<a name="ln905">        // Pieces attacked by pawns bonus</a>
+<a name="ln906">        packedScore += PieceAttackedByPawnPenalty</a>
+<a name="ln907">            * ((blackPawnAttacks &amp; OccupancyBitBoards[(int)Side.White] /* &amp; (~whitePawns) */).CountBits()</a>
+<a name="ln908">                - (whitePawnAttacks &amp; OccupancyBitBoards[(int)Side.Black] /* &amp; (~blackPawns) */).CountBits());</a>
+<a name="ln909"> </a>
+<a name="ln910">        if (gamePhase &gt; MaxPhase)    // Early promotions</a>
+<a name="ln911">        {</a>
+<a name="ln912">            gamePhase = MaxPhase;</a>
+<a name="ln913">        }</a>
+<a name="ln914"> </a>
+<a name="ln915">        int totalPawnsCount = whitePawns.CountBits() + blackPawns.CountBits();</a>
+<a name="ln916"> </a>
+<a name="ln917">        // Pawnless endgames with few pieces</a>
+<a name="ln918">        if (gamePhase &lt;= 3 &amp;&amp; totalPawnsCount == 0)</a>
+<a name="ln919">        {</a>
+<a name="ln920">            switch (gamePhase)</a>
+<a name="ln921">            {</a>
+<a name="ln922">                //case 5:</a>
+<a name="ln923">                //    {</a>
+<a name="ln924">                //        // RB vs R, RN vs R - scale it down due to the chances of it being a draw</a>
+<a name="ln925">                //        if (pieceCount[(int)Piece.R] == 1 &amp;&amp; pieceCount[(int)Piece.r] == 1)</a>
+<a name="ln926">                //        {</a>
+<a name="ln927">                //            packedScore &gt;&gt;= 1; // /2</a>
+<a name="ln928">                //        }</a>
+<a name="ln929"> </a>
+<a name="ln930">                //        break;</a>
+<a name="ln931">                //    }</a>
+<a name="ln932">                case 3:</a>
+<a name="ln933">                    {</a>
+<a name="ln934">                        var winningSideOffset = Utils.PieceOffset(packedScore &gt;= 0);</a>
+<a name="ln935"> </a>
+<a name="ln936">                        if (PieceBitBoards[(int)Piece.N + winningSideOffset].CountBits() == 2)      // NN vs N, NN vs B</a>
+<a name="ln937">                        {</a>
+<a name="ln938">                            return (0, gamePhase);</a>
+<a name="ln939">                        }</a>
+<a name="ln940"> </a>
+<a name="ln941">                        // Without rooks, only BB vs N is a win and BN vs N can have some chances</a>
+<a name="ln942">                        // Not taking that into account here though, we would need this to rule them out: `pieceCount[(int)Piece.b - winningSideOffset] == 1 || pieceCount[(int)Piece.B + winningSideOffset] &lt;= 1`</a>
+<a name="ln943">                        //if (pieceCount[(int)Piece.R + winningSideOffset] == 0)  // BN vs B, NN vs B, BB vs B, BN vs N, NN vs N</a>
+<a name="ln944">                        //{</a>
+<a name="ln945">                        //    packedScore &gt;&gt;= 1; // /2</a>
+<a name="ln946">                        //}</a>
+<a name="ln947"> </a>
+<a name="ln948">                        break;</a>
+<a name="ln949">                    }</a>
+<a name="ln950">                case 2:</a>
+<a name="ln951">                    {</a>
+<a name="ln952">                        var whiteKnightsCount = PieceBitBoards[(int)Piece.N].CountBits();</a>
+<a name="ln953"> </a>
+<a name="ln954">                        if (whiteKnightsCount + PieceBitBoards[(int)Piece.n].CountBits() == 2            // NN vs -, N vs N</a>
+<a name="ln955">                                || whiteKnightsCount + PieceBitBoards[(int)Piece.B].CountBits() == 1)    // B vs N, B vs B</a>
+<a name="ln956">                        {</a>
+<a name="ln957">                            return (0, gamePhase);</a>
+<a name="ln958">                        }</a>
+<a name="ln959"> </a>
+<a name="ln960">                        break;</a>
+<a name="ln961">                    }</a>
+<a name="ln962">                case 1:</a>
+<a name="ln963">                case 0:</a>
+<a name="ln964">                    {</a>
+<a name="ln965">                        return (0, gamePhase);</a>
+<a name="ln966">                    }</a>
+<a name="ln967">            }</a>
+<a name="ln968">        }</a>
+<a name="ln969"> </a>
+<a name="ln970">        int endGamePhase = MaxPhase - gamePhase;</a>
+<a name="ln971"> </a>
+<a name="ln972">        var middleGameScore = Utils.UnpackMG(packedScore);</a>
+<a name="ln973">        var endGameScore = Utils.UnpackEG(packedScore);</a>
+<a name="ln974">        var eval = ((middleGameScore * gamePhase) + (endGameScore * endGamePhase)) / MaxPhase;</a>
+<a name="ln975"> </a>
+<a name="ln976">        // Endgame scaling with pawn count, formula yoinked from Sirius</a>
+<a name="ln977">        eval = (int)(eval * ((80 + (totalPawnsCount * 7)) / 128.0));</a>
+<a name="ln978"> </a>
+<a name="ln979">        eval = ScaleEvalWith50MovesDrawDistance(eval, movesWithoutCaptureOrPawnMove);</a>
+<a name="ln980"> </a>
+<a name="ln981">        eval = Math.Clamp(eval, MinStaticEval, MaxStaticEval);</a>
+<a name="ln982"> </a>
+<a name="ln983">        var sideEval = Side == Side.White</a>
+<a name="ln984">            ? eval</a>
+<a name="ln985">            : -eval;</a>
+<a name="ln986"> </a>
+<a name="ln987">        return (sideEval, gamePhase);</a>
+<a name="ln988">    }</a>
+<a name="ln989"> </a>
+<a name="ln990">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln991">    public int Phase()</a>
+<a name="ln992">    {</a>
+<a name="ln993">        int gamePhase =</a>
+<a name="ln994">             ((PieceBitBoards[(int)Piece.N] | PieceBitBoards[(int)Piece.n]).CountBits() * GamePhaseByPiece[(int)Piece.N])</a>
+<a name="ln995">            + ((PieceBitBoards[(int)Piece.B] | PieceBitBoards[(int)Piece.b]).CountBits() * GamePhaseByPiece[(int)Piece.B])</a>
+<a name="ln996">            + ((PieceBitBoards[(int)Piece.R] | PieceBitBoards[(int)Piece.r]).CountBits() * GamePhaseByPiece[(int)Piece.R])</a>
+<a name="ln997">            + ((PieceBitBoards[(int)Piece.Q] | PieceBitBoards[(int)Piece.q]).CountBits() * GamePhaseByPiece[(int)Piece.Q]);</a>
+<a name="ln998"> </a>
+<a name="ln999">        if (gamePhase &gt; MaxPhase)    // Early promotions</a>
+<a name="ln1000">        {</a>
+<a name="ln1001">            gamePhase = MaxPhase;</a>
+<a name="ln1002">        }</a>
+<a name="ln1003"> </a>
+<a name="ln1004">        return gamePhase;</a>
+<a name="ln1005">    }</a>
+<a name="ln1006"> </a>
+<a name="ln1007">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1008">    internal static int TaperedEvaluation(int taperedEvaluationTerm, int phase)</a>
+<a name="ln1009">    {</a>
+<a name="ln1010">        return ((Utils.UnpackMG(taperedEvaluationTerm) * phase) + (Utils.UnpackEG(taperedEvaluationTerm) * (24 - phase))) / 24;</a>
+<a name="ln1011">    }</a>
+<a name="ln1012"> </a>
+<a name="ln1013">    /// &lt;summary&gt;</a>
+<a name="ln1014">    /// Assuming a current position has no legal moves (&lt;see cref=&quot;AllPossibleMoves&quot;/&gt; doesn't produce any &lt;see cref=&quot;IsValid&quot;/&gt; position),</a>
+<a name="ln1015">    /// this method determines if a position is a result of either a loss by checkmate or a draw by stalemate.</a>
+<a name="ln1016">    /// NegaMax style</a>
+<a name="ln1017">    /// &lt;/summary&gt;</a>
+<a name="ln1018">    /// &lt;param name=&quot;ply&quot;&gt;Modulates the output, favouring positions with lower ply (i.e. Checkmate in less moves)&lt;/param&gt;</a>
+<a name="ln1019">    /// &lt;returns&gt;At least &lt;see cref=&quot;CheckMateEvaluation&quot;/&gt; if Position.Side lost (more extreme values when &lt;paramref name=&quot;ply&quot;/&gt; increases)</a>
+<a name="ln1020">    /// or 0 if Position.Side was stalemated&lt;/returns&gt;</a>
+<a name="ln1021">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1022">    public static int EvaluateFinalPosition(int ply, bool isInCheck)</a>
+<a name="ln1023">    {</a>
+<a name="ln1024">        if (isInCheck)</a>
+<a name="ln1025">        {</a>
+<a name="ln1026">            // Checkmate evaluation, but not as bad/shallow as it looks like since we're already searching at a certain depth</a>
+<a name="ln1027">            return -CheckMateBaseEvaluation + ply;</a>
+<a name="ln1028">        }</a>
+<a name="ln1029">        else</a>
+<a name="ln1030">        {</a>
+<a name="ln1031">            return 0;</a>
+<a name="ln1032">        }</a>
+<a name="ln1033">    }</a>
+<a name="ln1034"> </a>
+<a name="ln1035">    /// &lt;summary&gt;</a>
+<a name="ln1036">    /// Doesn't include &lt;see cref=&quot;Piece.P&quot;/&gt;, &lt;see cref=&quot;Piece.p&quot;/&gt;, &lt;see cref=&quot;Piece.K&quot;/&gt; and &lt;see cref=&quot;Piece.k&quot;/&gt; evaluation</a>
+<a name="ln1037">    /// &lt;/summary&gt;</a>
+<a name="ln1038">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1039">    private int AdditionalPieceEvaluation(int pieceSquareIndex, int pieceIndex, int pieceSide, int oppositeSideKingSquare, BitBoard enemyPawnAttacks)</a>
+<a name="ln1040">    {</a>
+<a name="ln1041">        return pieceIndex switch</a>
+<a name="ln1042">        {</a>
+<a name="ln1043">            (int)Piece.R or (int)Piece.r =&gt; RookAdditionalEvaluation(pieceSquareIndex, pieceIndex, pieceSide, oppositeSideKingSquare, enemyPawnAttacks),</a>
+<a name="ln1044">            (int)Piece.B or (int)Piece.b =&gt; BishopAdditionalEvaluation(pieceSquareIndex, pieceIndex, pieceSide, oppositeSideKingSquare, enemyPawnAttacks),</a>
+<a name="ln1045">            (int)Piece.N or (int)Piece.n =&gt; KnightAdditionalEvaluation(pieceSquareIndex, pieceSide, oppositeSideKingSquare, enemyPawnAttacks),</a>
+<a name="ln1046">            (int)Piece.Q or (int)Piece.q =&gt; QueenAdditionalEvaluation(pieceSquareIndex, pieceSide, oppositeSideKingSquare, enemyPawnAttacks),</a>
+<a name="ln1047">            _ =&gt; 0</a>
+<a name="ln1048">        };</a>
+<a name="ln1049">    }</a>
+<a name="ln1050"> </a>
+<a name="ln1051">    /// &lt;summary&gt;</a>
+<a name="ln1052">    /// Doesn't include &lt;see cref=&quot;Piece.K&quot;/&gt; and &lt;see cref=&quot;Piece.k&quot;/&gt; evaluation</a>
+<a name="ln1053">    /// &lt;/summary&gt;</a>
+<a name="ln1054">    [Obsolete(&quot;Test only&quot;)]</a>
+<a name="ln1055">    internal int AdditionalPieceEvaluation(int bucket, int oppositeSideBucket, int pieceSquareIndex, int pieceIndex, int pieceSide, int sameSideKingSquare, int oppositeSideKingSquare, BitBoard enemyPawnAttacks)</a>
+<a name="ln1056">    {</a>
+<a name="ln1057">        return pieceIndex switch</a>
+<a name="ln1058">        {</a>
+<a name="ln1059">            (int)Piece.P or (int)Piece.p =&gt; PawnAdditionalEvaluation(bucket, oppositeSideBucket, pieceSquareIndex, pieceIndex, sameSideKingSquare, oppositeSideKingSquare),</a>
+<a name="ln1060"> </a>
+<a name="ln1061">            (int)Piece.R or (int)Piece.r =&gt; RookAdditionalEvaluation(pieceSquareIndex, pieceIndex, pieceSide, oppositeSideKingSquare, enemyPawnAttacks),</a>
+<a name="ln1062">            (int)Piece.B or (int)Piece.b =&gt; BishopAdditionalEvaluation(pieceSquareIndex, pieceIndex, pieceSide, oppositeSideKingSquare, enemyPawnAttacks),</a>
+<a name="ln1063">            (int)Piece.N or (int)Piece.n =&gt; KnightAdditionalEvaluation(pieceSquareIndex, pieceSide, oppositeSideKingSquare, enemyPawnAttacks),</a>
+<a name="ln1064">            (int)Piece.Q or (int)Piece.q =&gt; QueenAdditionalEvaluation(pieceSquareIndex, pieceSide, oppositeSideKingSquare, enemyPawnAttacks),</a>
+<a name="ln1065">            _ =&gt; 0</a>
+<a name="ln1066">        };</a>
+<a name="ln1067">    }</a>
+<a name="ln1068"> </a>
+<a name="ln1069">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1070">    private int PawnAdditionalEvaluation(int bucket, int oppositeSideBucket, int squareIndex, int pieceIndex, int sameSideKingSquare, int oppositeSideKingSquare)</a>
+<a name="ln1071">    {</a>
+<a name="ln1072">        int packedBonus = 0;</a>
+<a name="ln1073"> </a>
+<a name="ln1074">        var rank = Constants.Rank[squareIndex];</a>
+<a name="ln1075">        var oppositeSide = (int)Side.Black;</a>
+<a name="ln1076">        ulong passedPawnsMask;</a>
+<a name="ln1077"> </a>
+<a name="ln1078">        if (pieceIndex == (int)Piece.p)</a>
+<a name="ln1079">        {</a>
+<a name="ln1080">            rank = 7 - rank;</a>
+<a name="ln1081">            oppositeSide = (int)Side.White;</a>
+<a name="ln1082">            passedPawnsMask = Masks.BlackPassedPawnMasks[squareIndex];</a>
+<a name="ln1083">        }</a>
+<a name="ln1084">        else</a>
+<a name="ln1085">        {</a>
+<a name="ln1086">            passedPawnsMask = Masks.WhitePassedPawnMasks[squareIndex];</a>
+<a name="ln1087">        }</a>
+<a name="ln1088"> </a>
+<a name="ln1089">        // Isolated pawn</a>
+<a name="ln1090">        if ((PieceBitBoards[pieceIndex] &amp; Masks.IsolatedPawnMasks[squareIndex]) == default)</a>
+<a name="ln1091">        {</a>
+<a name="ln1092">            packedBonus += IsolatedPawnPenalty;</a>
+<a name="ln1093">        }</a>
+<a name="ln1094"> </a>
+<a name="ln1095">        // Passed pawn</a>
+<a name="ln1096">        if ((PieceBitBoards[(int)Piece.p - pieceIndex] &amp; passedPawnsMask) == default)</a>
+<a name="ln1097">        {</a>
+<a name="ln1098">            // Passed pawn without opponent pieces ahead (in its passed pawn mask)</a>
+<a name="ln1099">            if ((passedPawnsMask &amp; OccupancyBitBoards[oppositeSide]) == 0)</a>
+<a name="ln1100">            {</a>
+<a name="ln1101">                packedBonus += PassedPawnBonusNoEnemiesAheadBonus[bucket][rank];</a>
+<a name="ln1102">                packedBonus += PassedPawnBonusNoEnemiesAheadEnemyBonus[oppositeSideBucket][rank];</a>
+<a name="ln1103">            }</a>
+<a name="ln1104"> </a>
+<a name="ln1105">            // King distance to passed pawn</a>
+<a name="ln1106">            var friendlyKingDistance = Constants.ChebyshevDistance[squareIndex][sameSideKingSquare];</a>
+<a name="ln1107"> </a>
+<a name="ln1108">            // Enemy king distance to passed pawn</a>
+<a name="ln1109">            var enemyKingDistance = Constants.ChebyshevDistance[squareIndex][oppositeSideKingSquare];</a>
+<a name="ln1110"> </a>
+<a name="ln1111">            packedBonus += PassedPawnBonus[bucket][rank]</a>
+<a name="ln1112">                + PassedPawnEnemyBonus[oppositeSideBucket][rank]</a>
+<a name="ln1113">                + FriendlyKingDistanceToPassedPawnBonus[friendlyKingDistance]</a>
+<a name="ln1114">                + EnemyKingDistanceToPassedPawnPenalty[enemyKingDistance];</a>
+<a name="ln1115">        }</a>
+<a name="ln1116"> </a>
+<a name="ln1117">        // Pawn phalanx</a>
+<a name="ln1118">        if (Constants.File[squareIndex] != 7 &amp;&amp; PieceBitBoards[pieceIndex].GetBit(squareIndex + 1))</a>
+<a name="ln1119">        {</a>
+<a name="ln1120">            packedBonus += PawnPhalanxBonus[rank];</a>
+<a name="ln1121">        }</a>
+<a name="ln1122"> </a>
+<a name="ln1123">        return packedBonus;</a>
+<a name="ln1124">    }</a>
+<a name="ln1125"> </a>
+<a name="ln1126">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1127">    private int RookAdditionalEvaluation(int squareIndex, int pieceIndex, int pieceSide, int oppositeSideKingSquare, BitBoard enemyPawnAttacks)</a>
+<a name="ln1128">    {</a>
+<a name="ln1129">        const int pawnToRookOffset = (int)Piece.R - (int)Piece.P;</a>
+<a name="ln1130"> </a>
+<a name="ln1131">        var occupancy = OccupancyBitBoards[(int)Side.Both];</a>
+<a name="ln1132">        var attacks = Attacks.RookAttacks(squareIndex, occupancy);</a>
+<a name="ln1133"> </a>
+<a name="ln1134">        // Mobility</a>
+<a name="ln1135">        var attacksCount =</a>
+<a name="ln1136">            (attacks</a>
+<a name="ln1137">                &amp; (~(OccupancyBitBoards[pieceSide] | enemyPawnAttacks)))</a>
+<a name="ln1138">            .CountBits();</a>
+<a name="ln1139"> </a>
+<a name="ln1140">        var packedBonus = RookMobilityBonus[attacksCount];</a>
+<a name="ln1141"> </a>
+<a name="ln1142">        var file = Masks.FileMask(squareIndex);</a>
+<a name="ln1143"> </a>
+<a name="ln1144">        // Rook on open file</a>
+<a name="ln1145">        if (((PieceBitBoards[(int)Piece.P] | PieceBitBoards[(int)Piece.p]) &amp; file) == default)</a>
+<a name="ln1146">        {</a>
+<a name="ln1147">            packedBonus += OpenFileRookBonus;</a>
+<a name="ln1148">        }</a>
+<a name="ln1149">        // Rook on semi-open file</a>
+<a name="ln1150">        else if ((PieceBitBoards[pieceIndex - pawnToRookOffset] &amp; file) == default)</a>
+<a name="ln1151">        {</a>
+<a name="ln1152">            packedBonus += SemiOpenFileRookBonus;</a>
+<a name="ln1153">        }</a>
+<a name="ln1154"> </a>
+<a name="ln1155">        // Checks</a>
+<a name="ln1156">        var enemyKingCheckThreats = Attacks.RookAttacks(oppositeSideKingSquare, occupancy);</a>
+<a name="ln1157">        var checks = (attacks &amp; enemyKingCheckThreats).CountBits();</a>
+<a name="ln1158"> </a>
+<a name="ln1159">        packedBonus += CheckBonus[(int)Piece.R] * checks;</a>
+<a name="ln1160"> </a>
+<a name="ln1161">        if ((attacks &amp; PieceBitBoards[pieceIndex]).CountBits() &gt;= 1)</a>
+<a name="ln1162">        {</a>
+<a name="ln1163">            var rank = Constants.Rank[squareIndex];</a>
+<a name="ln1164"> </a>
+<a name="ln1165">            if (pieceIndex == (int)Piece.r)</a>
+<a name="ln1166">            {</a>
+<a name="ln1167">                rank = 7 - rank;</a>
+<a name="ln1168">            }</a>
+<a name="ln1169"> </a>
+<a name="ln1170">            packedBonus += ConnectedRooksBonus[rank];</a>
+<a name="ln1171">        }</a>
+<a name="ln1172"> </a>
+<a name="ln1173">        return packedBonus;</a>
+<a name="ln1174">    }</a>
+<a name="ln1175"> </a>
+<a name="ln1176">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1177">    private int KnightAdditionalEvaluation(int squareIndex, int pieceSide, int oppositeSideKingSquare, BitBoard enemyPawnAttacks)</a>
+<a name="ln1178">    {</a>
+<a name="ln1179">        //var offset = Utils.PieceOffset(pieceSide);</a>
+<a name="ln1180">        //var oppositeRooksIndex = (int)Piece.r - offset;</a>
+<a name="ln1181">        //var oppositeQueensIndex = (int)Piece.q - offset;</a>
+<a name="ln1182"> </a>
+<a name="ln1183">        var attacks = Attacks.KnightAttacks[squareIndex];</a>
+<a name="ln1184"> </a>
+<a name="ln1185">        // Mobility</a>
+<a name="ln1186">        var attacksCount =</a>
+<a name="ln1187">            (attacks</a>
+<a name="ln1188">                &amp; (~(OccupancyBitBoards[pieceSide] | enemyPawnAttacks)))</a>
+<a name="ln1189">            .CountBits();</a>
+<a name="ln1190"> </a>
+<a name="ln1191">        var packedBonus = KnightMobilityBonus[attacksCount];</a>
+<a name="ln1192"> </a>
+<a name="ln1193">        // Checks</a>
+<a name="ln1194">        var enemyKingCheckThreats = Attacks.KnightAttacks[oppositeSideKingSquare];</a>
+<a name="ln1195">        var checks = (attacks &amp; enemyKingCheckThreats).CountBits();</a>
+<a name="ln1196"> </a>
+<a name="ln1197">        packedBonus += CheckBonus[(int)Piece.N] * checks;</a>
+<a name="ln1198"> </a>
+<a name="ln1199">        // Major threats</a>
+<a name="ln1200">        //packedBonus += MinorMajorThreatsBonus * (PieceBitBoards[oppositeRooksIndex] | PieceBitBoards[oppositeQueensIndex]).CountBits();</a>
+<a name="ln1201"> </a>
+<a name="ln1202">        return packedBonus;</a>
+<a name="ln1203">    }</a>
+<a name="ln1204"> </a>
+<a name="ln1205">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1206">    private int BishopAdditionalEvaluation(int squareIndex, int pieceIndex, int pieceSide, int oppositeSideKingSquare, BitBoard enemyPawnAttacks)</a>
+<a name="ln1207">    {</a>
+<a name="ln1208">        const int pawnToBishopOffset = (int)Piece.B - (int)Piece.P;</a>
+<a name="ln1209"> </a>
+<a name="ln1210">        var offset = Utils.PieceOffset(pieceSide);</a>
+<a name="ln1211">        var oppositeRooksIndex = (int)Piece.r - offset;</a>
+<a name="ln1212">        var oppositeQueensIndex = (int)Piece.q - offset;</a>
+<a name="ln1213"> </a>
+<a name="ln1214">        var occupancy = OccupancyBitBoards[(int)Side.Both];</a>
+<a name="ln1215">        var attacks = Attacks.BishopAttacks(squareIndex, occupancy);</a>
+<a name="ln1216"> </a>
+<a name="ln1217">        // Mobility</a>
+<a name="ln1218">        var attacksCount =</a>
+<a name="ln1219">            (attacks</a>
+<a name="ln1220">                &amp; (~(OccupancyBitBoards[pieceSide] | enemyPawnAttacks)))</a>
+<a name="ln1221">            .CountBits();</a>
+<a name="ln1222"> </a>
+<a name="ln1223">        var packedBonus = BishopMobilityBonus[attacksCount];</a>
+<a name="ln1224"> </a>
+<a name="ln1225">        // Bad bishop</a>
+<a name="ln1226">        var sameSidePawns = PieceBitBoards[pieceIndex - pawnToBishopOffset];</a>
+<a name="ln1227"> </a>
+<a name="ln1228">        var sameColorPawns = sameSidePawns &amp;</a>
+<a name="ln1229">            (Constants.DarkSquares[squareIndex] == 1</a>
+<a name="ln1230">                ? Constants.DarkSquaresBitBoard</a>
+<a name="ln1231">                : Constants.LightSquaresBitBoard);</a>
+<a name="ln1232"> </a>
+<a name="ln1233">        packedBonus += BadBishop_SameColorPawnsPenalty[sameColorPawns.CountBits()];</a>
+<a name="ln1234"> </a>
+<a name="ln1235">        // Blocked central pawns</a>
+<a name="ln1236">        var sameSideCentralPawns = sameSidePawns &amp; Constants.CentralFiles;</a>
+<a name="ln1237"> </a>
+<a name="ln1238">        var pawnBlockerSquares = pieceSide == (int)Side.White</a>
+<a name="ln1239">            ? sameSideCentralPawns.ShiftUp()</a>
+<a name="ln1240">            : sameSideCentralPawns.ShiftDown();</a>
+<a name="ln1241"> </a>
+<a name="ln1242">        var pawnBlockers = pawnBlockerSquares &amp; OccupancyBitBoards[Utils.OppositeSide(pieceSide)];</a>
+<a name="ln1243"> </a>
+<a name="ln1244">        packedBonus += BadBishop_BlockedCentralPawnsPenalty[pawnBlockers.CountBits()];</a>
+<a name="ln1245"> </a>
+<a name="ln1246">        // Bishop in unblocked long diagonals</a>
+<a name="ln1247">        if ((attacks &amp; Constants.CentralSquares).CountBits() == 2)</a>
+<a name="ln1248">        {</a>
+<a name="ln1249">            packedBonus += BishopInUnblockedLongDiagonalBonus;</a>
+<a name="ln1250">        }</a>
+<a name="ln1251"> </a>
+<a name="ln1252">        // Checks</a>
+<a name="ln1253">        var enemyKingCheckThreats = Attacks.BishopAttacks(oppositeSideKingSquare, occupancy);</a>
+<a name="ln1254">        var checks = (attacks &amp; enemyKingCheckThreats).CountBits();</a>
+<a name="ln1255"> </a>
+<a name="ln1256">        packedBonus += CheckBonus[(int)Piece.B] * checks;</a>
+<a name="ln1257"> </a>
+<a name="ln1258">        // Major threats</a>
+<a name="ln1259">        packedBonus += BishopRookThreatsBonus * (attacks &amp; PieceBitBoards[oppositeRooksIndex]).CountBits();</a>
+<a name="ln1260">        packedBonus += BishopQueenThreatsBonus * (attacks &amp; PieceBitBoards[oppositeQueensIndex]).CountBits();</a>
+<a name="ln1261"> </a>
+<a name="ln1262">        return packedBonus;</a>
+<a name="ln1263">    }</a>
+<a name="ln1264"> </a>
+<a name="ln1265">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1266">    private int QueenAdditionalEvaluation(int squareIndex, int pieceSide, int oppositeSideKingSquare, BitBoard enemyPawnAttacks)</a>
+<a name="ln1267">    {</a>
+<a name="ln1268">        var occupancy = OccupancyBitBoards[(int)Side.Both];</a>
+<a name="ln1269">        var attacks = Attacks.QueenAttacks(squareIndex, occupancy);</a>
+<a name="ln1270"> </a>
+<a name="ln1271">        // Mobility</a>
+<a name="ln1272">        var attacksCount =</a>
+<a name="ln1273">            (attacks</a>
+<a name="ln1274">                &amp; (~(OccupancyBitBoards[pieceSide] | enemyPawnAttacks)))</a>
+<a name="ln1275">            .CountBits();</a>
+<a name="ln1276"> </a>
+<a name="ln1277">        var packedBonus = QueenMobilityBonus[attacksCount];</a>
+<a name="ln1278"> </a>
+<a name="ln1279">        // Checks</a>
+<a name="ln1280">        var enemyKingCheckThreats = Attacks.QueenAttacks(oppositeSideKingSquare, occupancy);</a>
+<a name="ln1281">        var checks = (attacks &amp; enemyKingCheckThreats).CountBits();</a>
+<a name="ln1282"> </a>
+<a name="ln1283">        packedBonus += CheckBonus[(int)Piece.Q] * checks;</a>
+<a name="ln1284"> </a>
+<a name="ln1285">        return packedBonus;</a>
+<a name="ln1286">    }</a>
+<a name="ln1287"> </a>
+<a name="ln1288">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1289">    internal int KingAdditionalEvaluation(int squareIndex, int pieceSide, BitBoard enemyPawnAttacks)</a>
+<a name="ln1290">    {</a>
+<a name="ln1291">        // Virtual mobility (as if Queen)</a>
+<a name="ln1292">        var attacksCount =</a>
+<a name="ln1293">            (Attacks.QueenAttacks(squareIndex, OccupancyBitBoards[(int)Side.Both])</a>
+<a name="ln1294">            &amp; ~(OccupancyBitBoards[pieceSide] | enemyPawnAttacks)).CountBits();</a>
+<a name="ln1295">        int packedBonus = VirtualKingMobilityBonus[attacksCount];</a>
+<a name="ln1296"> </a>
+<a name="ln1297">        var kingSideOffset = Utils.PieceOffset(pieceSide);</a>
+<a name="ln1298"> </a>
+<a name="ln1299">        // Opposite side rooks or queens on the board</a>
+<a name="ln1300">        if (PieceBitBoards[(int)Piece.r - kingSideOffset] + PieceBitBoards[(int)Piece.q - kingSideOffset] != 0)</a>
+<a name="ln1301">        {</a>
+<a name="ln1302">            var file = Masks.FileMask(squareIndex);</a>
+<a name="ln1303"> </a>
+<a name="ln1304">            // King on open file</a>
+<a name="ln1305">            if (((PieceBitBoards[(int)Piece.P] | PieceBitBoards[(int)Piece.p]) &amp; file) == 0)</a>
+<a name="ln1306">            {</a>
+<a name="ln1307">                packedBonus += OpenFileKingPenalty;</a>
+<a name="ln1308">            }</a>
+<a name="ln1309">            // King on semi-open file</a>
+<a name="ln1310">            else if ((PieceBitBoards[(int)Piece.P + kingSideOffset] &amp; file) == 0)</a>
+<a name="ln1311">            {</a>
+<a name="ln1312">                packedBonus += SemiOpenFileKingPenalty;</a>
+<a name="ln1313">            }</a>
+<a name="ln1314">        }</a>
+<a name="ln1315"> </a>
+<a name="ln1316">        // Pawn king shield included next to pawn additional eval</a>
+<a name="ln1317"> </a>
+<a name="ln1318">        return packedBonus;</a>
+<a name="ln1319">    }</a>
+<a name="ln1320"> </a>
+<a name="ln1321">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1322">    private static int KingPawnShield(int squareIndex, BitBoard sameSidePawns)</a>
+<a name="ln1323">    {</a>
+<a name="ln1324">        var ownPawnsAroundKingCount = (Attacks.KingAttacks[squareIndex] &amp; sameSidePawns).CountBits();</a>
+<a name="ln1325"> </a>
+<a name="ln1326">        return ownPawnsAroundKingCount * KingShieldBonus;</a>
+<a name="ln1327">    }</a>
+<a name="ln1328"> </a>
+<a name="ln1329">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1330">    public static int PawnIslands(BitBoard whitePawns, BitBoard blackPawns)</a>
+<a name="ln1331">    {</a>
+<a name="ln1332">        var whiteIslandCount = CountPawnIslands(whitePawns);</a>
+<a name="ln1333">        var blackIslandCount = CountPawnIslands(blackPawns);</a>
+<a name="ln1334"> </a>
+<a name="ln1335">        return PawnIslandsBonus[whiteIslandCount] - PawnIslandsBonus[blackIslandCount];</a>
+<a name="ln1336"> </a>
+<a name="ln1337">        [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1338">        static int CountPawnIslands(BitBoard pawns)</a>
+<a name="ln1339">        {</a>
+<a name="ln1340">            const int n = 1;</a>
+<a name="ln1341">            Span&lt;int&gt; files = stackalloc int[8];</a>
+<a name="ln1342"> </a>
+<a name="ln1343">            while (pawns != default)</a>
+<a name="ln1344">            {</a>
+<a name="ln1345">                pawns = pawns.WithoutLS1B(out var squareIndex);</a>
+<a name="ln1346"> </a>
+<a name="ln1347">                files[Constants.File[squareIndex]] = n;</a>
+<a name="ln1348">            }</a>
+<a name="ln1349"> </a>
+<a name="ln1350">            var islandCount = 0;</a>
+<a name="ln1351">            var isIsland = false;</a>
+<a name="ln1352"> </a>
+<a name="ln1353">            for (int file = 0; file &lt; files.Length; ++file)</a>
+<a name="ln1354">            {</a>
+<a name="ln1355">                if (files[file] == n)</a>
+<a name="ln1356">                {</a>
+<a name="ln1357">                    if (!isIsland)</a>
+<a name="ln1358">                    {</a>
+<a name="ln1359">                        isIsland = true;</a>
+<a name="ln1360">                        ++islandCount;</a>
+<a name="ln1361">                    }</a>
+<a name="ln1362">                }</a>
+<a name="ln1363">                else</a>
+<a name="ln1364">                {</a>
+<a name="ln1365">                    isIsland = false;</a>
+<a name="ln1366">                }</a>
+<a name="ln1367">            }</a>
+<a name="ln1368"> </a>
+<a name="ln1369">            return islandCount;</a>
+<a name="ln1370">        }</a>
+<a name="ln1371">    }</a>
+<a name="ln1372"> </a>
+<a name="ln1373">    /// &lt;summary&gt;</a>
+<a name="ln1374">    /// Scales &lt;paramref name=&quot;eval&quot;/&gt; with &lt;paramref name=&quot;movesWithoutCaptureOrPawnMove&quot;/&gt;, so that</a>
+<a name="ln1375">    /// an eval with 100 halfmove counter is half of the value of one with 0 halfmove counter</a>
+<a name="ln1376">    /// &lt;/summary&gt;</a>
+<a name="ln1377">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1378">    internal static int ScaleEvalWith50MovesDrawDistance(int eval, int movesWithoutCaptureOrPawnMove) =&gt;</a>
+<a name="ln1379">        eval * (200 - movesWithoutCaptureOrPawnMove) / 200;</a>
+<a name="ln1380"> </a>
+<a name="ln1381">    #endregion</a>
+<a name="ln1382"> </a>
+<a name="ln1383">    #region Attacks</a>
+<a name="ln1384"> </a>
+<a name="ln1385">    /// &lt;summary&gt;</a>
+<a name="ln1386">    /// Overload that has rooks and bishops precalculated for the position</a>
+<a name="ln1387">    /// &lt;/summary&gt;</a>
+<a name="ln1388">    /// &lt;param name=&quot;rooks&quot;&gt;Includes Queen bitboard&lt;/param&gt;</a>
+<a name="ln1389">    /// &lt;param name=&quot;bishops&quot;&gt;Includes Queen bitboard&lt;/param&gt;</a>
+<a name="ln1390">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1391">    public ulong AllAttackersTo(int square, BitBoard occupancy, BitBoard rooks, BitBoard bishops)</a>
+<a name="ln1392">    {</a>
+<a name="ln1393">        Debug.Assert(square != (int)BoardSquare.noSquare);</a>
+<a name="ln1394"> </a>
+<a name="ln1395">        return (rooks &amp; Attacks.RookAttacks(square, occupancy))</a>
+<a name="ln1396">            | (bishops &amp; Attacks.BishopAttacks(square, occupancy))</a>
+<a name="ln1397">            | (PieceBitBoards[(int)Piece.p] &amp; Attacks.PawnAttacks[(int)Side.White][square])</a>
+<a name="ln1398">            | (PieceBitBoards[(int)Piece.P] &amp; Attacks.PawnAttacks[(int)Side.Black][square])</a>
+<a name="ln1399">            | (Knights &amp; Attacks.KnightAttacks[square])</a>
+<a name="ln1400">            | (Kings &amp; Attacks.KingAttacks[square]);</a>
+<a name="ln1401">    }</a>
+<a name="ln1402"> </a>
+<a name="ln1403">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1404">    public ulong AllAttackersTo(int square)</a>
+<a name="ln1405">    {</a>
+<a name="ln1406">        Debug.Assert(square != (int)BoardSquare.noSquare);</a>
+<a name="ln1407"> </a>
+<a name="ln1408">        var occupancy = OccupancyBitBoards[(int)Side.Both];</a>
+<a name="ln1409">        var queens = Queens;</a>
+<a name="ln1410">        var rooks = queens | Rooks;</a>
+<a name="ln1411">        var bishops = queens | Bishops;</a>
+<a name="ln1412"> </a>
+<a name="ln1413">        return (rooks &amp; Attacks.RookAttacks(square, occupancy))</a>
+<a name="ln1414">            | (bishops &amp; Attacks.BishopAttacks(square, occupancy))</a>
+<a name="ln1415">            | (PieceBitBoards[(int)Piece.p] &amp; Attacks.PawnAttacks[(int)Side.White][square])</a>
+<a name="ln1416">            | (PieceBitBoards[(int)Piece.P] &amp; Attacks.PawnAttacks[(int)Side.Black][square])</a>
+<a name="ln1417">            | (Knights &amp; Attacks.KnightAttacks[square])</a>
+<a name="ln1418">            | (Kings &amp; Attacks.KingAttacks[square]);</a>
+<a name="ln1419">    }</a>
+<a name="ln1420"> </a>
+<a name="ln1421">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1422">    public ulong AllSideAttackersTo(int square, int side)</a>
+<a name="ln1423">    {</a>
+<a name="ln1424">        Debug.Assert(square != (int)BoardSquare.noSquare);</a>
+<a name="ln1425">        Debug.Assert(side != (int)Side.Both);</a>
+<a name="ln1426"> </a>
+<a name="ln1427">        var offset = Utils.PieceOffset(side);</a>
+<a name="ln1428"> </a>
+<a name="ln1429">        var occupancy = OccupancyBitBoards[(int)Side.Both];</a>
+<a name="ln1430"> </a>
+<a name="ln1431">        var queens = PieceBitBoards[(int)Piece.q - offset];</a>
+<a name="ln1432">        var rooks = queens | PieceBitBoards[(int)Piece.r - offset];</a>
+<a name="ln1433">        var bishops = queens | PieceBitBoards[(int)Piece.b - offset];</a>
+<a name="ln1434"> </a>
+<a name="ln1435">        return (rooks &amp; Attacks.RookAttacks(square, occupancy))</a>
+<a name="ln1436">            | (bishops &amp; Attacks.BishopAttacks(square, occupancy))</a>
+<a name="ln1437">            | (PieceBitBoards[(int)Piece.p - offset] &amp; Attacks.PawnAttacks[side][square])</a>
+<a name="ln1438">            | (PieceBitBoards[(int)Piece.n - offset] &amp; Attacks.KnightAttacks[square]);</a>
+<a name="ln1439">    }</a>
+<a name="ln1440"> </a>
+<a name="ln1441">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1442">    public bool IsSquareAttackedBySide(int squaredIndex, Side sideToMove) =&gt; IsSquareAttacked(squaredIndex, sideToMove);</a>
+<a name="ln1443"> </a>
+<a name="ln1444">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1445">    public bool IsSquareAttacked(int squareIndex, Side sideToMove)</a>
+<a name="ln1446">    {</a>
+<a name="ln1447">        Utils.Assert(sideToMove != Side.Both);</a>
+<a name="ln1448"> </a>
+<a name="ln1449">        var sideToMoveInt = (int)sideToMove;</a>
+<a name="ln1450">        var offset = Utils.PieceOffset(sideToMoveInt);</a>
+<a name="ln1451">        var bothSidesOccupancy = OccupancyBitBoards[(int)Side.Both];</a>
+<a name="ln1452"> </a>
+<a name="ln1453">        // I tried to order them from most to least likely - not tested</a>
+<a name="ln1454">        return</a>
+<a name="ln1455">            IsSquareAttackedByPawns(squareIndex, sideToMoveInt, offset)</a>
+<a name="ln1456">            || IsSquareAttackedByKing(squareIndex, offset)</a>
+<a name="ln1457">            || IsSquareAttackedByKnights(squareIndex, offset)</a>
+<a name="ln1458">            || IsSquareAttackedByBishops(squareIndex, offset, bothSidesOccupancy, out var bishopAttacks)</a>
+<a name="ln1459">            || IsSquareAttackedByRooks(squareIndex, offset, bothSidesOccupancy, out var rookAttacks)</a>
+<a name="ln1460">            || IsSquareAttackedByQueens(offset, bishopAttacks, rookAttacks);</a>
+<a name="ln1461">    }</a>
+<a name="ln1462"> </a>
+<a name="ln1463">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1464">    public bool IsInCheck()</a>
+<a name="ln1465">    {</a>
+<a name="ln1466">        var oppositeSideInt = Utils.OppositeSide(Side);</a>
+<a name="ln1467">        var oppositeSideOffset = Utils.PieceOffset(oppositeSideInt);</a>
+<a name="ln1468"> </a>
+<a name="ln1469">        var kingSquare = PieceBitBoards[(int)Piece.k - oppositeSideOffset].GetLS1BIndex();</a>
+<a name="ln1470"> </a>
+<a name="ln1471">        var bothSidesOccupancy = OccupancyBitBoards[(int)Side.Both];</a>
+<a name="ln1472"> </a>
+<a name="ln1473">        // I tried to order them from most to least likely - not tested</a>
+<a name="ln1474">        return</a>
+<a name="ln1475">            IsSquareAttackedByRooks(kingSquare, oppositeSideOffset, bothSidesOccupancy, out var rookAttacks)</a>
+<a name="ln1476">            || IsSquareAttackedByBishops(kingSquare, oppositeSideOffset, bothSidesOccupancy, out var bishopAttacks)</a>
+<a name="ln1477">            || IsSquareAttackedByQueens(oppositeSideOffset, bishopAttacks, rookAttacks)</a>
+<a name="ln1478">            || IsSquareAttackedByKnights(kingSquare, oppositeSideOffset)</a>
+<a name="ln1479">            || IsSquareAttackedByPawns(kingSquare, oppositeSideInt, oppositeSideOffset);</a>
+<a name="ln1480">    }</a>
+<a name="ln1481"> </a>
+<a name="ln1482">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1483">    private bool IsSquareAttackedByPawns(int squareIndex, int sideToMove, int offset)</a>
+<a name="ln1484">    {</a>
+<a name="ln1485">        var oppositeColorIndex = sideToMove ^ 1;</a>
+<a name="ln1486"> </a>
+<a name="ln1487">        return (Attacks.PawnAttacks[oppositeColorIndex][squareIndex] &amp; PieceBitBoards[offset]) != default;</a>
+<a name="ln1488">    }</a>
+<a name="ln1489"> </a>
+<a name="ln1490">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1491">    private bool IsSquareAttackedByKnights(int squareIndex, int offset)</a>
+<a name="ln1492">    {</a>
+<a name="ln1493">        return (Attacks.KnightAttacks[squareIndex] &amp; PieceBitBoards[(int)Piece.N + offset]) != default;</a>
+<a name="ln1494">    }</a>
+<a name="ln1495"> </a>
+<a name="ln1496">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1497">    private bool IsSquareAttackedByKing(int squareIndex, int offset)</a>
+<a name="ln1498">    {</a>
+<a name="ln1499">        return (Attacks.KingAttacks[squareIndex] &amp; PieceBitBoards[(int)Piece.K + offset]) != default;</a>
+<a name="ln1500">    }</a>
+<a name="ln1501"> </a>
+<a name="ln1502">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1503">    private bool IsSquareAttackedByBishops(int squareIndex, int offset, BitBoard bothSidesOccupancy, out BitBoard bishopAttacks)</a>
+<a name="ln1504">    {</a>
+<a name="ln1505">        bishopAttacks = Attacks.BishopAttacks(squareIndex, bothSidesOccupancy);</a>
+<a name="ln1506">        return (bishopAttacks &amp; PieceBitBoards[(int)Piece.B + offset]) != default;</a>
+<a name="ln1507">    }</a>
+<a name="ln1508"> </a>
+<a name="ln1509">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1510">    private bool IsSquareAttackedByRooks(int squareIndex, int offset, BitBoard bothSidesOccupancy, out BitBoard rookAttacks)</a>
+<a name="ln1511">    {</a>
+<a name="ln1512">        rookAttacks = Attacks.RookAttacks(squareIndex, bothSidesOccupancy);</a>
+<a name="ln1513">        return (rookAttacks &amp; PieceBitBoards[(int)Piece.R + offset]) != default;</a>
+<a name="ln1514">    }</a>
+<a name="ln1515"> </a>
+<a name="ln1516">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1517">    private bool IsSquareAttackedByQueens(int offset, BitBoard bishopAttacks, BitBoard rookAttacks)</a>
+<a name="ln1518">    {</a>
+<a name="ln1519">        var queenAttacks = Attacks.QueenAttacks(rookAttacks, bishopAttacks);</a>
+<a name="ln1520">        return (queenAttacks &amp; PieceBitBoards[(int)Piece.Q + offset]) != default;</a>
+<a name="ln1521">    }</a>
+<a name="ln1522"> </a>
+<a name="ln1523">    #endregion</a>
+<a name="ln1524"> </a>
+<a name="ln1525">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1526">    public int CountPieces() =&gt; PieceBitBoards.Sum(b =&gt; b.CountBits());</a>
+<a name="ln1527"> </a>
+<a name="ln1528">    /// &lt;summary&gt;</a>
+<a name="ln1529">    /// Based on Stormphrax</a>
+<a name="ln1530">    /// &lt;/summary&gt;</a>
+<a name="ln1531">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1532">    public int PieceAt(int square)</a>
+<a name="ln1533">    {</a>
+<a name="ln1534">        var bit = BitBoardExtensions.SquareBit(square);</a>
+<a name="ln1535"> </a>
+<a name="ln1536">        Side color;</a>
+<a name="ln1537"> </a>
+<a name="ln1538">        if ((OccupancyBitBoards[(int)Side.Black] &amp; bit) != default)</a>
+<a name="ln1539">        {</a>
+<a name="ln1540">            color = Side.Black;</a>
+<a name="ln1541">        }</a>
+<a name="ln1542">        else if ((OccupancyBitBoards[(int)Side.White] &amp; bit) != default)</a>
+<a name="ln1543">        {</a>
+<a name="ln1544">            color = Side.White;</a>
+<a name="ln1545">        }</a>
+<a name="ln1546">        else</a>
+<a name="ln1547">        {</a>
+<a name="ln1548">            return (int)Piece.None;</a>
+<a name="ln1549">        }</a>
+<a name="ln1550"> </a>
+<a name="ln1551">        var offset = Utils.PieceOffset(color);</a>
+<a name="ln1552"> </a>
+<a name="ln1553">        for (int pieceIndex = offset; pieceIndex &lt; 6 + offset; ++pieceIndex)</a>
+<a name="ln1554">        {</a>
+<a name="ln1555">            if (!(PieceBitBoards[pieceIndex] &amp; bit).Empty())</a>
+<a name="ln1556">            {</a>
+<a name="ln1557">                return pieceIndex;</a>
+<a name="ln1558">            }</a>
+<a name="ln1559">        }</a>
+<a name="ln1560"> </a>
+<a name="ln1561">        Debug.Fail($&quot;Bit set in {Side} occupancy bitboard, but not piece found&quot;);</a>
+<a name="ln1562"> </a>
+<a name="ln1563">        return (int)Piece.None;</a>
+<a name="ln1564">    }</a>
+<a name="ln1565"> </a>
+<a name="ln1566">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1567">    public string FEN(int halfMovesWithoutCaptureOrPawnMove = 0, int fullMoveClock = 1)</a>
+<a name="ln1568">    {</a>
+<a name="ln1569">        var sb = new StringBuilder(100);</a>
+<a name="ln1570"> </a>
+<a name="ln1571">        var squaresPerFile = 0;</a>
+<a name="ln1572"> </a>
+<a name="ln1573">        int squaresWithoutPiece = 0;</a>
+<a name="ln1574">        int lengthBeforeSlash = sb.Length;</a>
+<a name="ln1575">        for (int square = 0; square &lt; 64; ++square)</a>
+<a name="ln1576">        {</a>
+<a name="ln1577">            int foundPiece = -1;</a>
+<a name="ln1578">            for (var pieceBoardIndex = 0; pieceBoardIndex &lt; 12; ++pieceBoardIndex)</a>
+<a name="ln1579">            {</a>
+<a name="ln1580">                if (PieceBitBoards[pieceBoardIndex].GetBit(square))</a>
+<a name="ln1581">                {</a>
+<a name="ln1582">                    foundPiece = pieceBoardIndex;</a>
+<a name="ln1583">                    break;</a>
+<a name="ln1584">                }</a>
+<a name="ln1585">            }</a>
+<a name="ln1586"> </a>
+<a name="ln1587">            if (foundPiece != -1)</a>
+<a name="ln1588">            {</a>
+<a name="ln1589">                if (squaresWithoutPiece != 0)</a>
+<a name="ln1590">                {</a>
+<a name="ln1591">                    sb.Append(squaresWithoutPiece);</a>
+<a name="ln1592">                    squaresWithoutPiece = 0;</a>
+<a name="ln1593">                }</a>
+<a name="ln1594"> </a>
+<a name="ln1595">                sb.Append(Constants.AsciiPieces[foundPiece]);</a>
+<a name="ln1596">            }</a>
+<a name="ln1597">            else</a>
+<a name="ln1598">            {</a>
+<a name="ln1599">                ++squaresWithoutPiece;</a>
+<a name="ln1600">            }</a>
+<a name="ln1601"> </a>
+<a name="ln1602">            squaresPerFile = (squaresPerFile + 1) % 8;</a>
+<a name="ln1603">            if (squaresPerFile == 0)</a>
+<a name="ln1604">            {</a>
+<a name="ln1605">                if (squaresWithoutPiece != 0)</a>
+<a name="ln1606">                {</a>
+<a name="ln1607">                    sb.Append(squaresWithoutPiece);</a>
+<a name="ln1608">                    squaresWithoutPiece = 0;</a>
+<a name="ln1609">                }</a>
+<a name="ln1610"> </a>
+<a name="ln1611">                if (square != 63)</a>
+<a name="ln1612">                {</a>
+<a name="ln1613">                    if (sb.Length == lengthBeforeSlash)</a>
+<a name="ln1614">                    {</a>
+<a name="ln1615">                        sb.Append('8');</a>
+<a name="ln1616">                    }</a>
+<a name="ln1617">                    sb.Append('/');</a>
+<a name="ln1618">                    lengthBeforeSlash = sb.Length;</a>
+<a name="ln1619">                    squaresWithoutPiece = 0;</a>
+<a name="ln1620">                }</a>
+<a name="ln1621">            }</a>
+<a name="ln1622">        }</a>
+<a name="ln1623"> </a>
+<a name="ln1624">        sb.Append(' ');</a>
+<a name="ln1625">        sb.Append(Side == Side.White ? 'w' : 'b');</a>
+<a name="ln1626"> </a>
+<a name="ln1627">        sb.Append(' ');</a>
+<a name="ln1628">        var length = sb.Length;</a>
+<a name="ln1629"> </a>
+<a name="ln1630">        if ((Castle &amp; (int)CastlingRights.WK) != default)</a>
+<a name="ln1631">        {</a>
+<a name="ln1632">            sb.Append('K');</a>
+<a name="ln1633">        }</a>
+<a name="ln1634">        if ((Castle &amp; (int)CastlingRights.WQ) != default)</a>
+<a name="ln1635">        {</a>
+<a name="ln1636">            sb.Append('Q');</a>
+<a name="ln1637">        }</a>
+<a name="ln1638">        if ((Castle &amp; (int)CastlingRights.BK) != default)</a>
+<a name="ln1639">        {</a>
+<a name="ln1640">            sb.Append('k');</a>
+<a name="ln1641">        }</a>
+<a name="ln1642">        if ((Castle &amp; (int)CastlingRights.BQ) != default)</a>
+<a name="ln1643">        {</a>
+<a name="ln1644">            sb.Append('q');</a>
+<a name="ln1645">        }</a>
+<a name="ln1646"> </a>
+<a name="ln1647">        if (sb.Length == length)</a>
+<a name="ln1648">        {</a>
+<a name="ln1649">            sb.Append('-');</a>
+<a name="ln1650">        }</a>
+<a name="ln1651"> </a>
+<a name="ln1652">        sb.Append(' ');</a>
+<a name="ln1653"> </a>
+<a name="ln1654">        sb.Append(EnPassant == BoardSquare.noSquare ? &quot;-&quot; : Constants.Coordinates[(int)EnPassant]);</a>
+<a name="ln1655"> </a>
+<a name="ln1656">        sb.Append(' ').Append(halfMovesWithoutCaptureOrPawnMove).Append(' ').Append(fullMoveClock);</a>
+<a name="ln1657"> </a>
+<a name="ln1658">        return sb.ToString();</a>
+<a name="ln1659">    }</a>
+<a name="ln1660"> </a>
+<a name="ln1661">#pragma warning disable S106, S2228 // Standard outputs should not be used directly to log anything</a>
+<a name="ln1662"> </a>
+<a name="ln1663">    /// &lt;summary&gt;</a>
+<a name="ln1664">    /// Combines &lt;see cref=&quot;PieceBitBoards&quot;/&gt;, &lt;see cref=&quot;Side&quot;/&gt;, &lt;see cref=&quot;Castle&quot;/&gt; and &lt;see cref=&quot;EnPassant&quot;/&gt;</a>
+<a name="ln1665">    /// into a human-friendly representation</a>
+<a name="ln1666">    /// &lt;/summary&gt;</a>
+<a name="ln1667">    public void Print()</a>
+<a name="ln1668">    {</a>
+<a name="ln1669">        const string separator = &quot;____________________________________________________&quot;;</a>
+<a name="ln1670">        Console.WriteLine(separator + Environment.NewLine);</a>
+<a name="ln1671"> </a>
+<a name="ln1672">        for (var rank = 0; rank &lt; 8; ++rank)</a>
+<a name="ln1673">        {</a>
+<a name="ln1674">            for (var file = 0; file &lt; 8; ++file)</a>
+<a name="ln1675">            {</a>
+<a name="ln1676">                if (file == 0)</a>
+<a name="ln1677">                {</a>
+<a name="ln1678">                    Console.Write($&quot;{8 - rank}  &quot;);</a>
+<a name="ln1679">                }</a>
+<a name="ln1680"> </a>
+<a name="ln1681">                var squareIndex = BitBoardExtensions.SquareIndex(rank, file);</a>
+<a name="ln1682"> </a>
+<a name="ln1683">                var piece = -1;</a>
+<a name="ln1684"> </a>
+<a name="ln1685">                for (int bbIndex = 0; bbIndex &lt; PieceBitBoards.Length; ++bbIndex)</a>
+<a name="ln1686">                {</a>
+<a name="ln1687">                    if (PieceBitBoards[bbIndex].GetBit(squareIndex))</a>
+<a name="ln1688">                    {</a>
+<a name="ln1689">                        piece = bbIndex;</a>
+<a name="ln1690">                    }</a>
+<a name="ln1691">                }</a>
+<a name="ln1692"> </a>
+<a name="ln1693">                var pieceRepresentation = piece == -1</a>
+<a name="ln1694">                    ? '.'</a>
+<a name="ln1695">                    : Constants.AsciiPieces[piece];</a>
+<a name="ln1696"> </a>
+<a name="ln1697">                Console.Write($&quot; {pieceRepresentation}&quot;);</a>
+<a name="ln1698">            }</a>
+<a name="ln1699"> </a>
+<a name="ln1700">            Console.WriteLine();</a>
+<a name="ln1701">        }</a>
+<a name="ln1702"> </a>
+<a name="ln1703">        Console.Write(&quot;\n    a b c d e f g h\n&quot;);</a>
+<a name="ln1704"> </a>
+<a name="ln1705">#pragma warning disable RCS1214 // Unnecessary interpolated string.</a>
+<a name="ln1706">        Console.WriteLine();</a>
+<a name="ln1707">        Console.WriteLine($&quot;    Side:\t{Side}&quot;);</a>
+<a name="ln1708">        Console.WriteLine($&quot;    Enpassant:\t{(EnPassant == BoardSquare.noSquare ? &quot;no&quot; : Constants.Coordinates[(int)EnPassant])}&quot;);</a>
+<a name="ln1709">        Console.WriteLine($&quot;    Castling:\t&quot; +</a>
+<a name="ln1710">            $&quot;{((Castle &amp; (int)CastlingRights.WK) != default ? 'K' : '-')}&quot; +</a>
+<a name="ln1711">            $&quot;{((Castle &amp; (int)CastlingRights.WQ) != default ? 'Q' : '-')} | &quot; +</a>
+<a name="ln1712">            $&quot;{((Castle &amp; (int)CastlingRights.BK) != default ? 'k' : '-')}&quot; +</a>
+<a name="ln1713">            $&quot;{((Castle &amp; (int)CastlingRights.BQ) != default ? 'q' : '-')}&quot;</a>
+<a name="ln1714">            );</a>
+<a name="ln1715">        Console.WriteLine($&quot;    FEN:\t{FEN()}&quot;);</a>
+<a name="ln1716">#pragma warning restore RCS1214 // Unnecessary interpolated string.</a>
+<a name="ln1717"> </a>
+<a name="ln1718">        Console.WriteLine(separator);</a>
+<a name="ln1719">    }</a>
+<a name="ln1720"> </a>
+<a name="ln1721">    public void PrintAttackedSquares(Side sideToMove)</a>
+<a name="ln1722">    {</a>
+<a name="ln1723">        const string separator = &quot;____________________________________________________&quot;;</a>
+<a name="ln1724">        Console.WriteLine(separator);</a>
+<a name="ln1725"> </a>
+<a name="ln1726">        for (var rank = 0; rank &lt; 8; ++rank)</a>
+<a name="ln1727">        {</a>
+<a name="ln1728">            for (var file = 0; file &lt; 8; ++file)</a>
+<a name="ln1729">            {</a>
+<a name="ln1730">                if (file == 0)</a>
+<a name="ln1731">                {</a>
+<a name="ln1732">                    Console.Write($&quot;{8 - rank}  &quot;);</a>
+<a name="ln1733">                }</a>
+<a name="ln1734"> </a>
+<a name="ln1735">                var squareIndex = BitBoardExtensions.SquareIndex(rank, file);</a>
+<a name="ln1736"> </a>
+<a name="ln1737">                var pieceRepresentation = IsSquareAttacked(squareIndex, sideToMove)</a>
+<a name="ln1738">                    ? '1'</a>
+<a name="ln1739">                    : '.';</a>
+<a name="ln1740"> </a>
+<a name="ln1741">                Console.Write($&quot; {pieceRepresentation}&quot;);</a>
+<a name="ln1742">            }</a>
+<a name="ln1743"> </a>
+<a name="ln1744">            Console.WriteLine();</a>
+<a name="ln1745">        }</a>
+<a name="ln1746"> </a>
+<a name="ln1747">        Console.Write(&quot;\n    a b c d e f g h\n&quot;);</a>
+<a name="ln1748">        Console.WriteLine(separator);</a>
+<a name="ln1749">    }</a>
+<a name="ln1750"> </a>
+<a name="ln1751">#pragma warning restore S106, S2228 // Standard outputs should not be used directly to log anything</a>
+<a name="ln1752"> </a>
+<a name="ln1753">    public void FreeResources()</a>
+<a name="ln1754">    {</a>
+<a name="ln1755">        ArrayPool&lt;BitBoard&gt;.Shared.Return(PieceBitBoards, clearArray: true);</a>
+<a name="ln1756">        ArrayPool&lt;BitBoard&gt;.Shared.Return(OccupancyBitBoards, clearArray: true);</a>
+<a name="ln1757">        // No need to clear, since we always have to initialize it to Piece.None after renting it anyway</a>
+<a name="ln1758">#pragma warning disable S3254 // Default parameter values should not be passed as arguments</a>
+<a name="ln1759">        ArrayPool&lt;int&gt;.Shared.Return(Board, clearArray: false);</a>
+<a name="ln1760">#pragma warning restore S3254 // Default parameter values should not be passed as arguments</a>
+<a name="ln1761"> </a>
+<a name="ln1762">        _disposedValue = true;</a>
+<a name="ln1763">    }</a>
+<a name="ln1764"> </a>
+<a name="ln1765">    protected virtual void Dispose(bool disposing)</a>
+<a name="ln1766">    {</a>
+<a name="ln1767">        if (!_disposedValue)</a>
+<a name="ln1768">        {</a>
+<a name="ln1769">            if (disposing)</a>
+<a name="ln1770">            {</a>
+<a name="ln1771">                FreeResources();</a>
+<a name="ln1772">            }</a>
+<a name="ln1773">            _disposedValue = true;</a>
+<a name="ln1774">        }</a>
+<a name="ln1775">    }</a>
+<a name="ln1776"> </a>
+<a name="ln1777">    public void Dispose()</a>
+<a name="ln1778">    {</a>
+<a name="ln1779">        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method</a>
+<a name="ln1780">        Dispose(disposing: true);</a>
+<a name="ln1781">        GC.SuppressFinalize(this);</a>
+<a name="ln1782">    }</a>
+<a name="ln1783">}</a>
+</code></pre>
+<div class="balloon" rel="459"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3002/" target="_blank">V3002</a> The switch statement does not cover all values of the 'SpecialMoveType' enum: DoublePawnPush.</p></div>
+<link rel="stylesheet" href="highlight.css">
+<script src="highlight.pack.js"></script>
+<script src="highlightjs-line-numbers.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script>hljs.initLineNumbersOnLoad();</script>
+<script>
+  $(document).ready(function() {
+      $('.balloon').each(function () {
+          var bl = $(this);
+          var line = bl.attr('rel');
+          var text = $('a[name="ln'+line+'"]').text();
+
+          var space_count = 0;
+          for(var i = 0; i<text.length; i++){
+              var char = text[i];
+              if((char !== ' ')&&(char !== '\t'))break;
+              if(char === '\t')space_count++;
+              space_count++;
+          }
+
+          bl.css('margin-left', space_count*8);
+          $('a[name="ln'+line+'"]').after(bl);
+      });
+
+      window.location = window.location;
+  });
+</script>
+</body>
+</html>

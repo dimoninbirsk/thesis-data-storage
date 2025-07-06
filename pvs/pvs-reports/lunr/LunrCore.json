@@ -1,0 +1,424 @@
+{
+  "version": 3,
+  "warnings": [
+    {
+      "code": "Renew",
+      "cwe": 0,
+      "level": 1,
+      "positions": [
+        {
+          "file": "",
+          "line": 1,
+          "endLine": 1,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 0,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [],
+      "message": "Your license will expire in 29 days. Click 'Renew' to learn more or contact us via Feedback form on our website. This is an information message. You can continue using the analyzer with your current license. To hide this message, use the '--disableLicenseExpirationCheck' flag.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3024",
+      "cwe": 682,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\lunr-core\\LunrCore\\Field.cs",
+          "line": 34,
+          "endLine": 34,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 1252548605,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "LunrCore"
+      ],
+      "message": "An odd precise comparison: Boost != 1. Consider using a comparison with defined precision: Math.Abs(A - B) > Epsilon.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3024",
+      "cwe": 682,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\lunr-core\\LunrCore\\Clause.cs",
+          "line": 169,
+          "endLine": 169,
+          "navigation": {
+            "previousLine": 1873,
+            "currentLine": 227535393,
+            "nextLine": -845842705,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "LunrCore"
+      ],
+      "message": "An odd precise comparison: Boost == 1. Consider using a comparison with defined precision: Math.Abs(A - B) < Epsilon.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3072",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\lunr-core\\LunrCoreLmdbPerf\\SearchBenchmarkBase.cs",
+          "line": 8,
+          "endLine": 8,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -1513754555,
+            "nextLine": 123,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\lunr-core\\LunrCoreLmdbPerf\\SearchBenchmarkBase.cs",
+          "line": 10,
+          "endLine": 10
+        }
+      ],
+      "projects": [
+        "LunrCoreLmdbPerf"
+      ],
+      "message": "The 'SearchBenchmarkBase' class containing IDisposable members does not itself implement IDisposable. Inspect: Index.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3072",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\lunr-core\\LunrCoreLmdbPerf\\SearchBenchmarkLmdb.cs",
+          "line": 10,
+          "endLine": 10,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -1270098056,
+            "nextLine": 123,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\lunr-core\\LunrCoreLmdbPerf\\SearchBenchmarkLmdb.cs",
+          "line": 13,
+          "endLine": 13
+        }
+      ],
+      "projects": [
+        "LunrCoreLmdbPerf"
+      ],
+      "message": "The 'SearchBenchmarkLmdb' class containing IDisposable members does not itself implement IDisposable. Inspect: _lmdb.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3024",
+      "cwe": 682,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\lunr-core\\LunrCore\\Vector.cs",
+          "line": 87,
+          "endLine": 87,
+          "navigation": {
+            "previousLine": -405201011,
+            "currentLine": 332963285,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "LunrCore"
+      ],
+      "message": "An odd precise comparison: Magnitude == 0. Consider using a comparison with defined precision: Math.Abs(A - B) < Epsilon.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3013",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\lunr-core\\LunrCoreTests\\PipelineTests.cs",
+          "line": 367,
+          "endLine": 367,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": -1073229392,
+            "nextLine": 116300,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\lunr-core\\LunrCoreTests\\PipelineTests.cs",
+          "line": 377,
+          "endLine": 377
+        }
+      ],
+      "projects": [
+        "LunrCoreTests"
+      ],
+      "message": "It is odd that the body of 'Noop' function is fully equivalent to the body of 'NopNop' function (367, line 377).",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3167",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\lunr-core\\LunrCoreTests\\PipelineTests.cs",
+          "line": 357,
+          "endLine": 357,
+          "navigation": {
+            "previousLine": -1071645947,
+            "currentLine": -459163645,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "LunrCoreTests"
+      ],
+      "message": "Parameter of the 'CancellationToken' type is not utilized inside a method. Ignoring the parameter can cause application to be unresponsive to cancellation events.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3167",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\lunr-core\\LunrCoreTests\\PipelineTests.cs",
+          "line": 404,
+          "endLine": 404,
+          "navigation": {
+            "previousLine": -1071645947,
+            "currentLine": 1850007137,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "LunrCoreTests"
+      ],
+      "message": "Parameter of the 'CancellationToken' type is not utilized inside a method. Ignoring the parameter can cause application to be unresponsive to cancellation events.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3022",
+      "cwe": 570,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\lunr-core\\LunrCore\\TokenSet.cs",
+          "line": 229,
+          "endLine": 229,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 2040993108,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "LunrCore"
+      ],
+      "message": "Expression 'frameStr.Length == 1' is always false.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V5611",
+      "cwe": 502,
+      "sastId": "OWASP-1.5.2, OWASP-5.5.3",
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\lunr-core\\LunrCore\\Index.cs",
+          "line": 573,
+          "endLine": 573,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -1674407109,
+            "nextLine": 357204807,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\lunr-core\\LunrCore\\Index.cs",
+          "line": 569,
+          "endLine": 569
+        }
+      ],
+      "projects": [
+        "LunrCore"
+      ],
+      "message": "Possible insecure deserialization. Potentially tainted data in the 'utf8json' variable is used to deserialize an object.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V5611",
+      "cwe": 502,
+      "sastId": "OWASP-1.5.2, OWASP-5.5.3",
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\lunr-core\\LunrCore\\Index.cs",
+          "line": 589,
+          "endLine": 589,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -1136513160,
+            "nextLine": 357204807,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\lunr-core\\LunrCore\\Index.cs",
+          "line": 585,
+          "endLine": 585
+        }
+      ],
+      "projects": [
+        "LunrCore"
+      ],
+      "message": "Possible insecure deserialization. Potentially tainted data in the 'json' variable is used to deserialize an object.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3013",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\lunr-core\\LunrCoreTests\\SearchTests.cs",
+          "line": 211,
+          "endLine": 211,
+          "navigation": {
+            "previousLine": 3377,
+            "currentLine": -1462775891,
+            "nextLine": 123,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\lunr-core\\LunrCoreTests\\SearchTests.cs",
+          "line": 336,
+          "endLine": 336
+        }
+      ],
+      "projects": [
+        "LunrCoreTests"
+      ],
+      "message": "It is odd that the body of 'FieldScopedTermNoMatch' function is fully equivalent to the body of 'SearchByFieldNoMatches' function (211, line 336).",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3024",
+      "cwe": 682,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\lunr-core\\LunrCoreTests\\SearchTests.cs",
+          "line": 442,
+          "endLine": 442,
+          "navigation": {
+            "previousLine": -2115461964,
+            "currentLine": -1905790158,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "LunrCoreTests"
+      ],
+      "message": "An odd precise comparison: result.Score == 0. Consider using a comparison with defined precision: Math.Abs(A - B) < Epsilon.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3013",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\lunr-core\\LunrCoreLmdbTests\\SearchTests.cs",
+          "line": 203,
+          "endLine": 203,
+          "navigation": {
+            "previousLine": 3377,
+            "currentLine": -1462775891,
+            "nextLine": 123,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\lunr-core\\LunrCoreLmdbTests\\SearchTests.cs",
+          "line": 317,
+          "endLine": 317
+        }
+      ],
+      "projects": [
+        "LunrCoreLmdbTests"
+      ],
+      "message": "It is odd that the body of 'FieldScopedTermNoMatch' function is fully equivalent to the body of 'SearchByFieldNoMatches' function (203, line 317).",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3024",
+      "cwe": 682,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\lunr-core\\LunrCoreLmdbTests\\SearchTests.cs",
+          "line": 415,
+          "endLine": 415,
+          "navigation": {
+            "previousLine": -2115461964,
+            "currentLine": -1905790158,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "LunrCoreLmdbTests"
+      ],
+      "message": "An odd precise comparison: result.Score == 0. Consider using a comparison with defined precision: Math.Abs(A - B) < Epsilon.",
+      "favorite": false,
+      "falseAlarm": false
+    }
+  ]
+}

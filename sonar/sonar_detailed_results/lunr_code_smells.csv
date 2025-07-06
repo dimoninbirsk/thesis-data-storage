@@ -1,0 +1,124 @@
+Key,Type,Severity,File,Line,Message,Effort,Debt,Rule,Tags
+71fbfdf6-a84a-4246-9fb1-ffc05706321a,CODE_SMELL,MAJOR,lunr:LunrCore/Vector.cs,48,Extract the assignment of '_magnitude' from this expression.,5min,5min,csharpsquid:S1121,cwe;suspicious
+26443f25-0ead-4082-8d2c-f4631efd2086,CODE_SMELL,CRITICAL,lunr:LunrCore/Serialization/InvertedIndexEntryJsonConverter.cs,10,Refactor this method to reduce its Cognitive Complexity from 31 to the 15 allowed.,6min,6min,csharpsquid:S3776,brain-overload
+f8d07639-a377-4c3f-be0e-7157706cf724,CODE_SMELL,INFO,lunr:LunrCoreLmdbTests/SerializationTests.cs,140,"ValueTask instances returned from method calls should be directly awaited, returned, or passed as an argument to another method call. Other usage, such as storing an instance into a local or a field, is likely an indication of a bug, as ValueTask instances must only ever be consumed once.",0min,0min,external_roslyn:CA2012,
+26bdf6ad-d40e-4fc2-af28-749f8c714064,CODE_SMELL,CRITICAL,lunr:LunrCoreLmdb/DelegatedIndex.cs,132,Refactor this method to reduce its Cognitive Complexity from 91 to the 15 allowed.,6min,6min,csharpsquid:S3776,brain-overload
+c6b295aa-e599-4902-9f7d-0b94df347789,CODE_SMELL,CRITICAL,lunr:LunrCore/Builder.cs,219,Refactor this method to reduce its Cognitive Complexity from 30 to the 15 allowed.,6min,6min,csharpsquid:S3776,brain-overload
+f7753559-e9fe-4eeb-badd-0cc2662e46fa,CODE_SMELL,MAJOR,lunr:LunrCore/Index.cs,85,"Method has 9 parameters, which is greater than the 7 authorized.",20min,20min,csharpsquid:S107,brain-overload
+48a719c5-05d4-4853-9ee0-ea3e713d52b2,CODE_SMELL,CRITICAL,lunr:LunrCore/Index.cs,254,Refactor this method to reduce its Cognitive Complexity from 129 to the 15 allowed.,6min,6min,csharpsquid:S3776,brain-overload
+3f05db1a-a0bd-4a8e-9070-cfb65500728c,CODE_SMELL,INFO,lunr:LunrCore/Set.cs,16,Non-constant fields should not be visible,0min,0min,external_roslyn:CA2211,
+c1715dd2-3297-4735-bba7-e69f964be3a1,CODE_SMELL,MINOR,lunr:LunrCore/Set.cs,16,Make this field 'private' and encapsulate it in a 'public' property.,10min,10min,csharpsquid:S1104,cwe
+cc082833-0e83-4ab8-8df9-ccda16eec133,CODE_SMELL,CRITICAL,lunr:LunrCore/Set.cs,16,Change the visibility of 'Empty' or make it 'const' or 'readonly'.,20min,20min,csharpsquid:S2223,pitfall
+2763db45-9451-4d8a-89af-54e592b317d6,CODE_SMELL,MINOR,lunr:LunrCore/Set.cs,57,Private classes which are not derived in the current assembly should be marked as 'sealed'.,5min,5min,csharpsquid:S3260,performance
+7d623a59-3e74-42ef-ac42-8a8394618237,CODE_SMELL,CRITICAL,lunr:LunrCore/TokenSet.cs,96,Refactor this method to reduce its Cognitive Complexity from 39 to the 15 allowed.,6min,6min,csharpsquid:S3776,brain-overload
+8a958297-2d3a-42f8-8f47-e512442db1ad,CODE_SMELL,INFO,lunr:LunrCoreLmdbPerf/InterpolateVsAdd.cs,11,Member 'Interpolate' does not access instance data and can be marked as static,0min,0min,external_roslyn:CA1822,
+ab3c38d7-a9d9-4241-8140-e7e80e763ca9,CODE_SMELL,INFO,lunr:LunrCoreLmdbPerf/InterpolateVsAdd.cs,19,Member 'Add' does not access instance data and can be marked as static,0min,0min,external_roslyn:CA1822,
+dffa527b-6b80-4b92-834e-8164cb4e3cfa,CODE_SMELL,MAJOR,lunr:LunrCoreLmdb/LmdbBuilder.cs,138,Extract this nested ternary operation into an independent statement.,5min,5min,csharpsquid:S3358,confusing
+dd23949c-0555-4038-bdd6-f189f590c65d,CODE_SMELL,INFO,lunr:LunrCoreLmdb/LmdbBuilder.cs,177,Use 'string.Contains' instead of 'string.IndexOf' to improve readability,0min,0min,external_roslyn:CA2249,
+d8ca4f03-fdea-43c1-9dff-8367f447c04e,CODE_SMELL,CRITICAL,lunr:LunrCoreLmdb/LmdbBuilder.cs,218,Refactor this method to reduce its Cognitive Complexity from 30 to the 15 allowed.,6min,6min,csharpsquid:S3776,brain-overload
+441d66a1-1ed8-4ab8-8aa1-00bc2965f0c9,CODE_SMELL,MINOR,lunr:LunrCoreLmdb/LmdbBuilder.cs,357,Loop should be simplified by calling Select(field => field.Name)),5min,5min,csharpsquid:S3267,
+f8a284d0-e783-4cde-aa4e-79bed90dee75,CODE_SMELL,MINOR,lunr:LunrCoreLmdb/LmdbBuilder.cs,424,Change return type to 'void'; not a single caller uses the returned value.,2min,2min,csharpsquid:S3241,design;unused
+cbe381a2-182f-47b5-8878-3adc14aaaeba,CODE_SMELL,MAJOR,lunr:LunrCoreLmdb/LmdbIndex.cs,69,"Method has 11 parameters, which is greater than the 7 authorized.",20min,20min,csharpsquid:S107,brain-overload
+aca08518-e30c-4f5a-8078-fb3e4bc13242,CODE_SMELL,INFO,lunr:LunrCoreLmdbTests/LmdbBuilderTests.cs,278,Change LmdbBuilderTests.Dispose() to call GC.SuppressFinalize(object). This will prevent derived types that introduce a finalizer from needing to re-implement 'IDisposable' to call it.,0min,0min,external_roslyn:CA1816,
+c531009a-2c8d-43f9-902a-2fab841e316c,CODE_SMELL,INFO,lunr:LunrCoreLmdb/DeserializeContext.cs,40,Member 'ReadBoolean' does not access instance data and can be marked as static,0min,0min,external_roslyn:CA1822,
+eee8e5f4-f5de-48b9-8c02-f9c59d3a8d54,CODE_SMELL,MINOR,lunr:LunrCoreLmdb/DeserializeContext.cs,40,Make 'ReadBoolean' a static method.,5min,5min,csharpsquid:S2325,pitfall
+6923622a-de78-4486-ad68-d29ded4e57a1,CODE_SMELL,CRITICAL,lunr:LunrCoreLmdb/SerializationExtensions.cs,106,Refactor this method to reduce its Cognitive Complexity from 26 to the 15 allowed.,6min,6min,csharpsquid:S3776,brain-overload
+911a1d6f-845d-491d-b62b-d1f5e1506efd,CODE_SMELL,CRITICAL,lunr:LunrCoreLmdb/SerializationExtensions.cs,153,Refactor this method to reduce its Cognitive Complexity from 28 to the 15 allowed.,6min,6min,csharpsquid:S3776,brain-overload
+c65e7548-f534-4316-87cc-f3f85cad3f8e,CODE_SMELL,MINOR,lunr:LunrCoreLmdb/SerializeContext.cs,52,Initialize all 'static fields' inline and remove the 'static constructor'.,5min,5min,csharpsquid:S3963,
+3ebc983e-088e-458e-a25d-a5cc71d409b7,CODE_SMELL,MINOR,lunr:LunrCoreLmdb/DeserializeContext.cs,19,Make 'ReadInt32' a static method.,5min,5min,csharpsquid:S2325,pitfall
+4352b17b-f6fe-4324-ae96-19b3cdf35e8e,CODE_SMELL,INFO,lunr:LunrCoreLmdb/DeserializeContext.cs,19,Member 'ReadInt32' does not access instance data and can be marked as static,0min,0min,external_roslyn:CA1822,
+708148a1-933f-4a20-88a9-07b3863e5006,CODE_SMELL,INFO,lunr:LunrCoreLmdb/DeserializeContext.cs,26,Member 'ReadDouble' does not access instance data and can be marked as static,0min,0min,external_roslyn:CA1822,
+be9d7d49-970a-4b5b-a623-04db797613f3,CODE_SMELL,MINOR,lunr:LunrCoreLmdb/DeserializeContext.cs,26,Make 'ReadDouble' a static method.,5min,5min,csharpsquid:S2325,pitfall
+a35e0f4f-09fa-40ad-a364-5e3d152b945d,CODE_SMELL,INFO,lunr:LunrCoreLmdb/DeserializeContext.cs,33,Member 'ReadChar' does not access instance data and can be marked as static,0min,0min,external_roslyn:CA1822,
+cbd78c22-0b53-47fe-9360-7c7efa43b64f,CODE_SMELL,MINOR,lunr:LunrCoreLmdb/DeserializeContext.cs,33,Make 'ReadChar' a static method.,5min,5min,csharpsquid:S2325,pitfall
+3f66a82d-4560-47c0-9594-763cd622a2f1,CODE_SMELL,MINOR,lunr:LunrCoreLmdb/LmdbIndex.cs,248,Remove the unused local variable 'k'.,5min,5min,csharpsquid:S1481,unused
+a7aabac9-e563-4f59-b328-dce83190be1b,CODE_SMELL,INFO,lunr:LunrCoreLmdbTests/SearchTests.cs,594,Change SearchTests.Dispose() to call GC.SuppressFinalize(object). This will prevent derived types that introduce a finalizer from needing to re-implement 'IDisposable' to call it.,0min,0min,external_roslyn:CA1816,
+01ee9301-1ceb-45a3-862f-586b77280752,CODE_SMELL,INFO,lunr:LunrCoreLmdbTests/SerializationTests.cs,234,Change SerializationTests.Dispose() to call GC.SuppressFinalize(object). This will prevent derived types that introduce a finalizer from needing to re-implement 'IDisposable' to call it.,0min,0min,external_roslyn:CA1816,
+b77ba145-1c43-46ce-be88-99a445f5d9b5,CODE_SMELL,INFO,lunr:LunrCoreLmdbTests/TempDirectory.cs,16,Change TempDirectory.Dispose() to call GC.SuppressFinalize(object). This will prevent derived types that introduce a finalizer from needing to re-implement 'IDisposable' to call it.,0min,0min,external_roslyn:CA1816,
+b6af00c8-e9cf-460f-87f8-992634d758ee,CODE_SMELL,MINOR,lunr:LunrCoreLmdb/LmdbIndex.cs,178,Remove the unused local variable 'k'.,5min,5min,csharpsquid:S1481,unused
+393fa47e-a140-4094-b935-12588f99a6a4,CODE_SMELL,MINOR,lunr:LunrCoreLmdbPerf/BlockCopyVsLinqConcat.cs,33,Remove the unused local variable 'buffer'.,5min,5min,csharpsquid:S1481,unused
+ecb2b057-911c-4bd1-a5cc-a20f79f6789f,CODE_SMELL,MINOR,lunr:LunrCoreLmdbPerf/SearchBenchmarkBase.cs,16,Define a constant instead of using this literal 'title' 4 times.,4min,4min,csharpsquid:S1192,design
+bf465cc4-5ed6-4e20-9533-ef6ecf36582b,CODE_SMELL,MAJOR,lunr:LunrCoreLmdbPerf/SearchBenchmarkBase.cs,39,Either remove or fill this block of code.,5min,5min,csharpsquid:S108,suspicious
+da63c858-8397-4dc6-92fb-a7a3382ba7d2,CODE_SMELL,MAJOR,lunr:LunrCoreLmdbPerf/SearchBenchmarkBase.cs,45,Either remove or fill this block of code.,5min,5min,csharpsquid:S108,suspicious
+3a02100f-7dd7-469e-9308-d0a7fa9880c3,CODE_SMELL,MAJOR,lunr:LunrCoreLmdbPerf/SearchBenchmarkBase.cs,51,Either remove or fill this block of code.,5min,5min,csharpsquid:S108,suspicious
+2697e852-e1e3-4b7f-bdd7-5e11216dfc11,CODE_SMELL,MAJOR,lunr:LunrCoreLmdbPerf/SearchBenchmarkBase.cs,57,Either remove or fill this block of code.,5min,5min,csharpsquid:S108,suspicious
+15695940-ad87-4796-b32b-9cd108cfa16d,CODE_SMELL,MAJOR,lunr:LunrCoreLmdbPerf/SearchBenchmarkBase.cs,63,Either remove or fill this block of code.,5min,5min,csharpsquid:S108,suspicious
+2aefa0a1-d247-46bc-b72e-00714c0f20c0,CODE_SMELL,MAJOR,lunr:LunrCoreLmdbPerf/SearchBenchmarkBase.cs,69,Either remove or fill this block of code.,5min,5min,csharpsquid:S108,suspicious
+4f988234-ceff-467a-860e-1a1948dfbc20,CODE_SMELL,MAJOR,lunr:LunrCoreLmdbPerf/SearchBenchmarkBase.cs,75,Either remove or fill this block of code.,5min,5min,csharpsquid:S108,suspicious
+567a68c5-efda-4226-b460-271dfbc85457,CODE_SMELL,MAJOR,lunr:LunrCoreLmdbPerf/SearchBenchmarkBase.cs,92,Either remove or fill this block of code.,5min,5min,csharpsquid:S108,suspicious
+82f7950b-b48a-44f3-abd4-f5e836dd6a9e,CODE_SMELL,MAJOR,lunr:LunrCoreLmdbPerf/SearchBenchmarkBase.cs,98,Either remove or fill this block of code.,5min,5min,csharpsquid:S108,suspicious
+dd7a47da-99e1-4381-aed0-2f752cf769a6,CODE_SMELL,MINOR,lunr:LunrCoreLmdbPerf/SearchBenchmarkLmdb.cs,13,Remove the field '_lmdb' and declare it as a local variable in the relevant methods.,5min,5min,csharpsquid:S1450,pitfall
+6bd01cb0-f4d2-43b7-b006-ba8da8cd3b2c,CODE_SMELL,MINOR,lunr:LunrCoreLmdbPerf/SpanVsGetPinnableReference.cs,43,Remove the unused local variable 'vector'.,5min,5min,csharpsquid:S1481,unused
+85379857-8747-40fc-9795-860b6b969332,CODE_SMELL,MINOR,lunr:LunrCoreLmdbPerf/SpanVsGetPinnableReference.cs,68,Remove the unused local variable 'vector'.,5min,5min,csharpsquid:S1481,unused
+9401f987-f1af-43f5-8d27-6a2f15c4a614,CODE_SMELL,MAJOR,lunr:LunrCoreLmdb/SerializeContext.cs,20,'System.Exception' should not be thrown by user code.,20min,20min,csharpsquid:S112,cwe;error-handling
+1ad2fbaf-9a9a-47e9-9dec-9d23cf2734d4,CODE_SMELL,MAJOR,lunr:LunrCoreLmdbPerf/Program.cs,5,Add a 'protected' constructor or the 'static' keyword to the class declaration.,10min,10min,csharpsquid:S1118,design
+9ea01fbc-1cdf-4c7b-8ea4-2db9c6687e99,CODE_SMELL,MAJOR,lunr:LunrCoreLmdbTests/SerializationTests.cs,62,"Make sure these 2 arguments are in the correct order: expected value, actual value.",2min,2min,csharpsquid:S3415,tests;suspicious
+b6d91888-ffe4-4fa7-82f7-f1c8b0750dc6,CODE_SMELL,INFO,lunr:LunrCoreLmdbTests/SerializationTests.cs,81,"ValueTask instances returned from method calls should be directly awaited, returned, or passed as an argument to another method call. Other usage, such as storing an instance into a local or a field, is likely an indication of a bug, as ValueTask instances must only ever be consumed once.",0min,0min,external_roslyn:CA2012,
+25b4f2d2-f0cc-4fae-9469-bf0deeed1c53,CODE_SMELL,MAJOR,lunr:LunrCoreLmdb/LmdbIndex.cs,260,Take the required action to fix the issue indicated by this 'FIXME' comment.,0min,0min,csharpsquid:S1134,cwe
+f20dbc94-aee8-42db-897c-5925df1011cd,CODE_SMELL,MAJOR,lunr:LunrCoreLmdbPerf/SearchBenchmarkBase.cs,86,Either remove or fill this block of code.,5min,5min,csharpsquid:S108,suspicious
+951706d5-07f8-4067-b940-70811d369c67,CODE_SMELL,MINOR,lunr:LunrCoreLmdb/SerializationExtensions.cs,16,All 'Serialize' method overloads should be adjacent.,1min,1min,csharpsquid:S4136,convention
+d8c65fc9-3845-4ed3-b9f3-92b62eea106e,CODE_SMELL,INFO,lunr:LunrCoreLmdbTests/SerializationTests.cs,179,"ValueTask instances returned from method calls should be directly awaited, returned, or passed as an argument to another method call. Other usage, such as storing an instance into a local or a field, is likely an indication of a bug, as ValueTask instances must only ever be consumed once.",0min,0min,external_roslyn:CA2012,
+43ad2ddd-67e9-4995-be78-66f6e6344ea8,CODE_SMELL,INFO,lunr:LunrCoreLmdbTests/SerializationTests.cs,120,"ValueTask instances returned from method calls should be directly awaited, returned, or passed as an argument to another method call. Other usage, such as storing an instance into a local or a field, is likely an indication of a bug, as ValueTask instances must only ever be consumed once.",0min,0min,external_roslyn:CA2012,
+914dab59-7215-40e0-8d12-329795c95daf,CODE_SMELL,INFO,lunr:LunrCoreLmdbTests/SerializationTests.cs,157,"ValueTask instances returned from method calls should be directly awaited, returned, or passed as an argument to another method call. Other usage, such as storing an instance into a local or a field, is likely an indication of a bug, as ValueTask instances must only ever be consumed once.",0min,0min,external_roslyn:CA2012,
+1f033bd8-7763-403d-a722-cf951f4595b5,CODE_SMELL,MAJOR,lunr:LunrCoreLmdb/LmdbIndex.cs,294,Remove the unused private field 'MaxKeySizeBytes'.,2min,2min,csharpsquid:S1144,unused
+cd524519-e3c4-450a-a5d9-9bf5b3943f34,CODE_SMELL,CRITICAL,lunr:LunrCore/EnglishStemmer.cs,82,Refactor this method to reduce its Cognitive Complexity from 36 to the 15 allowed.,6min,6min,csharpsquid:S3776,brain-overload
+3ac06e4c-1b32-4213-8fc6-006b0a653640,CODE_SMELL,MINOR,lunr:LunrCorePerf/SearchBenchmark.cs,16,Define a constant instead of using this literal 'title' 4 times.,4min,4min,csharpsquid:S1192,design
+12d52754-a576-4e6b-9c8c-a3135debed96,CODE_SMELL,MAJOR,lunr:LunrCorePerf/SearchBenchmark.cs,57,Either remove or fill this block of code.,5min,5min,csharpsquid:S108,suspicious
+0c5a2001-0572-4f93-8293-6c40c4ec5c86,CODE_SMELL,MAJOR,lunr:LunrCorePerf/SearchBenchmark.cs,63,Either remove or fill this block of code.,5min,5min,csharpsquid:S108,suspicious
+4fb2317c-5f06-4e85-9b4c-c1b464f56189,CODE_SMELL,MAJOR,lunr:LunrCorePerf/SearchBenchmark.cs,69,Either remove or fill this block of code.,5min,5min,csharpsquid:S108,suspicious
+8dd013fd-f3c9-4e34-8c8b-b7eea6b51196,CODE_SMELL,MAJOR,lunr:LunrCorePerf/SearchBenchmark.cs,75,Either remove or fill this block of code.,5min,5min,csharpsquid:S108,suspicious
+850d2578-acf0-4042-a86d-cfc2e0561ddc,CODE_SMELL,MAJOR,lunr:LunrCorePerf/SearchBenchmark.cs,81,Either remove or fill this block of code.,5min,5min,csharpsquid:S108,suspicious
+213df944-2236-4c3c-8816-be9993ec15b8,CODE_SMELL,MAJOR,lunr:LunrCorePerf/SearchBenchmark.cs,87,Either remove or fill this block of code.,5min,5min,csharpsquid:S108,suspicious
+65838c80-f92f-4271-826b-c6e1082e95c4,CODE_SMELL,MAJOR,lunr:LunrCorePerf/SearchBenchmark.cs,93,Either remove or fill this block of code.,5min,5min,csharpsquid:S108,suspicious
+51ed8cdb-eae1-4df6-b793-0a3674efc1e5,CODE_SMELL,MAJOR,lunr:LunrCorePerf/SearchBenchmark.cs,104,Either remove or fill this block of code.,5min,5min,csharpsquid:S108,suspicious
+d3ddc48f-4279-47ad-9669-47a527ea67a1,CODE_SMELL,MAJOR,lunr:LunrCorePerf/SearchBenchmark.cs,110,Either remove or fill this block of code.,5min,5min,csharpsquid:S108,suspicious
+004333c1-98bb-463f-a8b4-31a501e9123e,CODE_SMELL,MAJOR,lunr:LunrCorePerf/SearchBenchmark.cs,116,Either remove or fill this block of code.,5min,5min,csharpsquid:S108,suspicious
+cb8b8b46-7f1f-4b1b-964c-54d896aa88b3,CODE_SMELL,MAJOR,lunr:LunrCorePerf/TokenSetBenchmark.cs,9,Make '_tokenSet' 'readonly'.,2min,2min,csharpsquid:S2933,confusing
+7a78db94-b17a-4553-8609-1c4acf29dd23,CODE_SMELL,MAJOR,lunr:LunrCorePerf/TokenSetBenchmark.cs,15,Make '_noWildCard' 'readonly'.,2min,2min,csharpsquid:S2933,confusing
+b131dd7c-c63d-4ff8-9234-74b73840581a,CODE_SMELL,MAJOR,lunr:LunrCorePerf/TokenSetBenchmark.cs,16,Make '_withWildCard' 'readonly'.,2min,2min,csharpsquid:S2933,confusing
+ed3f0149-bfbe-464e-ad15-ac28aa6d1fe3,CODE_SMELL,MINOR,lunr:LunrCorePerf/TokenSetBenchmark.cs,23,Remove the unused local variable '_'.,5min,5min,csharpsquid:S1481,unused
+ee8aeef0-c676-476c-b838-ca5b974fcbe4,CODE_SMELL,INFO,lunr:LunrCorePerf/TokenSetBenchmark.cs,27,Member 'FromStringNoWildcard' does not access instance data and can be marked as static,0min,0min,external_roslyn:CA1822,
+e46cef99-26e0-4aaa-a950-d9731322408f,CODE_SMELL,MINOR,lunr:LunrCorePerf/TokenSetBenchmark.cs,29,Remove the unused local variable '_'.,5min,5min,csharpsquid:S1481,unused
+601ae64b-4ed0-4476-a4dd-25f34e8871e5,CODE_SMELL,INFO,lunr:LunrCorePerf/TokenSetBenchmark.cs,33,Member 'FromStringWithWildcard' does not access instance data and can be marked as static,0min,0min,external_roslyn:CA1822,
+bef4b792-fedb-488a-a2b3-8a554cdc224e,CODE_SMELL,MINOR,lunr:LunrCorePerf/TokenSetBenchmark.cs,35,Remove the unused local variable '_'.,5min,5min,csharpsquid:S1481,unused
+04ece3cd-ee53-4998-a6e9-2c4c50c8402e,CODE_SMELL,INFO,lunr:LunrCorePerf/TokenSetBenchmark.cs,39,Member 'FromFuzzyString' does not access instance data and can be marked as static,0min,0min,external_roslyn:CA1822,
+247c2587-46a1-4916-bb0a-450294f5f9f3,CODE_SMELL,MINOR,lunr:LunrCorePerf/TokenSetBenchmark.cs,41,Remove the unused local variable '_'.,5min,5min,csharpsquid:S1481,unused
+8e21fb9c-b7cc-4381-82b0-28095a737713,CODE_SMELL,MAJOR,lunr:LunrCorePerf/TokenSetBenchmark.cs,47,Either remove or fill this block of code.,5min,5min,csharpsquid:S108,suspicious
+d14da927-48f8-4392-bb5d-3d00735d6552,CODE_SMELL,MINOR,lunr:LunrCorePerf/TokenSetBenchmark.cs,53,Remove the unused local variable '_'.,5min,5min,csharpsquid:S1481,unused
+78b3699f-f313-44f3-b78b-f7c1aff3ce76,CODE_SMELL,MINOR,lunr:LunrCorePerf/TokenSetBenchmark.cs,59,Remove the unused local variable '_'.,5min,5min,csharpsquid:S1481,unused
+12121a34-0a23-4943-b998-5011432a7f0b,CODE_SMELL,MINOR,lunr:LunrCorePerf/TokenSetBenchmark.cs,65,Remove the unused local variable '_'.,5min,5min,csharpsquid:S1481,unused
+17118670-4a21-4c55-97e8-27947e9df6df,CODE_SMELL,MAJOR,lunr:LunrCorePerf/TokenizerBenchmark.cs,19,Either remove or fill this block of code.,5min,5min,csharpsquid:S108,suspicious
+5f9df116-35fb-4ee6-80f9-526b02db9a9e,CODE_SMELL,MINOR,lunr:LunrCorePerf/VectorBenchmark.cs,34,Remove the unused local variable '_'.,5min,5min,csharpsquid:S1481,unused
+64ab3785-ba64-4575-8b07-d435f49428f1,CODE_SMELL,MINOR,lunr:LunrCorePerf/VectorBenchmark.cs,40,Remove the unused local variable '_'.,5min,5min,csharpsquid:S1481,unused
+ffeb7560-deae-4fa5-bf92-31031c89fc18,CODE_SMELL,MINOR,lunr:LunrCorePerf/VectorBenchmark.cs,46,Remove the unused local variable '_'.,5min,5min,csharpsquid:S1481,unused
+2c8c45f2-4bac-48aa-b708-37d7634aa72e,CODE_SMELL,MINOR,lunr:LunrCorePerf/BuilderBenchmark.cs,14,Define a constant instead of using this literal 'title' 4 times.,4min,4min,csharpsquid:S1192,design
+241f42fe-cbcb-45e4-bc85-8b9e50db3212,CODE_SMELL,MAJOR,lunr:LunrCorePerf/PipelineBenchmark.cs,38,Either remove or fill this block of code.,5min,5min,csharpsquid:S108,suspicious
+d86b30c3-0ec9-405d-9c99-ef3cf77a4bbb,CODE_SMELL,MAJOR,lunr:LunrCorePerf/PipelineBenchmark.cs,45,Either remove or fill this block of code.,5min,5min,csharpsquid:S108,suspicious
+df59585e-d3e8-4961-bfcc-25e3885565d7,CODE_SMELL,MAJOR,lunr:LunrCorePerf/PipelineBenchmark.cs,52,Either remove or fill this block of code.,5min,5min,csharpsquid:S108,suspicious
+fb64a07e-8f5b-4b54-bacb-21df929d6be0,CODE_SMELL,MAJOR,lunr:LunrCorePerf/PipelineBenchmark.cs,59,Either remove or fill this block of code.,5min,5min,csharpsquid:S108,suspicious
+5dde637b-8a29-4496-afc5-f9d8f5ffb3de,CODE_SMELL,MAJOR,lunr:LunrCorePerf/Program.cs,5,Add a 'protected' constructor or the 'static' keyword to the class declaration.,10min,10min,csharpsquid:S1118,design
+4bc7c520-4665-4649-b9f3-54e6b088f383,CODE_SMELL,INFO,lunr:LunrCorePerf/QueryParserBenchmark.cs,8,Member 'Parse' does not access instance data and can be marked as static,0min,0min,external_roslyn:CA1822,
+b993d6d4-8ae3-47b6-9c85-212b48b4d762,CODE_SMELL,MINOR,lunr:LunrCorePerf/QueryParserBenchmark.cs,8,Make 'Parse' a static method.,5min,5min,csharpsquid:S2325,pitfall
+571f98b9-f7eb-4765-943d-84c4d3e5e625,CODE_SMELL,CRITICAL,lunr:LunrCoreTests/SerializationTest.cs,197,Remove or correct this assertion.,5min,5min,csharpsquid:S2701,tests
+11497936-87fb-40e1-88b2-33640e001ed9,CODE_SMELL,CRITICAL,lunr:LunrCoreTests/SerializationTest.cs,198,Remove or correct this assertion.,5min,5min,csharpsquid:S2701,tests
+65316ee5-95d1-4d5c-9fc6-61f7703c1a3f,CODE_SMELL,CRITICAL,lunr:LunrCoreTests/SerializationTest.cs,205,Remove or correct this assertion.,5min,5min,csharpsquid:S2701,tests
+b2b76f54-6e49-4101-b299-9fd6916718f3,CODE_SMELL,CRITICAL,lunr:LunrCore/MatchData.cs,68,Refactor this method to reduce its Cognitive Complexity from 16 to the 15 allowed.,6min,6min,csharpsquid:S3776,brain-overload
+b00a1ac0-4b5b-4d38-95c7-bfc1f2597eee,CODE_SMELL,MINOR,lunr:LunrCore/Query.cs,73,All 'AddTerms' method overloads should be adjacent.,1min,1min,csharpsquid:S4136,convention
+dc31d7c5-f5f5-48f3-b4e0-79eefc564f25,CODE_SMELL,CRITICAL,lunr:LunrCore/QueryLexer.cs,93,Refactor this method to reduce its Cognitive Complexity from 25 to the 15 allowed.,6min,6min,csharpsquid:S3776,brain-overload
+f26af85b-30ee-4eab-8353-c0df759bb25b,CODE_SMELL,INFO,lunr:LunrCoreTests/QueryLexerTests.cs,312,Member 'Lex' does not access instance data and can be marked as static,0min,0min,external_roslyn:CA1822,
+61b1a9d3-ab82-4571-a2d9-253f97380881,CODE_SMELL,MAJOR,lunr:LunrCore/Builder.cs,137,Extract this nested ternary operation into an independent statement.,5min,5min,csharpsquid:S3358,confusing
+a3c3b201-9733-4a65-9742-95bb493d3374,CODE_SMELL,INFO,lunr:LunrCore/Builder.cs,176,Use 'string.Contains' instead of 'string.IndexOf' to improve readability,0min,0min,external_roslyn:CA2249,
+a5a772b5-4c65-457b-affa-e4947d85842a,CODE_SMELL,MINOR,lunr:LunrCore/Builder.cs,350,Loop should be simplified by calling Select(field => field.Name)),5min,5min,csharpsquid:S3267,
+8bee1a9b-26fa-47a2-be5b-2da9b2911bd0,CODE_SMELL,INFO,lunr:LunrCore/Field.cs,16,Use 'string.Contains' instead of 'string.IndexOf' to improve readability,0min,0min,external_roslyn:CA2249,
+68304213-f35f-4b67-84c2-56a9b2fc3dca,CODE_SMELL,INFO,lunr:LunrCore/QueryParser.cs,153,Use 'string.Contains' instead of 'string.IndexOf' to improve readability,0min,0min,external_roslyn:CA2249,
+77be7330-9e88-4cd5-91f4-ddd3a3a9d2c5,CODE_SMELL,MINOR,lunr:LunrCore/QueryWildcard.cs,14,"Rename this enumeration to match the regular expression: '^([A-Z]{1,3}[a-z0-9]+)*([A-Z]{2})?s$'.",5min,5min,csharpsquid:S2342,convention
+194ef177-a08c-46a7-868b-e393873c3ebb,CODE_SMELL,INFO,lunr:LunrCore/Set.cs,17,Non-constant fields should not be visible,0min,0min,external_roslyn:CA2211,
+24344d60-c50b-4590-aa80-82c53999dfcc,CODE_SMELL,MINOR,lunr:LunrCore/Set.cs,17,Make this field 'private' and encapsulate it in a 'public' property.,10min,10min,csharpsquid:S1104,cwe
+2e97371a-021b-4986-9366-48febea879de,CODE_SMELL,CRITICAL,lunr:LunrCore/Set.cs,17,Change the visibility of 'Complete' or make it 'const' or 'readonly'.,20min,20min,csharpsquid:S2223,pitfall
+fc1596df-89ca-4104-8882-f085bba53535,CODE_SMELL,MINOR,lunr:LunrCore/Set.cs,66,Private classes which are not derived in the current assembly should be marked as 'sealed'.,5min,5min,csharpsquid:S3260,performance
+048128e4-3160-41ac-b32a-0efd80e2681f,CODE_SMELL,MAJOR,lunr:LunrCore/Tokenizer.cs,65,Do not update the loop counter 'sliceStart' within the loop body.,10min,10min,csharpsquid:S127,pitfall
+e492544a-cde7-4a6c-9e7f-158c9affb954,CODE_SMELL,INFO,lunr:LunrCore/Tokenizer.cs,93,Member 'Tokenize' does not access instance data and can be marked as static,0min,0min,external_roslyn:CA1822,
+fcfe2ceb-27f8-4ff3-8f2a-99db045f6449,CODE_SMELL,MINOR,lunr:LunrCore/Tokenizer.cs,93,Make 'Tokenize' a static method.,5min,5min,csharpsquid:S2325,pitfall
+48d3dc83-3ed7-449f-a8ae-3f9bc4476588,CODE_SMELL,INFO,lunr:LunrCore/Tokenizer.cs,116,Member 'Tokenize' does not access instance data and can be marked as static,0min,0min,external_roslyn:CA1822,
+65816bb5-b4d3-4a8e-a1d1-5648c356af1a,CODE_SMELL,MINOR,lunr:LunrCore/Tokenizer.cs,116,Make 'Tokenize' a static method.,5min,5min,csharpsquid:S2325,pitfall
+8ba31edc-7ae2-4647-9112-ab6082a8be99,CODE_SMELL,INFO,lunr:LunrCore/Util.cs,61,Use span-based 'string.Concat' and 'AsSpan' instead of 'Substring',0min,0min,external_roslyn:CA1845,

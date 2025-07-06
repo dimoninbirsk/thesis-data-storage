@@ -1,0 +1,69 @@
+{"header" : {
+  "cloc_url"           : "github.com/AlDanial/cloc",
+  "cloc_version"       : "2.04",
+  "elapsed_seconds"    : 3.49456095695496,
+  "n_files"            : 1422,
+  "n_lines"            : 363221,
+  "files_per_second"   : 406.918069970965,
+  "lines_per_second"   : 103938.950979553,
+  "report_file"        : "C:\\Users\\dimoninbirsk\\source\\thesis\\cloc\\Chloe\\metadata.json"},
+"JSON" :{
+  "nFiles": 90,
+  "blank": 0,
+  "comment": 0,
+  "code": 267304},
+"C#" :{
+  "nFiles": 1078,
+  "blank": 9577,
+  "comment": 4048,
+  "code": 51503},
+"XML" :{
+  "nFiles": 111,
+  "blank": 116,
+  "comment": 0,
+  "code": 25313},
+"Text" :{
+  "nFiles": 88,
+  "blank": 0,
+  "comment": 0,
+  "code": 2059},
+"Properties" :{
+  "nFiles": 1,
+  "blank": 23,
+  "comment": 0,
+  "code": 1342},
+"Markdown" :{
+  "nFiles": 2,
+  "blank": 54,
+  "comment": 0,
+  "code": 679},
+"INI" :{
+  "nFiles": 30,
+  "blank": 6,
+  "comment": 0,
+  "code": 378},
+"MSBuild script" :{
+  "nFiles": 10,
+  "blank": 63,
+  "comment": 7,
+  "code": 370},
+"C# Generated" :{
+  "nFiles": 10,
+  "blank": 40,
+  "comment": 100,
+  "code": 96},
+"Visual Studio Solution" :{
+  "nFiles": 1,
+  "blank": 1,
+  "comment": 1,
+  "code": 96},
+"DOS Batch" :{
+  "nFiles": 1,
+  "blank": 14,
+  "comment": 0,
+  "code": 31},
+"SUM": {
+  "blank": 9894,
+  "comment": 4156,
+  "code": 349171,
+  "nFiles": 1422} }

@@ -1,0 +1,1226 @@
+{
+  "version": 3,
+  "warnings": [
+    {
+      "code": "Renew",
+      "cwe": 0,
+      "level": 1,
+      "positions": [
+        {
+          "file": "",
+          "line": 1,
+          "endLine": 1,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 0,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [],
+      "message": "Your license will expire in 29 days. Click 'Renew' to learn more or contact us via Feedback form on our website. This is an information message. You can continue using the analyzer with your current license. To hide this message, use the '--disableLicenseExpirationCheck' flag.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3100",
+      "cwe": 476,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Graphics\\Shader.cs",
+          "line": 59,
+          "endLine": 59,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 1126743204,
+            "nextLine": 125,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Graphics\\Shader.cs",
+          "line": 46,
+          "endLine": 46
+        }
+      ],
+      "projects": [
+        "Foster.Framework"
+      ],
+      "message": "NullReferenceException is possible when dereferencing 'GraphicsDevice' variable. Unhandled exceptions in destructor lead to termination of runtime.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3024",
+      "cwe": 682,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Extensions\\VectorExt.cs",
+          "line": 114,
+          "endLine": 114,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -679240697,
+            "nextLine": 22721765,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Foster.Framework"
+      ],
+      "message": "An odd precise comparison: vector.X == 0. Consider using a comparison with defined precision: Math.Abs(A - B) < Epsilon.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3024",
+      "cwe": 682,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Extensions\\VectorExt.cs",
+          "line": 114,
+          "endLine": 114,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -679240697,
+            "nextLine": 22721765,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Foster.Framework"
+      ],
+      "message": "An odd precise comparison: vector.Y == 0. Consider using a comparison with defined precision: Math.Abs(A - B) < Epsilon.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3024",
+      "cwe": 682,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Extensions\\VectorExt.cs",
+          "line": 124,
+          "endLine": 124,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 1937884869,
+            "nextLine": 22721701,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Foster.Framework"
+      ],
+      "message": "An odd precise comparison: vector.X == 0. Consider using a comparison with defined precision: Math.Abs(A - B) < Epsilon.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3024",
+      "cwe": 682,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Extensions\\VectorExt.cs",
+          "line": 124,
+          "endLine": 124,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 1937884869,
+            "nextLine": 22721701,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Foster.Framework"
+      ],
+      "message": "An odd precise comparison: vector.Y == 0. Consider using a comparison with defined precision: Math.Abs(A - B) < Epsilon.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3024",
+      "cwe": 682,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Extensions\\VectorExt.cs",
+          "line": 124,
+          "endLine": 124,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 1937884869,
+            "nextLine": 22721701,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Foster.Framework"
+      ],
+      "message": "An odd precise comparison: vector.Z == 0. Consider using a comparison with defined precision: Math.Abs(A - B) < Epsilon.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3041",
+      "cwe": 682,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\App.cs",
+          "line": 325,
+          "endLine": 325,
+          "navigation": {
+            "previousLine": -1739605055,
+            "currentLine": 738268193,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Foster.Framework"
+      ],
+      "message": "The expression was implicitly cast from 'int' type to 'float' type. Consider utilizing an explicit type cast to avoid the loss of a fractional part. An example: double A = (double)(X) / Y;.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3010",
+      "cwe": 252,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\App.cs",
+          "line": 365,
+          "endLine": 365,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -1262912981,
+            "nextLine": 1538381018,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Foster.Framework"
+      ],
+      "message": "The return value of function 'Advance' is required to be utilized.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3100",
+      "cwe": 476,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Graphics\\Target.cs",
+          "line": 86,
+          "endLine": 86,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 1126743204,
+            "nextLine": -978263443,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Graphics\\Target.cs",
+          "line": 76,
+          "endLine": 76
+        }
+      ],
+      "projects": [
+        "Foster.Framework"
+      ],
+      "message": "NullReferenceException is possible when dereferencing 'GraphicsDevice' variable. Unhandled exceptions in destructor lead to termination of runtime.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V5609",
+      "cwe": 22,
+      "sastId": "OWASP-12.3.1",
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Images\\Image.cs",
+          "line": 92,
+          "endLine": 92,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -241749326,
+            "nextLine": 455237,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Images\\Image.cs",
+          "line": 90,
+          "endLine": 90
+        }
+      ],
+      "projects": [
+        "Foster.Framework"
+      ],
+      "message": "Possible path traversal vulnerability. Potentially tainted data from the 'file' variable is used as path.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V5609",
+      "cwe": 22,
+      "sastId": "OWASP-12.3.1",
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Images\\Image.cs",
+          "line": 158,
+          "endLine": 158,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -60477274,
+            "nextLine": 8347717,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Images\\Image.cs",
+          "line": 156,
+          "endLine": 156
+        }
+      ],
+      "projects": [
+        "Foster.Framework"
+      ],
+      "message": "Possible path traversal vulnerability. Potentially tainted data from the 'path' variable is used as path.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V5609",
+      "cwe": 22,
+      "sastId": "OWASP-12.3.1",
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Images\\Image.cs",
+          "line": 175,
+          "endLine": 175,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -60477274,
+            "nextLine": 8351813,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Images\\Image.cs",
+          "line": 173,
+          "endLine": 173
+        }
+      ],
+      "projects": [
+        "Foster.Framework"
+      ],
+      "message": "Possible path traversal vulnerability. Potentially tainted data from the 'path' variable is used as path.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V5609",
+      "cwe": 22,
+      "sastId": "OWASP-12.3.1",
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Images\\Font.cs",
+          "line": 45,
+          "endLine": 45,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -241750010,
+            "nextLine": 455237,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Images\\Font.cs",
+          "line": 43,
+          "endLine": 43
+        }
+      ],
+      "projects": [
+        "Foster.Framework"
+      ],
+      "message": "Possible path traversal vulnerability. Potentially tainted data from the 'path' variable is used as path.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3063",
+      "cwe": 570,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Input\\InputState.cs",
+          "line": 83,
+          "endLine": 83,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -1450181897,
+            "nextLine": 1544337018,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Foster.Framework"
+      ],
+      "message": "A part of conditional expression is always false if it is evaluated: other.Controllers[i].Connected.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3100",
+      "cwe": 476,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Internal\\InputProviderSDL.cs",
+          "line": 255,
+          "endLine": 255,
+          "navigation": {
+            "previousLine": 1874722625,
+            "currentLine": 144777065,
+            "nextLine": 73204585,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Internal\\InputProviderSDL.cs",
+          "line": 256,
+          "endLine": 256
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Internal\\InputProviderSDL.cs",
+          "line": 14,
+          "endLine": 14
+        }
+      ],
+      "projects": [
+        "Foster.Framework"
+      ],
+      "message": "NullReferenceException is possible. Unhandled exceptions in destructor lead to termination of runtime.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3024",
+      "cwe": 682,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Internal\\InputProviderSDL.cs",
+          "line": 75,
+          "endLine": 75,
+          "navigation": {
+            "previousLine": 21113950,
+            "currentLine": 1333067065,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Foster.Framework"
+      ],
+      "message": "An odd precise comparison: lastMouse.X != mouse.X. Consider using a comparison with defined precision: Math.Abs(A - B) > Epsilon.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3024",
+      "cwe": 682,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Internal\\InputProviderSDL.cs",
+          "line": 75,
+          "endLine": 75,
+          "navigation": {
+            "previousLine": 21113950,
+            "currentLine": 1333067065,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Foster.Framework"
+      ],
+      "message": "An odd precise comparison: lastMouse.Y != mouse.Y. Consider using a comparison with defined precision: Math.Abs(A - B) > Epsilon.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3024",
+      "cwe": 682,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Internal\\InputProviderSDL.cs",
+          "line": 75,
+          "endLine": 75,
+          "navigation": {
+            "previousLine": 21113950,
+            "currentLine": 1333067065,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Foster.Framework"
+      ],
+      "message": "An odd precise comparison: delta.X != 0. Consider using a comparison with defined precision: Math.Abs(A - B) > Epsilon.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3024",
+      "cwe": 682,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Internal\\InputProviderSDL.cs",
+          "line": 75,
+          "endLine": 75,
+          "navigation": {
+            "previousLine": 21113950,
+            "currentLine": 1333067065,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Foster.Framework"
+      ],
+      "message": "An odd precise comparison: delta.Y != 0. Consider using a comparison with defined precision: Math.Abs(A - B) > Epsilon.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3024",
+      "cwe": 682,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Spatial\\Circle.cs",
+          "line": 130,
+          "endLine": 130,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": -303635752,
+            "nextLine": 66301356,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Foster.Framework"
+      ],
+      "message": "An odd precise comparison: a.Radius == b.Radius. Consider using a comparison with defined precision: Math.Abs(A - B) < Epsilon.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3024",
+      "cwe": 682,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Spatial\\Line.cs",
+          "line": 52,
+          "endLine": 52,
+          "navigation": {
+            "previousLine": 2708429,
+            "currentLine": 743752325,
+            "nextLine": 88941,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Foster.Framework"
+      ],
+      "message": "An odd precise comparison: diff.X == 0. Consider using a comparison with defined precision: Math.Abs(A - B) < Epsilon.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3024",
+      "cwe": 682,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Spatial\\Line.cs",
+          "line": 52,
+          "endLine": 52,
+          "navigation": {
+            "previousLine": 2708429,
+            "currentLine": 743752325,
+            "nextLine": 88941,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Foster.Framework"
+      ],
+      "message": "An odd precise comparison: diff.Y == 0. Consider using a comparison with defined precision: Math.Abs(A - B) < Epsilon.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3024",
+      "cwe": 682,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Spatial\\Line.cs",
+          "line": 85,
+          "endLine": 85,
+          "navigation": {
+            "previousLine": 694705759,
+            "currentLine": 2959701,
+            "nextLine": 176909,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Foster.Framework"
+      ],
+      "message": "An odd precise comparison: bDotDPerp == 0. Consider using a comparison with defined precision: Math.Abs(A - B) < Epsilon.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3024",
+      "cwe": 682,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Spatial\\LineInt.cs",
+          "line": 63,
+          "endLine": 63,
+          "navigation": {
+            "previousLine": 694705759,
+            "currentLine": 2959701,
+            "nextLine": 176909,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Foster.Framework"
+      ],
+      "message": "An odd precise comparison: bDotDPerp == 0. Consider using a comparison with defined precision: Math.Abs(A - B) < Epsilon.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3024",
+      "cwe": 682,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Graphics\\SpriteFont.cs",
+          "line": 465,
+          "endLine": 465,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 2910645,
+            "nextLine": 1145798298,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Foster.Framework"
+      ],
+      "message": "An odd precise comparison: justify.X != 0. Consider using a comparison with defined precision: Math.Abs(A - B) > Epsilon.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3024",
+      "cwe": 682,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Graphics\\SpriteFont.cs",
+          "line": 468,
+          "endLine": 468,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 2910629,
+            "nextLine": 1619934399,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Foster.Framework"
+      ],
+      "message": "An odd precise comparison: justify.Y != 0. Consider using a comparison with defined precision: Math.Abs(A - B) > Epsilon.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3024",
+      "cwe": 682,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Graphics\\SpriteFont.cs",
+          "line": 488,
+          "endLine": 488,
+          "navigation": {
+            "previousLine": 2974739,
+            "currentLine": -748457657,
+            "nextLine": -1761825307,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Foster.Framework"
+      ],
+      "message": "An odd precise comparison: justify.X != 0. Consider using a comparison with defined precision: Math.Abs(A - B) > Epsilon.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3024",
+      "cwe": 682,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Graphics\\SpriteFont.cs",
+          "line": 517,
+          "endLine": 517,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 2910629,
+            "nextLine": -412811873,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Foster.Framework"
+      ],
+      "message": "An odd precise comparison: justify.Y != 0. Consider using a comparison with defined precision: Math.Abs(A - B) > Epsilon.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V5606",
+      "cwe": 1069,
+      "sastId": "OWASP-7.4.2",
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Graphics\\SpriteFont.cs",
+          "line": 590,
+          "endLine": 590,
+          "navigation": {
+            "previousLine": 846397647,
+            "currentLine": 4499,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Foster.Framework"
+      ],
+      "message": "An empty exception handler. Silent suppression of exceptions may hide the presence of bugs or vulnerabilities.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3072",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Graphics\\SpriteFont.cs",
+          "line": 680,
+          "endLine": 680,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": -1877468367,
+            "nextLine": 123,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Graphics\\SpriteFont.cs",
+          "line": 685,
+          "endLine": 685
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Graphics\\SpriteFont.cs",
+          "line": 687,
+          "endLine": 687
+        }
+      ],
+      "projects": [
+        "Foster.Framework"
+      ],
+      "message": "The 'Page' class containing IDisposable members does not itself implement IDisposable. Inspect: image, atlas.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3024",
+      "cwe": 682,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Spatial\\Transform.cs",
+          "line": 94,
+          "endLine": 94,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 23654727,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Foster.Framework"
+      ],
+      "message": "An odd precise comparison: rotation != value. Consider using a comparison with defined precision: Math.Abs(A - B) > Epsilon.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3024",
+      "cwe": 682,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Spatial\\Transform.cs",
+          "line": 159,
+          "endLine": 159,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 1478645,
+            "nextLine": 1322127199,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Foster.Framework"
+      ],
+      "message": "An odd precise comparison: rotation != 0. Consider using a comparison with defined precision: Math.Abs(A - B) > Epsilon.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3024",
+      "cwe": 682,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Spatial\\Transform.cs",
+          "line": 168,
+          "endLine": 168,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 809087012,
+            "nextLine": -1391602128,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Foster.Framework"
+      ],
+      "message": "An odd precise comparison: a.rotation == b.rotation. Consider using a comparison with defined precision: Math.Abs(A - B) < Epsilon.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3073",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Graphics\\Batcher.cs",
+          "line": 16,
+          "endLine": 16,
+          "navigation": {
+            "previousLine": 216764,
+            "currentLine": 1654012006,
+            "nextLine": 123,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Graphics\\Batcher.cs",
+          "line": 91,
+          "endLine": 91
+        }
+      ],
+      "projects": [
+        "Foster.Framework"
+      ],
+      "message": "Not all IDisposable members are properly disposed. Call 'Dispose' when disposing 'Batcher' class. Inspect: mesh.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3024",
+      "cwe": 682,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Graphics\\Batcher.cs",
+          "line": 1599,
+          "endLine": 1599,
+          "navigation": {
+            "previousLine": 1344567,
+            "currentLine": 23086037,
+            "nextLine": -2130180885,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Foster.Framework"
+      ],
+      "message": "An odd precise comparison: bounds.Width == 0. Consider using a comparison with defined precision: Math.Abs(A - B) < Epsilon.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3024",
+      "cwe": 682,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Graphics\\Batcher.cs",
+          "line": 1601,
+          "endLine": 1601,
+          "navigation": {
+            "previousLine": -2130180885,
+            "currentLine": 46183253,
+            "nextLine": 93589369,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Foster.Framework"
+      ],
+      "message": "An odd precise comparison: bounds.Height == 0. Consider using a comparison with defined precision: Math.Abs(A - B) < Epsilon.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3024",
+      "cwe": 682,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Graphics\\Batcher.cs",
+          "line": 1617,
+          "endLine": 1617,
+          "navigation": {
+            "previousLine": 1344567,
+            "currentLine": 23086037,
+            "nextLine": -2130180885,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Foster.Framework"
+      ],
+      "message": "An odd precise comparison: bounds.Width == 0. Consider using a comparison with defined precision: Math.Abs(A - B) < Epsilon.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3024",
+      "cwe": 682,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Graphics\\Batcher.cs",
+          "line": 1619,
+          "endLine": 1619,
+          "navigation": {
+            "previousLine": -2130180885,
+            "currentLine": 46183253,
+            "nextLine": 93589369,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Foster.Framework"
+      ],
+      "message": "An odd precise comparison: bounds.Height == 0. Consider using a comparison with defined precision: Math.Abs(A - B) < Epsilon.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3139",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Utility\\Converters.cs",
+          "line": 31,
+          "endLine": 31,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 1274297288,
+            "nextLine": 1274297032,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Utility\\Converters.cs",
+          "line": 32,
+          "endLine": 32
+        }
+      ],
+      "projects": [
+        "Foster.Framework"
+      ],
+      "message": "Two or more case-branches perform the same actions.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3109",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Utility\\Time.cs",
+          "line": 87,
+          "endLine": 87,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 1019952553,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Foster.Framework"
+      ],
+      "message": "The 'interval' sub-expression is present on both sides of the operator. The expression is incorrect or it can be simplified.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3024",
+      "cwe": 682,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Spatial\\Rect.cs",
+          "line": 517,
+          "endLine": 517,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": -742648893,
+            "nextLine": 1508561140,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Foster.Framework"
+      ],
+      "message": "An odd precise comparison: a.X == b.X. Consider using a comparison with defined precision: Math.Abs(A - B) < Epsilon.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3024",
+      "cwe": 682,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Spatial\\Rect.cs",
+          "line": 517,
+          "endLine": 517,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": -742648893,
+            "nextLine": 1508561140,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Foster.Framework"
+      ],
+      "message": "An odd precise comparison: a.Y == b.Y. Consider using a comparison with defined precision: Math.Abs(A - B) < Epsilon.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3024",
+      "cwe": 682,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Spatial\\Rect.cs",
+          "line": 517,
+          "endLine": 517,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": -742648893,
+            "nextLine": 1508561140,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Foster.Framework"
+      ],
+      "message": "An odd precise comparison: a.Width == b.Width. Consider using a comparison with defined precision: Math.Abs(A - B) < Epsilon.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3024",
+      "cwe": 682,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Spatial\\Rect.cs",
+          "line": 517,
+          "endLine": 517,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": -742648893,
+            "nextLine": 1508561140,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Foster.Framework"
+      ],
+      "message": "An odd precise comparison: a.Height == b.Height. Consider using a comparison with defined precision: Math.Abs(A - B) < Epsilon.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3041",
+      "cwe": 682,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Window.cs",
+          "line": 330,
+          "endLine": 330,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": -567954207,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Foster.Framework"
+      ],
+      "message": "The expression was implicitly cast from 'int' type to 'float' type. Consider utilizing an explicit type cast to avoid the loss of a fractional part. An example: double A = (double)(X) / Y;.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3024",
+      "cwe": 682,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Utility\\Calc.cs",
+          "line": 344,
+          "endLine": 344,
+          "navigation": {
+            "previousLine": -1500430314,
+            "currentLine": 5652507,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Foster.Framework"
+      ],
+      "message": "An odd precise comparison: last != next. Consider using a comparison with defined precision: Math.Abs(A - B) > Epsilon.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V5609",
+      "cwe": 22,
+      "sastId": "OWASP-12.3.1",
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Images\\Aseprite.cs",
+          "line": 203,
+          "endLine": 203,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 1567830471,
+            "nextLine": -587711886,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Foster\\Framework\\Images\\Aseprite.cs",
+          "line": 201,
+          "endLine": 201
+        }
+      ],
+      "projects": [
+        "Foster.Framework"
+      ],
+      "message": "Possible path traversal vulnerability. Potentially tainted data from the 'filePath' variable is used as path.",
+      "favorite": false,
+      "falseAlarm": false
+    }
+  ]
+}

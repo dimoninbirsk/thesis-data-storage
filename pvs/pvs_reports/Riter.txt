@@ -1,0 +1,100 @@
+PVS-Studio Report: Riter
+================================================================================
+
+┌─[ID: V3146]
+├─ CWE: 476
+├─ SAST: None
+├─ Level: 1
+└─ Occurrences: 3
+
+Common pattern:
+Possible null dereference. The 'FirstOrDefault' can return default null value.
+
+Message:
+• Possible null dereference. The 'FirstOrDefault' can return default null value.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: Renew]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 1
+└─ Occurrences: 1
+
+Common pattern:
+Your license will expire in 29 days. Click 'Renew' to learn more or contact us via Feedback form on our website. This is an information message. You can continue using the analyzer with your current license. To hide this message, use the '--disableLicenseExpirationCheck' flag.
+
+Message:
+• Your license will expire in 29 days. Click 'Renew' to learn more or contact us via Feedback form on our website. This is an information message. You can continue using the analyzer with your current license. To hide this message, use the '--disableLicenseExpirationCheck' flag.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3125]
+├─ CWE: 476
+├─ SAST: None
+├─ Level: 2
+└─ Occurrences: 1
+
+Common pattern:
+The 'Application.Current' object was used after it was verified against null. Check lines: 18, 13.
+
+Message:
+• The 'Application.Current' object was used after it was verified against null. Check lines: 18, 13.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3012]
+├─ CWE: 783
+├─ SAST: None
+├─ Level: 1
+└─ Occurrences: 1
+
+Common pattern:
+The '?:' operator, regardless of its conditional expression, always returns one and the same value.
+
+Message:
+• The '?:' operator, regardless of its conditional expression, always returns one and the same value.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V5606]
+├─ CWE: 1069
+├─ SAST: OWASP-7.4.2
+├─ Level: 3
+└─ Occurrences: 1
+
+Common pattern:
+An empty exception handler. Silent suppression of exceptions may hide the presence of bugs or vulnerabilities.
+
+Message:
+• An empty exception handler. Silent suppression of exceptions may hide the presence of bugs or vulnerabilities.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3080]
+├─ CWE: 476
+├─ SAST: None
+├─ Level: 2
+└─ Occurrences: 1
+
+Common pattern:
+Possible null dereference. Consider inspecting 'lastItem'.
+
+Message:
+• Possible null dereference. Consider inspecting 'lastItem'.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3008]
+├─ CWE: 563
+├─ SAST: None
+├─ Level: 3
+└─ Occurrences: 1
+
+Common pattern:
+The '_isSettingPanelOpened' variable is assigned values twice successively. Perhaps this is a mistake. Check lines: 22, 20.
+
+Message:
+• The '_isSettingPanelOpened' variable is assigned values twice successively. Perhaps this is a mistake. Check lines: 22, 20.
+
+────────────────────────────────────────────────────────────────────────────────

@@ -1,0 +1,2654 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>FENGeneration_Benchmark.cs</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <script src="../jquery-3.5.1.min.js"></script>
+</head>
+<body>
+<pre><code class = "cs">
+<a name="ln1">﻿/*</a>
+<a name="ln2"> * No clear conclusions</a>
+<a name="ln3"> *</a>
+<a name="ln4"> *  BenchmarkDotNet=v0.13.1, OS=Windows 10.0.19042.1237 (20H2/October2020Update)</a>
+<a name="ln5"> *  Intel Core i7-5500U CPU 2.40GHz (Broadwell), 1 CPU, 4 logical and 2 physical cores</a>
+<a name="ln6"> *  .NET SDK=6.0.100-rc.1.21463.6</a>
+<a name="ln7"> *    [Host]     : .NET 6.0.0 (6.0.21.45113), X64 RyuJIT</a>
+<a name="ln8"> *    DefaultJob : .NET 6.0.0 (6.0.21.45113), X64 RyuJIT</a>
+<a name="ln9"> *</a>
+<a name="ln10"> *  |                                               Method |                  fen |     Mean |    Error |   StdDev |   Median | Ratio | RatioSD |  Gen 0 | Allocated |</a>
+<a name="ln11"> *  |----------------------------------------------------- |--------------------- |---------:|---------:|---------:|---------:|------:|--------:|-------:|----------:|</a>
+<a name="ln12"> *  |                         Struct_FENCalculatedOnTheFly | r2q1r(...)- 0 1 [68] | 22.07 us | 0.845 us | 2.411 us | 21.24 us |  1.00 |    0.00 | 4.9133 |     10 KB |</a>
+<a name="ln13"> *  |         Struct_FENCalculatedWithinTheMoveConstructor | r2q1r(...)- 0 1 [68] | 23.47 us | 0.936 us | 2.685 us | 22.65 us |  1.08 |    0.18 | 5.5847 |     11 KB |</a>
+<a name="ln14"> *  |                 ReadonlyStruct_FENCalculatedOnTheFly | r2q1r(...)- 0 1 [68] | 23.32 us | 0.891 us | 2.557 us | 22.52 us |  1.06 |    0.14 | 4.9133 |     10 KB |</a>
+<a name="ln15"> *  | ReadonlyStruct_FENCalculatedWithinTheMoveConstructor | r2q1r(...)- 0 1 [68] | 22.61 us | 0.582 us | 1.623 us | 22.11 us |  1.04 |    0.12 | 5.5847 |     11 KB |</a>
+<a name="ln16"> *  |                          Class_FENCalculatedOnTheFly | r2q1r(...)- 0 1 [68] | 23.58 us | 0.652 us | 1.882 us | 23.39 us |  1.08 |    0.13 | 4.9744 |     10 KB |</a>
+<a name="ln17"> *  |          Class_FENCalculatedWithinTheMoveConstructor | r2q1r(...)- 0 1 [68] | 27.12 us | 1.023 us | 2.952 us | 26.85 us |  1.24 |    0.20 | 5.6458 |     12 KB |</a>
+<a name="ln18"> *  |                    RecordClass_FENCalculatedOnTheFly | r2q1r(...)- 0 1 [68] | 29.00 us | 1.114 us | 3.231 us | 27.96 us |  1.33 |    0.20 | 4.9744 |     10 KB |</a>
+<a name="ln19"> *  |    RecordClass_FENCalculatedWithinTheMoveConstructor | r2q1r(...)- 0 1 [68] | 28.08 us | 0.688 us | 1.847 us | 27.96 us |  1.29 |    0.16 | 5.6458 |     12 KB |</a>
+<a name="ln20"> *  |                   RecordStruct_FENCalculatedOnTheFly | r2q1r(...)- 0 1 [68] | 29.54 us | 1.124 us | 3.224 us | 28.57 us |  1.35 |    0.19 | 4.8828 |     10 KB |</a>
+<a name="ln21"> *  |   RecordStruct_FENCalculatedWithinTheMoveConstructor | r2q1r(...)- 0 1 [68] | 28.90 us | 0.801 us | 2.259 us | 28.20 us |  1.33 |    0.18 | 5.5847 |     11 KB |</a>
+<a name="ln22"> *  |                                                      |                      |          |          |          |          |       |         |        |           |</a>
+<a name="ln23"> *  |                         Struct_FENCalculatedOnTheFly | r3k2r(...)- 0 1 [68] | 30.97 us | 1.183 us | 3.395 us | 29.80 us |  1.00 |    0.00 | 4.8218 |     10 KB |</a>
+<a name="ln24"> *  |         Struct_FENCalculatedWithinTheMoveConstructor | r3k2r(...)- 0 1 [68] | 30.66 us | 1.001 us | 2.921 us | 29.59 us |  1.00 |    0.14 | 5.4626 |     11 KB |</a>
+<a name="ln25"> *  |                 ReadonlyStruct_FENCalculatedOnTheFly | r3k2r(...)- 0 1 [68] | 25.40 us | 1.694 us | 4.994 us | 22.31 us |  0.83 |    0.17 | 4.8218 |     10 KB |</a>
+<a name="ln26"> *  | ReadonlyStruct_FENCalculatedWithinTheMoveConstructor | r3k2r(...)- 0 1 [68] | 21.86 us | 0.401 us | 0.612 us | 21.85 us |  0.70 |    0.08 | 5.4626 |     11 KB |</a>
+<a name="ln27"> *  |                          Class_FENCalculatedOnTheFly | r3k2r(...)- 0 1 [68] | 21.71 us | 0.430 us | 0.906 us | 21.60 us |  0.70 |    0.08 | 4.8828 |     10 KB |</a>
+<a name="ln28"> *  |          Class_FENCalculatedWithinTheMoveConstructor | r3k2r(...)- 0 1 [68] | 20.18 us | 0.385 us | 0.811 us | 20.23 us |  0.65 |    0.07 | 5.4932 |     11 KB |</a>
+<a name="ln29"> *  |                    RecordClass_FENCalculatedOnTheFly | r3k2r(...)- 0 1 [68] | 19.90 us | 0.388 us | 0.626 us | 19.94 us |  0.63 |    0.07 | 4.8828 |     10 KB |</a>
+<a name="ln30"> *  |    RecordClass_FENCalculatedWithinTheMoveConstructor | r3k2r(...)- 0 1 [68] | 20.25 us | 0.403 us | 0.705 us | 20.20 us |  0.65 |    0.07 | 5.4932 |     11 KB |</a>
+<a name="ln31"> *  |                   RecordStruct_FENCalculatedOnTheFly | r3k2r(...)- 0 1 [68] | 19.92 us | 0.395 us | 0.947 us | 19.90 us |  0.64 |    0.08 | 4.8218 |     10 KB |</a>
+<a name="ln32"> *  |   RecordStruct_FENCalculatedWithinTheMoveConstructor | r3k2r(...)- 0 1 [68] | 22.06 us | 0.436 us | 0.679 us | 22.08 us |  0.70 |    0.08 | 5.4626 |     11 KB |</a>
+<a name="ln33"> *  |                                                      |                      |          |          |          |          |       |         |        |           |</a>
+<a name="ln34"> *  |                         Struct_FENCalculatedOnTheFly | r3k2r(...)- 0 1 [68] | 24.47 us | 0.470 us | 0.482 us | 24.46 us |  1.00 |    0.00 | 4.8523 |     10 KB |</a>
+<a name="ln35"> *  |         Struct_FENCalculatedWithinTheMoveConstructor | r3k2r(...)- 0 1 [68] | 24.74 us | 0.485 us | 0.726 us | 24.63 us |  1.00 |    0.04 | 5.4932 |     11 KB |</a>
+<a name="ln36"> *  |                 ReadonlyStruct_FENCalculatedOnTheFly | r3k2r(...)- 0 1 [68] | 24.43 us | 0.474 us | 0.680 us | 24.52 us |  1.00 |    0.03 | 4.8523 |     10 KB |</a>
+<a name="ln37"> *  | ReadonlyStruct_FENCalculatedWithinTheMoveConstructor | r3k2r(...)- 0 1 [68] | 24.70 us | 0.473 us | 0.563 us | 24.70 us |  1.01 |    0.03 | 5.4932 |     11 KB |</a>
+<a name="ln38"> *  |                          Class_FENCalculatedOnTheFly | r3k2r(...)- 0 1 [68] | 24.06 us | 0.474 us | 0.694 us | 24.04 us |  0.99 |    0.04 | 4.9133 |     10 KB |</a>
+<a name="ln39"> *  |          Class_FENCalculatedWithinTheMoveConstructor | r3k2r(...)- 0 1 [68] | 24.18 us | 0.464 us | 0.476 us | 24.26 us |  0.99 |    0.03 | 5.5542 |     11 KB |</a>
+<a name="ln40"> *  |                    RecordClass_FENCalculatedOnTheFly | r3k2r(...)- 0 1 [68] | 24.08 us | 0.470 us | 0.503 us | 24.13 us |  0.98 |    0.04 | 4.9133 |     10 KB |</a>
+<a name="ln41"> *  |    RecordClass_FENCalculatedWithinTheMoveConstructor | r3k2r(...)- 0 1 [68] | 24.10 us | 0.472 us | 0.631 us | 23.95 us |  0.99 |    0.04 | 5.5542 |     11 KB |</a>
+<a name="ln42"> *  |                   RecordStruct_FENCalculatedOnTheFly | r3k2r(...)- 0 1 [68] | 24.38 us | 0.471 us | 0.629 us | 24.29 us |  1.00 |    0.03 | 4.8523 |     10 KB |</a>
+<a name="ln43"> *  |   RecordStruct_FENCalculatedWithinTheMoveConstructor | r3k2r(...)- 0 1 [68] | 24.40 us | 0.481 us | 0.705 us | 24.39 us |  1.00 |    0.03 | 5.4932 |     11 KB |</a>
+<a name="ln44"> *  |                                                      |                      |          |          |          |          |       |         |        |           |</a>
+<a name="ln45"> *  |                         Struct_FENCalculatedOnTheFly | rnbqk(...)6 0 1 [67] | 21.22 us | 0.418 us | 0.600 us | 21.12 us |  1.00 |    0.00 | 4.7607 |     10 KB |</a>
+<a name="ln46"> *  |         Struct_FENCalculatedWithinTheMoveConstructor | rnbqk(...)6 0 1 [67] | 22.43 us | 0.447 us | 0.669 us | 22.40 us |  1.06 |    0.04 | 5.4626 |     11 KB |</a>
+<a name="ln47"> *  |                 ReadonlyStruct_FENCalculatedOnTheFly | rnbqk(...)6 0 1 [67] | 25.17 us | 1.345 us | 3.965 us | 23.39 us |  1.03 |    0.06 | 4.7913 |     10 KB |</a>
+<a name="ln48"> *  | ReadonlyStruct_FENCalculatedWithinTheMoveConstructor | rnbqk(...)6 0 1 [67] | 21.76 us | 0.418 us | 0.558 us | 21.73 us |  1.03 |    0.04 | 5.4626 |     11 KB |</a>
+<a name="ln49"> *  |                          Class_FENCalculatedOnTheFly | rnbqk(...)6 0 1 [67] | 21.38 us | 0.420 us | 0.431 us | 21.35 us |  1.01 |    0.04 | 4.8523 |     10 KB |</a>
+<a name="ln50"> *  |          Class_FENCalculatedWithinTheMoveConstructor | rnbqk(...)6 0 1 [67] | 22.08 us | 0.421 us | 0.352 us | 22.09 us |  1.04 |    0.03 | 5.4932 |     11 KB |</a>
+<a name="ln51"> *  |                    RecordClass_FENCalculatedOnTheFly | rnbqk(...)6 0 1 [67] | 21.26 us | 0.411 us | 0.440 us | 21.38 us |  1.00 |    0.03 | 4.8523 |     10 KB |</a>
+<a name="ln52"> *  |    RecordClass_FENCalculatedWithinTheMoveConstructor | rnbqk(...)6 0 1 [67] | 21.64 us | 0.430 us | 0.617 us | 21.73 us |  1.02 |    0.04 | 5.4932 |     11 KB |</a>
+<a name="ln53"> *  |                   RecordStruct_FENCalculatedOnTheFly | rnbqk(...)6 0 1 [67] | 21.62 us | 0.423 us | 0.718 us | 21.77 us |  1.02 |    0.05 | 4.7913 |     10 KB |</a>
+<a name="ln54"> *  |   RecordStruct_FENCalculatedWithinTheMoveConstructor | rnbqk(...)6 0 1 [67] | 22.15 us | 0.427 us | 0.475 us | 22.19 us |  1.04 |    0.04 | 5.4626 |     11 KB |</a>
+<a name="ln55"> *  |                                                      |                      |          |          |          |          |       |         |        |           |</a>
+<a name="ln56"> *  |                         Struct_FENCalculatedOnTheFly | rnbqk(...)- 0 1 [56] | 15.97 us | 0.317 us | 0.619 us | 15.94 us |  1.00 |    0.00 | 4.3335 |      9 KB |</a>
+<a name="ln57"> *  |         Struct_FENCalculatedWithinTheMoveConstructor | rnbqk(...)- 0 1 [56] | 15.89 us | 0.316 us | 0.519 us | 15.97 us |  1.00 |    0.05 | 4.9133 |     10 KB |</a>
+<a name="ln58"> *  |                 ReadonlyStruct_FENCalculatedOnTheFly | rnbqk(...)- 0 1 [56] | 16.00 us | 0.319 us | 0.599 us | 16.03 us |  1.00 |    0.06 | 4.3335 |      9 KB |</a>
+<a name="ln59"> *  | ReadonlyStruct_FENCalculatedWithinTheMoveConstructor | rnbqk(...)- 0 1 [56] | 15.50 us | 0.331 us | 0.950 us | 15.47 us |  1.01 |    0.06 | 4.9133 |     10 KB |</a>
+<a name="ln60"> *  |                          Class_FENCalculatedOnTheFly | rnbqk(...)- 0 1 [56] | 14.66 us | 0.292 us | 0.488 us | 14.76 us |  0.92 |    0.06 | 4.3945 |      9 KB |</a>
+<a name="ln61"> *  |          Class_FENCalculatedWithinTheMoveConstructor | rnbqk(...)- 0 1 [56] | 14.73 us | 0.292 us | 0.602 us | 14.73 us |  0.92 |    0.05 | 4.9896 |     10 KB |</a>
+<a name="ln62"> *  |                    RecordClass_FENCalculatedOnTheFly | rnbqk(...)- 0 1 [56] | 14.65 us | 0.292 us | 0.689 us | 14.69 us |  0.92 |    0.06 | 4.3945 |      9 KB |</a>
+<a name="ln63"> *  |    RecordClass_FENCalculatedWithinTheMoveConstructor | rnbqk(...)- 0 1 [56] | 14.76 us | 0.291 us | 0.461 us | 14.70 us |  0.93 |    0.04 | 4.9896 |     10 KB |</a>
+<a name="ln64"> *  |                   RecordStruct_FENCalculatedOnTheFly | rnbqk(...)- 0 1 [56] | 14.72 us | 0.292 us | 0.577 us | 14.58 us |  0.92 |    0.05 | 4.3335 |      9 KB |</a>
+<a name="ln65"> *  |   RecordStruct_FENCalculatedWithinTheMoveConstructor | rnbqk(...)- 0 1 [56] | 15.18 us | 0.301 us | 0.709 us | 15.10 us |  0.95 |    0.06 | 4.9133 |     10 KB |</a>
+<a name="ln66"> *</a>
+<a name="ln67"> *</a>
+<a name="ln68"> *  BenchmarkDotNet=v0.13.1, OS=Windows 10.0.17763.2183 (1809/October2018Update/Redstone5)</a>
+<a name="ln69"> *  Intel Xeon Platinum 8272CL CPU 2.60GHz, 1 CPU, 2 logical and 2 physical cores</a>
+<a name="ln70"> *  .NET SDK=6.0.100-rc.1.21458.32</a>
+<a name="ln71"> *    [Host]     : .NET 6.0.0 (6.0.21.45113), X64 RyuJIT</a>
+<a name="ln72"> *    DefaultJob : .NET 6.0.0 (6.0.21.45113), X64 RyuJIT</a>
+<a name="ln73"> *</a>
+<a name="ln74"> *</a>
+<a name="ln75"> *  |                                               Method |                  fen |     Mean |    Error |   StdDev | Ratio | RatioSD |  Gen 0 | Allocated |</a>
+<a name="ln76"> *  |----------------------------------------------------- |--------------------- |---------:|---------:|---------:|------:|--------:|-------:|----------:|</a>
+<a name="ln77"> *  |                         **Struct_FENCalculatedOnTheFly** | **r2q1r(...)- 0 1 [68]** | **15.04 μs** | **0.103 μs** | **0.097 μs** |  **1.00** |    **0.00** | **0.5341** |     **10 KB** |</a>
+<a name="ln78"> *  |         Struct_FENCalculatedWithinTheMoveConstructor | r2q1r(...)- 0 1 [68] | 15.18 μs | 0.110 μs | 0.103 μs |  1.01 |    0.01 | 0.6104 |     11 KB |</a>
+<a name="ln79"> *  |                 ReadonlyStruct_FENCalculatedOnTheFly | r2q1r(...)- 0 1 [68] | 15.28 μs | 0.106 μs | 0.099 μs |  1.02 |    0.01 | 0.5341 |     10 KB |</a>
+<a name="ln80"> *  | ReadonlyStruct_FENCalculatedWithinTheMoveConstructor | r2q1r(...)- 0 1 [68] | 15.25 μs | 0.090 μs | 0.080 μs |  1.01 |    0.01 | 0.6104 |     11 KB |</a>
+<a name="ln81"> *  |                          Class_FENCalculatedOnTheFly | r2q1r(...)- 0 1 [68] | 15.44 μs | 0.127 μs | 0.119 μs |  1.03 |    0.01 | 0.5493 |     10 KB |</a>
+<a name="ln82"> *  |          Class_FENCalculatedWithinTheMoveConstructor | r2q1r(...)- 0 1 [68] | 15.27 μs | 0.091 μs | 0.085 μs |  1.02 |    0.01 | 0.6104 |     11 KB |</a>
+<a name="ln83"> *  |                    RecordClass_FENCalculatedOnTheFly | r2q1r(...)- 0 1 [68] | 14.97 μs | 0.113 μs | 0.106 μs |  1.00 |    0.01 | 0.5493 |     10 KB |</a>
+<a name="ln84"> *  |    RecordClass_FENCalculatedWithinTheMoveConstructor | r2q1r(...)- 0 1 [68] | 15.24 μs | 0.099 μs | 0.083 μs |  1.01 |    0.01 | 0.6104 |     11 KB |</a>
+<a name="ln85"> *  |                   RecordStruct_FENCalculatedOnTheFly | r2q1r(...)- 0 1 [68] | 15.13 μs | 0.113 μs | 0.106 μs |  1.01 |    0.01 | 0.5341 |     10 KB |</a>
+<a name="ln86"> *  |   RecordStruct_FENCalculatedWithinTheMoveConstructor | r2q1r(...)- 0 1 [68] | 15.61 μs | 0.120 μs | 0.112 μs |  1.04 |    0.01 | 0.6104 |     11 KB |</a>
+<a name="ln87"> *  |                                                      |                      |          |          |          |       |         |        |           |</a>
+<a name="ln88"> *  |                         **Struct_FENCalculatedOnTheFly** | **r3k2r(...)- 0 1 [68]** | **15.29 μs** | **0.119 μs** | **0.111 μs** |  **1.00** |    **0.00** | **0.5341** |     **10 KB** |</a>
+<a name="ln89"> *  |         Struct_FENCalculatedWithinTheMoveConstructor | r3k2r(...)- 0 1 [68] | 15.01 μs | 0.129 μs | 0.120 μs |  0.98 |    0.01 | 0.5798 |     11 KB |</a>
+<a name="ln90"> *  |                 ReadonlyStruct_FENCalculatedOnTheFly | r3k2r(...)- 0 1 [68] | 15.17 μs | 0.134 μs | 0.126 μs |  0.99 |    0.01 | 0.5341 |     10 KB |</a>
+<a name="ln91"> *  | ReadonlyStruct_FENCalculatedWithinTheMoveConstructor | r3k2r(...)- 0 1 [68] | 15.35 μs | 0.167 μs | 0.156 μs |  1.00 |    0.01 | 0.5798 |     11 KB |</a>
+<a name="ln92"> *  |                          Class_FENCalculatedOnTheFly | r3k2r(...)- 0 1 [68] | 15.24 μs | 0.080 μs | 0.071 μs |  1.00 |    0.01 | 0.5341 |     10 KB |</a>
+<a name="ln93"> *  |          Class_FENCalculatedWithinTheMoveConstructor | r3k2r(...)- 0 1 [68] | 15.37 μs | 0.127 μs | 0.119 μs |  1.01 |    0.01 | 0.6104 |     11 KB |</a>
+<a name="ln94"> *  |                    RecordClass_FENCalculatedOnTheFly | r3k2r(...)- 0 1 [68] | 15.12 μs | 0.106 μs | 0.099 μs |  0.99 |    0.01 | 0.5341 |     10 KB |</a>
+<a name="ln95"> *  |    RecordClass_FENCalculatedWithinTheMoveConstructor | r3k2r(...)- 0 1 [68] | 15.51 μs | 0.224 μs | 0.209 μs |  1.01 |    0.02 | 0.6104 |     11 KB |</a>
+<a name="ln96"> *  |                   RecordStruct_FENCalculatedOnTheFly | r3k2r(...)- 0 1 [68] | 15.37 μs | 0.103 μs | 0.097 μs |  1.01 |    0.01 | 0.5188 |     10 KB |</a>
+<a name="ln97"> *  |   RecordStruct_FENCalculatedWithinTheMoveConstructor | r3k2r(...)- 0 1 [68] | 15.32 μs | 0.200 μs | 0.187 μs |  1.00 |    0.01 | 0.5951 |     11 KB |</a>
+<a name="ln98"> *  |                                                      |                      |          |          |          |       |         |        |           |</a>
+<a name="ln99"> *  |                         Struct_FENCalculatedOnTheFly | r3k2r(...)- 0 1 [68] | 17.01 μs | 0.122 μs | 0.108 μs |  1.00 |    0.00 | 0.5188 |     10 KB |</a>
+<a name="ln100"> *  |         Struct_FENCalculatedWithinTheMoveConstructor | r3k2r(...)- 0 1 [68] | 17.30 μs | 0.178 μs | 0.158 μs |  1.02 |    0.01 | 0.5798 |     11 KB |</a>
+<a name="ln101"> *  |                 ReadonlyStruct_FENCalculatedOnTheFly | r3k2r(...)- 0 1 [68] | 17.41 μs | 0.164 μs | 0.154 μs |  1.02 |    0.01 | 0.5188 |     10 KB |</a>
+<a name="ln102"> *  | ReadonlyStruct_FENCalculatedWithinTheMoveConstructor | r3k2r(...)- 0 1 [68] | 17.13 μs | 0.147 μs | 0.138 μs |  1.01 |    0.01 | 0.5798 |     11 KB |</a>
+<a name="ln103"> *  |                          Class_FENCalculatedOnTheFly | r3k2r(...)- 0 1 [68] | 17.30 μs | 0.102 μs | 0.091 μs |  1.02 |    0.01 | 0.5188 |     10 KB |</a>
+<a name="ln104"> *  |          Class_FENCalculatedWithinTheMoveConstructor | r3k2r(...)- 0 1 [68] | 17.28 μs | 0.095 μs | 0.089 μs |  1.02 |    0.01 | 0.6104 |     11 KB |</a>
+<a name="ln105"> *  |                    RecordClass_FENCalculatedOnTheFly | r3k2r(...)- 0 1 [68] | 17.37 μs | 0.096 μs | 0.085 μs |  1.02 |    0.01 | 0.5188 |     10 KB |</a>
+<a name="ln106"> *  |    RecordClass_FENCalculatedWithinTheMoveConstructor | r3k2r(...)- 0 1 [68] | 17.45 μs | 0.141 μs | 0.132 μs |  1.03 |    0.01 | 0.6104 |     11 KB |</a>
+<a name="ln107"> *  |                   RecordStruct_FENCalculatedOnTheFly | r3k2r(...)- 0 1 [68] | 17.27 μs | 0.116 μs | 0.108 μs |  1.02 |    0.01 | 0.5188 |     10 KB |</a>
+<a name="ln108"> *  |   RecordStruct_FENCalculatedWithinTheMoveConstructor | r3k2r(...)- 0 1 [68] | 17.31 μs | 0.148 μs | 0.139 μs |  1.02 |    0.01 | 0.5798 |     11 KB |</a>
+<a name="ln109"> *  |                                                      |                      |          |          |          |       |         |        |           |</a>
+<a name="ln110"> *  |                         **Struct_FENCalculatedOnTheFly** | **rnbqk(...)6 0 1 [67]** | **15.53 μs** | **0.107 μs** | **0.089 μs** |  **1.00** |    **0.00** | **0.5188** |     **10 KB** |</a>
+<a name="ln111"> *  |         Struct_FENCalculatedWithinTheMoveConstructor | rnbqk(...)6 0 1 [67] | 15.79 μs | 0.186 μs | 0.174 μs |  1.02 |    0.01 | 0.5798 |     11 KB |</a>
+<a name="ln112"> *  |                 ReadonlyStruct_FENCalculatedOnTheFly | rnbqk(...)6 0 1 [67] | 15.20 μs | 0.066 μs | 0.051 μs |  0.98 |    0.01 | 0.5188 |     10 KB |</a>
+<a name="ln113"> *  | ReadonlyStruct_FENCalculatedWithinTheMoveConstructor | rnbqk(...)6 0 1 [67] | 15.49 μs | 0.119 μs | 0.111 μs |  1.00 |    0.01 | 0.5798 |     11 KB |</a>
+<a name="ln114"> *  |                          Class_FENCalculatedOnTheFly | rnbqk(...)6 0 1 [67] | 15.65 μs | 0.203 μs | 0.190 μs |  1.01 |    0.01 | 0.5188 |     10 KB |</a>
+<a name="ln115"> *  |          Class_FENCalculatedWithinTheMoveConstructor | rnbqk(...)6 0 1 [67] | 15.73 μs | 0.197 μs | 0.184 μs |  1.01 |    0.01 | 0.6104 |     11 KB |</a>
+<a name="ln116"> *  |                    RecordClass_FENCalculatedOnTheFly | rnbqk(...)6 0 1 [67] | 15.87 μs | 0.151 μs | 0.141 μs |  1.02 |    0.01 | 0.5188 |     10 KB |</a>
+<a name="ln117"> *  |    RecordClass_FENCalculatedWithinTheMoveConstructor | rnbqk(...)6 0 1 [67] | 15.99 μs | 0.139 μs | 0.123 μs |  1.03 |    0.01 | 0.6104 |     11 KB |</a>
+<a name="ln118"> *  |                   RecordStruct_FENCalculatedOnTheFly | rnbqk(...)6 0 1 [67] | 16.02 μs | 0.117 μs | 0.109 μs |  1.03 |    0.01 | 0.5188 |     10 KB |</a>
+<a name="ln119"> *  |   RecordStruct_FENCalculatedWithinTheMoveConstructor | rnbqk(...)6 0 1 [67] | 15.87 μs | 0.141 μs | 0.132 μs |  1.02 |    0.01 | 0.5798 |     11 KB |</a>
+<a name="ln120"> *  |                                                      |                      |          |          |          |       |         |        |           |</a>
+<a name="ln121"> *  |                         **Struct_FENCalculatedOnTheFly** | **rnbqk(...)- 0 1 [56]** | **11.43 μs** | **0.211 μs** | **0.197 μs** |  **1.00** |    **0.00** | **0.4730** |      **9 KB** |</a>
+<a name="ln122"> *  |         Struct_FENCalculatedWithinTheMoveConstructor | rnbqk(...)- 0 1 [56] | 10.93 μs | 0.084 μs | 0.075 μs |  0.96 |    0.02 | 0.5341 |     10 KB |</a>
+<a name="ln123"> *  |                 ReadonlyStruct_FENCalculatedOnTheFly | rnbqk(...)- 0 1 [56] | 11.19 μs | 0.083 μs | 0.077 μs |  0.98 |    0.02 | 0.4730 |      9 KB |</a>
+<a name="ln124"> *  | ReadonlyStruct_FENCalculatedWithinTheMoveConstructor | rnbqk(...)- 0 1 [56] | 11.61 μs | 0.228 μs | 0.253 μs |  1.02 |    0.03 | 0.5341 |     10 KB |</a>
+<a name="ln125"> *  |                          Class_FENCalculatedOnTheFly | rnbqk(...)- 0 1 [56] | 11.58 μs | 0.230 μs | 0.299 μs |  1.02 |    0.04 | 0.4730 |      9 KB |</a>
+<a name="ln126"> *  |          Class_FENCalculatedWithinTheMoveConstructor | rnbqk(...)- 0 1 [56] | 11.47 μs | 0.147 μs | 0.115 μs |  1.01 |    0.02 | 0.5493 |     10 KB |</a>
+<a name="ln127"> *  |                    RecordClass_FENCalculatedOnTheFly | rnbqk(...)- 0 1 [56] | 11.27 μs | 0.058 μs | 0.052 μs |  0.99 |    0.02 | 0.4730 |      9 KB |</a>
+<a name="ln128"> *  |    RecordClass_FENCalculatedWithinTheMoveConstructor | rnbqk(...)- 0 1 [56] | 12.12 μs | 0.233 μs | 0.229 μs |  1.06 |    0.03 | 0.5493 |     10 KB |</a>
+<a name="ln129"> *  |                   RecordStruct_FENCalculatedOnTheFly | rnbqk(...)- 0 1 [56] | 11.79 μs | 0.125 μs | 0.117 μs |  1.03 |    0.02 | 0.4730 |      9 KB |</a>
+<a name="ln130"> *  |   RecordStruct_FENCalculatedWithinTheMoveConstructor | rnbqk(...)- 0 1 [56] | 11.28 μs | 0.079 μs | 0.074 μs |  0.99 |    0.02 | 0.5341 |     10 KB |</a>
+<a name="ln131"> *</a>
+<a name="ln132"> *</a>
+<a name="ln133"> *  BenchmarkDotNet=v0.13.1, OS=ubuntu 20.04</a>
+<a name="ln134"> *  Intel Xeon Platinum 8272CL CPU 2.60GHz, 1 CPU, 2 logical and 2 physical cores</a>
+<a name="ln135"> *  .NET SDK=6.0.100-rc.1.21458.32</a>
+<a name="ln136"> *    [Host]     : .NET 6.0.0 (6.0.21.45113), X64 RyuJIT</a>
+<a name="ln137"> *    DefaultJob : .NET 6.0.0 (6.0.21.45113), X64 RyuJIT</a>
+<a name="ln138"> *</a>
+<a name="ln139"> *</a>
+<a name="ln140"> *  ```</a>
+<a name="ln141"> *  |                                               Method |                  fen |     Mean |    Error |   StdDev | Ratio | RatioSD |  Gen 0 | Allocated |</a>
+<a name="ln142"> *  |----------------------------------------------------- |--------------------- |---------:|---------:|---------:|------:|--------:|-------:|----------:|</a>
+<a name="ln143"> *  |                         **Struct_FENCalculatedOnTheFly** | **r2q1r(...)- 0 1 [68]** | **16.79 μs** | **0.225 μs** | **0.211 μs** |  **1.00** |    **0.00** | **0.5188** |     **10 KB** |</a>
+<a name="ln144"> *  |         Struct_FENCalculatedWithinTheMoveConstructor | r2q1r(...)- 0 1 [68] | 16.88 μs | 0.186 μs | 0.165 μs |  1.01 |    0.02 | 0.6104 |     11 KB |</a>
+<a name="ln145"> *  |                 ReadonlyStruct_FENCalculatedOnTheFly | r2q1r(...)- 0 1 [68] | 16.79 μs | 0.163 μs | 0.152 μs |  1.00 |    0.02 | 0.5188 |     10 KB |</a>
+<a name="ln146"> *  | ReadonlyStruct_FENCalculatedWithinTheMoveConstructor | r2q1r(...)- 0 1 [68] | 17.03 μs | 0.116 μs | 0.103 μs |  1.02 |    0.01 | 0.6104 |     11 KB |</a>
+<a name="ln147"> *  |                          Class_FENCalculatedOnTheFly | r2q1r(...)- 0 1 [68] | 17.09 μs | 0.135 μs | 0.119 μs |  1.02 |    0.02 | 0.5493 |     10 KB |</a>
+<a name="ln148"> *  |          Class_FENCalculatedWithinTheMoveConstructor | r2q1r(...)- 0 1 [68] | 17.12 μs | 0.091 μs | 0.076 μs |  1.02 |    0.01 | 0.6104 |     11 KB |</a>
+<a name="ln149"> *  |                    RecordClass_FENCalculatedOnTheFly | r2q1r(...)- 0 1 [68] | 17.22 μs | 0.094 μs | 0.088 μs |  1.03 |    0.01 | 0.5493 |     10 KB |</a>
+<a name="ln150"> *  |    RecordClass_FENCalculatedWithinTheMoveConstructor | r2q1r(...)- 0 1 [68] | 17.34 μs | 0.116 μs | 0.097 μs |  1.03 |    0.01 | 0.6104 |     11 KB |</a>
+<a name="ln151"> *  |                   RecordStruct_FENCalculatedOnTheFly | r2q1r(...)- 0 1 [68] | 16.97 μs | 0.198 μs | 0.186 μs |  1.01 |    0.02 | 0.5188 |     10 KB |</a>
+<a name="ln152"> *  |   RecordStruct_FENCalculatedWithinTheMoveConstructor | r2q1r(...)- 0 1 [68] | 17.36 μs | 0.095 μs | 0.084 μs |  1.03 |    0.01 | 0.6104 |     11 KB |</a>
+<a name="ln153"> *  |                                                      |                      |          |          |          |       |         |        |           |</a>
+<a name="ln154"> *  |                         **Struct_FENCalculatedOnTheFly** | **r3k2r(...)- 0 1 [68]** | **17.29 μs** | **0.202 μs** | **0.189 μs** |  **1.00** |    **0.00** | **0.5188** |     **10 KB** |</a>
+<a name="ln155"> *  |         Struct_FENCalculatedWithinTheMoveConstructor | r3k2r(...)- 0 1 [68] | 17.40 μs | 0.323 μs | 0.302 μs |  1.01 |    0.02 | 0.5798 |     11 KB |</a>
+<a name="ln156"> *  |                 ReadonlyStruct_FENCalculatedOnTheFly | r3k2r(...)- 0 1 [68] | 17.27 μs | 0.188 μs | 0.176 μs |  1.00 |    0.01 | 0.5188 |     10 KB |</a>
+<a name="ln157"> *  | ReadonlyStruct_FENCalculatedWithinTheMoveConstructor | r3k2r(...)- 0 1 [68] | 17.57 μs | 0.176 μs | 0.164 μs |  1.02 |    0.02 | 0.5798 |     11 KB |</a>
+<a name="ln158"> *  |                          Class_FENCalculatedOnTheFly | r3k2r(...)- 0 1 [68] | 16.95 μs | 0.255 μs | 0.239 μs |  0.98 |    0.01 | 0.5188 |     10 KB |</a>
+<a name="ln159"> *  |          Class_FENCalculatedWithinTheMoveConstructor | r3k2r(...)- 0 1 [68] | 16.94 μs | 0.082 μs | 0.072 μs |  0.98 |    0.01 | 0.6104 |     11 KB |</a>
+<a name="ln160"> *  |                    RecordClass_FENCalculatedOnTheFly | r3k2r(...)- 0 1 [68] | 16.90 μs | 0.223 μs | 0.209 μs |  0.98 |    0.01 | 0.5188 |     10 KB |</a>
+<a name="ln161"> *  |    RecordClass_FENCalculatedWithinTheMoveConstructor | r3k2r(...)- 0 1 [68] | 17.01 μs | 0.168 μs | 0.157 μs |  0.98 |    0.01 | 0.6104 |     11 KB |</a>
+<a name="ln162"> *  |                   RecordStruct_FENCalculatedOnTheFly | r3k2r(...)- 0 1 [68] | 16.78 μs | 0.141 μs | 0.125 μs |  0.97 |    0.01 | 0.5188 |     10 KB |</a>
+<a name="ln163"> *  |   RecordStruct_FENCalculatedWithinTheMoveConstructor | r3k2r(...)- 0 1 [68] | 17.04 μs | 0.116 μs | 0.108 μs |  0.99 |    0.01 | 0.5798 |     11 KB |</a>
+<a name="ln164"> *  |                                                      |                      |          |          |          |       |         |        |           |</a>
+<a name="ln165"> *  |                         Struct_FENCalculatedOnTheFly | r3k2r(...)- 0 1 [68] | 18.65 μs | 0.114 μs | 0.096 μs |  1.00 |    0.00 | 0.5188 |     10 KB |</a>
+<a name="ln166"> *  |         Struct_FENCalculatedWithinTheMoveConstructor | r3k2r(...)- 0 1 [68] | 18.82 μs | 0.116 μs | 0.103 μs |  1.01 |    0.01 | 0.5798 |     11 KB |</a>
+<a name="ln167"> *  |                 ReadonlyStruct_FENCalculatedOnTheFly | r3k2r(...)- 0 1 [68] | 18.74 μs | 0.088 μs | 0.078 μs |  1.00 |    0.01 | 0.5188 |     10 KB |</a>
+<a name="ln168"> *  | ReadonlyStruct_FENCalculatedWithinTheMoveConstructor | r3k2r(...)- 0 1 [68] | 18.86 μs | 0.074 μs | 0.065 μs |  1.01 |    0.00 | 0.5798 |     11 KB |</a>
+<a name="ln169"> *  |                          Class_FENCalculatedOnTheFly | r3k2r(...)- 0 1 [68] | 18.70 μs | 0.109 μs | 0.091 μs |  1.00 |    0.01 | 0.5188 |     10 KB |</a>
+<a name="ln170"> *  |          Class_FENCalculatedWithinTheMoveConstructor | r3k2r(...)- 0 1 [68] | 18.80 μs | 0.077 μs | 0.060 μs |  1.01 |    0.01 | 0.6104 |     11 KB |</a>
+<a name="ln171"> *  |                    RecordClass_FENCalculatedOnTheFly | r3k2r(...)- 0 1 [68] | 18.61 μs | 0.096 μs | 0.090 μs |  1.00 |    0.01 | 0.5188 |     10 KB |</a>
+<a name="ln172"> *  |    RecordClass_FENCalculatedWithinTheMoveConstructor | r3k2r(...)- 0 1 [68] | 19.27 μs | 0.177 μs | 0.165 μs |  1.03 |    0.01 | 0.6104 |     11 KB |</a>
+<a name="ln173"> *  |                   RecordStruct_FENCalculatedOnTheFly | r3k2r(...)- 0 1 [68] | 18.66 μs | 0.072 μs | 0.060 μs |  1.00 |    0.01 | 0.5188 |     10 KB |</a>
+<a name="ln174"> *  |   RecordStruct_FENCalculatedWithinTheMoveConstructor | r3k2r(...)- 0 1 [68] | 18.85 μs | 0.126 μs | 0.111 μs |  1.01 |    0.01 | 0.5798 |     11 KB |</a>
+<a name="ln175"> *  |                                                      |                      |          |          |          |       |         |        |           |</a>
+<a name="ln176"> *  |                         **Struct_FENCalculatedOnTheFly** | **rnbqk(...)6 0 1 [67]** | **17.05 μs** | **0.108 μs** | **0.101 μs** |  **1.00** |    **0.00** | **0.5188** |     **10 KB** |</a>
+<a name="ln177"> *  |         Struct_FENCalculatedWithinTheMoveConstructor | rnbqk(...)6 0 1 [67] | 17.22 μs | 0.197 μs | 0.175 μs |  1.01 |    0.01 | 0.5798 |     11 KB |</a>
+<a name="ln178"> *  |                 ReadonlyStruct_FENCalculatedOnTheFly | rnbqk(...)6 0 1 [67] | 17.05 μs | 0.103 μs | 0.096 μs |  1.00 |    0.01 | 0.5188 |     10 KB |</a>
+<a name="ln179"> *  | ReadonlyStruct_FENCalculatedWithinTheMoveConstructor | rnbqk(...)6 0 1 [67] | 17.00 μs | 0.200 μs | 0.187 μs |  1.00 |    0.01 | 0.5798 |     11 KB |</a>
+<a name="ln180"> *  |                          Class_FENCalculatedOnTheFly | rnbqk(...)6 0 1 [67] | 16.96 μs | 0.084 μs | 0.079 μs |  0.99 |    0.01 | 0.5188 |     10 KB |</a>
+<a name="ln181"> *  |          Class_FENCalculatedWithinTheMoveConstructor | rnbqk(...)6 0 1 [67] | 17.33 μs | 0.249 μs | 0.233 μs |  1.02 |    0.02 | 0.6104 |     11 KB |</a>
+<a name="ln182"> *  |                    RecordClass_FENCalculatedOnTheFly | rnbqk(...)6 0 1 [67] | 17.56 μs | 0.314 μs | 0.293 μs |  1.03 |    0.02 | 0.5188 |     10 KB |</a>
+<a name="ln183"> *  |    RecordClass_FENCalculatedWithinTheMoveConstructor | rnbqk(...)6 0 1 [67] | 17.42 μs | 0.335 μs | 0.329 μs |  1.02 |    0.02 | 0.6104 |     11 KB |</a>
+<a name="ln184"> *  |                   RecordStruct_FENCalculatedOnTheFly | rnbqk(...)6 0 1 [67] | 16.97 μs | 0.193 μs | 0.180 μs |  1.00 |    0.01 | 0.5188 |     10 KB |</a>
+<a name="ln185"> *  |   RecordStruct_FENCalculatedWithinTheMoveConstructor | rnbqk(...)6 0 1 [67] | 17.24 μs | 0.183 μs | 0.163 μs |  1.01 |    0.01 | 0.5798 |     11 KB |</a>
+<a name="ln186"> *  |                                                      |                      |          |          |          |       |         |        |           |</a>
+<a name="ln187"> *  |                         **Struct_FENCalculatedOnTheFly** | **rnbqk(...)- 0 1 [56]** | **12.45 μs** | **0.226 μs** | **0.211 μs** |  **1.00** |    **0.00** | **0.4730** |      **9 KB** |</a>
+<a name="ln188"> *  |         Struct_FENCalculatedWithinTheMoveConstructor | rnbqk(...)- 0 1 [56] | 12.43 μs | 0.141 μs | 0.132 μs |  1.00 |    0.02 | 0.5341 |     10 KB |</a>
+<a name="ln189"> *  |                 ReadonlyStruct_FENCalculatedOnTheFly | rnbqk(...)- 0 1 [56] | 12.51 μs | 0.186 μs | 0.174 μs |  1.01 |    0.01 | 0.4730 |      9 KB |</a>
+<a name="ln190"> *  | ReadonlyStruct_FENCalculatedWithinTheMoveConstructor | rnbqk(...)- 0 1 [56] | 12.59 μs | 0.108 μs | 0.101 μs |  1.01 |    0.02 | 0.5341 |     10 KB |</a>
+<a name="ln191"> *  |                          Class_FENCalculatedOnTheFly | rnbqk(...)- 0 1 [56] | 12.42 μs | 0.188 μs | 0.176 μs |  1.00 |    0.01 | 0.4730 |      9 KB |</a>
+<a name="ln192"> *  |          Class_FENCalculatedWithinTheMoveConstructor | rnbqk(...)- 0 1 [56] | 12.53 μs | 0.148 μs | 0.131 μs |  1.01 |    0.02 | 0.5493 |     10 KB |</a>
+<a name="ln193"> *  |                    RecordClass_FENCalculatedOnTheFly | rnbqk(...)- 0 1 [56] | 12.46 μs | 0.134 μs | 0.126 μs |  1.00 |    0.02 | 0.4730 |      9 KB |</a>
+<a name="ln194"> *  |    RecordClass_FENCalculatedWithinTheMoveConstructor | rnbqk(...)- 0 1 [56] | 12.44 μs | 0.138 μs | 0.129 μs |  1.00 |    0.02 | 0.5493 |     10 KB |</a>
+<a name="ln195"> *  |                   RecordStruct_FENCalculatedOnTheFly | rnbqk(...)- 0 1 [56] | 12.36 μs | 0.240 μs | 0.236 μs |  0.99 |    0.01 | 0.4730 |      9 KB |</a>
+<a name="ln196"> *  |   RecordStruct_FENCalculatedWithinTheMoveConstructor | rnbqk(...)- 0 1 [56] | 12.43 μs | 0.119 μs | 0.112 μs |  1.00 |    0.02 | 0.5341 |     10 KB |</a>
+<a name="ln197"> *</a>
+<a name="ln198">*/</a>
+<a name="ln199"> </a>
+<a name="ln200">#pragma warning disable RCS1163, IDE0060 // Unused parameter.</a>
+<a name="ln201"> </a>
+<a name="ln202">using BenchmarkDotNet.Attributes;</a>
+<a name="ln203">using Lynx.Model;</a>
+<a name="ln204">using System.Text;</a>
+<a name="ln205"> </a>
+<a name="ln206">namespace Lynx.Benchmark;</a>
+<a name="ln207"> </a>
+<a name="ln208">public class FENGeneration_Benchmark : BaseBenchmark</a>
+<a name="ln209">{</a>
+<a name="ln210">    [Benchmark(Baseline = true)]</a>
+<a name="ln211">    [ArgumentsSource(nameof(Data))]</a>
+<a name="ln212">    public string Struct_FENCalculatedOnTheFly(string fen)</a>
+<a name="ln213">    {</a>
+<a name="ln214">        var moves = MoveGenerator.GenerateAllMoves(new Position(fen));</a>
+<a name="ln215"> </a>
+<a name="ln216">        var position = new StructCustomPosition(fen);</a>
+<a name="ln217">        var newPosition = new StructCustomPosition(position, moves[0]);</a>
+<a name="ln218">        return newPosition.FEN;</a>
+<a name="ln219">    }</a>
+<a name="ln220"> </a>
+<a name="ln221">    [Benchmark]</a>
+<a name="ln222">    [ArgumentsSource(nameof(Data))]</a>
+<a name="ln223">    public string Struct_FENCalculatedWithinTheMoveConstructor(string fen)</a>
+<a name="ln224">    {</a>
+<a name="ln225">        var moves = MoveGenerator.GenerateAllMoves(new Position(fen));</a>
+<a name="ln226"> </a>
+<a name="ln227">        var position = new StructCustomPosition(fen);</a>
+<a name="ln228">        var newPosition = new StructCustomPosition(position, moves[0], default);</a>
+<a name="ln229"> </a>
+<a name="ln230">        return newPosition.FEN;</a>
+<a name="ln231">    }</a>
+<a name="ln232"> </a>
+<a name="ln233">    [Benchmark]</a>
+<a name="ln234">    [ArgumentsSource(nameof(Data))]</a>
+<a name="ln235">    public string ReadonlyStruct_FENCalculatedOnTheFly(string fen)</a>
+<a name="ln236">    {</a>
+<a name="ln237">        var moves = MoveGenerator.GenerateAllMoves(new Position(fen));</a>
+<a name="ln238"> </a>
+<a name="ln239">        var position = new ReadonlyStructCustomPosition(fen);</a>
+<a name="ln240">        var newPosition = new ReadonlyStructCustomPosition(position, moves[0]);</a>
+<a name="ln241"> </a>
+<a name="ln242">        return newPosition.FEN;</a>
+<a name="ln243">    }</a>
+<a name="ln244"> </a>
+<a name="ln245">    [Benchmark]</a>
+<a name="ln246">    [ArgumentsSource(nameof(Data))]</a>
+<a name="ln247">    public string ReadonlyStruct_FENCalculatedWithinTheMoveConstructor(string fen)</a>
+<a name="ln248">    {</a>
+<a name="ln249">        var moves = MoveGenerator.GenerateAllMoves(new Position(fen));</a>
+<a name="ln250"> </a>
+<a name="ln251">        var position = new ReadonlyStructCustomPosition(fen);</a>
+<a name="ln252">        var newPosition = new ReadonlyStructCustomPosition(position, moves[0], default);</a>
+<a name="ln253"> </a>
+<a name="ln254">        return newPosition.FEN;</a>
+<a name="ln255">    }</a>
+<a name="ln256"> </a>
+<a name="ln257">    [Benchmark]</a>
+<a name="ln258">    [ArgumentsSource(nameof(Data))]</a>
+<a name="ln259">    public string Class_FENCalculatedOnTheFly(string fen)</a>
+<a name="ln260">    {</a>
+<a name="ln261">        var moves = MoveGenerator.GenerateAllMoves(new Position(fen));</a>
+<a name="ln262"> </a>
+<a name="ln263">        var position = new ClassCustomPosition(fen);</a>
+<a name="ln264">        var newPosition = new ClassCustomPosition(position, moves[0]);</a>
+<a name="ln265"> </a>
+<a name="ln266">        return newPosition.FEN;</a>
+<a name="ln267">    }</a>
+<a name="ln268"> </a>
+<a name="ln269">    [Benchmark]</a>
+<a name="ln270">    [ArgumentsSource(nameof(Data))]</a>
+<a name="ln271">    public string Class_FENCalculatedWithinTheMoveConstructor(string fen)</a>
+<a name="ln272">    {</a>
+<a name="ln273">        var moves = MoveGenerator.GenerateAllMoves(new Position(fen));</a>
+<a name="ln274"> </a>
+<a name="ln275">        var position = new ClassCustomPosition(fen);</a>
+<a name="ln276">        var newPosition = new ClassCustomPosition(position, moves[0], default);</a>
+<a name="ln277"> </a>
+<a name="ln278">        return newPosition.FEN;</a>
+<a name="ln279">    }</a>
+<a name="ln280"> </a>
+<a name="ln281">    [Benchmark]</a>
+<a name="ln282">    [ArgumentsSource(nameof(Data))]</a>
+<a name="ln283">    public string RecordClass_FENCalculatedOnTheFly(string fen)</a>
+<a name="ln284">    {</a>
+<a name="ln285">        var moves = MoveGenerator.GenerateAllMoves(new Position(fen));</a>
+<a name="ln286"> </a>
+<a name="ln287">        var position = new RecordClassCustomPosition(fen);</a>
+<a name="ln288">        var newPosition = new RecordClassCustomPosition(position, moves[0]);</a>
+<a name="ln289"> </a>
+<a name="ln290">        return newPosition.FEN;</a>
+<a name="ln291">    }</a>
+<a name="ln292"> </a>
+<a name="ln293">    [Benchmark]</a>
+<a name="ln294">    [ArgumentsSource(nameof(Data))]</a>
+<a name="ln295">    public string RecordClass_FENCalculatedWithinTheMoveConstructor(string fen)</a>
+<a name="ln296">    {</a>
+<a name="ln297">        var moves = MoveGenerator.GenerateAllMoves(new Position(fen));</a>
+<a name="ln298"> </a>
+<a name="ln299">        var position = new RecordClassCustomPosition(fen);</a>
+<a name="ln300">        var newPosition = new RecordClassCustomPosition(position, moves[0], default);</a>
+<a name="ln301"> </a>
+<a name="ln302">        return newPosition.FEN;</a>
+<a name="ln303">    }</a>
+<a name="ln304"> </a>
+<a name="ln305">    [Benchmark]</a>
+<a name="ln306">    [ArgumentsSource(nameof(Data))]</a>
+<a name="ln307">    public string RecordStruct_FENCalculatedOnTheFly(string fen)</a>
+<a name="ln308">    {</a>
+<a name="ln309">        var moves = MoveGenerator.GenerateAllMoves(new Position(fen));</a>
+<a name="ln310"> </a>
+<a name="ln311">        var position = new RecordStructCustomPosition(fen);</a>
+<a name="ln312">        var newPosition = new RecordStructCustomPosition(position, moves[0]);</a>
+<a name="ln313"> </a>
+<a name="ln314">        return newPosition.FEN;</a>
+<a name="ln315">    }</a>
+<a name="ln316"> </a>
+<a name="ln317">    [Benchmark]</a>
+<a name="ln318">    [ArgumentsSource(nameof(Data))]</a>
+<a name="ln319">    public string RecordStruct_FENCalculatedWithinTheMoveConstructor(string fen)</a>
+<a name="ln320">    {</a>
+<a name="ln321">        var moves = MoveGenerator.GenerateAllMoves(new Position(fen));</a>
+<a name="ln322"> </a>
+<a name="ln323">        var position = new RecordStructCustomPosition(fen);</a>
+<a name="ln324">        var newPosition = new RecordStructCustomPosition(position, moves[0], default);</a>
+<a name="ln325"> </a>
+<a name="ln326">        return newPosition.FEN;</a>
+<a name="ln327">    }</a>
+<a name="ln328"> </a>
+<a name="ln329">    public static IEnumerable&lt;string&gt; Data =&gt;</a>
+<a name="ln330">        [</a>
+<a name="ln331">            //Constants.EmptyBoardFEN,</a>
+<a name="ln332">            Constants.InitialPositionFEN,</a>
+<a name="ln333">            Constants.TrickyTestPositionFEN,</a>
+<a name="ln334">            &quot;r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R b KQkq - 0 1&quot;,</a>
+<a name="ln335">            &quot;rnbqkb1r/pp1p1pPp/8/2p1pP2/1P1P4/3P3P/P1P1P3/RNBQKBNR w KQkq e6 0 1&quot;,</a>
+<a name="ln336">            &quot;r2q1rk1/ppp2ppp/2n1bn2/2b1p3/3pP3/3P1NPP/PPP1NPB1/R1BQ1RK1 b - - 0 1&quot;</a>
+<a name="ln337">        ];</a>
+<a name="ln338">}</a>
+<a name="ln339"> </a>
+<a name="ln340">internal struct StructCustomPosition</a>
+<a name="ln341">{</a>
+<a name="ln342">    private string? _fen;</a>
+<a name="ln343"> </a>
+<a name="ln344">    public string FEN</a>
+<a name="ln345">    {</a>
+<a name="ln346">        get =&gt; _fen ??= CalculateFEN();</a>
+<a name="ln347">        init =&gt; _fen = value;</a>
+<a name="ln348">    }</a>
+<a name="ln349"> </a>
+<a name="ln350">    /// &lt;summary&gt;</a>
+<a name="ln351">    /// Use &lt;see cref=&quot;Piece&quot;/&gt; as index</a>
+<a name="ln352">    /// &lt;/summary&gt;</a>
+<a name="ln353">    public BitBoard[] PieceBitBoards { get; }</a>
+<a name="ln354"> </a>
+<a name="ln355">    /// &lt;summary&gt;</a>
+<a name="ln356">    /// Black, White, Both</a>
+<a name="ln357">    /// &lt;/summary&gt;</a>
+<a name="ln358">    public BitBoard[] OccupancyBitBoards { get; }</a>
+<a name="ln359"> </a>
+<a name="ln360">    public Side Side { get; }</a>
+<a name="ln361"> </a>
+<a name="ln362">    public BoardSquare EnPassant { get; }</a>
+<a name="ln363"> </a>
+<a name="ln364">    public int Castle { get; }</a>
+<a name="ln365"> </a>
+<a name="ln366">    public StructCustomPosition(string fen)</a>
+<a name="ln367">    {</a>
+<a name="ln368">        _fen = fen;</a>
+<a name="ln369"> </a>
+<a name="ln370">        var parsedFEN = FENParser.ParseFEN(fen);</a>
+<a name="ln371"> </a>
+<a name="ln372">        PieceBitBoards = parsedFEN.PieceBitBoards;</a>
+<a name="ln373">        OccupancyBitBoards = parsedFEN.OccupancyBitBoards;</a>
+<a name="ln374">        Side = parsedFEN.Side;</a>
+<a name="ln375">        Castle = parsedFEN.Castle;</a>
+<a name="ln376">        EnPassant = parsedFEN.EnPassant;</a>
+<a name="ln377">    }</a>
+<a name="ln378"> </a>
+<a name="ln379">    /// &lt;summary&gt;</a>
+<a name="ln380">    /// Clone constructor</a>
+<a name="ln381">    /// &lt;/summary&gt;</a>
+<a name="ln382">    public StructCustomPosition(StructCustomPosition position)</a>
+<a name="ln383">    {</a>
+<a name="ln384">        _fen = position.FEN;</a>
+<a name="ln385"> </a>
+<a name="ln386">        PieceBitBoards = new BitBoard[12];</a>
+<a name="ln387">        Array.Copy(position.PieceBitBoards, PieceBitBoards, position.PieceBitBoards.Length);</a>
+<a name="ln388"> </a>
+<a name="ln389">        OccupancyBitBoards = new BitBoard[3];</a>
+<a name="ln390">        Array.Copy(position.OccupancyBitBoards, OccupancyBitBoards, position.OccupancyBitBoards.Length);</a>
+<a name="ln391"> </a>
+<a name="ln392">        Side = position.Side;</a>
+<a name="ln393">        Castle = position.Castle;</a>
+<a name="ln394">        EnPassant = position.EnPassant;</a>
+<a name="ln395">    }</a>
+<a name="ln396"> </a>
+<a name="ln397">    public StructCustomPosition(StructCustomPosition position, Move move) : this(position)</a>
+<a name="ln398">    {</a>
+<a name="ln399">        _fen = null;</a>
+<a name="ln400">        var oldSide = Side;</a>
+<a name="ln401">        var offset = Utils.PieceOffset(oldSide);</a>
+<a name="ln402">        var oppositeSide = Utils.OppositeSide(oldSide);</a>
+<a name="ln403"> </a>
+<a name="ln404">        int sourceSquare = move.SourceSquare();</a>
+<a name="ln405">        int targetSquare = move.TargetSquare();</a>
+<a name="ln406">        int piece = move.Piece();</a>
+<a name="ln407">        int promotedPiece = move.PromotedPiece();</a>
+<a name="ln408"> </a>
+<a name="ln409">        var newPiece = piece;</a>
+<a name="ln410">        if (promotedPiece != default)</a>
+<a name="ln411">        {</a>
+<a name="ln412">            newPiece = promotedPiece;</a>
+<a name="ln413">        }</a>
+<a name="ln414"> </a>
+<a name="ln415">        EnPassant = BoardSquare.noSquare;</a>
+<a name="ln416"> </a>
+<a name="ln417">        PieceBitBoards[piece].PopBit(sourceSquare);</a>
+<a name="ln418">        OccupancyBitBoards[(int)Side].PopBit(sourceSquare);</a>
+<a name="ln419"> </a>
+<a name="ln420">        PieceBitBoards[newPiece].SetBit(targetSquare);</a>
+<a name="ln421">        OccupancyBitBoards[(int)Side].SetBit(targetSquare);</a>
+<a name="ln422"> </a>
+<a name="ln423">        if (move.IsCapture())</a>
+<a name="ln424">        {</a>
+<a name="ln425">            var oppositeSideOffset = Utils.PieceOffset(oppositeSide);</a>
+<a name="ln426">            var oppositePawnIndex = (int)Piece.P + oppositeSideOffset;</a>
+<a name="ln427"> </a>
+<a name="ln428">            if (move.IsEnPassant())</a>
+<a name="ln429">            {</a>
+<a name="ln430">                var capturedPawnSquare = Constants.EnPassantCaptureSquares[targetSquare];</a>
+<a name="ln431">                Utils.Assert(PieceBitBoards[oppositePawnIndex].GetBit(capturedPawnSquare), $&quot;Expected {(Side)oppositeSide} pawn in {capturedPawnSquare}&quot;);</a>
+<a name="ln432"> </a>
+<a name="ln433">                PieceBitBoards[oppositePawnIndex].PopBit(capturedPawnSquare);</a>
+<a name="ln434">                OccupancyBitBoards[oppositeSide].PopBit(capturedPawnSquare);</a>
+<a name="ln435">            }</a>
+<a name="ln436">            else</a>
+<a name="ln437">            {</a>
+<a name="ln438">                var limit = (int)Piece.K + oppositeSideOffset;</a>
+<a name="ln439">                for (int pieceIndex = oppositePawnIndex; pieceIndex &lt; limit; ++pieceIndex)</a>
+<a name="ln440">                {</a>
+<a name="ln441">                    if (PieceBitBoards[pieceIndex].GetBit(targetSquare))</a>
+<a name="ln442">                    {</a>
+<a name="ln443">                        PieceBitBoards[pieceIndex].PopBit(targetSquare);</a>
+<a name="ln444">                        break;</a>
+<a name="ln445">                    }</a>
+<a name="ln446">                }</a>
+<a name="ln447"> </a>
+<a name="ln448">                OccupancyBitBoards[oppositeSide].PopBit(targetSquare);</a>
+<a name="ln449">            }</a>
+<a name="ln450">        }</a>
+<a name="ln451">        else if (move.IsDoublePawnPush())</a>
+<a name="ln452">        {</a>
+<a name="ln453">            var pawnPush = +8 - ((int)oldSide * 16);</a>
+<a name="ln454">            var enPassantSquare = sourceSquare + pawnPush;</a>
+<a name="ln455"> </a>
+<a name="ln456">            EnPassant = (BoardSquare)enPassantSquare;</a>
+<a name="ln457">        }</a>
+<a name="ln458">        else if (move.IsShortCastle())</a>
+<a name="ln459">        {</a>
+<a name="ln460">            var rookSourceSquare = Utils.ShortCastleRookSourceSquare(oldSide);</a>
+<a name="ln461">            var rookTargetSquare = Utils.ShortCastleRookTargetSquare(oldSide);</a>
+<a name="ln462">            var rookIndex = (int)Piece.R + offset;</a>
+<a name="ln463"> </a>
+<a name="ln464">            PieceBitBoards[rookIndex].PopBit(rookSourceSquare);</a>
+<a name="ln465">            OccupancyBitBoards[(int)Side].PopBit(rookSourceSquare);</a>
+<a name="ln466"> </a>
+<a name="ln467">            PieceBitBoards[rookIndex].SetBit(rookTargetSquare);</a>
+<a name="ln468">            OccupancyBitBoards[(int)Side].SetBit(rookTargetSquare);</a>
+<a name="ln469">        }</a>
+<a name="ln470">        else if (move.IsLongCastle())</a>
+<a name="ln471">        {</a>
+<a name="ln472">            var rookSourceSquare = Utils.LongCastleRookSourceSquare(oldSide);</a>
+<a name="ln473">            var rookTargetSquare = Utils.LongCastleRookTargetSquare(oldSide);</a>
+<a name="ln474">            var rookIndex = (int)Piece.R + offset;</a>
+<a name="ln475"> </a>
+<a name="ln476">            PieceBitBoards[rookIndex].PopBit(rookSourceSquare);</a>
+<a name="ln477">            OccupancyBitBoards[(int)Side].PopBit(rookSourceSquare);</a>
+<a name="ln478"> </a>
+<a name="ln479">            PieceBitBoards[rookIndex].SetBit(rookTargetSquare);</a>
+<a name="ln480">            OccupancyBitBoards[(int)Side].SetBit(rookTargetSquare);</a>
+<a name="ln481">        }</a>
+<a name="ln482"> </a>
+<a name="ln483">        Side = (Side)oppositeSide;</a>
+<a name="ln484">        OccupancyBitBoards[(int)Side.Both] = OccupancyBitBoards[(int)Side.White] | OccupancyBitBoards[(int)Side.Black];</a>
+<a name="ln485"> </a>
+<a name="ln486">        // Updating castling rights</a>
+<a name="ln487">        Castle &amp;= Constants.CastlingRightsUpdateConstants[sourceSquare];</a>
+<a name="ln488">        Castle &amp;= Constants.CastlingRightsUpdateConstants[targetSquare];</a>
+<a name="ln489">    }</a>
+<a name="ln490"> </a>
+<a name="ln491">    /// &lt;summary&gt;</a>
+<a name="ln492">    /// https://arxiv.org/ftp/arxiv/papers/2009/2009.03193.pdf</a>
+<a name="ln493">    /// &lt;/summary&gt;</a>
+<a name="ln494">    public StructCustomPosition(StructCustomPosition position, Move move, bool calculateFen) : this(position)</a>
+<a name="ln495"> </a>
+<a name="ln496">    {</a>
+<a name="ln497">        var oldSide = Side;</a>
+<a name="ln498">        var offset = Utils.PieceOffset(oldSide);</a>
+<a name="ln499">        var oppositeSide = Utils.OppositeSide(oldSide);</a>
+<a name="ln500"> </a>
+<a name="ln501">        int sourceSquare = move.SourceSquare();</a>
+<a name="ln502">        int targetSquare = move.TargetSquare();</a>
+<a name="ln503">        int piece = move.Piece();</a>
+<a name="ln504">        int promotedPiece = move.PromotedPiece();</a>
+<a name="ln505"> </a>
+<a name="ln506">        var newPiece = piece;</a>
+<a name="ln507">        if (promotedPiece != default)</a>
+<a name="ln508">        {</a>
+<a name="ln509">            newPiece = promotedPiece;</a>
+<a name="ln510">        }</a>
+<a name="ln511"> </a>
+<a name="ln512">        StringBuilder fenSb = FENHelpers.UpdateFirstPartOfFEN(position, sourceSquare, targetSquare, piece);</a>
+<a name="ln513"> </a>
+<a name="ln514">        EnPassant = BoardSquare.noSquare;</a>
+<a name="ln515"> </a>
+<a name="ln516">        PieceBitBoards[piece].PopBit(sourceSquare);</a>
+<a name="ln517">        OccupancyBitBoards[(int)Side].PopBit(sourceSquare);</a>
+<a name="ln518"> </a>
+<a name="ln519">        PieceBitBoards[newPiece].SetBit(targetSquare);</a>
+<a name="ln520">        OccupancyBitBoards[(int)Side].SetBit(targetSquare);</a>
+<a name="ln521"> </a>
+<a name="ln522">        if (move.IsCapture())</a>
+<a name="ln523">        {</a>
+<a name="ln524">            var oppositeSideOffset = Utils.PieceOffset(oppositeSide);</a>
+<a name="ln525">            var oppositePawnIndex = (int)Piece.P + oppositeSideOffset;</a>
+<a name="ln526"> </a>
+<a name="ln527">            if (move.IsEnPassant())</a>
+<a name="ln528">            {</a>
+<a name="ln529">                var capturedPawnSquare = Constants.EnPassantCaptureSquares[targetSquare];</a>
+<a name="ln530">                Utils.Assert(PieceBitBoards[oppositePawnIndex].GetBit(capturedPawnSquare), $&quot;Expected {(Side)oppositeSide} pawn in {capturedPawnSquare}&quot;);</a>
+<a name="ln531"> </a>
+<a name="ln532">                PieceBitBoards[oppositePawnIndex].PopBit(capturedPawnSquare);</a>
+<a name="ln533">                OccupancyBitBoards[oppositeSide].PopBit(capturedPawnSquare);</a>
+<a name="ln534">            }</a>
+<a name="ln535">            else</a>
+<a name="ln536">            {</a>
+<a name="ln537">                var limit = (int)Piece.K + oppositeSideOffset;</a>
+<a name="ln538">                for (int pieceIndex = oppositePawnIndex; pieceIndex &lt; limit; ++pieceIndex)</a>
+<a name="ln539">                {</a>
+<a name="ln540">                    if (PieceBitBoards[pieceIndex].GetBit(targetSquare))</a>
+<a name="ln541">                    {</a>
+<a name="ln542">                        PieceBitBoards[pieceIndex].PopBit(targetSquare);</a>
+<a name="ln543">                        break;</a>
+<a name="ln544">                    }</a>
+<a name="ln545">                }</a>
+<a name="ln546"> </a>
+<a name="ln547">                OccupancyBitBoards[oppositeSide].PopBit(targetSquare);</a>
+<a name="ln548">            }</a>
+<a name="ln549">        }</a>
+<a name="ln550">        else if (move.IsDoublePawnPush())</a>
+<a name="ln551">        {</a>
+<a name="ln552">            var pawnPush = +8 - ((int)oldSide * 16);</a>
+<a name="ln553">            var enPassantSquare = sourceSquare + pawnPush;</a>
+<a name="ln554"> </a>
+<a name="ln555">            EnPassant = (BoardSquare)enPassantSquare;</a>
+<a name="ln556">        }</a>
+<a name="ln557">        else if (move.IsShortCastle())</a>
+<a name="ln558">        {</a>
+<a name="ln559">            var rookSourceSquare = Utils.ShortCastleRookSourceSquare(oldSide);</a>
+<a name="ln560">            var rookTargetSquare = Utils.ShortCastleRookTargetSquare(oldSide);</a>
+<a name="ln561">            var rookIndex = (int)Piece.R + offset;</a>
+<a name="ln562"> </a>
+<a name="ln563">            PieceBitBoards[rookIndex].PopBit(rookSourceSquare);</a>
+<a name="ln564">            OccupancyBitBoards[(int)Side].PopBit(rookSourceSquare);</a>
+<a name="ln565"> </a>
+<a name="ln566">            PieceBitBoards[rookIndex].SetBit(rookTargetSquare);</a>
+<a name="ln567">            OccupancyBitBoards[(int)Side].SetBit(rookTargetSquare);</a>
+<a name="ln568">        }</a>
+<a name="ln569">        else if (move.IsLongCastle())</a>
+<a name="ln570">        {</a>
+<a name="ln571">            var rookSourceSquare = Utils.LongCastleRookSourceSquare(oldSide);</a>
+<a name="ln572">            var rookTargetSquare = Utils.LongCastleRookTargetSquare(oldSide);</a>
+<a name="ln573">            var rookIndex = (int)Piece.R + offset;</a>
+<a name="ln574"> </a>
+<a name="ln575">            PieceBitBoards[rookIndex].PopBit(rookSourceSquare);</a>
+<a name="ln576">            OccupancyBitBoards[(int)Side].PopBit(rookSourceSquare);</a>
+<a name="ln577"> </a>
+<a name="ln578">            PieceBitBoards[rookIndex].SetBit(rookTargetSquare);</a>
+<a name="ln579">            OccupancyBitBoards[(int)Side].SetBit(rookTargetSquare);</a>
+<a name="ln580">        }</a>
+<a name="ln581"> </a>
+<a name="ln582">        Side = (Side)oppositeSide;</a>
+<a name="ln583">        OccupancyBitBoards[(int)Side.Both] = OccupancyBitBoards[(int)Side.White] | OccupancyBitBoards[(int)Side.Black];</a>
+<a name="ln584"> </a>
+<a name="ln585">        // Updating castling rights</a>
+<a name="ln586">        Castle &amp;= Constants.CastlingRightsUpdateConstants[sourceSquare];</a>
+<a name="ln587">        Castle &amp;= Constants.CastlingRightsUpdateConstants[targetSquare];</a>
+<a name="ln588"> </a>
+<a name="ln589">        _fen = FENHelpers.UpdateSecondPartOfFEN(fenSb, Side, Castle, EnPassant);</a>
+<a name="ln590">    }</a>
+<a name="ln591"> </a>
+<a name="ln592">    private readonly string CalculateFEN()</a>
+<a name="ln593">    {</a>
+<a name="ln594">        var sb = new StringBuilder(100);</a>
+<a name="ln595"> </a>
+<a name="ln596">        var squaresPerRow = 0;</a>
+<a name="ln597"> </a>
+<a name="ln598">        int squaresWithoutPiece = 0;</a>
+<a name="ln599">        int lengthBeforeSlash = sb.Length;</a>
+<a name="ln600">        for (int square = 0; square &lt; 64; ++square)</a>
+<a name="ln601">        {</a>
+<a name="ln602">            int foundPiece = -1;</a>
+<a name="ln603">            for (var pieceBoardIndex = 0; pieceBoardIndex &lt; 12; ++pieceBoardIndex)</a>
+<a name="ln604">            {</a>
+<a name="ln605">                if (PieceBitBoards[pieceBoardIndex].GetBit(square))</a>
+<a name="ln606">                {</a>
+<a name="ln607">                    foundPiece = pieceBoardIndex;</a>
+<a name="ln608">                    break;</a>
+<a name="ln609">                }</a>
+<a name="ln610">            }</a>
+<a name="ln611"> </a>
+<a name="ln612">            if (foundPiece != -1)</a>
+<a name="ln613">            {</a>
+<a name="ln614">                if (squaresWithoutPiece != 0)</a>
+<a name="ln615">                {</a>
+<a name="ln616">                    sb.Append(squaresWithoutPiece);</a>
+<a name="ln617">                    squaresWithoutPiece = 0;</a>
+<a name="ln618">                }</a>
+<a name="ln619"> </a>
+<a name="ln620">                sb.Append(Constants.AsciiPieces[foundPiece]);</a>
+<a name="ln621">            }</a>
+<a name="ln622">            else</a>
+<a name="ln623">            {</a>
+<a name="ln624">                ++squaresWithoutPiece;</a>
+<a name="ln625">            }</a>
+<a name="ln626"> </a>
+<a name="ln627">            squaresPerRow = (squaresPerRow + 1) % 8;</a>
+<a name="ln628">            if (squaresPerRow == 0)</a>
+<a name="ln629">            {</a>
+<a name="ln630">                if (squaresWithoutPiece != 0)</a>
+<a name="ln631">                {</a>
+<a name="ln632">                    sb.Append(squaresWithoutPiece);</a>
+<a name="ln633">                    squaresWithoutPiece = 0;</a>
+<a name="ln634">                }</a>
+<a name="ln635"> </a>
+<a name="ln636">                if (square != 63)</a>
+<a name="ln637">                {</a>
+<a name="ln638">                    if (sb.Length == lengthBeforeSlash)</a>
+<a name="ln639">                    {</a>
+<a name="ln640">                        sb.Append('8');</a>
+<a name="ln641">                    }</a>
+<a name="ln642">                    sb.Append('/');</a>
+<a name="ln643">                    lengthBeforeSlash = sb.Length;</a>
+<a name="ln644">                    squaresWithoutPiece = 0;</a>
+<a name="ln645">                }</a>
+<a name="ln646">            }</a>
+<a name="ln647">        }</a>
+<a name="ln648"> </a>
+<a name="ln649">        sb.Append(' ');</a>
+<a name="ln650">        sb.Append(Side == Side.White ? 'w' : 'b');</a>
+<a name="ln651"> </a>
+<a name="ln652">        sb.Append(' ');</a>
+<a name="ln653">        var length = sb.Length;</a>
+<a name="ln654"> </a>
+<a name="ln655">        if ((Castle &amp; (int)CastlingRights.WK) != default)</a>
+<a name="ln656">        {</a>
+<a name="ln657">            sb.Append('K');</a>
+<a name="ln658">        }</a>
+<a name="ln659">        if ((Castle &amp; (int)CastlingRights.WQ) != default)</a>
+<a name="ln660">        {</a>
+<a name="ln661">            sb.Append('Q');</a>
+<a name="ln662">        }</a>
+<a name="ln663">        if ((Castle &amp; (int)CastlingRights.BK) != default)</a>
+<a name="ln664">        {</a>
+<a name="ln665">            sb.Append('k');</a>
+<a name="ln666">        }</a>
+<a name="ln667">        if ((Castle &amp; (int)CastlingRights.BQ) != default)</a>
+<a name="ln668">        {</a>
+<a name="ln669">            sb.Append('q');</a>
+<a name="ln670">        }</a>
+<a name="ln671"> </a>
+<a name="ln672">        if (sb.Length == length)</a>
+<a name="ln673">        {</a>
+<a name="ln674">            sb.Append('-');</a>
+<a name="ln675">        }</a>
+<a name="ln676"> </a>
+<a name="ln677">        sb.Append(' ');</a>
+<a name="ln678"> </a>
+<a name="ln679">        sb.Append(EnPassant == BoardSquare.noSquare ? &quot;-&quot; : Constants.Coordinates[(int)EnPassant]);</a>
+<a name="ln680"> </a>
+<a name="ln681">        sb.Append(&quot; 0 1&quot;);</a>
+<a name="ln682"> </a>
+<a name="ln683">        return sb.ToString();</a>
+<a name="ln684">    }</a>
+<a name="ln685">}</a>
+<a name="ln686"> </a>
+<a name="ln687">internal readonly struct ReadonlyStructCustomPosition</a>
+<a name="ln688">{</a>
+<a name="ln689">    public string FEN { get; private init; }</a>
+<a name="ln690"> </a>
+<a name="ln691">    /// &lt;summary&gt;</a>
+<a name="ln692">    /// Use &lt;see cref=&quot;Piece&quot;/&gt; as index</a>
+<a name="ln693">    /// &lt;/summary&gt;</a>
+<a name="ln694">    public BitBoard[] PieceBitBoards { get; }</a>
+<a name="ln695"> </a>
+<a name="ln696">    /// &lt;summary&gt;</a>
+<a name="ln697">    /// Black, White, Both</a>
+<a name="ln698">    /// &lt;/summary&gt;</a>
+<a name="ln699">    public BitBoard[] OccupancyBitBoards { get; }</a>
+<a name="ln700"> </a>
+<a name="ln701">    public Side Side { get; }</a>
+<a name="ln702"> </a>
+<a name="ln703">    public BoardSquare EnPassant { get; }</a>
+<a name="ln704"> </a>
+<a name="ln705">    public int Castle { get; }</a>
+<a name="ln706"> </a>
+<a name="ln707">    public ReadonlyStructCustomPosition(string fen)</a>
+<a name="ln708">    {</a>
+<a name="ln709">        FEN = fen;</a>
+<a name="ln710"> </a>
+<a name="ln711">        var parsedFEN = FENParser.ParseFEN(fen);</a>
+<a name="ln712"> </a>
+<a name="ln713">        PieceBitBoards = parsedFEN.PieceBitBoards;</a>
+<a name="ln714">        OccupancyBitBoards = parsedFEN.OccupancyBitBoards;</a>
+<a name="ln715">        Side = parsedFEN.Side;</a>
+<a name="ln716">        Castle = parsedFEN.Castle;</a>
+<a name="ln717">        EnPassant = parsedFEN.EnPassant;</a>
+<a name="ln718">    }</a>
+<a name="ln719"> </a>
+<a name="ln720">    /// &lt;summary&gt;</a>
+<a name="ln721">    /// Clone constructor</a>
+<a name="ln722">    /// &lt;/summary&gt;</a>
+<a name="ln723">    public ReadonlyStructCustomPosition(ReadonlyStructCustomPosition position)</a>
+<a name="ln724">    {</a>
+<a name="ln725">        FEN = position.FEN;</a>
+<a name="ln726"> </a>
+<a name="ln727">        PieceBitBoards = new BitBoard[12];</a>
+<a name="ln728">        Array.Copy(position.PieceBitBoards, PieceBitBoards, position.PieceBitBoards.Length);</a>
+<a name="ln729"> </a>
+<a name="ln730">        OccupancyBitBoards = new BitBoard[3];</a>
+<a name="ln731">        Array.Copy(position.OccupancyBitBoards, OccupancyBitBoards, position.OccupancyBitBoards.Length);</a>
+<a name="ln732"> </a>
+<a name="ln733">        Side = position.Side;</a>
+<a name="ln734">        Castle = position.Castle;</a>
+<a name="ln735">        EnPassant = position.EnPassant;</a>
+<a name="ln736">    }</a>
+<a name="ln737"> </a>
+<a name="ln738">    public ReadonlyStructCustomPosition(ReadonlyStructCustomPosition position, Move move) : this(position)</a>
+<a name="ln739">    {</a>
+<a name="ln740">        var oldSide = Side;</a>
+<a name="ln741">        var offset = Utils.PieceOffset(oldSide);</a>
+<a name="ln742">        var oppositeSide = Utils.OppositeSide(oldSide);</a>
+<a name="ln743"> </a>
+<a name="ln744">        int sourceSquare = move.SourceSquare();</a>
+<a name="ln745">        int targetSquare = move.TargetSquare();</a>
+<a name="ln746">        int piece = move.Piece();</a>
+<a name="ln747">        int promotedPiece = move.PromotedPiece();</a>
+<a name="ln748"> </a>
+<a name="ln749">        var newPiece = piece;</a>
+<a name="ln750">        if (promotedPiece != default)</a>
+<a name="ln751">        {</a>
+<a name="ln752">            newPiece = promotedPiece;</a>
+<a name="ln753">        }</a>
+<a name="ln754"> </a>
+<a name="ln755">        EnPassant = BoardSquare.noSquare;</a>
+<a name="ln756"> </a>
+<a name="ln757">        PieceBitBoards[piece].PopBit(sourceSquare);</a>
+<a name="ln758">        OccupancyBitBoards[(int)Side].PopBit(sourceSquare);</a>
+<a name="ln759"> </a>
+<a name="ln760">        PieceBitBoards[newPiece].SetBit(targetSquare);</a>
+<a name="ln761">        OccupancyBitBoards[(int)Side].SetBit(targetSquare);</a>
+<a name="ln762"> </a>
+<a name="ln763">        if (move.IsCapture())</a>
+<a name="ln764">        {</a>
+<a name="ln765">            var oppositeSideOffset = Utils.PieceOffset(oppositeSide);</a>
+<a name="ln766">            var oppositePawnIndex = (int)Piece.P + oppositeSideOffset;</a>
+<a name="ln767"> </a>
+<a name="ln768">            if (move.IsEnPassant())</a>
+<a name="ln769">            {</a>
+<a name="ln770">                var capturedPawnSquare = Constants.EnPassantCaptureSquares[targetSquare];</a>
+<a name="ln771">                Utils.Assert(PieceBitBoards[oppositePawnIndex].GetBit(capturedPawnSquare), $&quot;Expected {(Side)oppositeSide} pawn in {capturedPawnSquare}&quot;);</a>
+<a name="ln772"> </a>
+<a name="ln773">                PieceBitBoards[oppositePawnIndex].PopBit(capturedPawnSquare);</a>
+<a name="ln774">                OccupancyBitBoards[oppositeSide].PopBit(capturedPawnSquare);</a>
+<a name="ln775">            }</a>
+<a name="ln776">            else</a>
+<a name="ln777">            {</a>
+<a name="ln778">                var limit = (int)Piece.K + oppositeSideOffset;</a>
+<a name="ln779">                for (int pieceIndex = oppositePawnIndex; pieceIndex &lt; limit; ++pieceIndex)</a>
+<a name="ln780">                {</a>
+<a name="ln781">                    if (PieceBitBoards[pieceIndex].GetBit(targetSquare))</a>
+<a name="ln782">                    {</a>
+<a name="ln783">                        PieceBitBoards[pieceIndex].PopBit(targetSquare);</a>
+<a name="ln784">                        break;</a>
+<a name="ln785">                    }</a>
+<a name="ln786">                }</a>
+<a name="ln787"> </a>
+<a name="ln788">                OccupancyBitBoards[oppositeSide].PopBit(targetSquare);</a>
+<a name="ln789">            }</a>
+<a name="ln790">        }</a>
+<a name="ln791">        else if (move.IsDoublePawnPush())</a>
+<a name="ln792">        {</a>
+<a name="ln793">            var pawnPush = +8 - ((int)oldSide * 16);</a>
+<a name="ln794">            var enPassantSquare = sourceSquare + pawnPush;</a>
+<a name="ln795"> </a>
+<a name="ln796">            EnPassant = (BoardSquare)enPassantSquare;</a>
+<a name="ln797">        }</a>
+<a name="ln798">        else if (move.IsShortCastle())</a>
+<a name="ln799">        {</a>
+<a name="ln800">            var rookSourceSquare = Utils.ShortCastleRookSourceSquare(oldSide);</a>
+<a name="ln801">            var rookTargetSquare = Utils.ShortCastleRookTargetSquare(oldSide);</a>
+<a name="ln802">            var rookIndex = (int)Piece.R + offset;</a>
+<a name="ln803"> </a>
+<a name="ln804">            PieceBitBoards[rookIndex].PopBit(rookSourceSquare);</a>
+<a name="ln805">            OccupancyBitBoards[(int)Side].PopBit(rookSourceSquare);</a>
+<a name="ln806"> </a>
+<a name="ln807">            PieceBitBoards[rookIndex].SetBit(rookTargetSquare);</a>
+<a name="ln808">            OccupancyBitBoards[(int)Side].SetBit(rookTargetSquare);</a>
+<a name="ln809">        }</a>
+<a name="ln810">        else if (move.IsLongCastle())</a>
+<a name="ln811">        {</a>
+<a name="ln812">            var rookSourceSquare = Utils.LongCastleRookSourceSquare(oldSide);</a>
+<a name="ln813">            var rookTargetSquare = Utils.LongCastleRookTargetSquare(oldSide);</a>
+<a name="ln814">            var rookIndex = (int)Piece.R + offset;</a>
+<a name="ln815"> </a>
+<a name="ln816">            PieceBitBoards[rookIndex].PopBit(rookSourceSquare);</a>
+<a name="ln817">            OccupancyBitBoards[(int)Side].PopBit(rookSourceSquare);</a>
+<a name="ln818"> </a>
+<a name="ln819">            PieceBitBoards[rookIndex].SetBit(rookTargetSquare);</a>
+<a name="ln820">            OccupancyBitBoards[(int)Side].SetBit(rookTargetSquare);</a>
+<a name="ln821">        }</a>
+<a name="ln822"> </a>
+<a name="ln823">        Side = (Side)oppositeSide;</a>
+<a name="ln824">        OccupancyBitBoards[(int)Side.Both] = OccupancyBitBoards[(int)Side.White] | OccupancyBitBoards[(int)Side.Black];</a>
+<a name="ln825"> </a>
+<a name="ln826">        // Updating castling rights</a>
+<a name="ln827">        Castle &amp;= Constants.CastlingRightsUpdateConstants[sourceSquare];</a>
+<a name="ln828">        Castle &amp;= Constants.CastlingRightsUpdateConstants[targetSquare];</a>
+<a name="ln829"> </a>
+<a name="ln830">        FEN = CalculateFEN();</a>
+<a name="ln831">    }</a>
+<a name="ln832"> </a>
+<a name="ln833">    /// &lt;summary&gt;</a>
+<a name="ln834">    /// https://arxiv.org/ftp/arxiv/papers/2009/2009.03193.pdf</a>
+<a name="ln835">    /// &lt;/summary&gt;</a>
+<a name="ln836">    public ReadonlyStructCustomPosition(ReadonlyStructCustomPosition position, Move move, bool calculateFen) : this(position)</a>
+<a name="ln837">    {</a>
+<a name="ln838">        var oldSide = Side;</a>
+<a name="ln839">        var offset = Utils.PieceOffset(oldSide);</a>
+<a name="ln840">        var oppositeSide = Utils.OppositeSide(oldSide);</a>
+<a name="ln841"> </a>
+<a name="ln842">        int sourceSquare = move.SourceSquare();</a>
+<a name="ln843">        int targetSquare = move.TargetSquare();</a>
+<a name="ln844">        int piece = move.Piece();</a>
+<a name="ln845">        int promotedPiece = move.PromotedPiece();</a>
+<a name="ln846"> </a>
+<a name="ln847">        var newPiece = piece;</a>
+<a name="ln848">        if (promotedPiece != default)</a>
+<a name="ln849">        {</a>
+<a name="ln850">            newPiece = promotedPiece;</a>
+<a name="ln851">        }</a>
+<a name="ln852"> </a>
+<a name="ln853">        StringBuilder fenSb = FENHelpers.UpdateFirstPartOfFEN(position, sourceSquare, targetSquare, piece);</a>
+<a name="ln854"> </a>
+<a name="ln855">        EnPassant = BoardSquare.noSquare;</a>
+<a name="ln856"> </a>
+<a name="ln857">        PieceBitBoards[piece].PopBit(sourceSquare);</a>
+<a name="ln858">        OccupancyBitBoards[(int)Side].PopBit(sourceSquare);</a>
+<a name="ln859"> </a>
+<a name="ln860">        PieceBitBoards[newPiece].SetBit(targetSquare);</a>
+<a name="ln861">        OccupancyBitBoards[(int)Side].SetBit(targetSquare);</a>
+<a name="ln862"> </a>
+<a name="ln863">        if (move.IsCapture())</a>
+<a name="ln864">        {</a>
+<a name="ln865">            var oppositeSideOffset = Utils.PieceOffset(oppositeSide);</a>
+<a name="ln866">            var oppositePawnIndex = (int)Piece.P + oppositeSideOffset;</a>
+<a name="ln867"> </a>
+<a name="ln868">            if (move.IsEnPassant())</a>
+<a name="ln869">            {</a>
+<a name="ln870">                var capturedPawnSquare = Constants.EnPassantCaptureSquares[targetSquare];</a>
+<a name="ln871">                Utils.Assert(PieceBitBoards[oppositePawnIndex].GetBit(capturedPawnSquare), $&quot;Expected {(Side)oppositeSide} pawn in {capturedPawnSquare}&quot;);</a>
+<a name="ln872"> </a>
+<a name="ln873">                PieceBitBoards[oppositePawnIndex].PopBit(capturedPawnSquare);</a>
+<a name="ln874">                OccupancyBitBoards[oppositeSide].PopBit(capturedPawnSquare);</a>
+<a name="ln875">            }</a>
+<a name="ln876">            else</a>
+<a name="ln877">            {</a>
+<a name="ln878">                var limit = (int)Piece.K + oppositeSideOffset;</a>
+<a name="ln879">                for (int pieceIndex = oppositePawnIndex; pieceIndex &lt; limit; ++pieceIndex)</a>
+<a name="ln880">                {</a>
+<a name="ln881">                    if (PieceBitBoards[pieceIndex].GetBit(targetSquare))</a>
+<a name="ln882">                    {</a>
+<a name="ln883">                        PieceBitBoards[pieceIndex].PopBit(targetSquare);</a>
+<a name="ln884">                        break;</a>
+<a name="ln885">                    }</a>
+<a name="ln886">                }</a>
+<a name="ln887"> </a>
+<a name="ln888">                OccupancyBitBoards[oppositeSide].PopBit(targetSquare);</a>
+<a name="ln889">            }</a>
+<a name="ln890">        }</a>
+<a name="ln891">        else if (move.IsDoublePawnPush())</a>
+<a name="ln892">        {</a>
+<a name="ln893">            var pawnPush = +8 - ((int)oldSide * 16);</a>
+<a name="ln894">            var enPassantSquare = sourceSquare + pawnPush;</a>
+<a name="ln895"> </a>
+<a name="ln896">            EnPassant = (BoardSquare)enPassantSquare;</a>
+<a name="ln897">        }</a>
+<a name="ln898">        else if (move.IsShortCastle())</a>
+<a name="ln899">        {</a>
+<a name="ln900">            var rookSourceSquare = Utils.ShortCastleRookSourceSquare(oldSide);</a>
+<a name="ln901">            var rookTargetSquare = Utils.ShortCastleRookTargetSquare(oldSide);</a>
+<a name="ln902">            var rookIndex = (int)Piece.R + offset;</a>
+<a name="ln903"> </a>
+<a name="ln904">            PieceBitBoards[rookIndex].PopBit(rookSourceSquare);</a>
+<a name="ln905">            OccupancyBitBoards[(int)Side].PopBit(rookSourceSquare);</a>
+<a name="ln906"> </a>
+<a name="ln907">            PieceBitBoards[rookIndex].SetBit(rookTargetSquare);</a>
+<a name="ln908">            OccupancyBitBoards[(int)Side].SetBit(rookTargetSquare);</a>
+<a name="ln909">        }</a>
+<a name="ln910">        else if (move.IsLongCastle())</a>
+<a name="ln911">        {</a>
+<a name="ln912">            var rookSourceSquare = Utils.LongCastleRookSourceSquare(oldSide);</a>
+<a name="ln913">            var rookTargetSquare = Utils.LongCastleRookTargetSquare(oldSide);</a>
+<a name="ln914">            var rookIndex = (int)Piece.R + offset;</a>
+<a name="ln915"> </a>
+<a name="ln916">            PieceBitBoards[rookIndex].PopBit(rookSourceSquare);</a>
+<a name="ln917">            OccupancyBitBoards[(int)Side].PopBit(rookSourceSquare);</a>
+<a name="ln918"> </a>
+<a name="ln919">            PieceBitBoards[rookIndex].SetBit(rookTargetSquare);</a>
+<a name="ln920">            OccupancyBitBoards[(int)Side].SetBit(rookTargetSquare);</a>
+<a name="ln921">        }</a>
+<a name="ln922"> </a>
+<a name="ln923">        Side = (Side)oppositeSide;</a>
+<a name="ln924">        OccupancyBitBoards[(int)Side.Both] = OccupancyBitBoards[(int)Side.White] | OccupancyBitBoards[(int)Side.Black];</a>
+<a name="ln925"> </a>
+<a name="ln926">        // Updating castling rights</a>
+<a name="ln927">        Castle &amp;= Constants.CastlingRightsUpdateConstants[sourceSquare];</a>
+<a name="ln928">        Castle &amp;= Constants.CastlingRightsUpdateConstants[targetSquare];</a>
+<a name="ln929"> </a>
+<a name="ln930">        FEN = FENHelpers.UpdateSecondPartOfFEN(fenSb, Side, Castle, EnPassant);</a>
+<a name="ln931">    }</a>
+<a name="ln932"> </a>
+<a name="ln933">    private readonly string CalculateFEN()</a>
+<a name="ln934">    {</a>
+<a name="ln935">        var sb = new StringBuilder(100);</a>
+<a name="ln936"> </a>
+<a name="ln937">        var squaresPerRow = 0;</a>
+<a name="ln938"> </a>
+<a name="ln939">        int squaresWithoutPiece = 0;</a>
+<a name="ln940">        int lengthBeforeSlash = sb.Length;</a>
+<a name="ln941">        for (int square = 0; square &lt; 64; ++square)</a>
+<a name="ln942">        {</a>
+<a name="ln943">            int foundPiece = -1;</a>
+<a name="ln944">            for (var pieceBoardIndex = 0; pieceBoardIndex &lt; 12; ++pieceBoardIndex)</a>
+<a name="ln945">            {</a>
+<a name="ln946">                if (PieceBitBoards[pieceBoardIndex].GetBit(square))</a>
+<a name="ln947">                {</a>
+<a name="ln948">                    foundPiece = pieceBoardIndex;</a>
+<a name="ln949">                    break;</a>
+<a name="ln950">                }</a>
+<a name="ln951">            }</a>
+<a name="ln952"> </a>
+<a name="ln953">            if (foundPiece != -1)</a>
+<a name="ln954">            {</a>
+<a name="ln955">                if (squaresWithoutPiece != 0)</a>
+<a name="ln956">                {</a>
+<a name="ln957">                    sb.Append(squaresWithoutPiece);</a>
+<a name="ln958">                    squaresWithoutPiece = 0;</a>
+<a name="ln959">                }</a>
+<a name="ln960"> </a>
+<a name="ln961">                sb.Append(Constants.AsciiPieces[foundPiece]);</a>
+<a name="ln962">            }</a>
+<a name="ln963">            else</a>
+<a name="ln964">            {</a>
+<a name="ln965">                ++squaresWithoutPiece;</a>
+<a name="ln966">            }</a>
+<a name="ln967"> </a>
+<a name="ln968">            squaresPerRow = (squaresPerRow + 1) % 8;</a>
+<a name="ln969">            if (squaresPerRow == 0)</a>
+<a name="ln970">            {</a>
+<a name="ln971">                if (squaresWithoutPiece != 0)</a>
+<a name="ln972">                {</a>
+<a name="ln973">                    sb.Append(squaresWithoutPiece);</a>
+<a name="ln974">                    squaresWithoutPiece = 0;</a>
+<a name="ln975">                }</a>
+<a name="ln976"> </a>
+<a name="ln977">                if (square != 63)</a>
+<a name="ln978">                {</a>
+<a name="ln979">                    if (sb.Length == lengthBeforeSlash)</a>
+<a name="ln980">                    {</a>
+<a name="ln981">                        sb.Append('8');</a>
+<a name="ln982">                    }</a>
+<a name="ln983">                    sb.Append('/');</a>
+<a name="ln984">                    lengthBeforeSlash = sb.Length;</a>
+<a name="ln985">                    squaresWithoutPiece = 0;</a>
+<a name="ln986">                }</a>
+<a name="ln987">            }</a>
+<a name="ln988">        }</a>
+<a name="ln989"> </a>
+<a name="ln990">        sb.Append(' ');</a>
+<a name="ln991">        sb.Append(Side == Side.White ? 'w' : 'b');</a>
+<a name="ln992"> </a>
+<a name="ln993">        sb.Append(' ');</a>
+<a name="ln994">        var length = sb.Length;</a>
+<a name="ln995"> </a>
+<a name="ln996">        if ((Castle &amp; (int)CastlingRights.WK) != default)</a>
+<a name="ln997">        {</a>
+<a name="ln998">            sb.Append('K');</a>
+<a name="ln999">        }</a>
+<a name="ln1000">        if ((Castle &amp; (int)CastlingRights.WQ) != default)</a>
+<a name="ln1001">        {</a>
+<a name="ln1002">            sb.Append('Q');</a>
+<a name="ln1003">        }</a>
+<a name="ln1004">        if ((Castle &amp; (int)CastlingRights.BK) != default)</a>
+<a name="ln1005">        {</a>
+<a name="ln1006">            sb.Append('k');</a>
+<a name="ln1007">        }</a>
+<a name="ln1008">        if ((Castle &amp; (int)CastlingRights.BQ) != default)</a>
+<a name="ln1009">        {</a>
+<a name="ln1010">            sb.Append('q');</a>
+<a name="ln1011">        }</a>
+<a name="ln1012"> </a>
+<a name="ln1013">        if (sb.Length == length)</a>
+<a name="ln1014">        {</a>
+<a name="ln1015">            sb.Append('-');</a>
+<a name="ln1016">        }</a>
+<a name="ln1017"> </a>
+<a name="ln1018">        sb.Append(' ');</a>
+<a name="ln1019"> </a>
+<a name="ln1020">        sb.Append(EnPassant == BoardSquare.noSquare ? &quot;-&quot; : Constants.Coordinates[(int)EnPassant]);</a>
+<a name="ln1021"> </a>
+<a name="ln1022">        sb.Append(&quot; 0 1&quot;);</a>
+<a name="ln1023"> </a>
+<a name="ln1024">        return sb.ToString();</a>
+<a name="ln1025">    }</a>
+<a name="ln1026">}</a>
+<a name="ln1027"> </a>
+<a name="ln1028">internal class ClassCustomPosition</a>
+<a name="ln1029">{</a>
+<a name="ln1030">    private string? _fen;</a>
+<a name="ln1031"> </a>
+<a name="ln1032">    public string FEN</a>
+<a name="ln1033">    {</a>
+<a name="ln1034">        get =&gt; _fen ??= CalculateFEN();</a>
+<a name="ln1035">        init =&gt; _fen = value;</a>
+<a name="ln1036">    }</a>
+<a name="ln1037"> </a>
+<a name="ln1038">    /// &lt;summary&gt;</a>
+<a name="ln1039">    /// Use &lt;see cref=&quot;Piece&quot;/&gt; as index</a>
+<a name="ln1040">    /// &lt;/summary&gt;</a>
+<a name="ln1041">    public BitBoard[] PieceBitBoards { get; }</a>
+<a name="ln1042"> </a>
+<a name="ln1043">    /// &lt;summary&gt;</a>
+<a name="ln1044">    /// Black, White, Both</a>
+<a name="ln1045">    /// &lt;/summary&gt;</a>
+<a name="ln1046">    public BitBoard[] OccupancyBitBoards { get; }</a>
+<a name="ln1047"> </a>
+<a name="ln1048">    public Side Side { get; }</a>
+<a name="ln1049"> </a>
+<a name="ln1050">    public BoardSquare EnPassant { get; }</a>
+<a name="ln1051"> </a>
+<a name="ln1052">    public int Castle { get; }</a>
+<a name="ln1053"> </a>
+<a name="ln1054">    public ClassCustomPosition(string fen)</a>
+<a name="ln1055">    {</a>
+<a name="ln1056">        _fen = fen;</a>
+<a name="ln1057"> </a>
+<a name="ln1058">        var parsedFEN = FENParser.ParseFEN(fen);</a>
+<a name="ln1059"> </a>
+<a name="ln1060">        PieceBitBoards = parsedFEN.PieceBitBoards;</a>
+<a name="ln1061">        OccupancyBitBoards = parsedFEN.OccupancyBitBoards;</a>
+<a name="ln1062">        Side = parsedFEN.Side;</a>
+<a name="ln1063">        Castle = parsedFEN.Castle;</a>
+<a name="ln1064">        EnPassant = parsedFEN.EnPassant;</a>
+<a name="ln1065">    }</a>
+<a name="ln1066"> </a>
+<a name="ln1067">    /// &lt;summary&gt;</a>
+<a name="ln1068">    /// Clone constructor</a>
+<a name="ln1069">    /// &lt;/summary&gt;</a>
+<a name="ln1070">    public ClassCustomPosition(ClassCustomPosition position)</a>
+<a name="ln1071">    {</a>
+<a name="ln1072">        _fen = position.FEN;</a>
+<a name="ln1073"> </a>
+<a name="ln1074">        PieceBitBoards = new BitBoard[12];</a>
+<a name="ln1075">        Array.Copy(position.PieceBitBoards, PieceBitBoards, position.PieceBitBoards.Length);</a>
+<a name="ln1076"> </a>
+<a name="ln1077">        OccupancyBitBoards = new BitBoard[3];</a>
+<a name="ln1078">        Array.Copy(position.OccupancyBitBoards, OccupancyBitBoards, position.OccupancyBitBoards.Length);</a>
+<a name="ln1079"> </a>
+<a name="ln1080">        Side = position.Side;</a>
+<a name="ln1081">        Castle = position.Castle;</a>
+<a name="ln1082">        EnPassant = position.EnPassant;</a>
+<a name="ln1083">    }</a>
+<a name="ln1084"> </a>
+<a name="ln1085">    public ClassCustomPosition(ClassCustomPosition position, Move move) : this(position)</a>
+<a name="ln1086">    {</a>
+<a name="ln1087">        _fen = null;</a>
+<a name="ln1088">        var oldSide = Side;</a>
+<a name="ln1089">        var offset = Utils.PieceOffset(oldSide);</a>
+<a name="ln1090">        var oppositeSide = Utils.OppositeSide(oldSide);</a>
+<a name="ln1091"> </a>
+<a name="ln1092">        int sourceSquare = move.SourceSquare();</a>
+<a name="ln1093">        int targetSquare = move.TargetSquare();</a>
+<a name="ln1094">        int piece = move.Piece();</a>
+<a name="ln1095">        int promotedPiece = move.PromotedPiece();</a>
+<a name="ln1096"> </a>
+<a name="ln1097">        var newPiece = piece;</a>
+<a name="ln1098">        if (promotedPiece != default)</a>
+<a name="ln1099">        {</a>
+<a name="ln1100">            newPiece = promotedPiece;</a>
+<a name="ln1101">        }</a>
+<a name="ln1102"> </a>
+<a name="ln1103">        EnPassant = BoardSquare.noSquare;</a>
+<a name="ln1104"> </a>
+<a name="ln1105">        PieceBitBoards[piece].PopBit(sourceSquare);</a>
+<a name="ln1106">        OccupancyBitBoards[(int)Side].PopBit(sourceSquare);</a>
+<a name="ln1107"> </a>
+<a name="ln1108">        PieceBitBoards[newPiece].SetBit(targetSquare);</a>
+<a name="ln1109">        OccupancyBitBoards[(int)Side].SetBit(targetSquare);</a>
+<a name="ln1110"> </a>
+<a name="ln1111">        if (move.IsCapture())</a>
+<a name="ln1112">        {</a>
+<a name="ln1113">            var oppositeSideOffset = Utils.PieceOffset(oppositeSide);</a>
+<a name="ln1114">            var oppositePawnIndex = (int)Piece.P + oppositeSideOffset;</a>
+<a name="ln1115"> </a>
+<a name="ln1116">            if (move.IsEnPassant())</a>
+<a name="ln1117">            {</a>
+<a name="ln1118">                var capturedPawnSquare = Constants.EnPassantCaptureSquares[targetSquare];</a>
+<a name="ln1119">                Utils.Assert(PieceBitBoards[oppositePawnIndex].GetBit(capturedPawnSquare), $&quot;Expected {(Side)oppositeSide} pawn in {capturedPawnSquare}&quot;);</a>
+<a name="ln1120"> </a>
+<a name="ln1121">                PieceBitBoards[oppositePawnIndex].PopBit(capturedPawnSquare);</a>
+<a name="ln1122">                OccupancyBitBoards[oppositeSide].PopBit(capturedPawnSquare);</a>
+<a name="ln1123">            }</a>
+<a name="ln1124">            else</a>
+<a name="ln1125">            {</a>
+<a name="ln1126">                var limit = (int)Piece.K + oppositeSideOffset;</a>
+<a name="ln1127">                for (int pieceIndex = oppositePawnIndex; pieceIndex &lt; limit; ++pieceIndex)</a>
+<a name="ln1128">                {</a>
+<a name="ln1129">                    if (PieceBitBoards[pieceIndex].GetBit(targetSquare))</a>
+<a name="ln1130">                    {</a>
+<a name="ln1131">                        PieceBitBoards[pieceIndex].PopBit(targetSquare);</a>
+<a name="ln1132">                        break;</a>
+<a name="ln1133">                    }</a>
+<a name="ln1134">                }</a>
+<a name="ln1135"> </a>
+<a name="ln1136">                OccupancyBitBoards[oppositeSide].PopBit(targetSquare);</a>
+<a name="ln1137">            }</a>
+<a name="ln1138">        }</a>
+<a name="ln1139">        else if (move.IsDoublePawnPush())</a>
+<a name="ln1140">        {</a>
+<a name="ln1141">            var pawnPush = +8 - ((int)oldSide * 16);</a>
+<a name="ln1142">            var enPassantSquare = sourceSquare + pawnPush;</a>
+<a name="ln1143"> </a>
+<a name="ln1144">            EnPassant = (BoardSquare)enPassantSquare;</a>
+<a name="ln1145">        }</a>
+<a name="ln1146">        else if (move.IsShortCastle())</a>
+<a name="ln1147">        {</a>
+<a name="ln1148">            var rookSourceSquare = Utils.ShortCastleRookSourceSquare(oldSide);</a>
+<a name="ln1149">            var rookTargetSquare = Utils.ShortCastleRookTargetSquare(oldSide);</a>
+<a name="ln1150">            var rookIndex = (int)Piece.R + offset;</a>
+<a name="ln1151"> </a>
+<a name="ln1152">            PieceBitBoards[rookIndex].PopBit(rookSourceSquare);</a>
+<a name="ln1153">            OccupancyBitBoards[(int)Side].PopBit(rookSourceSquare);</a>
+<a name="ln1154"> </a>
+<a name="ln1155">            PieceBitBoards[rookIndex].SetBit(rookTargetSquare);</a>
+<a name="ln1156">            OccupancyBitBoards[(int)Side].SetBit(rookTargetSquare);</a>
+<a name="ln1157">        }</a>
+<a name="ln1158">        else if (move.IsLongCastle())</a>
+<a name="ln1159">        {</a>
+<a name="ln1160">            var rookSourceSquare = Utils.LongCastleRookSourceSquare(oldSide);</a>
+<a name="ln1161">            var rookTargetSquare = Utils.LongCastleRookTargetSquare(oldSide);</a>
+<a name="ln1162">            var rookIndex = (int)Piece.R + offset;</a>
+<a name="ln1163"> </a>
+<a name="ln1164">            PieceBitBoards[rookIndex].PopBit(rookSourceSquare);</a>
+<a name="ln1165">            OccupancyBitBoards[(int)Side].PopBit(rookSourceSquare);</a>
+<a name="ln1166"> </a>
+<a name="ln1167">            PieceBitBoards[rookIndex].SetBit(rookTargetSquare);</a>
+<a name="ln1168">            OccupancyBitBoards[(int)Side].SetBit(rookTargetSquare);</a>
+<a name="ln1169">        }</a>
+<a name="ln1170"> </a>
+<a name="ln1171">        Side = (Side)oppositeSide;</a>
+<a name="ln1172">        OccupancyBitBoards[(int)Side.Both] = OccupancyBitBoards[(int)Side.White] | OccupancyBitBoards[(int)Side.Black];</a>
+<a name="ln1173"> </a>
+<a name="ln1174">        // Updating castling rights</a>
+<a name="ln1175">        Castle &amp;= Constants.CastlingRightsUpdateConstants[sourceSquare];</a>
+<a name="ln1176">        Castle &amp;= Constants.CastlingRightsUpdateConstants[targetSquare];</a>
+<a name="ln1177">    }</a>
+<a name="ln1178"> </a>
+<a name="ln1179">    /// &lt;summary&gt;</a>
+<a name="ln1180">    /// https://arxiv.org/ftp/arxiv/papers/2009/2009.03193.pdf</a>
+<a name="ln1181">    /// &lt;/summary&gt;</a>
+<a name="ln1182">    public ClassCustomPosition(ClassCustomPosition position, Move move, bool calculateFen) : this(position)</a>
+<a name="ln1183">    {</a>
+<a name="ln1184">        var oldSide = Side;</a>
+<a name="ln1185">        var offset = Utils.PieceOffset(oldSide);</a>
+<a name="ln1186">        var oppositeSide = Utils.OppositeSide(oldSide);</a>
+<a name="ln1187"> </a>
+<a name="ln1188">        int sourceSquare = move.SourceSquare();</a>
+<a name="ln1189">        int targetSquare = move.TargetSquare();</a>
+<a name="ln1190">        int piece = move.Piece();</a>
+<a name="ln1191">        int promotedPiece = move.PromotedPiece();</a>
+<a name="ln1192"> </a>
+<a name="ln1193">        var newPiece = piece;</a>
+<a name="ln1194">        if (promotedPiece != default)</a>
+<a name="ln1195">        {</a>
+<a name="ln1196">            newPiece = promotedPiece;</a>
+<a name="ln1197">        }</a>
+<a name="ln1198"> </a>
+<a name="ln1199">        StringBuilder fenSb = FENHelpers.UpdateFirstPartOfFEN(position, sourceSquare, targetSquare, piece);</a>
+<a name="ln1200"> </a>
+<a name="ln1201">        EnPassant = BoardSquare.noSquare;</a>
+<a name="ln1202"> </a>
+<a name="ln1203">        PieceBitBoards[piece].PopBit(sourceSquare);</a>
+<a name="ln1204">        OccupancyBitBoards[(int)Side].PopBit(sourceSquare);</a>
+<a name="ln1205"> </a>
+<a name="ln1206">        PieceBitBoards[newPiece].SetBit(targetSquare);</a>
+<a name="ln1207">        OccupancyBitBoards[(int)Side].SetBit(targetSquare);</a>
+<a name="ln1208"> </a>
+<a name="ln1209">        if (move.IsCapture())</a>
+<a name="ln1210">        {</a>
+<a name="ln1211">            var oppositeSideOffset = Utils.PieceOffset(oppositeSide);</a>
+<a name="ln1212">            var oppositePawnIndex = (int)Piece.P + oppositeSideOffset;</a>
+<a name="ln1213"> </a>
+<a name="ln1214">            if (move.IsEnPassant())</a>
+<a name="ln1215">            {</a>
+<a name="ln1216">                var capturedPawnSquare = Constants.EnPassantCaptureSquares[targetSquare];</a>
+<a name="ln1217">                Utils.Assert(PieceBitBoards[oppositePawnIndex].GetBit(capturedPawnSquare), $&quot;Expected {(Side)oppositeSide} pawn in {capturedPawnSquare}&quot;);</a>
+<a name="ln1218"> </a>
+<a name="ln1219">                PieceBitBoards[oppositePawnIndex].PopBit(capturedPawnSquare);</a>
+<a name="ln1220">                OccupancyBitBoards[oppositeSide].PopBit(capturedPawnSquare);</a>
+<a name="ln1221">            }</a>
+<a name="ln1222">            else</a>
+<a name="ln1223">            {</a>
+<a name="ln1224">                var limit = (int)Piece.K + oppositeSideOffset;</a>
+<a name="ln1225">                for (int pieceIndex = oppositePawnIndex; pieceIndex &lt; limit; ++pieceIndex)</a>
+<a name="ln1226">                {</a>
+<a name="ln1227">                    if (PieceBitBoards[pieceIndex].GetBit(targetSquare))</a>
+<a name="ln1228">                    {</a>
+<a name="ln1229">                        PieceBitBoards[pieceIndex].PopBit(targetSquare);</a>
+<a name="ln1230">                        break;</a>
+<a name="ln1231">                    }</a>
+<a name="ln1232">                }</a>
+<a name="ln1233"> </a>
+<a name="ln1234">                OccupancyBitBoards[oppositeSide].PopBit(targetSquare);</a>
+<a name="ln1235">            }</a>
+<a name="ln1236">        }</a>
+<a name="ln1237">        else if (move.IsDoublePawnPush())</a>
+<a name="ln1238">        {</a>
+<a name="ln1239">            var pawnPush = +8 - ((int)oldSide * 16);</a>
+<a name="ln1240">            var enPassantSquare = sourceSquare + pawnPush;</a>
+<a name="ln1241"> </a>
+<a name="ln1242">            EnPassant = (BoardSquare)enPassantSquare;</a>
+<a name="ln1243">        }</a>
+<a name="ln1244">        else if (move.IsShortCastle())</a>
+<a name="ln1245">        {</a>
+<a name="ln1246">            var rookSourceSquare = Utils.ShortCastleRookSourceSquare(oldSide);</a>
+<a name="ln1247">            var rookTargetSquare = Utils.ShortCastleRookTargetSquare(oldSide);</a>
+<a name="ln1248">            var rookIndex = (int)Piece.R + offset;</a>
+<a name="ln1249"> </a>
+<a name="ln1250">            PieceBitBoards[rookIndex].PopBit(rookSourceSquare);</a>
+<a name="ln1251">            OccupancyBitBoards[(int)Side].PopBit(rookSourceSquare);</a>
+<a name="ln1252"> </a>
+<a name="ln1253">            PieceBitBoards[rookIndex].SetBit(rookTargetSquare);</a>
+<a name="ln1254">            OccupancyBitBoards[(int)Side].SetBit(rookTargetSquare);</a>
+<a name="ln1255">        }</a>
+<a name="ln1256">        else if (move.IsLongCastle())</a>
+<a name="ln1257">        {</a>
+<a name="ln1258">            var rookSourceSquare = Utils.LongCastleRookSourceSquare(oldSide);</a>
+<a name="ln1259">            var rookTargetSquare = Utils.LongCastleRookTargetSquare(oldSide);</a>
+<a name="ln1260">            var rookIndex = (int)Piece.R + offset;</a>
+<a name="ln1261"> </a>
+<a name="ln1262">            PieceBitBoards[rookIndex].PopBit(rookSourceSquare);</a>
+<a name="ln1263">            OccupancyBitBoards[(int)Side].PopBit(rookSourceSquare);</a>
+<a name="ln1264"> </a>
+<a name="ln1265">            PieceBitBoards[rookIndex].SetBit(rookTargetSquare);</a>
+<a name="ln1266">            OccupancyBitBoards[(int)Side].SetBit(rookTargetSquare);</a>
+<a name="ln1267">        }</a>
+<a name="ln1268"> </a>
+<a name="ln1269">        Side = (Side)oppositeSide;</a>
+<a name="ln1270">        OccupancyBitBoards[(int)Side.Both] = OccupancyBitBoards[(int)Side.White] | OccupancyBitBoards[(int)Side.Black];</a>
+<a name="ln1271"> </a>
+<a name="ln1272">        // Updating castling rights</a>
+<a name="ln1273">        Castle &amp;= Constants.CastlingRightsUpdateConstants[sourceSquare];</a>
+<a name="ln1274">        Castle &amp;= Constants.CastlingRightsUpdateConstants[targetSquare];</a>
+<a name="ln1275"> </a>
+<a name="ln1276">        _fen = FENHelpers.UpdateSecondPartOfFEN(fenSb, Side, Castle, EnPassant);</a>
+<a name="ln1277">    }</a>
+<a name="ln1278"> </a>
+<a name="ln1279">    private string CalculateFEN()</a>
+<a name="ln1280">    {</a>
+<a name="ln1281">        var sb = new StringBuilder(100);</a>
+<a name="ln1282"> </a>
+<a name="ln1283">        var squaresPerRow = 0;</a>
+<a name="ln1284"> </a>
+<a name="ln1285">        int squaresWithoutPiece = 0;</a>
+<a name="ln1286">        int lengthBeforeSlash = sb.Length;</a>
+<a name="ln1287">        for (int square = 0; square &lt; 64; ++square)</a>
+<a name="ln1288">        {</a>
+<a name="ln1289">            int foundPiece = -1;</a>
+<a name="ln1290">            for (var pieceBoardIndex = 0; pieceBoardIndex &lt; 12; ++pieceBoardIndex)</a>
+<a name="ln1291">            {</a>
+<a name="ln1292">                if (PieceBitBoards[pieceBoardIndex].GetBit(square))</a>
+<a name="ln1293">                {</a>
+<a name="ln1294">                    foundPiece = pieceBoardIndex;</a>
+<a name="ln1295">                    break;</a>
+<a name="ln1296">                }</a>
+<a name="ln1297">            }</a>
+<a name="ln1298"> </a>
+<a name="ln1299">            if (foundPiece != -1)</a>
+<a name="ln1300">            {</a>
+<a name="ln1301">                if (squaresWithoutPiece != 0)</a>
+<a name="ln1302">                {</a>
+<a name="ln1303">                    sb.Append(squaresWithoutPiece);</a>
+<a name="ln1304">                    squaresWithoutPiece = 0;</a>
+<a name="ln1305">                }</a>
+<a name="ln1306"> </a>
+<a name="ln1307">                sb.Append(Constants.AsciiPieces[foundPiece]);</a>
+<a name="ln1308">            }</a>
+<a name="ln1309">            else</a>
+<a name="ln1310">            {</a>
+<a name="ln1311">                ++squaresWithoutPiece;</a>
+<a name="ln1312">            }</a>
+<a name="ln1313"> </a>
+<a name="ln1314">            squaresPerRow = (squaresPerRow + 1) % 8;</a>
+<a name="ln1315">            if (squaresPerRow == 0)</a>
+<a name="ln1316">            {</a>
+<a name="ln1317">                if (squaresWithoutPiece != 0)</a>
+<a name="ln1318">                {</a>
+<a name="ln1319">                    sb.Append(squaresWithoutPiece);</a>
+<a name="ln1320">                    squaresWithoutPiece = 0;</a>
+<a name="ln1321">                }</a>
+<a name="ln1322"> </a>
+<a name="ln1323">                if (square != 63)</a>
+<a name="ln1324">                {</a>
+<a name="ln1325">                    if (sb.Length == lengthBeforeSlash)</a>
+<a name="ln1326">                    {</a>
+<a name="ln1327">                        sb.Append('8');</a>
+<a name="ln1328">                    }</a>
+<a name="ln1329">                    sb.Append('/');</a>
+<a name="ln1330">                    lengthBeforeSlash = sb.Length;</a>
+<a name="ln1331">                    squaresWithoutPiece = 0;</a>
+<a name="ln1332">                }</a>
+<a name="ln1333">            }</a>
+<a name="ln1334">        }</a>
+<a name="ln1335"> </a>
+<a name="ln1336">        sb.Append(' ');</a>
+<a name="ln1337">        sb.Append(Side == Side.White ? 'w' : 'b');</a>
+<a name="ln1338"> </a>
+<a name="ln1339">        sb.Append(' ');</a>
+<a name="ln1340">        var length = sb.Length;</a>
+<a name="ln1341"> </a>
+<a name="ln1342">        if ((Castle &amp; (int)CastlingRights.WK) != default)</a>
+<a name="ln1343">        {</a>
+<a name="ln1344">            sb.Append('K');</a>
+<a name="ln1345">        }</a>
+<a name="ln1346">        if ((Castle &amp; (int)CastlingRights.WQ) != default)</a>
+<a name="ln1347">        {</a>
+<a name="ln1348">            sb.Append('Q');</a>
+<a name="ln1349">        }</a>
+<a name="ln1350">        if ((Castle &amp; (int)CastlingRights.BK) != default)</a>
+<a name="ln1351">        {</a>
+<a name="ln1352">            sb.Append('k');</a>
+<a name="ln1353">        }</a>
+<a name="ln1354">        if ((Castle &amp; (int)CastlingRights.BQ) != default)</a>
+<a name="ln1355">        {</a>
+<a name="ln1356">            sb.Append('q');</a>
+<a name="ln1357">        }</a>
+<a name="ln1358"> </a>
+<a name="ln1359">        if (sb.Length == length)</a>
+<a name="ln1360">        {</a>
+<a name="ln1361">            sb.Append('-');</a>
+<a name="ln1362">        }</a>
+<a name="ln1363"> </a>
+<a name="ln1364">        sb.Append(' ');</a>
+<a name="ln1365"> </a>
+<a name="ln1366">        sb.Append(EnPassant == BoardSquare.noSquare ? &quot;-&quot; : Constants.Coordinates[(int)EnPassant]);</a>
+<a name="ln1367"> </a>
+<a name="ln1368">        sb.Append(&quot; 0 1&quot;);</a>
+<a name="ln1369"> </a>
+<a name="ln1370">        return sb.ToString();</a>
+<a name="ln1371">    }</a>
+<a name="ln1372">}</a>
+<a name="ln1373"> </a>
+<a name="ln1374">internal record class RecordClassCustomPosition</a>
+<a name="ln1375">{</a>
+<a name="ln1376">    private string? _fen;</a>
+<a name="ln1377"> </a>
+<a name="ln1378">    public string FEN</a>
+<a name="ln1379">    {</a>
+<a name="ln1380">        get =&gt; _fen ??= CalculateFEN();</a>
+<a name="ln1381">        init =&gt; _fen = value;</a>
+<a name="ln1382">    }</a>
+<a name="ln1383"> </a>
+<a name="ln1384">    /// &lt;summary&gt;</a>
+<a name="ln1385">    /// Use &lt;see cref=&quot;Piece&quot;/&gt; as index</a>
+<a name="ln1386">    /// &lt;/summary&gt;</a>
+<a name="ln1387">    public BitBoard[] PieceBitBoards { get; }</a>
+<a name="ln1388"> </a>
+<a name="ln1389">    /// &lt;summary&gt;</a>
+<a name="ln1390">    /// Black, White, Both</a>
+<a name="ln1391">    /// &lt;/summary&gt;</a>
+<a name="ln1392">    public BitBoard[] OccupancyBitBoards { get; }</a>
+<a name="ln1393"> </a>
+<a name="ln1394">    public Side Side { get; }</a>
+<a name="ln1395"> </a>
+<a name="ln1396">    public BoardSquare EnPassant { get; }</a>
+<a name="ln1397"> </a>
+<a name="ln1398">    public int Castle { get; }</a>
+<a name="ln1399"> </a>
+<a name="ln1400">    public RecordClassCustomPosition(string fen)</a>
+<a name="ln1401">    {</a>
+<a name="ln1402">        _fen = fen;</a>
+<a name="ln1403"> </a>
+<a name="ln1404">        var parsedFEN = FENParser.ParseFEN(fen);</a>
+<a name="ln1405"> </a>
+<a name="ln1406">        PieceBitBoards = parsedFEN.PieceBitBoards;</a>
+<a name="ln1407">        OccupancyBitBoards = parsedFEN.OccupancyBitBoards;</a>
+<a name="ln1408">        Side = parsedFEN.Side;</a>
+<a name="ln1409">        Castle = parsedFEN.Castle;</a>
+<a name="ln1410">        EnPassant = parsedFEN.EnPassant;</a>
+<a name="ln1411">    }</a>
+<a name="ln1412"> </a>
+<a name="ln1413">    /// &lt;summary&gt;</a>
+<a name="ln1414">    /// Clone constructor</a>
+<a name="ln1415">    /// &lt;/summary&gt;</a>
+<a name="ln1416">    public RecordClassCustomPosition(RecordClassCustomPosition position)</a>
+<a name="ln1417">    {</a>
+<a name="ln1418">        _fen = position.FEN;</a>
+<a name="ln1419"> </a>
+<a name="ln1420">        PieceBitBoards = new BitBoard[12];</a>
+<a name="ln1421">        Array.Copy(position.PieceBitBoards, PieceBitBoards, position.PieceBitBoards.Length);</a>
+<a name="ln1422"> </a>
+<a name="ln1423">        OccupancyBitBoards = new BitBoard[3];</a>
+<a name="ln1424">        Array.Copy(position.OccupancyBitBoards, OccupancyBitBoards, position.OccupancyBitBoards.Length);</a>
+<a name="ln1425"> </a>
+<a name="ln1426">        Side = position.Side;</a>
+<a name="ln1427">        Castle = position.Castle;</a>
+<a name="ln1428">        EnPassant = position.EnPassant;</a>
+<a name="ln1429">    }</a>
+<a name="ln1430"> </a>
+<a name="ln1431">    public RecordClassCustomPosition(RecordClassCustomPosition position, Move move) : this(position)</a>
+<a name="ln1432">    {</a>
+<a name="ln1433">        _fen = null;</a>
+<a name="ln1434">        var oldSide = Side;</a>
+<a name="ln1435">        var offset = Utils.PieceOffset(oldSide);</a>
+<a name="ln1436">        var oppositeSide = Utils.OppositeSide(oldSide);</a>
+<a name="ln1437"> </a>
+<a name="ln1438">        int sourceSquare = move.SourceSquare();</a>
+<a name="ln1439">        int targetSquare = move.TargetSquare();</a>
+<a name="ln1440">        int piece = move.Piece();</a>
+<a name="ln1441">        int promotedPiece = move.PromotedPiece();</a>
+<a name="ln1442"> </a>
+<a name="ln1443">        var newPiece = piece;</a>
+<a name="ln1444">        if (promotedPiece != default)</a>
+<a name="ln1445">        {</a>
+<a name="ln1446">            newPiece = promotedPiece;</a>
+<a name="ln1447">        }</a>
+<a name="ln1448"> </a>
+<a name="ln1449">        EnPassant = BoardSquare.noSquare;</a>
+<a name="ln1450"> </a>
+<a name="ln1451">        PieceBitBoards[piece].PopBit(sourceSquare);</a>
+<a name="ln1452">        OccupancyBitBoards[(int)Side].PopBit(sourceSquare);</a>
+<a name="ln1453"> </a>
+<a name="ln1454">        PieceBitBoards[newPiece].SetBit(targetSquare);</a>
+<a name="ln1455">        OccupancyBitBoards[(int)Side].SetBit(targetSquare);</a>
+<a name="ln1456"> </a>
+<a name="ln1457">        if (move.IsCapture())</a>
+<a name="ln1458">        {</a>
+<a name="ln1459">            var oppositeSideOffset = Utils.PieceOffset(oppositeSide);</a>
+<a name="ln1460">            var oppositePawnIndex = (int)Piece.P + oppositeSideOffset;</a>
+<a name="ln1461"> </a>
+<a name="ln1462">            if (move.IsEnPassant())</a>
+<a name="ln1463">            {</a>
+<a name="ln1464">                var capturedPawnSquare = Constants.EnPassantCaptureSquares[targetSquare];</a>
+<a name="ln1465">                Utils.Assert(PieceBitBoards[oppositePawnIndex].GetBit(capturedPawnSquare), $&quot;Expected {(Side)oppositeSide} pawn in {capturedPawnSquare}&quot;);</a>
+<a name="ln1466"> </a>
+<a name="ln1467">                PieceBitBoards[oppositePawnIndex].PopBit(capturedPawnSquare);</a>
+<a name="ln1468">                OccupancyBitBoards[oppositeSide].PopBit(capturedPawnSquare);</a>
+<a name="ln1469">            }</a>
+<a name="ln1470">            else</a>
+<a name="ln1471">            {</a>
+<a name="ln1472">                var limit = (int)Piece.K + oppositeSideOffset;</a>
+<a name="ln1473">                for (int pieceIndex = oppositePawnIndex; pieceIndex &lt; limit; ++pieceIndex)</a>
+<a name="ln1474">                {</a>
+<a name="ln1475">                    if (PieceBitBoards[pieceIndex].GetBit(targetSquare))</a>
+<a name="ln1476">                    {</a>
+<a name="ln1477">                        PieceBitBoards[pieceIndex].PopBit(targetSquare);</a>
+<a name="ln1478">                        break;</a>
+<a name="ln1479">                    }</a>
+<a name="ln1480">                }</a>
+<a name="ln1481"> </a>
+<a name="ln1482">                OccupancyBitBoards[oppositeSide].PopBit(targetSquare);</a>
+<a name="ln1483">            }</a>
+<a name="ln1484">        }</a>
+<a name="ln1485">        else if (move.IsDoublePawnPush())</a>
+<a name="ln1486">        {</a>
+<a name="ln1487">            var pawnPush = +8 - ((int)oldSide * 16);</a>
+<a name="ln1488">            var enPassantSquare = sourceSquare + pawnPush;</a>
+<a name="ln1489"> </a>
+<a name="ln1490">            EnPassant = (BoardSquare)enPassantSquare;</a>
+<a name="ln1491">        }</a>
+<a name="ln1492">        else if (move.IsShortCastle())</a>
+<a name="ln1493">        {</a>
+<a name="ln1494">            var rookSourceSquare = Utils.ShortCastleRookSourceSquare(oldSide);</a>
+<a name="ln1495">            var rookTargetSquare = Utils.ShortCastleRookTargetSquare(oldSide);</a>
+<a name="ln1496">            var rookIndex = (int)Piece.R + offset;</a>
+<a name="ln1497"> </a>
+<a name="ln1498">            PieceBitBoards[rookIndex].PopBit(rookSourceSquare);</a>
+<a name="ln1499">            OccupancyBitBoards[(int)Side].PopBit(rookSourceSquare);</a>
+<a name="ln1500"> </a>
+<a name="ln1501">            PieceBitBoards[rookIndex].SetBit(rookTargetSquare);</a>
+<a name="ln1502">            OccupancyBitBoards[(int)Side].SetBit(rookTargetSquare);</a>
+<a name="ln1503">        }</a>
+<a name="ln1504">        else if (move.IsLongCastle())</a>
+<a name="ln1505">        {</a>
+<a name="ln1506">            var rookSourceSquare = Utils.LongCastleRookSourceSquare(oldSide);</a>
+<a name="ln1507">            var rookTargetSquare = Utils.LongCastleRookTargetSquare(oldSide);</a>
+<a name="ln1508">            var rookIndex = (int)Piece.R + offset;</a>
+<a name="ln1509"> </a>
+<a name="ln1510">            PieceBitBoards[rookIndex].PopBit(rookSourceSquare);</a>
+<a name="ln1511">            OccupancyBitBoards[(int)Side].PopBit(rookSourceSquare);</a>
+<a name="ln1512"> </a>
+<a name="ln1513">            PieceBitBoards[rookIndex].SetBit(rookTargetSquare);</a>
+<a name="ln1514">            OccupancyBitBoards[(int)Side].SetBit(rookTargetSquare);</a>
+<a name="ln1515">        }</a>
+<a name="ln1516"> </a>
+<a name="ln1517">        Side = (Side)oppositeSide;</a>
+<a name="ln1518">        OccupancyBitBoards[(int)Side.Both] = OccupancyBitBoards[(int)Side.White] | OccupancyBitBoards[(int)Side.Black];</a>
+<a name="ln1519"> </a>
+<a name="ln1520">        // Updating castling rights</a>
+<a name="ln1521">        Castle &amp;= Constants.CastlingRightsUpdateConstants[sourceSquare];</a>
+<a name="ln1522">        Castle &amp;= Constants.CastlingRightsUpdateConstants[targetSquare];</a>
+<a name="ln1523">    }</a>
+<a name="ln1524"> </a>
+<a name="ln1525">    /// &lt;summary&gt;</a>
+<a name="ln1526">    /// https://arxiv.org/ftp/arxiv/papers/2009/2009.03193.pdf</a>
+<a name="ln1527">    /// &lt;/summary&gt;</a>
+<a name="ln1528">    public RecordClassCustomPosition(RecordClassCustomPosition position, Move move, bool calculateFen) : this(position)</a>
+<a name="ln1529">    {</a>
+<a name="ln1530">        var oldSide = Side;</a>
+<a name="ln1531">        var offset = Utils.PieceOffset(oldSide);</a>
+<a name="ln1532">        var oppositeSide = Utils.OppositeSide(oldSide);</a>
+<a name="ln1533"> </a>
+<a name="ln1534">        int sourceSquare = move.SourceSquare();</a>
+<a name="ln1535">        int targetSquare = move.TargetSquare();</a>
+<a name="ln1536">        int piece = move.Piece();</a>
+<a name="ln1537">        int promotedPiece = move.PromotedPiece();</a>
+<a name="ln1538"> </a>
+<a name="ln1539">        var newPiece = piece;</a>
+<a name="ln1540">        if (promotedPiece != default)</a>
+<a name="ln1541">        {</a>
+<a name="ln1542">            newPiece = promotedPiece;</a>
+<a name="ln1543">        }</a>
+<a name="ln1544"> </a>
+<a name="ln1545">        StringBuilder fenSb = FENHelpers.UpdateFirstPartOfFEN(position, sourceSquare, targetSquare, piece);</a>
+<a name="ln1546"> </a>
+<a name="ln1547">        EnPassant = BoardSquare.noSquare;</a>
+<a name="ln1548"> </a>
+<a name="ln1549">        PieceBitBoards[piece].PopBit(sourceSquare);</a>
+<a name="ln1550">        OccupancyBitBoards[(int)Side].PopBit(sourceSquare);</a>
+<a name="ln1551"> </a>
+<a name="ln1552">        PieceBitBoards[newPiece].SetBit(targetSquare);</a>
+<a name="ln1553">        OccupancyBitBoards[(int)Side].SetBit(targetSquare);</a>
+<a name="ln1554"> </a>
+<a name="ln1555">        if (move.IsCapture())</a>
+<a name="ln1556">        {</a>
+<a name="ln1557">            var oppositeSideOffset = Utils.PieceOffset(oppositeSide);</a>
+<a name="ln1558">            var oppositePawnIndex = (int)Piece.P + oppositeSideOffset;</a>
+<a name="ln1559"> </a>
+<a name="ln1560">            if (move.IsEnPassant())</a>
+<a name="ln1561">            {</a>
+<a name="ln1562">                var capturedPawnSquare = Constants.EnPassantCaptureSquares[targetSquare];</a>
+<a name="ln1563">                Utils.Assert(PieceBitBoards[oppositePawnIndex].GetBit(capturedPawnSquare), $&quot;Expected {(Side)oppositeSide} pawn in {capturedPawnSquare}&quot;);</a>
+<a name="ln1564"> </a>
+<a name="ln1565">                PieceBitBoards[oppositePawnIndex].PopBit(capturedPawnSquare);</a>
+<a name="ln1566">                OccupancyBitBoards[oppositeSide].PopBit(capturedPawnSquare);</a>
+<a name="ln1567">            }</a>
+<a name="ln1568">            else</a>
+<a name="ln1569">            {</a>
+<a name="ln1570">                var limit = (int)Piece.K + oppositeSideOffset;</a>
+<a name="ln1571">                for (int pieceIndex = oppositePawnIndex; pieceIndex &lt; limit; ++pieceIndex)</a>
+<a name="ln1572">                {</a>
+<a name="ln1573">                    if (PieceBitBoards[pieceIndex].GetBit(targetSquare))</a>
+<a name="ln1574">                    {</a>
+<a name="ln1575">                        PieceBitBoards[pieceIndex].PopBit(targetSquare);</a>
+<a name="ln1576">                        break;</a>
+<a name="ln1577">                    }</a>
+<a name="ln1578">                }</a>
+<a name="ln1579"> </a>
+<a name="ln1580">                OccupancyBitBoards[oppositeSide].PopBit(targetSquare);</a>
+<a name="ln1581">            }</a>
+<a name="ln1582">        }</a>
+<a name="ln1583">        else if (move.IsDoublePawnPush())</a>
+<a name="ln1584">        {</a>
+<a name="ln1585">            var pawnPush = +8 - ((int)oldSide * 16);</a>
+<a name="ln1586">            var enPassantSquare = sourceSquare + pawnPush;</a>
+<a name="ln1587"> </a>
+<a name="ln1588">            EnPassant = (BoardSquare)enPassantSquare;</a>
+<a name="ln1589">        }</a>
+<a name="ln1590">        else if (move.IsShortCastle())</a>
+<a name="ln1591">        {</a>
+<a name="ln1592">            var rookSourceSquare = Utils.ShortCastleRookSourceSquare(oldSide);</a>
+<a name="ln1593">            var rookTargetSquare = Utils.ShortCastleRookTargetSquare(oldSide);</a>
+<a name="ln1594">            var rookIndex = (int)Piece.R + offset;</a>
+<a name="ln1595"> </a>
+<a name="ln1596">            PieceBitBoards[rookIndex].PopBit(rookSourceSquare);</a>
+<a name="ln1597">            OccupancyBitBoards[(int)Side].PopBit(rookSourceSquare);</a>
+<a name="ln1598"> </a>
+<a name="ln1599">            PieceBitBoards[rookIndex].SetBit(rookTargetSquare);</a>
+<a name="ln1600">            OccupancyBitBoards[(int)Side].SetBit(rookTargetSquare);</a>
+<a name="ln1601">        }</a>
+<a name="ln1602">        else if (move.IsLongCastle())</a>
+<a name="ln1603">        {</a>
+<a name="ln1604">            var rookSourceSquare = Utils.LongCastleRookSourceSquare(oldSide);</a>
+<a name="ln1605">            var rookTargetSquare = Utils.LongCastleRookTargetSquare(oldSide);</a>
+<a name="ln1606">            var rookIndex = (int)Piece.R + offset;</a>
+<a name="ln1607"> </a>
+<a name="ln1608">            PieceBitBoards[rookIndex].PopBit(rookSourceSquare);</a>
+<a name="ln1609">            OccupancyBitBoards[(int)Side].PopBit(rookSourceSquare);</a>
+<a name="ln1610"> </a>
+<a name="ln1611">            PieceBitBoards[rookIndex].SetBit(rookTargetSquare);</a>
+<a name="ln1612">            OccupancyBitBoards[(int)Side].SetBit(rookTargetSquare);</a>
+<a name="ln1613">        }</a>
+<a name="ln1614"> </a>
+<a name="ln1615">        Side = (Side)oppositeSide;</a>
+<a name="ln1616">        OccupancyBitBoards[(int)Side.Both] = OccupancyBitBoards[(int)Side.White] | OccupancyBitBoards[(int)Side.Black];</a>
+<a name="ln1617"> </a>
+<a name="ln1618">        // Updating castling rights</a>
+<a name="ln1619">        Castle &amp;= Constants.CastlingRightsUpdateConstants[sourceSquare];</a>
+<a name="ln1620">        Castle &amp;= Constants.CastlingRightsUpdateConstants[targetSquare];</a>
+<a name="ln1621"> </a>
+<a name="ln1622">        _fen = FENHelpers.UpdateSecondPartOfFEN(fenSb, Side, Castle, EnPassant);</a>
+<a name="ln1623">    }</a>
+<a name="ln1624"> </a>
+<a name="ln1625">    private string CalculateFEN()</a>
+<a name="ln1626">    {</a>
+<a name="ln1627">        var sb = new StringBuilder(100);</a>
+<a name="ln1628"> </a>
+<a name="ln1629">        var squaresPerRow = 0;</a>
+<a name="ln1630"> </a>
+<a name="ln1631">        int squaresWithoutPiece = 0;</a>
+<a name="ln1632">        int lengthBeforeSlash = sb.Length;</a>
+<a name="ln1633">        for (int square = 0; square &lt; 64; ++square)</a>
+<a name="ln1634">        {</a>
+<a name="ln1635">            int foundPiece = -1;</a>
+<a name="ln1636">            for (var pieceBoardIndex = 0; pieceBoardIndex &lt; 12; ++pieceBoardIndex)</a>
+<a name="ln1637">            {</a>
+<a name="ln1638">                if (PieceBitBoards[pieceBoardIndex].GetBit(square))</a>
+<a name="ln1639">                {</a>
+<a name="ln1640">                    foundPiece = pieceBoardIndex;</a>
+<a name="ln1641">                    break;</a>
+<a name="ln1642">                }</a>
+<a name="ln1643">            }</a>
+<a name="ln1644"> </a>
+<a name="ln1645">            if (foundPiece != -1)</a>
+<a name="ln1646">            {</a>
+<a name="ln1647">                if (squaresWithoutPiece != 0)</a>
+<a name="ln1648">                {</a>
+<a name="ln1649">                    sb.Append(squaresWithoutPiece);</a>
+<a name="ln1650">                    squaresWithoutPiece = 0;</a>
+<a name="ln1651">                }</a>
+<a name="ln1652"> </a>
+<a name="ln1653">                sb.Append(Constants.AsciiPieces[foundPiece]);</a>
+<a name="ln1654">            }</a>
+<a name="ln1655">            else</a>
+<a name="ln1656">            {</a>
+<a name="ln1657">                ++squaresWithoutPiece;</a>
+<a name="ln1658">            }</a>
+<a name="ln1659"> </a>
+<a name="ln1660">            squaresPerRow = (squaresPerRow + 1) % 8;</a>
+<a name="ln1661">            if (squaresPerRow == 0)</a>
+<a name="ln1662">            {</a>
+<a name="ln1663">                if (squaresWithoutPiece != 0)</a>
+<a name="ln1664">                {</a>
+<a name="ln1665">                    sb.Append(squaresWithoutPiece);</a>
+<a name="ln1666">                    squaresWithoutPiece = 0;</a>
+<a name="ln1667">                }</a>
+<a name="ln1668"> </a>
+<a name="ln1669">                if (square != 63)</a>
+<a name="ln1670">                {</a>
+<a name="ln1671">                    if (sb.Length == lengthBeforeSlash)</a>
+<a name="ln1672">                    {</a>
+<a name="ln1673">                        sb.Append('8');</a>
+<a name="ln1674">                    }</a>
+<a name="ln1675">                    sb.Append('/');</a>
+<a name="ln1676">                    lengthBeforeSlash = sb.Length;</a>
+<a name="ln1677">                    squaresWithoutPiece = 0;</a>
+<a name="ln1678">                }</a>
+<a name="ln1679">            }</a>
+<a name="ln1680">        }</a>
+<a name="ln1681"> </a>
+<a name="ln1682">        sb.Append(' ');</a>
+<a name="ln1683">        sb.Append(Side == Side.White ? 'w' : 'b');</a>
+<a name="ln1684"> </a>
+<a name="ln1685">        sb.Append(' ');</a>
+<a name="ln1686">        var length = sb.Length;</a>
+<a name="ln1687"> </a>
+<a name="ln1688">        if ((Castle &amp; (int)CastlingRights.WK) != default)</a>
+<a name="ln1689">        {</a>
+<a name="ln1690">            sb.Append('K');</a>
+<a name="ln1691">        }</a>
+<a name="ln1692">        if ((Castle &amp; (int)CastlingRights.WQ) != default)</a>
+<a name="ln1693">        {</a>
+<a name="ln1694">            sb.Append('Q');</a>
+<a name="ln1695">        }</a>
+<a name="ln1696">        if ((Castle &amp; (int)CastlingRights.BK) != default)</a>
+<a name="ln1697">        {</a>
+<a name="ln1698">            sb.Append('k');</a>
+<a name="ln1699">        }</a>
+<a name="ln1700">        if ((Castle &amp; (int)CastlingRights.BQ) != default)</a>
+<a name="ln1701">        {</a>
+<a name="ln1702">            sb.Append('q');</a>
+<a name="ln1703">        }</a>
+<a name="ln1704"> </a>
+<a name="ln1705">        if (sb.Length == length)</a>
+<a name="ln1706">        {</a>
+<a name="ln1707">            sb.Append('-');</a>
+<a name="ln1708">        }</a>
+<a name="ln1709"> </a>
+<a name="ln1710">        sb.Append(' ');</a>
+<a name="ln1711"> </a>
+<a name="ln1712">        sb.Append(EnPassant == BoardSquare.noSquare ? &quot;-&quot; : Constants.Coordinates[(int)EnPassant]);</a>
+<a name="ln1713"> </a>
+<a name="ln1714">        sb.Append(&quot; 0 1&quot;);</a>
+<a name="ln1715"> </a>
+<a name="ln1716">        return sb.ToString();</a>
+<a name="ln1717">    }</a>
+<a name="ln1718">}</a>
+<a name="ln1719"> </a>
+<a name="ln1720">internal record struct RecordStructCustomPosition</a>
+<a name="ln1721">{</a>
+<a name="ln1722">    private string? _fen;</a>
+<a name="ln1723"> </a>
+<a name="ln1724">    public string FEN</a>
+<a name="ln1725">    {</a>
+<a name="ln1726">        get =&gt; _fen ??= CalculateFEN();</a>
+<a name="ln1727">        init =&gt; _fen = value;</a>
+<a name="ln1728">    }</a>
+<a name="ln1729"> </a>
+<a name="ln1730">    /// &lt;summary&gt;</a>
+<a name="ln1731">    /// Use &lt;see cref=&quot;Piece&quot;/&gt; as index</a>
+<a name="ln1732">    /// &lt;/summary&gt;</a>
+<a name="ln1733">    public BitBoard[] PieceBitBoards { get; }</a>
+<a name="ln1734"> </a>
+<a name="ln1735">    /// &lt;summary&gt;</a>
+<a name="ln1736">    /// Black, White, Both</a>
+<a name="ln1737">    /// &lt;/summary&gt;</a>
+<a name="ln1738">    public BitBoard[] OccupancyBitBoards { get; }</a>
+<a name="ln1739"> </a>
+<a name="ln1740">    public Side Side { get; }</a>
+<a name="ln1741"> </a>
+<a name="ln1742">    public BoardSquare EnPassant { get; }</a>
+<a name="ln1743"> </a>
+<a name="ln1744">    public int Castle { get; }</a>
+<a name="ln1745"> </a>
+<a name="ln1746">    public RecordStructCustomPosition(string fen)</a>
+<a name="ln1747">    {</a>
+<a name="ln1748">        _fen = fen;</a>
+<a name="ln1749"> </a>
+<a name="ln1750">        var parsedFEN = FENParser.ParseFEN(fen);</a>
+<a name="ln1751"> </a>
+<a name="ln1752">        PieceBitBoards = parsedFEN.PieceBitBoards;</a>
+<a name="ln1753">        OccupancyBitBoards = parsedFEN.OccupancyBitBoards;</a>
+<a name="ln1754">        Side = parsedFEN.Side;</a>
+<a name="ln1755">        Castle = parsedFEN.Castle;</a>
+<a name="ln1756">        EnPassant = parsedFEN.EnPassant;</a>
+<a name="ln1757">    }</a>
+<a name="ln1758"> </a>
+<a name="ln1759">    /// &lt;summary&gt;</a>
+<a name="ln1760">    /// Clone constructor</a>
+<a name="ln1761">    /// &lt;/summary&gt;</a>
+<a name="ln1762">    public RecordStructCustomPosition(RecordStructCustomPosition position)</a>
+<a name="ln1763">    {</a>
+<a name="ln1764">        _fen = position.FEN;</a>
+<a name="ln1765"> </a>
+<a name="ln1766">        PieceBitBoards = new BitBoard[12];</a>
+<a name="ln1767">        Array.Copy(position.PieceBitBoards, PieceBitBoards, position.PieceBitBoards.Length);</a>
+<a name="ln1768"> </a>
+<a name="ln1769">        OccupancyBitBoards = new BitBoard[3];</a>
+<a name="ln1770">        Array.Copy(position.OccupancyBitBoards, OccupancyBitBoards, position.OccupancyBitBoards.Length);</a>
+<a name="ln1771"> </a>
+<a name="ln1772">        Side = position.Side;</a>
+<a name="ln1773">        Castle = position.Castle;</a>
+<a name="ln1774">        EnPassant = position.EnPassant;</a>
+<a name="ln1775">    }</a>
+<a name="ln1776"> </a>
+<a name="ln1777">    public RecordStructCustomPosition(RecordStructCustomPosition position, Move move) : this(position)</a>
+<a name="ln1778">    {</a>
+<a name="ln1779">        _fen = null;</a>
+<a name="ln1780">        var oldSide = Side;</a>
+<a name="ln1781">        var offset = Utils.PieceOffset(oldSide);</a>
+<a name="ln1782">        var oppositeSide = Utils.OppositeSide(oldSide);</a>
+<a name="ln1783"> </a>
+<a name="ln1784">        int sourceSquare = move.SourceSquare();</a>
+<a name="ln1785">        int targetSquare = move.TargetSquare();</a>
+<a name="ln1786">        int piece = move.Piece();</a>
+<a name="ln1787">        int promotedPiece = move.PromotedPiece();</a>
+<a name="ln1788"> </a>
+<a name="ln1789">        var newPiece = piece;</a>
+<a name="ln1790">        if (promotedPiece != default)</a>
+<a name="ln1791">        {</a>
+<a name="ln1792">            newPiece = promotedPiece;</a>
+<a name="ln1793">        }</a>
+<a name="ln1794"> </a>
+<a name="ln1795">        EnPassant = BoardSquare.noSquare;</a>
+<a name="ln1796"> </a>
+<a name="ln1797">        PieceBitBoards[piece].PopBit(sourceSquare);</a>
+<a name="ln1798">        OccupancyBitBoards[(int)Side].PopBit(sourceSquare);</a>
+<a name="ln1799"> </a>
+<a name="ln1800">        PieceBitBoards[newPiece].SetBit(targetSquare);</a>
+<a name="ln1801">        OccupancyBitBoards[(int)Side].SetBit(targetSquare);</a>
+<a name="ln1802"> </a>
+<a name="ln1803">        if (move.IsCapture())</a>
+<a name="ln1804">        {</a>
+<a name="ln1805">            var oppositeSideOffset = Utils.PieceOffset(oppositeSide);</a>
+<a name="ln1806">            var oppositePawnIndex = (int)Piece.P + oppositeSideOffset;</a>
+<a name="ln1807"> </a>
+<a name="ln1808">            if (move.IsEnPassant())</a>
+<a name="ln1809">            {</a>
+<a name="ln1810">                var capturedPawnSquare = Constants.EnPassantCaptureSquares[targetSquare];</a>
+<a name="ln1811">                Utils.Assert(PieceBitBoards[oppositePawnIndex].GetBit(capturedPawnSquare), $&quot;Expected {(Side)oppositeSide} pawn in {capturedPawnSquare}&quot;);</a>
+<a name="ln1812"> </a>
+<a name="ln1813">                PieceBitBoards[oppositePawnIndex].PopBit(capturedPawnSquare);</a>
+<a name="ln1814">                OccupancyBitBoards[oppositeSide].PopBit(capturedPawnSquare);</a>
+<a name="ln1815">            }</a>
+<a name="ln1816">            else</a>
+<a name="ln1817">            {</a>
+<a name="ln1818">                var limit = (int)Piece.K + oppositeSideOffset;</a>
+<a name="ln1819">                for (int pieceIndex = oppositePawnIndex; pieceIndex &lt; limit; ++pieceIndex)</a>
+<a name="ln1820">                {</a>
+<a name="ln1821">                    if (PieceBitBoards[pieceIndex].GetBit(targetSquare))</a>
+<a name="ln1822">                    {</a>
+<a name="ln1823">                        PieceBitBoards[pieceIndex].PopBit(targetSquare);</a>
+<a name="ln1824">                        break;</a>
+<a name="ln1825">                    }</a>
+<a name="ln1826">                }</a>
+<a name="ln1827"> </a>
+<a name="ln1828">                OccupancyBitBoards[oppositeSide].PopBit(targetSquare);</a>
+<a name="ln1829">            }</a>
+<a name="ln1830">        }</a>
+<a name="ln1831">        else if (move.IsDoublePawnPush())</a>
+<a name="ln1832">        {</a>
+<a name="ln1833">            var pawnPush = +8 - ((int)oldSide * 16);</a>
+<a name="ln1834">            var enPassantSquare = sourceSquare + pawnPush;</a>
+<a name="ln1835"> </a>
+<a name="ln1836">            EnPassant = (BoardSquare)enPassantSquare;</a>
+<a name="ln1837">        }</a>
+<a name="ln1838">        else if (move.IsShortCastle())</a>
+<a name="ln1839">        {</a>
+<a name="ln1840">            var rookSourceSquare = Utils.ShortCastleRookSourceSquare(oldSide);</a>
+<a name="ln1841">            var rookTargetSquare = Utils.ShortCastleRookTargetSquare(oldSide);</a>
+<a name="ln1842">            var rookIndex = (int)Piece.R + offset;</a>
+<a name="ln1843"> </a>
+<a name="ln1844">            PieceBitBoards[rookIndex].PopBit(rookSourceSquare);</a>
+<a name="ln1845">            OccupancyBitBoards[(int)Side].PopBit(rookSourceSquare);</a>
+<a name="ln1846"> </a>
+<a name="ln1847">            PieceBitBoards[rookIndex].SetBit(rookTargetSquare);</a>
+<a name="ln1848">            OccupancyBitBoards[(int)Side].SetBit(rookTargetSquare);</a>
+<a name="ln1849">        }</a>
+<a name="ln1850">        else if (move.IsLongCastle())</a>
+<a name="ln1851">        {</a>
+<a name="ln1852">            var rookSourceSquare = Utils.LongCastleRookSourceSquare(oldSide);</a>
+<a name="ln1853">            var rookTargetSquare = Utils.LongCastleRookTargetSquare(oldSide);</a>
+<a name="ln1854">            var rookIndex = (int)Piece.R + offset;</a>
+<a name="ln1855"> </a>
+<a name="ln1856">            PieceBitBoards[rookIndex].PopBit(rookSourceSquare);</a>
+<a name="ln1857">            OccupancyBitBoards[(int)Side].PopBit(rookSourceSquare);</a>
+<a name="ln1858"> </a>
+<a name="ln1859">            PieceBitBoards[rookIndex].SetBit(rookTargetSquare);</a>
+<a name="ln1860">            OccupancyBitBoards[(int)Side].SetBit(rookTargetSquare);</a>
+<a name="ln1861">        }</a>
+<a name="ln1862"> </a>
+<a name="ln1863">        Side = (Side)oppositeSide;</a>
+<a name="ln1864">        OccupancyBitBoards[(int)Side.Both] = OccupancyBitBoards[(int)Side.White] | OccupancyBitBoards[(int)Side.Black];</a>
+<a name="ln1865"> </a>
+<a name="ln1866">        // Updating castling rights</a>
+<a name="ln1867">        Castle &amp;= Constants.CastlingRightsUpdateConstants[sourceSquare];</a>
+<a name="ln1868">        Castle &amp;= Constants.CastlingRightsUpdateConstants[targetSquare];</a>
+<a name="ln1869">    }</a>
+<a name="ln1870"> </a>
+<a name="ln1871">    /// &lt;summary&gt;</a>
+<a name="ln1872">    /// https://arxiv.org/ftp/arxiv/papers/2009/2009.03193.pdf</a>
+<a name="ln1873">    /// &lt;/summary&gt;</a>
+<a name="ln1874">    public RecordStructCustomPosition(RecordStructCustomPosition position, Move move, bool calculateFen) : this(position)</a>
+<a name="ln1875">    {</a>
+<a name="ln1876">        var oldSide = Side;</a>
+<a name="ln1877">        var offset = Utils.PieceOffset(oldSide);</a>
+<a name="ln1878">        var oppositeSide = Utils.OppositeSide(oldSide);</a>
+<a name="ln1879"> </a>
+<a name="ln1880">        int sourceSquare = move.SourceSquare();</a>
+<a name="ln1881">        int targetSquare = move.TargetSquare();</a>
+<a name="ln1882">        int piece = move.Piece();</a>
+<a name="ln1883">        int promotedPiece = move.PromotedPiece();</a>
+<a name="ln1884"> </a>
+<a name="ln1885">        var newPiece = piece;</a>
+<a name="ln1886">        if (promotedPiece != default)</a>
+<a name="ln1887">        {</a>
+<a name="ln1888">            newPiece = promotedPiece;</a>
+<a name="ln1889">        }</a>
+<a name="ln1890"> </a>
+<a name="ln1891">        StringBuilder fenSb = FENHelpers.UpdateFirstPartOfFEN(position, sourceSquare, targetSquare, piece);</a>
+<a name="ln1892"> </a>
+<a name="ln1893">        EnPassant = BoardSquare.noSquare;</a>
+<a name="ln1894"> </a>
+<a name="ln1895">        PieceBitBoards[piece].PopBit(sourceSquare);</a>
+<a name="ln1896">        OccupancyBitBoards[(int)Side].PopBit(sourceSquare);</a>
+<a name="ln1897"> </a>
+<a name="ln1898">        PieceBitBoards[newPiece].SetBit(targetSquare);</a>
+<a name="ln1899">        OccupancyBitBoards[(int)Side].SetBit(targetSquare);</a>
+<a name="ln1900"> </a>
+<a name="ln1901">        if (move.IsCapture())</a>
+<a name="ln1902">        {</a>
+<a name="ln1903">            var oppositeSideOffset = Utils.PieceOffset(oppositeSide);</a>
+<a name="ln1904">            var oppositePawnIndex = (int)Piece.P + oppositeSideOffset;</a>
+<a name="ln1905"> </a>
+<a name="ln1906">            if (move.IsEnPassant())</a>
+<a name="ln1907">            {</a>
+<a name="ln1908">                var capturedPawnSquare = Constants.EnPassantCaptureSquares[targetSquare];</a>
+<a name="ln1909">                Utils.Assert(PieceBitBoards[oppositePawnIndex].GetBit(capturedPawnSquare), $&quot;Expected {(Side)oppositeSide} pawn in {capturedPawnSquare}&quot;);</a>
+<a name="ln1910"> </a>
+<a name="ln1911">                PieceBitBoards[oppositePawnIndex].PopBit(capturedPawnSquare);</a>
+<a name="ln1912">                OccupancyBitBoards[oppositeSide].PopBit(capturedPawnSquare);</a>
+<a name="ln1913">            }</a>
+<a name="ln1914">            else</a>
+<a name="ln1915">            {</a>
+<a name="ln1916">                var limit = (int)Piece.K + oppositeSideOffset;</a>
+<a name="ln1917">                for (int pieceIndex = oppositePawnIndex; pieceIndex &lt; limit; ++pieceIndex)</a>
+<a name="ln1918">                {</a>
+<a name="ln1919">                    if (PieceBitBoards[pieceIndex].GetBit(targetSquare))</a>
+<a name="ln1920">                    {</a>
+<a name="ln1921">                        PieceBitBoards[pieceIndex].PopBit(targetSquare);</a>
+<a name="ln1922">                        break;</a>
+<a name="ln1923">                    }</a>
+<a name="ln1924">                }</a>
+<a name="ln1925"> </a>
+<a name="ln1926">                OccupancyBitBoards[oppositeSide].PopBit(targetSquare);</a>
+<a name="ln1927">            }</a>
+<a name="ln1928">        }</a>
+<a name="ln1929">        else if (move.IsDoublePawnPush())</a>
+<a name="ln1930">        {</a>
+<a name="ln1931">            var pawnPush = +8 - ((int)oldSide * 16);</a>
+<a name="ln1932">            var enPassantSquare = sourceSquare + pawnPush;</a>
+<a name="ln1933"> </a>
+<a name="ln1934">            EnPassant = (BoardSquare)enPassantSquare;</a>
+<a name="ln1935">        }</a>
+<a name="ln1936">        else if (move.IsShortCastle())</a>
+<a name="ln1937">        {</a>
+<a name="ln1938">            var rookSourceSquare = Utils.ShortCastleRookSourceSquare(oldSide);</a>
+<a name="ln1939">            var rookTargetSquare = Utils.ShortCastleRookTargetSquare(oldSide);</a>
+<a name="ln1940">            var rookIndex = (int)Piece.R + offset;</a>
+<a name="ln1941"> </a>
+<a name="ln1942">            PieceBitBoards[rookIndex].PopBit(rookSourceSquare);</a>
+<a name="ln1943">            OccupancyBitBoards[(int)Side].PopBit(rookSourceSquare);</a>
+<a name="ln1944"> </a>
+<a name="ln1945">            PieceBitBoards[rookIndex].SetBit(rookTargetSquare);</a>
+<a name="ln1946">            OccupancyBitBoards[(int)Side].SetBit(rookTargetSquare);</a>
+<a name="ln1947">        }</a>
+<a name="ln1948">        else if (move.IsLongCastle())</a>
+<a name="ln1949">        {</a>
+<a name="ln1950">            var rookSourceSquare = Utils.LongCastleRookSourceSquare(oldSide);</a>
+<a name="ln1951">            var rookTargetSquare = Utils.LongCastleRookTargetSquare(oldSide);</a>
+<a name="ln1952">            var rookIndex = (int)Piece.R + offset;</a>
+<a name="ln1953"> </a>
+<a name="ln1954">            PieceBitBoards[rookIndex].PopBit(rookSourceSquare);</a>
+<a name="ln1955">            OccupancyBitBoards[(int)Side].PopBit(rookSourceSquare);</a>
+<a name="ln1956"> </a>
+<a name="ln1957">            PieceBitBoards[rookIndex].SetBit(rookTargetSquare);</a>
+<a name="ln1958">            OccupancyBitBoards[(int)Side].SetBit(rookTargetSquare);</a>
+<a name="ln1959">        }</a>
+<a name="ln1960"> </a>
+<a name="ln1961">        Side = (Side)oppositeSide;</a>
+<a name="ln1962">        OccupancyBitBoards[(int)Side.Both] = OccupancyBitBoards[(int)Side.White] | OccupancyBitBoards[(int)Side.Black];</a>
+<a name="ln1963"> </a>
+<a name="ln1964">        // Updating castling rights</a>
+<a name="ln1965">        Castle &amp;= Constants.CastlingRightsUpdateConstants[sourceSquare];</a>
+<a name="ln1966">        Castle &amp;= Constants.CastlingRightsUpdateConstants[targetSquare];</a>
+<a name="ln1967"> </a>
+<a name="ln1968">        _fen = FENHelpers.UpdateSecondPartOfFEN(fenSb, Side, Castle, EnPassant);</a>
+<a name="ln1969">    }</a>
+<a name="ln1970"> </a>
+<a name="ln1971">    private readonly string CalculateFEN()</a>
+<a name="ln1972">    {</a>
+<a name="ln1973">        var sb = new StringBuilder(100);</a>
+<a name="ln1974"> </a>
+<a name="ln1975">        var squaresPerRow = 0;</a>
+<a name="ln1976"> </a>
+<a name="ln1977">        int squaresWithoutPiece = 0;</a>
+<a name="ln1978">        int lengthBeforeSlash = sb.Length;</a>
+<a name="ln1979">        for (int square = 0; square &lt; 64; ++square)</a>
+<a name="ln1980">        {</a>
+<a name="ln1981">            int foundPiece = -1;</a>
+<a name="ln1982">            for (var pieceBoardIndex = 0; pieceBoardIndex &lt; 12; ++pieceBoardIndex)</a>
+<a name="ln1983">            {</a>
+<a name="ln1984">                if (PieceBitBoards[pieceBoardIndex].GetBit(square))</a>
+<a name="ln1985">                {</a>
+<a name="ln1986">                    foundPiece = pieceBoardIndex;</a>
+<a name="ln1987">                    break;</a>
+<a name="ln1988">                }</a>
+<a name="ln1989">            }</a>
+<a name="ln1990"> </a>
+<a name="ln1991">            if (foundPiece != -1)</a>
+<a name="ln1992">            {</a>
+<a name="ln1993">                if (squaresWithoutPiece != 0)</a>
+<a name="ln1994">                {</a>
+<a name="ln1995">                    sb.Append(squaresWithoutPiece);</a>
+<a name="ln1996">                    squaresWithoutPiece = 0;</a>
+<a name="ln1997">                }</a>
+<a name="ln1998"> </a>
+<a name="ln1999">                sb.Append(Constants.AsciiPieces[foundPiece]);</a>
+<a name="ln2000">            }</a>
+<a name="ln2001">            else</a>
+<a name="ln2002">            {</a>
+<a name="ln2003">                ++squaresWithoutPiece;</a>
+<a name="ln2004">            }</a>
+<a name="ln2005"> </a>
+<a name="ln2006">            squaresPerRow = (squaresPerRow + 1) % 8;</a>
+<a name="ln2007">            if (squaresPerRow == 0)</a>
+<a name="ln2008">            {</a>
+<a name="ln2009">                if (squaresWithoutPiece != 0)</a>
+<a name="ln2010">                {</a>
+<a name="ln2011">                    sb.Append(squaresWithoutPiece);</a>
+<a name="ln2012">                    squaresWithoutPiece = 0;</a>
+<a name="ln2013">                }</a>
+<a name="ln2014"> </a>
+<a name="ln2015">                if (square != 63)</a>
+<a name="ln2016">                {</a>
+<a name="ln2017">                    if (sb.Length == lengthBeforeSlash)</a>
+<a name="ln2018">                    {</a>
+<a name="ln2019">                        sb.Append('8');</a>
+<a name="ln2020">                    }</a>
+<a name="ln2021">                    sb.Append('/');</a>
+<a name="ln2022">                    lengthBeforeSlash = sb.Length;</a>
+<a name="ln2023">                    squaresWithoutPiece = 0;</a>
+<a name="ln2024">                }</a>
+<a name="ln2025">            }</a>
+<a name="ln2026">        }</a>
+<a name="ln2027"> </a>
+<a name="ln2028">        sb.Append(' ');</a>
+<a name="ln2029">        sb.Append(Side == Side.White ? 'w' : 'b');</a>
+<a name="ln2030"> </a>
+<a name="ln2031">        sb.Append(' ');</a>
+<a name="ln2032">        var length = sb.Length;</a>
+<a name="ln2033"> </a>
+<a name="ln2034">        if ((Castle &amp; (int)CastlingRights.WK) != default)</a>
+<a name="ln2035">        {</a>
+<a name="ln2036">            sb.Append('K');</a>
+<a name="ln2037">        }</a>
+<a name="ln2038">        if ((Castle &amp; (int)CastlingRights.WQ) != default)</a>
+<a name="ln2039">        {</a>
+<a name="ln2040">            sb.Append('Q');</a>
+<a name="ln2041">        }</a>
+<a name="ln2042">        if ((Castle &amp; (int)CastlingRights.BK) != default)</a>
+<a name="ln2043">        {</a>
+<a name="ln2044">            sb.Append('k');</a>
+<a name="ln2045">        }</a>
+<a name="ln2046">        if ((Castle &amp; (int)CastlingRights.BQ) != default)</a>
+<a name="ln2047">        {</a>
+<a name="ln2048">            sb.Append('q');</a>
+<a name="ln2049">        }</a>
+<a name="ln2050"> </a>
+<a name="ln2051">        if (sb.Length == length)</a>
+<a name="ln2052">        {</a>
+<a name="ln2053">            sb.Append('-');</a>
+<a name="ln2054">        }</a>
+<a name="ln2055"> </a>
+<a name="ln2056">        sb.Append(' ');</a>
+<a name="ln2057"> </a>
+<a name="ln2058">        sb.Append(EnPassant == BoardSquare.noSquare ? &quot;-&quot; : Constants.Coordinates[(int)EnPassant]);</a>
+<a name="ln2059"> </a>
+<a name="ln2060">        sb.Append(&quot; 0 1&quot;);</a>
+<a name="ln2061"> </a>
+<a name="ln2062">        return sb.ToString();</a>
+<a name="ln2063">    }</a>
+<a name="ln2064">}</a>
+<a name="ln2065"> </a>
+<a name="ln2066">internal static class FENHelpers</a>
+<a name="ln2067">{</a>
+<a name="ln2068">    public static StringBuilder UpdateFirstPartOfFEN(StructCustomPosition position, int sourceSquare, int targetSquare, int piece)</a>
+<a name="ln2069">    {</a>
+<a name="ln2070">        var fenSegments = position.FEN.Split('/');</a>
+<a name="ln2071"> </a>
+<a name="ln2072">        int sourceSegmentIndex = sourceSquare / 8;</a>
+<a name="ln2073">        int sourceFile = sourceSquare % 8;</a>
+<a name="ln2074">        var expandedSourceSegment = new StringBuilder();</a>
+<a name="ln2075"> </a>
+<a name="ln2076">        foreach (var item in fenSegments[sourceSegmentIndex])</a>
+<a name="ln2077">        {</a>
+<a name="ln2078">            if (char.IsDigit(item))</a>
+<a name="ln2079">            {</a>
+<a name="ln2080">                expandedSourceSegment.Append('1', item - '0');</a>
+<a name="ln2081">            }</a>
+<a name="ln2082">            else</a>
+<a name="ln2083">            {</a>
+<a name="ln2084">                expandedSourceSegment.Append(item);</a>
+<a name="ln2085">            }</a>
+<a name="ln2086">        }</a>
+<a name="ln2087"> </a>
+<a name="ln2088">        expandedSourceSegment[sourceFile] = '1';</a>
+<a name="ln2089"> </a>
+<a name="ln2090">        var sourceSegment = new StringBuilder(8);</a>
+<a name="ln2091">        int ones = 0;</a>
+<a name="ln2092">        foreach (var item in expandedSourceSegment.ToString())</a>
+<a name="ln2093">        {</a>
+<a name="ln2094">            if (item == '1')</a>
+<a name="ln2095">            {</a>
+<a name="ln2096">                ++ones;</a>
+<a name="ln2097">            }</a>
+<a name="ln2098">            else</a>
+<a name="ln2099">            {</a>
+<a name="ln2100">                if (ones != 0)</a>
+<a name="ln2101">                {</a>
+<a name="ln2102">                    sourceSegment.Append(ones);</a>
+<a name="ln2103">                    ones = 0;</a>
+<a name="ln2104"> </a>
+<a name="ln2105">                    sourceSegment.Append(item);</a>
+<a name="ln2106">                }</a>
+<a name="ln2107">            }</a>
+<a name="ln2108">        }</a>
+<a name="ln2109"> </a>
+<a name="ln2110">        if (ones != 0)</a>
+<a name="ln2111">        {</a>
+<a name="ln2112">            sourceSegment.Append(ones);</a>
+<a name="ln2113">        }</a>
+<a name="ln2114"> </a>
+<a name="ln2115">        fenSegments[sourceSegmentIndex] = sourceSegment.ToString();</a>
+<a name="ln2116"> </a>
+<a name="ln2117">        int targetSegmentIndex = targetSquare / 8;</a>
+<a name="ln2118">        int targetFile = targetSquare % 8;</a>
+<a name="ln2119">        var expandedTargetSegment = new StringBuilder(8);</a>
+<a name="ln2120">        foreach (var item in fenSegments[targetSegmentIndex])</a>
+<a name="ln2121">        {</a>
+<a name="ln2122">            if (char.IsDigit(item))</a>
+<a name="ln2123">            {</a>
+<a name="ln2124">                expandedTargetSegment.Append('1', item - '0');</a>
+<a name="ln2125">            }</a>
+<a name="ln2126">            else</a>
+<a name="ln2127">            {</a>
+<a name="ln2128">                expandedTargetSegment.Append(item);</a>
+<a name="ln2129">            }</a>
+<a name="ln2130">        }</a>
+<a name="ln2131"> </a>
+<a name="ln2132">        expandedTargetSegment[targetFile] = Constants.AsciiPieces[piece];</a>
+<a name="ln2133"> </a>
+<a name="ln2134">        var targetSegment = new StringBuilder();</a>
+<a name="ln2135">        ones = 0;</a>
+<a name="ln2136">        foreach (var item in expandedTargetSegment.ToString())</a>
+<a name="ln2137">        {</a>
+<a name="ln2138">            if (item == '1')</a>
+<a name="ln2139">            {</a>
+<a name="ln2140">                ++ones;</a>
+<a name="ln2141">            }</a>
+<a name="ln2142">            else</a>
+<a name="ln2143">            {</a>
+<a name="ln2144">                if (ones != 0)</a>
+<a name="ln2145">                {</a>
+<a name="ln2146">                    targetSegment.Append(ones);</a>
+<a name="ln2147">                    ones = 0;</a>
+<a name="ln2148"> </a>
+<a name="ln2149">                    targetSegment.Append(item);</a>
+<a name="ln2150">                }</a>
+<a name="ln2151">            }</a>
+<a name="ln2152">        }</a>
+<a name="ln2153"> </a>
+<a name="ln2154">        if (ones != 0)</a>
+<a name="ln2155">        {</a>
+<a name="ln2156">            targetSegment.Append(ones);</a>
+<a name="ln2157">        }</a>
+<a name="ln2158"> </a>
+<a name="ln2159">        fenSegments[targetSegmentIndex] = targetSegment.ToString();</a>
+<a name="ln2160"> </a>
+<a name="ln2161">        fenSegments[7] = fenSegments[7].Split(' ')[0];</a>
+<a name="ln2162"> </a>
+<a name="ln2163">        var fenSb = new StringBuilder(string.Join('/', fenSegments));</a>
+<a name="ln2164">        return fenSb;</a>
+<a name="ln2165">    }</a>
+<a name="ln2166"> </a>
+<a name="ln2167">    public static StringBuilder UpdateFirstPartOfFEN(ReadonlyStructCustomPosition position, int sourceSquare, int targetSquare, int piece)</a>
+<a name="ln2168">    {</a>
+<a name="ln2169">        var fenSegments = position.FEN.Split('/');</a>
+<a name="ln2170"> </a>
+<a name="ln2171">        int sourceSegmentIndex = sourceSquare / 8;</a>
+<a name="ln2172">        int sourceFile = sourceSquare % 8;</a>
+<a name="ln2173">        var expandedSourceSegment = new StringBuilder();</a>
+<a name="ln2174"> </a>
+<a name="ln2175">        foreach (var item in fenSegments[sourceSegmentIndex])</a>
+<a name="ln2176">        {</a>
+<a name="ln2177">            if (char.IsDigit(item))</a>
+<a name="ln2178">            {</a>
+<a name="ln2179">                expandedSourceSegment.Append('1', item - '0');</a>
+<a name="ln2180">            }</a>
+<a name="ln2181">            else</a>
+<a name="ln2182">            {</a>
+<a name="ln2183">                expandedSourceSegment.Append(item);</a>
+<a name="ln2184">            }</a>
+<a name="ln2185">        }</a>
+<a name="ln2186"> </a>
+<a name="ln2187">        expandedSourceSegment[sourceFile] = '1';</a>
+<a name="ln2188"> </a>
+<a name="ln2189">        var sourceSegment = new StringBuilder(8);</a>
+<a name="ln2190">        int ones = 0;</a>
+<a name="ln2191">        foreach (var item in expandedSourceSegment.ToString())</a>
+<a name="ln2192">        {</a>
+<a name="ln2193">            if (item == '1')</a>
+<a name="ln2194">            {</a>
+<a name="ln2195">                ++ones;</a>
+<a name="ln2196">            }</a>
+<a name="ln2197">            else</a>
+<a name="ln2198">            {</a>
+<a name="ln2199">                if (ones != 0)</a>
+<a name="ln2200">                {</a>
+<a name="ln2201">                    sourceSegment.Append(ones);</a>
+<a name="ln2202">                    ones = 0;</a>
+<a name="ln2203"> </a>
+<a name="ln2204">                    sourceSegment.Append(item);</a>
+<a name="ln2205">                }</a>
+<a name="ln2206">            }</a>
+<a name="ln2207">        }</a>
+<a name="ln2208"> </a>
+<a name="ln2209">        if (ones != 0)</a>
+<a name="ln2210">        {</a>
+<a name="ln2211">            sourceSegment.Append(ones);</a>
+<a name="ln2212">        }</a>
+<a name="ln2213"> </a>
+<a name="ln2214">        fenSegments[sourceSegmentIndex] = sourceSegment.ToString();</a>
+<a name="ln2215"> </a>
+<a name="ln2216">        int targetSegmentIndex = targetSquare / 8;</a>
+<a name="ln2217">        int targetFile = targetSquare % 8;</a>
+<a name="ln2218">        var expandedTargetSegment = new StringBuilder(8);</a>
+<a name="ln2219">        foreach (var item in fenSegments[targetSegmentIndex])</a>
+<a name="ln2220">        {</a>
+<a name="ln2221">            if (char.IsDigit(item))</a>
+<a name="ln2222">            {</a>
+<a name="ln2223">                expandedTargetSegment.Append('1', item - '0');</a>
+<a name="ln2224">            }</a>
+<a name="ln2225">            else</a>
+<a name="ln2226">            {</a>
+<a name="ln2227">                expandedTargetSegment.Append(item);</a>
+<a name="ln2228">            }</a>
+<a name="ln2229">        }</a>
+<a name="ln2230"> </a>
+<a name="ln2231">        expandedTargetSegment[targetFile] = Constants.AsciiPieces[piece];</a>
+<a name="ln2232"> </a>
+<a name="ln2233">        var targetSegment = new StringBuilder();</a>
+<a name="ln2234">        ones = 0;</a>
+<a name="ln2235">        foreach (var item in expandedTargetSegment.ToString())</a>
+<a name="ln2236">        {</a>
+<a name="ln2237">            if (item == '1')</a>
+<a name="ln2238">            {</a>
+<a name="ln2239">                ++ones;</a>
+<a name="ln2240">            }</a>
+<a name="ln2241">            else</a>
+<a name="ln2242">            {</a>
+<a name="ln2243">                if (ones != 0)</a>
+<a name="ln2244">                {</a>
+<a name="ln2245">                    targetSegment.Append(ones);</a>
+<a name="ln2246">                    ones = 0;</a>
+<a name="ln2247"> </a>
+<a name="ln2248">                    targetSegment.Append(item);</a>
+<a name="ln2249">                }</a>
+<a name="ln2250">            }</a>
+<a name="ln2251">        }</a>
+<a name="ln2252"> </a>
+<a name="ln2253">        if (ones != 0)</a>
+<a name="ln2254">        {</a>
+<a name="ln2255">            targetSegment.Append(ones);</a>
+<a name="ln2256">        }</a>
+<a name="ln2257"> </a>
+<a name="ln2258">        fenSegments[targetSegmentIndex] = targetSegment.ToString();</a>
+<a name="ln2259"> </a>
+<a name="ln2260">        fenSegments[7] = fenSegments[7].Split(' ')[0];</a>
+<a name="ln2261"> </a>
+<a name="ln2262">        var fenSb = new StringBuilder(string.Join('/', fenSegments));</a>
+<a name="ln2263">        return fenSb;</a>
+<a name="ln2264">    }</a>
+<a name="ln2265"> </a>
+<a name="ln2266">    public static StringBuilder UpdateFirstPartOfFEN(ClassCustomPosition position, int sourceSquare, int targetSquare, int piece)</a>
+<a name="ln2267">    {</a>
+<a name="ln2268">        var fenSegments = position.FEN.Split('/');</a>
+<a name="ln2269"> </a>
+<a name="ln2270">        int sourceSegmentIndex = sourceSquare / 8;</a>
+<a name="ln2271">        int sourceFile = sourceSquare % 8;</a>
+<a name="ln2272">        var expandedSourceSegment = new StringBuilder();</a>
+<a name="ln2273"> </a>
+<a name="ln2274">        foreach (var item in fenSegments[sourceSegmentIndex])</a>
+<a name="ln2275">        {</a>
+<a name="ln2276">            if (char.IsDigit(item))</a>
+<a name="ln2277">            {</a>
+<a name="ln2278">                expandedSourceSegment.Append('1', item - '0');</a>
+<a name="ln2279">            }</a>
+<a name="ln2280">            else</a>
+<a name="ln2281">            {</a>
+<a name="ln2282">                expandedSourceSegment.Append(item);</a>
+<a name="ln2283">            }</a>
+<a name="ln2284">        }</a>
+<a name="ln2285"> </a>
+<a name="ln2286">        expandedSourceSegment[sourceFile] = '1';</a>
+<a name="ln2287"> </a>
+<a name="ln2288">        var sourceSegment = new StringBuilder(8);</a>
+<a name="ln2289">        int ones = 0;</a>
+<a name="ln2290">        foreach (var item in expandedSourceSegment.ToString())</a>
+<a name="ln2291">        {</a>
+<a name="ln2292">            if (item == '1')</a>
+<a name="ln2293">            {</a>
+<a name="ln2294">                ++ones;</a>
+<a name="ln2295">            }</a>
+<a name="ln2296">            else</a>
+<a name="ln2297">            {</a>
+<a name="ln2298">                if (ones != 0)</a>
+<a name="ln2299">                {</a>
+<a name="ln2300">                    sourceSegment.Append(ones);</a>
+<a name="ln2301">                    ones = 0;</a>
+<a name="ln2302"> </a>
+<a name="ln2303">                    sourceSegment.Append(item);</a>
+<a name="ln2304">                }</a>
+<a name="ln2305">            }</a>
+<a name="ln2306">        }</a>
+<a name="ln2307"> </a>
+<a name="ln2308">        if (ones != 0)</a>
+<a name="ln2309">        {</a>
+<a name="ln2310">            sourceSegment.Append(ones);</a>
+<a name="ln2311">        }</a>
+<a name="ln2312"> </a>
+<a name="ln2313">        fenSegments[sourceSegmentIndex] = sourceSegment.ToString();</a>
+<a name="ln2314"> </a>
+<a name="ln2315">        int targetSegmentIndex = targetSquare / 8;</a>
+<a name="ln2316">        int targetFile = targetSquare % 8;</a>
+<a name="ln2317">        var expandedTargetSegment = new StringBuilder(8);</a>
+<a name="ln2318">        foreach (var item in fenSegments[targetSegmentIndex])</a>
+<a name="ln2319">        {</a>
+<a name="ln2320">            if (char.IsDigit(item))</a>
+<a name="ln2321">            {</a>
+<a name="ln2322">                expandedTargetSegment.Append('1', item - '0');</a>
+<a name="ln2323">            }</a>
+<a name="ln2324">            else</a>
+<a name="ln2325">            {</a>
+<a name="ln2326">                expandedTargetSegment.Append(item);</a>
+<a name="ln2327">            }</a>
+<a name="ln2328">        }</a>
+<a name="ln2329"> </a>
+<a name="ln2330">        expandedTargetSegment[targetFile] = Constants.AsciiPieces[piece];</a>
+<a name="ln2331"> </a>
+<a name="ln2332">        var targetSegment = new StringBuilder();</a>
+<a name="ln2333">        ones = 0;</a>
+<a name="ln2334">        foreach (var item in expandedTargetSegment.ToString())</a>
+<a name="ln2335">        {</a>
+<a name="ln2336">            if (item == '1')</a>
+<a name="ln2337">            {</a>
+<a name="ln2338">                ++ones;</a>
+<a name="ln2339">            }</a>
+<a name="ln2340">            else</a>
+<a name="ln2341">            {</a>
+<a name="ln2342">                if (ones != 0)</a>
+<a name="ln2343">                {</a>
+<a name="ln2344">                    targetSegment.Append(ones);</a>
+<a name="ln2345">                    ones = 0;</a>
+<a name="ln2346"> </a>
+<a name="ln2347">                    targetSegment.Append(item);</a>
+<a name="ln2348">                }</a>
+<a name="ln2349">            }</a>
+<a name="ln2350">        }</a>
+<a name="ln2351"> </a>
+<a name="ln2352">        if (ones != 0)</a>
+<a name="ln2353">        {</a>
+<a name="ln2354">            targetSegment.Append(ones);</a>
+<a name="ln2355">        }</a>
+<a name="ln2356"> </a>
+<a name="ln2357">        fenSegments[targetSegmentIndex] = targetSegment.ToString();</a>
+<a name="ln2358"> </a>
+<a name="ln2359">        fenSegments[7] = fenSegments[7].Split(' ')[0];</a>
+<a name="ln2360"> </a>
+<a name="ln2361">        var fenSb = new StringBuilder(string.Join('/', fenSegments));</a>
+<a name="ln2362">        return fenSb;</a>
+<a name="ln2363">    }</a>
+<a name="ln2364"> </a>
+<a name="ln2365">    public static StringBuilder UpdateFirstPartOfFEN(RecordClassCustomPosition position, int sourceSquare, int targetSquare, int piece)</a>
+<a name="ln2366">    {</a>
+<a name="ln2367">        var fenSegments = position.FEN.Split('/');</a>
+<a name="ln2368"> </a>
+<a name="ln2369">        int sourceSegmentIndex = sourceSquare / 8;</a>
+<a name="ln2370">        int sourceFile = sourceSquare % 8;</a>
+<a name="ln2371">        var expandedSourceSegment = new StringBuilder();</a>
+<a name="ln2372"> </a>
+<a name="ln2373">        foreach (var item in fenSegments[sourceSegmentIndex])</a>
+<a name="ln2374">        {</a>
+<a name="ln2375">            if (char.IsDigit(item))</a>
+<a name="ln2376">            {</a>
+<a name="ln2377">                expandedSourceSegment.Append('1', item - '0');</a>
+<a name="ln2378">            }</a>
+<a name="ln2379">            else</a>
+<a name="ln2380">            {</a>
+<a name="ln2381">                expandedSourceSegment.Append(item);</a>
+<a name="ln2382">            }</a>
+<a name="ln2383">        }</a>
+<a name="ln2384"> </a>
+<a name="ln2385">        expandedSourceSegment[sourceFile] = '1';</a>
+<a name="ln2386"> </a>
+<a name="ln2387">        var sourceSegment = new StringBuilder(8);</a>
+<a name="ln2388">        int ones = 0;</a>
+<a name="ln2389">        foreach (var item in expandedSourceSegment.ToString())</a>
+<a name="ln2390">        {</a>
+<a name="ln2391">            if (item == '1')</a>
+<a name="ln2392">            {</a>
+<a name="ln2393">                ++ones;</a>
+<a name="ln2394">            }</a>
+<a name="ln2395">            else</a>
+<a name="ln2396">            {</a>
+<a name="ln2397">                if (ones != 0)</a>
+<a name="ln2398">                {</a>
+<a name="ln2399">                    sourceSegment.Append(ones);</a>
+<a name="ln2400">                    ones = 0;</a>
+<a name="ln2401"> </a>
+<a name="ln2402">                    sourceSegment.Append(item);</a>
+<a name="ln2403">                }</a>
+<a name="ln2404">            }</a>
+<a name="ln2405">        }</a>
+<a name="ln2406"> </a>
+<a name="ln2407">        if (ones != 0)</a>
+<a name="ln2408">        {</a>
+<a name="ln2409">            sourceSegment.Append(ones);</a>
+<a name="ln2410">        }</a>
+<a name="ln2411"> </a>
+<a name="ln2412">        fenSegments[sourceSegmentIndex] = sourceSegment.ToString();</a>
+<a name="ln2413"> </a>
+<a name="ln2414">        int targetSegmentIndex = targetSquare / 8;</a>
+<a name="ln2415">        int targetFile = targetSquare % 8;</a>
+<a name="ln2416">        var expandedTargetSegment = new StringBuilder(8);</a>
+<a name="ln2417">        foreach (var item in fenSegments[targetSegmentIndex])</a>
+<a name="ln2418">        {</a>
+<a name="ln2419">            if (char.IsDigit(item))</a>
+<a name="ln2420">            {</a>
+<a name="ln2421">                expandedTargetSegment.Append('1', item - '0');</a>
+<a name="ln2422">            }</a>
+<a name="ln2423">            else</a>
+<a name="ln2424">            {</a>
+<a name="ln2425">                expandedTargetSegment.Append(item);</a>
+<a name="ln2426">            }</a>
+<a name="ln2427">        }</a>
+<a name="ln2428"> </a>
+<a name="ln2429">        expandedTargetSegment[targetFile] = Constants.AsciiPieces[piece];</a>
+<a name="ln2430"> </a>
+<a name="ln2431">        var targetSegment = new StringBuilder();</a>
+<a name="ln2432">        ones = 0;</a>
+<a name="ln2433">        foreach (var item in expandedTargetSegment.ToString())</a>
+<a name="ln2434">        {</a>
+<a name="ln2435">            if (item == '1')</a>
+<a name="ln2436">            {</a>
+<a name="ln2437">                ++ones;</a>
+<a name="ln2438">            }</a>
+<a name="ln2439">            else</a>
+<a name="ln2440">            {</a>
+<a name="ln2441">                if (ones != 0)</a>
+<a name="ln2442">                {</a>
+<a name="ln2443">                    targetSegment.Append(ones);</a>
+<a name="ln2444">                    ones = 0;</a>
+<a name="ln2445"> </a>
+<a name="ln2446">                    targetSegment.Append(item);</a>
+<a name="ln2447">                }</a>
+<a name="ln2448">            }</a>
+<a name="ln2449">        }</a>
+<a name="ln2450"> </a>
+<a name="ln2451">        if (ones != 0)</a>
+<a name="ln2452">        {</a>
+<a name="ln2453">            targetSegment.Append(ones);</a>
+<a name="ln2454">        }</a>
+<a name="ln2455"> </a>
+<a name="ln2456">        fenSegments[targetSegmentIndex] = targetSegment.ToString();</a>
+<a name="ln2457"> </a>
+<a name="ln2458">        fenSegments[7] = fenSegments[7].Split(' ')[0];</a>
+<a name="ln2459"> </a>
+<a name="ln2460">        var fenSb = new StringBuilder(string.Join('/', fenSegments));</a>
+<a name="ln2461">        return fenSb;</a>
+<a name="ln2462">    }</a>
+<a name="ln2463"> </a>
+<a name="ln2464">    public static StringBuilder UpdateFirstPartOfFEN(RecordStructCustomPosition position, int sourceSquare, int targetSquare, int piece)</a>
+<a name="ln2465">    {</a>
+<a name="ln2466">        var fenSegments = position.FEN.Split('/');</a>
+<a name="ln2467"> </a>
+<a name="ln2468">        int sourceSegmentIndex = sourceSquare / 8;</a>
+<a name="ln2469">        int sourceFile = sourceSquare % 8;</a>
+<a name="ln2470">        var expandedSourceSegment = new StringBuilder();</a>
+<a name="ln2471"> </a>
+<a name="ln2472">        foreach (var item in fenSegments[sourceSegmentIndex])</a>
+<a name="ln2473">        {</a>
+<a name="ln2474">            if (char.IsDigit(item))</a>
+<a name="ln2475">            {</a>
+<a name="ln2476">                expandedSourceSegment.Append('1', item - '0');</a>
+<a name="ln2477">            }</a>
+<a name="ln2478">            else</a>
+<a name="ln2479">            {</a>
+<a name="ln2480">                expandedSourceSegment.Append(item);</a>
+<a name="ln2481">            }</a>
+<a name="ln2482">        }</a>
+<a name="ln2483"> </a>
+<a name="ln2484">        expandedSourceSegment[sourceFile] = '1';</a>
+<a name="ln2485"> </a>
+<a name="ln2486">        var sourceSegment = new StringBuilder(8);</a>
+<a name="ln2487">        int ones = 0;</a>
+<a name="ln2488">        foreach (var item in expandedSourceSegment.ToString())</a>
+<a name="ln2489">        {</a>
+<a name="ln2490">            if (item == '1')</a>
+<a name="ln2491">            {</a>
+<a name="ln2492">                ++ones;</a>
+<a name="ln2493">            }</a>
+<a name="ln2494">            else</a>
+<a name="ln2495">            {</a>
+<a name="ln2496">                if (ones != 0)</a>
+<a name="ln2497">                {</a>
+<a name="ln2498">                    sourceSegment.Append(ones);</a>
+<a name="ln2499">                    ones = 0;</a>
+<a name="ln2500"> </a>
+<a name="ln2501">                    sourceSegment.Append(item);</a>
+<a name="ln2502">                }</a>
+<a name="ln2503">            }</a>
+<a name="ln2504">        }</a>
+<a name="ln2505"> </a>
+<a name="ln2506">        if (ones != 0)</a>
+<a name="ln2507">        {</a>
+<a name="ln2508">            sourceSegment.Append(ones);</a>
+<a name="ln2509">        }</a>
+<a name="ln2510"> </a>
+<a name="ln2511">        fenSegments[sourceSegmentIndex] = sourceSegment.ToString();</a>
+<a name="ln2512"> </a>
+<a name="ln2513">        int targetSegmentIndex = targetSquare / 8;</a>
+<a name="ln2514">        int targetFile = targetSquare % 8;</a>
+<a name="ln2515">        var expandedTargetSegment = new StringBuilder(8);</a>
+<a name="ln2516">        foreach (var item in fenSegments[targetSegmentIndex])</a>
+<a name="ln2517">        {</a>
+<a name="ln2518">            if (char.IsDigit(item))</a>
+<a name="ln2519">            {</a>
+<a name="ln2520">                expandedTargetSegment.Append('1', item - '0');</a>
+<a name="ln2521">            }</a>
+<a name="ln2522">            else</a>
+<a name="ln2523">            {</a>
+<a name="ln2524">                expandedTargetSegment.Append(item);</a>
+<a name="ln2525">            }</a>
+<a name="ln2526">        }</a>
+<a name="ln2527"> </a>
+<a name="ln2528">        expandedTargetSegment[targetFile] = Constants.AsciiPieces[piece];</a>
+<a name="ln2529"> </a>
+<a name="ln2530">        var targetSegment = new StringBuilder();</a>
+<a name="ln2531">        ones = 0;</a>
+<a name="ln2532">        foreach (var item in expandedTargetSegment.ToString())</a>
+<a name="ln2533">        {</a>
+<a name="ln2534">            if (item == '1')</a>
+<a name="ln2535">            {</a>
+<a name="ln2536">                ++ones;</a>
+<a name="ln2537">            }</a>
+<a name="ln2538">            else</a>
+<a name="ln2539">            {</a>
+<a name="ln2540">                if (ones != 0)</a>
+<a name="ln2541">                {</a>
+<a name="ln2542">                    targetSegment.Append(ones);</a>
+<a name="ln2543">                    ones = 0;</a>
+<a name="ln2544"> </a>
+<a name="ln2545">                    targetSegment.Append(item);</a>
+<a name="ln2546">                }</a>
+<a name="ln2547">            }</a>
+<a name="ln2548">        }</a>
+<a name="ln2549"> </a>
+<a name="ln2550">        if (ones != 0)</a>
+<a name="ln2551">        {</a>
+<a name="ln2552">            targetSegment.Append(ones);</a>
+<a name="ln2553">        }</a>
+<a name="ln2554"> </a>
+<a name="ln2555">        fenSegments[targetSegmentIndex] = targetSegment.ToString();</a>
+<a name="ln2556"> </a>
+<a name="ln2557">        fenSegments[7] = fenSegments[7].Split(' ')[0];</a>
+<a name="ln2558"> </a>
+<a name="ln2559">        var fenSb = new StringBuilder(string.Join('/', fenSegments));</a>
+<a name="ln2560">        return fenSb;</a>
+<a name="ln2561">    }</a>
+<a name="ln2562"> </a>
+<a name="ln2563">    /// &lt;summary&gt;</a>
+<a name="ln2564">    /// Neeeds to be invoked with the updated &lt;paramref name=&quot;side&quot;/&gt;, &lt;paramref name=&quot;castle&quot;/&gt; and &lt;paramref name=&quot;enPassant&quot;/&gt; properties for the new position</a>
+<a name="ln2565">    /// &lt;/summary&gt;</a>
+<a name="ln2566">    /// &lt;param name=&quot;fenSb&quot;&gt;Result of &lt;see cref=&quot;UpdateFirstPartOfFEN(Position, int, int, int)&quot;/&gt;&lt;/param&gt;</a>
+<a name="ln2567">    /// &lt;param name=&quot;side&quot;&gt;Update &lt;see cref=&quot;Position.Side&quot;/&gt;&lt;/param&gt;</a>
+<a name="ln2568">    /// &lt;param name=&quot;castle&quot;&gt;Updated &lt;see cref=&quot;Position.Castle&quot;/&gt;&lt;/param&gt;</a>
+<a name="ln2569">    /// &lt;param name=&quot;enPassant&quot;&gt;Updated &lt;see cref=&quot;Position.EnPassant&quot;/&gt;&lt;/param&gt;</a>
+<a name="ln2570">    public static string UpdateSecondPartOfFEN(StringBuilder fenSb, Side side, int castle, BoardSquare enPassant)</a>
+<a name="ln2571">    {</a>
+<a name="ln2572">        fenSb.Append(' ');</a>
+<a name="ln2573">        fenSb.Append(side == Side.White ? 'w' : 'b');</a>
+<a name="ln2574"> </a>
+<a name="ln2575">        fenSb.Append(' ');</a>
+<a name="ln2576">        var length = fenSb.Length;</a>
+<a name="ln2577"> </a>
+<a name="ln2578">        if ((castle &amp; (int)CastlingRights.WK) != default)</a>
+<a name="ln2579">        {</a>
+<a name="ln2580">            fenSb.Append('K');</a>
+<a name="ln2581">        }</a>
+<a name="ln2582">        if ((castle &amp; (int)CastlingRights.WQ) != default)</a>
+<a name="ln2583">        {</a>
+<a name="ln2584">            fenSb.Append('Q');</a>
+<a name="ln2585">        }</a>
+<a name="ln2586">        if ((castle &amp; (int)CastlingRights.BK) != default)</a>
+<a name="ln2587">        {</a>
+<a name="ln2588">            fenSb.Append('k');</a>
+<a name="ln2589">        }</a>
+<a name="ln2590">        if ((castle &amp; (int)CastlingRights.BQ) != default)</a>
+<a name="ln2591">        {</a>
+<a name="ln2592">            fenSb.Append('q');</a>
+<a name="ln2593">        }</a>
+<a name="ln2594"> </a>
+<a name="ln2595">        if (fenSb.Length == length)</a>
+<a name="ln2596">        {</a>
+<a name="ln2597">            fenSb.Append('-');</a>
+<a name="ln2598">        }</a>
+<a name="ln2599"> </a>
+<a name="ln2600">        fenSb.Append(' ');</a>
+<a name="ln2601"> </a>
+<a name="ln2602">        fenSb.Append(enPassant == BoardSquare.noSquare ? &quot;-&quot; : Constants.Coordinates[(int)enPassant]);</a>
+<a name="ln2603"> </a>
+<a name="ln2604">        fenSb.Append(&quot; 0 1&quot;);</a>
+<a name="ln2605"> </a>
+<a name="ln2606">        return fenSb.ToString();</a>
+<a name="ln2607">    }</a>
+<a name="ln2608">}</a>
+<a name="ln2609"> </a>
+<a name="ln2610">#pragma warning restore RCS1163, IDE0060 // Unused parameter.</a>
+</code></pre>
+<div class="balloon" rel="494"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3117/" target="_blank">V3117</a> Constructor parameter 'calculateFen' is not used.</p></div>
+<div class="balloon" rel="836"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3117/" target="_blank">V3117</a> Constructor parameter 'calculateFen' is not used.</p></div>
+<div class="balloon" rel="1182"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3117/" target="_blank">V3117</a> Constructor parameter 'calculateFen' is not used.</p></div>
+<div class="balloon" rel="1528"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3117/" target="_blank">V3117</a> Constructor parameter 'calculateFen' is not used.</p></div>
+<div class="balloon" rel="1874"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3117/" target="_blank">V3117</a> Constructor parameter 'calculateFen' is not used.</p></div>
+<link rel="stylesheet" href="highlight.css">
+<script src="highlight.pack.js"></script>
+<script src="highlightjs-line-numbers.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script>hljs.initLineNumbersOnLoad();</script>
+<script>
+  $(document).ready(function() {
+      $('.balloon').each(function () {
+          var bl = $(this);
+          var line = bl.attr('rel');
+          var text = $('a[name="ln'+line+'"]').text();
+
+          var space_count = 0;
+          for(var i = 0; i<text.length; i++){
+              var char = text[i];
+              if((char !== ' ')&&(char !== '\t'))break;
+              if(char === '\t')space_count++;
+              space_count++;
+          }
+
+          bl.css('margin-left', space_count*8);
+          $('a[name="ln'+line+'"]').after(bl);
+      });
+
+      window.location = window.location;
+  });
+</script>
+</body>
+</html>

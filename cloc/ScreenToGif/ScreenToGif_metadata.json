@@ -1,0 +1,79 @@
+{"header" : {
+  "cloc_url"           : "github.com/AlDanial/cloc",
+  "cloc_version"       : "2.04",
+  "elapsed_seconds"    : 2.50995016098022,
+  "n_files"            : 976,
+  "n_lines"            : 345283,
+  "files_per_second"   : 388.852342637289,
+  "lines_per_second"   : 137565.679736507,
+  "report_file"        : "C:\\Users\\dimoninbirsk\\source\\thesis\\cloc\\ScreenToGif\\metadata.json"},
+"JSON" :{
+  "nFiles": 37,
+  "blank": 0,
+  "comment": 0,
+  "code": 129565},
+"C#" :{
+  "nFiles": 731,
+  "blank": 27245,
+  "comment": 12455,
+  "code": 88504},
+"XAML" :{
+  "nFiles": 107,
+  "blank": 7702,
+  "comment": 7260,
+  "code": 64491},
+"XML" :{
+  "nFiles": 37,
+  "blank": 12,
+  "comment": 51,
+  "code": 3580},
+"Text" :{
+  "nFiles": 25,
+  "blank": 15,
+  "comment": 0,
+  "code": 1682},
+"Properties" :{
+  "nFiles": 1,
+  "blank": 17,
+  "comment": 0,
+  "code": 872},
+"MSBuild script" :{
+  "nFiles": 7,
+  "blank": 0,
+  "comment": 1,
+  "code": 465},
+"INI" :{
+  "nFiles": 10,
+  "blank": 47,
+  "comment": 0,
+  "code": 408},
+"Markdown" :{
+  "nFiles": 8,
+  "blank": 62,
+  "comment": 0,
+  "code": 226},
+"Visual Studio Solution" :{
+  "nFiles": 1,
+  "blank": 0,
+  "comment": 1,
+  "code": 157},
+"C# Generated" :{
+  "nFiles": 9,
+  "blank": 46,
+  "comment": 122,
+  "code": 135},
+"CSS" :{
+  "nFiles": 1,
+  "blank": 18,
+  "comment": 2,
+  "code": 99},
+"YAML" :{
+  "nFiles": 2,
+  "blank": 7,
+  "comment": 11,
+  "code": 25},
+"SUM": {
+  "blank": 35171,
+  "comment": 19903,
+  "code": 290209,
+  "nFiles": 976} }

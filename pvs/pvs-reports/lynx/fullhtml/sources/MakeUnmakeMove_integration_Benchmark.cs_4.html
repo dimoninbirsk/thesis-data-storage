@@ -1,0 +1,1831 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>MakeUnmakeMove_integration_Benchmark.cs</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <script src="../jquery-3.5.1.min.js"></script>
+</head>
+<body>
+<pre><code class = "cs">
+<a name="ln1">﻿/*</a>
+<a name="ln2"> * Not clear results in terms of what's better time-wise, it depends on os and position</a>
+<a name="ln3"> *</a>
+<a name="ln4"> *  Windows: 10m 26s</a>
+<a name="ln5"> *</a>
+<a name="ln6"> *  BenchmarkDotNet v0.13.7, Windows 10 (10.0.20348.1850) (Hyper-V)</a>
+<a name="ln7"> *  Intel Xeon Platinum 8272CL CPU 2.60GHz, 1 CPU, 2 logical and 2 physical cores</a>
+<a name="ln8"> *  .NET SDK 8.0.100-preview.6.23330.14</a>
+<a name="ln9"> *    [Host]     : .NET 8.0.0 (8.0.23.32907), X64 RyuJIT AVX2</a>
+<a name="ln10"> *    DefaultJob : .NET 8.0.0 (8.0.23.32907), X64 RyuJIT AVX2</a>
+<a name="ln11"> *</a>
+<a name="ln12"> *  |                   Method |                 data |       Mean |     Error |    StdDev | Ratio | RatioSD |       Gen0 |      Gen1 |  Allocated | Alloc Ratio |</a>
+<a name="ln13"> *  |------------------------- |--------------------- |-----------:|----------:|----------:|------:|--------:|-----------:|----------:|-----------:|------------:|</a>
+<a name="ln14"> *  |              NewPosition | (2K2r(...)1, 6) [38] | 505.081 ms | 7.1977 ms | 6.7328 ms |  1.00 |    0.00 | 58000.0000 | 1000.0000 | 1042.91 MB |        1.00 |</a>
+<a name="ln15"> *  |  MakeUnmakeMove_Original | (2K2r(...)1, 6) [38] | 527.837 ms | 1.6840 ms | 1.5752 ms |  1.05 |    0.02 | 16000.0000 |         - |  293.38 MB |        0.28 |</a>
+<a name="ln16"> *  | MakeUnmakeMove_AllocBase | (2K2r(...)1, 6) [38] | ~~~~~~~ ms | 2.8088 ms | 2.6273 ms |  0.54 |    0.01 | 23000.0000 |         - |  411.23 MB |        0.39 |</a>
+<a name="ln17"> *  |   MakeUnmakeMove_PassOut | (2K2r(...)1, 6) [38] | 498.417 ms | 1.2868 ms | 1.1407 ms |  0.99 |    0.01 | 16000.0000 |         - |  293.38 MB |        0.28 |</a>
+<a name="ln18"> *  |   MakeUnmakeMove_PassRef | (2K2r(...)1, 6) [38] | 499.637 ms | 1.2777 ms | 1.1951 ms |  0.99 |    0.01 | 16000.0000 |         - |  293.38 MB |        0.28 |</a>
+<a name="ln19"> *  |                          |                      |            |           |           |       |         |            |           |            |             |</a>
+<a name="ln20"> *  |              NewPosition | (3K4/(...)1, 6) [38] | 511.377 ms | 9.6738 ms | 9.9343 ms |  1.00 |    0.00 | 58000.0000 | 1000.0000 | 1042.91 MB |        1.00 |</a>
+<a name="ln21"> *  |  MakeUnmakeMove_Original | (3K4/(...)1, 6) [38] | 518.529 ms | 2.1296 ms | 1.9920 ms |  1.01 |    0.02 | 16000.0000 |         - |  293.38 MB |        0.28 |</a>
+<a name="ln22"> *  | MakeUnmakeMove_AllocBase | (3K4/(...)1, 6) [38] | ~~~~~~~ ms | 2.7038 ms | 2.5291 ms |  0.51 |    0.01 | 23000.0000 |         - |  411.23 MB |        0.39 |</a>
+<a name="ln23"> *  |   MakeUnmakeMove_PassOut | (3K4/(...)1, 6) [38] | 498.936 ms | 1.2613 ms | 1.1181 ms |  0.97 |    0.02 | 16000.0000 |         - |  293.38 MB |        0.28 |</a>
+<a name="ln24"> *  |   MakeUnmakeMove_PassRef | (3K4/(...)1, 6) [38] | 489.408 ms | 1.7012 ms | 1.5913 ms |  0.96 |    0.02 | 16000.0000 |         - |  293.38 MB |        0.28 |</a>
+<a name="ln25"> *  |                          |                      |            |           |           |       |         |            |           |            |             |</a>
+<a name="ln26"> *  |              NewPosition | (8/p7(...)-, 6) [37] |  18.426 ms | 0.2205 ms | 0.2063 ms |  1.00 |    0.00 |  2343.7500 |   31.2500 |   41.91 MB |        1.00 |</a>
+<a name="ln27"> *  |  MakeUnmakeMove_Original | (8/p7(...)-, 6) [37] |  17.618 ms | 0.0497 ms | 0.0388 ms |  0.96 |    0.01 |   937.5000 |         - |   16.72 MB |        0.40 |</a>
+<a name="ln28"> *  | MakeUnmakeMove_AllocBase | (8/p7(...)-, 6) [37] |  ~~~~~~ ms | 0.1590 ms | 0.1561 ms |  0.45 |    0.01 |  1125.0000 |   15.6250 |   20.05 MB |        0.48 |</a>
+<a name="ln29"> *  |   MakeUnmakeMove_PassOut | (8/p7(...)-, 6) [37] |  18.425 ms | 0.1074 ms | 0.1004 ms |  1.00 |    0.01 |   937.5000 |         - |   16.72 MB |        0.40 |</a>
+<a name="ln30"> *  |   MakeUnmakeMove_PassRef | (8/p7(...)-, 6) [37] |  17.971 ms | 0.1246 ms | 0.1166 ms |  0.98 |    0.01 |   937.5000 |         - |   16.72 MB |        0.40 |</a>
+<a name="ln31"> *  |                          |                      |            |           |           |       |         |            |           |            |             |</a>
+<a name="ln32"> *  |              NewPosition | (r3k2(...)1, 4) [73] | 523.953 ms | 7.3117 ms | 6.8394 ms |  1.00 |    0.00 | 43000.0000 |         - |  782.46 MB |        1.00 |</a>
+<a name="ln33"> *  |  MakeUnmakeMove_Original | (r3k2(...)1, 4) [73] | 490.636 ms | 1.3682 ms | 1.2798 ms |  0.94 |    0.01 |  5000.0000 |         - |  102.19 MB |        0.13 |</a>
+<a name="ln34"> *  | MakeUnmakeMove_AllocBase | (r3k2(...)1, 4) [73] | ~~~~~~~ ms | 1.0410 ms | 0.9738 ms |  0.45 |    0.01 |  6333.3333 |         - |  115.47 MB |        0.15 |</a>
+<a name="ln35"> *  |   MakeUnmakeMove_PassOut | (r3k2(...)1, 4) [73] | 527.345 ms | 1.2952 ms | 1.0815 ms |  1.01 |    0.01 |  5000.0000 |         - |  102.19 MB |        0.13 |</a>
+<a name="ln36"> *  |   MakeUnmakeMove_PassRef | (r3k2(...)1, 4) [73] | 495.030 ms | 0.7315 ms | 0.6843 ms |  0.94 |    0.01 |  5000.0000 |         - |  102.19 MB |        0.13 |</a>
+<a name="ln37"> *  |                          |                      |            |           |           |       |         |            |           |            |             |</a>
+<a name="ln38"> *  |              NewPosition | (r4rk(...)0, 4) [77] | 440.616 ms | 4.0982 ms | 3.8334 ms |  1.00 |    0.00 | 41000.0000 |         - |  747.62 MB |        1.00 |</a>
+<a name="ln39"> *  |  MakeUnmakeMove_Original | (r4rk(...)0, 4) [77] | 427.875 ms | 0.6081 ms | 0.5688 ms |  0.97 |    0.01 |  5000.0000 |         - |   94.08 MB |        0.13 |</a>
+<a name="ln40"> *  | MakeUnmakeMove_AllocBase | (r4rk(...)0, 4) [77] | ~~~~~~~ ms | 0.3270 ms | 0.3059 ms |  0.41 |    0.00 |  5666.6667 |         - |  101.73 MB |        0.14 |</a>
+<a name="ln41"> *  |   MakeUnmakeMove_PassOut | (r4rk(...)0, 4) [77] | 434.955 ms | 1.0937 ms | 1.0230 ms |  0.99 |    0.01 |  5000.0000 |         - |   94.08 MB |        0.13 |</a>
+<a name="ln42"> *  |   MakeUnmakeMove_PassRef | (r4rk(...)0, 4) [77] | 406.970 ms | 0.6673 ms | 0.5210 ms |  0.92 |    0.01 |  5000.0000 |         - |   94.08 MB |        0.13 |</a>
+<a name="ln43"> *  |                          |                      |            |           |           |       |         |            |           |            |             |</a>
+<a name="ln44"> *  |              NewPosition | (rnbq(...)1, 4) [61] |  25.436 ms | 0.1450 ms | 0.1356 ms |  1.00 |    0.00 |  2375.0000 |   31.2500 |   42.71 MB |        1.00 |</a>
+<a name="ln45"> *  |  MakeUnmakeMove_Original | (rnbq(...)1, 4) [61] |  25.403 ms | 0.0621 ms | 0.0581 ms |  1.00 |    0.01 |   531.2500 |         - |    9.54 MB |        0.22 |</a>
+<a name="ln46"> *  | MakeUnmakeMove_AllocBase | (rnbq(...)1, 4) [61] | ~~~~~~~ ms | 0.0362 ms | 0.0302 ms |  0.33 |    0.00 |   468.7500 |         - |    8.61 MB |        0.20 |</a>
+<a name="ln47"> *  |   MakeUnmakeMove_PassOut | (rnbq(...)1, 4) [61] |  28.147 ms | 0.0858 ms | 0.0760 ms |  1.11 |    0.01 |   531.2500 |         - |    9.54 MB |        0.22 |</a>
+<a name="ln48"> *  |   MakeUnmakeMove_PassRef | (rnbq(...)1, 4) [61] |  28.532 ms | 0.0633 ms | 0.0562 ms |  1.12 |    0.01 |   531.2500 |         - |    9.54 MB |        0.22 |</a>
+<a name="ln49"> *</a>
+<a name="ln50"> *  Macos: 15m 52s</a>
+<a name="ln51"> *</a>
+<a name="ln52"> *  BenchmarkDotNet v0.13.7, macOS Monterey 12.6.7 (21G651) [Darwin 21.6.0]</a>
+<a name="ln53"> *  Intel Xeon CPU E5-1650 v2 3.50GHz (Max: 3.34GHz), 1 CPU, 3 logical and 3 physical cores</a>
+<a name="ln54"> *  .NET SDK 8.0.100-preview.6.23330.14</a>
+<a name="ln55"> *    [Host]     : .NET 8.0.0 (8.0.23.32907), X64 RyuJIT AVX</a>
+<a name="ln56"> *    DefaultJob : .NET 8.0.0 (8.0.23.32907), X64 RyuJIT AVX</a>
+<a name="ln57"> *</a>
+<a name="ln58"> *  |                   Method |                 data |       Mean |      Error |     StdDev |     Median | Ratio | RatioSD |        Gen0 |      Gen1 |  Allocated | Alloc Ratio |</a>
+<a name="ln59"> *  |------------------------- |--------------------- |-----------:|-----------:|-----------:|-----------:|------:|--------:|------------:|----------:|-----------:|------------:|</a>
+<a name="ln60"> *  |              NewPosition | (2K2r(...)1, 6) [38] | 554.729 ms | 16.2321 ms | 46.8332 ms | 542.447 ms |  1.00 |    0.00 | 174000.0000 | 2000.0000 | 1042.91 MB |        1.00 |</a>
+<a name="ln61"> *  |  MakeUnmakeMove_Original | (2K2r(...)1, 6) [38] | 672.669 ms | 32.2980 ms | 94.7243 ms | 648.478 ms |  1.22 |    0.21 |  49000.0000 |         - |  293.38 MB |        0.28 |  MakeUnmake worse!!</a>
+<a name="ln62"> *  | MakeUnmakeMove_AllocBase | (2K2r(...)1, 6) [38] | ~~~~~~~ ms |  2.4888 ms |  2.0783 ms | 228.523 ms |  0.40 |    0.04 |  68500.0000 |  500.0000 |  411.23 MB |        0.39 |</a>
+<a name="ln63"> *  |   MakeUnmakeMove_PassOut | (2K2r(...)1, 6) [38] | 640.642 ms |  6.8037 ms |  6.3642 ms | 639.964 ms |  1.13 |    0.11 |  49000.0000 |         - |  293.38 MB |        0.28 |</a>
+<a name="ln64"> *  |   MakeUnmakeMove_PassRef | (2K2r(...)1, 6) [38] | 603.487 ms |  7.5206 ms |  6.6668 ms | 601.619 ms |  1.06 |    0.11 |  49000.0000 |         - |  293.38 MB |        0.28 |</a>
+<a name="ln65"> *  |                          |                      |            |            |            |            |       |         |             |           |            |             |</a>
+<a name="ln66"> *  |              NewPosition | (3K4/(...)1, 6) [38] | 499.420 ms |  9.8181 ms | 14.3913 ms | 495.514 ms |  1.00 |    0.00 | 174000.0000 | 2000.0000 | 1042.91 MB |        1.00 |</a>
+<a name="ln67"> *  |  MakeUnmakeMove_Original | (3K4/(...)1, 6) [38] | 591.564 ms |  2.6034 ms |  2.1740 ms | 591.801 ms |  1.18 |    0.04 |  49000.0000 |         - |  293.38 MB |        0.28 |  MakeUnmake worse!!</a>
+<a name="ln68"> *  | MakeUnmakeMove_AllocBase | (3K4/(...)1, 6) [38] | ~~~~~~~ ms |  3.8545 ms |  5.2760 ms | 222.555 ms |  0.45 |    0.01 |  68666.6667 |  666.6667 |  411.23 MB |        0.39 |</a>
+<a name="ln69"> *  |   MakeUnmakeMove_PassOut | (3K4/(...)1, 6) [38] | 626.900 ms | 11.2961 ms | 10.5663 ms | 623.760 ms |  1.25 |    0.05 |  49000.0000 |         - |  293.38 MB |        0.28 |</a>
+<a name="ln70"> *  |   MakeUnmakeMove_PassRef | (3K4/(...)1, 6) [38] | 611.374 ms |  5.3026 ms |  4.4279 ms | 611.434 ms |  1.22 |    0.04 |  49000.0000 |         - |  293.38 MB |        0.28 |</a>
+<a name="ln71"> *  |                          |                      |            |            |            |            |       |         |             |           |            |             |</a>
+<a name="ln72"> *  |              NewPosition | (8/p7(...)-, 6) [37] |  21.585 ms |  0.4289 ms |  1.0358 ms |  21.254 ms |  1.00 |    0.00 |   7000.0000 |  125.0000 |   41.91 MB |        1.00 |</a>
+<a name="ln73"> *  |  MakeUnmakeMove_Original | (8/p7(...)-, 6) [37] |  20.890 ms |  0.4154 ms |  0.5402 ms |  20.652 ms |  0.98 |    0.04 |   2781.2500 |   31.2500 |   16.72 MB |        0.40 |</a>
+<a name="ln74"> *  | MakeUnmakeMove_AllocBase | (8/p7(...)-, 6) [37] |  ~~~~~~ ms |  0.1509 ms |  0.1614 ms |   7.765 ms |  0.36 |    0.02 |   3343.7500 |   46.8750 |   20.05 MB |        0.48 |</a>
+<a name="ln75"> *  |   MakeUnmakeMove_PassOut | (8/p7(...)-, 6) [37] |  22.490 ms |  0.4300 ms |  0.3590 ms |  22.381 ms |  1.04 |    0.05 |   2781.2500 |   31.2500 |   16.72 MB |        0.40 |</a>
+<a name="ln76"> *  |   MakeUnmakeMove_PassRef | (8/p7(...)-, 6) [37] |  23.021 ms |  0.1899 ms |  0.1586 ms |  22.994 ms |  1.06 |    0.05 |   2781.2500 |   31.2500 |   16.72 MB |        0.40 |</a>
+<a name="ln77"> *  |                          |                      |            |            |            |            |       |         |             |           |            |             |</a>
+<a name="ln78"> *  |              NewPosition | (r3k2(...)1, 4) [73] | 513.828 ms |  3.5809 ms |  3.1743 ms | 513.608 ms |  1.00 |    0.00 | 130000.0000 | 1000.0000 |  782.46 MB |        1.00 |</a>
+<a name="ln79"> *  |  MakeUnmakeMove_Original | (r3k2(...)1, 4) [73] | 504.889 ms |  2.6640 ms |  2.0799 ms | 505.221 ms |  0.98 |    0.01 |  17000.0000 |         - |  102.19 MB |        0.13 |</a>
+<a name="ln80"> *  | MakeUnmakeMove_AllocBase | (r3k2(...)1, 4) [73] | ~~~~~~~ ms |  4.2723 ms |  3.9963 ms | 216.646 ms |  0.43 |    0.01 |  19000.0000 |         - |  115.47 MB |        0.15 |</a>
+<a name="ln81"> *  |   MakeUnmakeMove_PassOut | (r3k2(...)1, 4) [73] | 645.425 ms |  7.3456 ms |  6.1339 ms | 643.985 ms |  1.26 |    0.02 |  17000.0000 |         - |  102.19 MB |        0.13 |  Ref and out way worse</a>
+<a name="ln82"> *  |   MakeUnmakeMove_PassRef | (r3k2(...)1, 4) [73] | 620.624 ms |  7.6333 ms |  6.3741 ms | 619.387 ms |  1.21 |    0.01 |  17000.0000 |         - |  102.19 MB |        0.13 |</a>
+<a name="ln83"> *  |                          |                      |            |            |            |            |       |         |             |           |            |             |</a>
+<a name="ln84"> *  |              NewPosition | (r4rk(...)0, 4) [77] | 424.438 ms |  6.7093 ms |  6.2759 ms | 423.493 ms |  1.00 |    0.00 | 124000.0000 | 1000.0000 |  747.62 MB |        1.00 |</a>
+<a name="ln85"> *  |  MakeUnmakeMove_Original | (r4rk(...)0, 4) [77] | 498.532 ms |  4.9346 ms |  4.1206 ms | 497.480 ms |  1.17 |    0.02 |  15000.0000 |         - |   94.08 MB |        0.13 |  MakeUnmake worse!!</a>
+<a name="ln86"> *  | MakeUnmakeMove_AllocBase | (r4rk(...)0, 4) [77] | ~~~~~~~ ms |  2.4405 ms |  2.1635 ms | 173.112 ms |  0.41 |    0.01 |  17000.0000 |         - |  101.73 MB |        0.14 |</a>
+<a name="ln87"> *  |   MakeUnmakeMove_PassOut | (r4rk(...)0, 4) [77] | 494.288 ms |  3.0732 ms |  2.3993 ms | 493.571 ms |  1.16 |    0.02 |  15000.0000 |         - |   94.08 MB |        0.13 |</a>
+<a name="ln88"> *  |   MakeUnmakeMove_PassRef | (r4rk(...)0, 4) [77] | 523.703 ms |  3.5379 ms |  2.9543 ms | 523.081 ms |  1.23 |    0.02 |  15000.0000 |         - |   94.08 MB |        0.13 |  ref worse</a>
+<a name="ln89"> *  |                          |                      |            |            |            |            |       |         |             |           |            |             |</a>
+<a name="ln90"> *  |              NewPosition | (rnbq(...)1, 4) [61] |  27.434 ms |  0.4791 ms |  0.4247 ms |  27.402 ms |  1.00 |    0.00 |   7125.0000 |   93.7500 |   42.71 MB |        1.00 |</a>
+<a name="ln91"> *  |  MakeUnmakeMove_Original | (rnbq(...)1, 4) [61] |  31.436 ms |  0.4706 ms |  0.3930 ms |  31.297 ms |  1.15 |    0.02 |   1562.5000 |         - |    9.54 MB |        0.22 |  MakeUnmake worse!!</a>
+<a name="ln92"> *  | MakeUnmakeMove_AllocBase | (rnbq(...)1, 4) [61] | ~~~~~~~ ms |  0.0572 ms |  0.0507 ms |   7.837 ms |  0.29 |    0.00 |   1437.5000 |   15.6250 |    8.61 MB |        0.20 |</a>
+<a name="ln93"> *  |   MakeUnmakeMove_PassOut | (rnbq(...)1, 4) [61] |  29.899 ms |  0.1640 ms |  0.1369 ms |  29.849 ms |  1.09 |    0.02 |   1593.7500 |         - |    9.54 MB |        0.22 |</a>
+<a name="ln94"> *  |   MakeUnmakeMove_PassRef | (rnbq(...)1, 4) [61] |  34.043 ms |  0.5202 ms |  0.4866 ms |  33.834 ms |  1.24 |    0.02 |   1533.3333 |         - |    9.54 MB |        0.22 |  ref worse</a>
+<a name="ln95"> *</a>
+<a name="ln96"> *</a>
+<a name="ln97"> * Ubuntu: 24min 36s</a>
+<a name="ln98"> *</a>
+<a name="ln99"> *  BenchmarkDotNet v0.13.7, Ubuntu 22.04.2 LTS (Jammy Jellyfish)</a>
+<a name="ln100"> *  Intel Xeon CPU E5-2673 v4 2.30GHz, 1 CPU, 2 logical and 2 physical cores</a>
+<a name="ln101"> *  .NET SDK 8.0.100-preview.6.23330.14</a>
+<a name="ln102"> *    [Host]     : .NET 8.0.0 (8.0.23.32907), X64 RyuJIT AVX2</a>
+<a name="ln103"> *    DefaultJob : .NET 8.0.0 (8.0.23.32907), X64 RyuJIT AVX2</a>
+<a name="ln104"> *</a>
+<a name="ln105"> *</a>
+<a name="ln106"> *  |                   Method |                 data |       Mean |      Error |     StdDev |     Median | Ratio | RatioSD |       Gen0 |    Gen1 |  Allocated | Alloc Ratio |</a>
+<a name="ln107"> *  |------------------------- |--------------------- |-----------:|-----------:|-----------:|-----------:|------:|--------:|-----------:|--------:|-----------:|------------:|</a>
+<a name="ln108"> *  |              NewPosition | (2K2r(...)1, 6) [38] | 555.085 ms | 15.8110 ms | 46.6192 ms | 553.541 ms |  1.00 |    0.00 | 41000.0000 |       - | 1042.91 MB |        1.00 |</a>
+<a name="ln109"> *  |  MakeUnmakeMove_Original | (2K2r(...)1, 6) [38] | 473.748 ms |  9.3788 ms | 21.3603 ms | 468.637 ms |  0.83 |    0.06 | 11000.0000 |       - |  293.38 MB |        0.28 | Original better</a>
+<a name="ln110"> *  | MakeUnmakeMove_AllocBase | (2K2r(...)1, 6) [38] | ~~~~~~~ ms |  4.6135 ms |  8.9983 ms | 228.217 ms |  0.41 |    0.03 | 16333.3333 |       - |  411.23 MB |        0.39 |</a>
+<a name="ln111"> *  |   MakeUnmakeMove_PassOut | (2K2r(...)1, 6) [38] | 604.758 ms | 21.3572 ms | 62.9722 ms | 626.625 ms |  1.10 |    0.14 | 11000.0000 |       - |  293.38 MB |        0.28 |</a>
+<a name="ln112"> *  |   MakeUnmakeMove_PassRef | (2K2r(...)1, 6) [38] | 512.277 ms | 16.7119 ms | 49.2754 ms | 495.644 ms |  0.93 |    0.15 | 11000.0000 |       - |  293.38 MB |        0.28 |</a>
+<a name="ln113"> *  |                          |                      |            |            |            |            |       |         |            |         |            |             |</a>
+<a name="ln114"> *  |              NewPosition | (3K4/(...)1, 6) [38] | 543.778 ms | 15.0299 ms | 43.8429 ms | 538.750 ms |  1.00 |    0.00 | 41000.0000 |       - | 1042.91 MB |        1.00 |</a>
+<a name="ln115"> *  |  MakeUnmakeMove_Original | (3K4/(...)1, 6) [38] | 487.426 ms |  9.7106 ms | 16.7503 ms | 486.213 ms |  0.87 |    0.09 | 11000.0000 |       - |  293.38 MB |        0.28 |</a>
+<a name="ln116"> *  | MakeUnmakeMove_AllocBase | (3K4/(...)1, 6) [38] | ~~~~~~~ ms |  4.9895 ms | 12.4256 ms | 249.633 ms |  0.46 |    0.05 | 16333.3333 |       - |  411.23 MB |        0.39 |</a>
+<a name="ln117"> *  |   MakeUnmakeMove_PassOut | (3K4/(...)1, 6) [38] | 486.563 ms |  9.0119 ms | 18.4090 ms | 486.559 ms |  0.90 |    0.08 | 11000.0000 |       - |  293.38 MB |        0.28 |</a>
+<a name="ln118"> *  |   MakeUnmakeMove_PassRef | (3K4/(...)1, 6) [38] | 481.843 ms |  8.7130 ms | 13.5651 ms | 482.082 ms |  0.85 |    0.07 | 11000.0000 |       - |  293.38 MB |        0.28 |</a>
+<a name="ln119"> *  |                          |                      |            |            |            |            |       |         |            |         |            |             |</a>
+<a name="ln120"> *  |              NewPosition | (8/p7(...)-, 6) [37] |  18.649 ms |  0.3700 ms |  1.0190 ms |  18.488 ms |  1.00 |    0.00 |  1656.2500 | 31.2500 |   41.91 MB |        1.00 |</a>
+<a name="ln121"> *  |  MakeUnmakeMove_Original | (8/p7(...)-, 6) [37] |  17.304 ms |  0.3350 ms |  0.5410 ms |  17.306 ms |  0.92 |    0.06 |   656.2500 |       - |   16.72 MB |        0.40 |</a>
+<a name="ln122"> *  | MakeUnmakeMove_AllocBase | (8/p7(...)-, 6) [37] | ~~~~~~~ ms |  0.1654 ms |  0.4694 ms |   7.850 ms |  0.43 |    0.03 |   796.8750 | 15.6250 |   20.05 MB |        0.48 |</a>
+<a name="ln123"> *  |   MakeUnmakeMove_PassOut | (8/p7(...)-, 6) [37] |  19.250 ms |  0.4507 ms |  1.3289 ms |  19.201 ms |  1.03 |    0.09 |   656.2500 |       - |   16.72 MB |        0.40 |</a>
+<a name="ln124"> *  |   MakeUnmakeMove_PassRef | (8/p7(...)-, 6) [37] |  18.702 ms |  0.3731 ms |  0.6234 ms |  18.722 ms |  0.99 |    0.05 |   656.2500 |       - |   16.72 MB |        0.40 |</a>
+<a name="ln125"> *  |                          |                      |            |            |            |            |       |         |            |         |            |             |</a>
+<a name="ln126"> *  |              NewPosition | (r3k2(...)1, 4) [73] | 537.770 ms | 11.6499 ms | 34.1672 ms | 528.499 ms |  1.00 |    0.00 | 31000.0000 |       - |  782.46 MB |        1.00 |</a>
+<a name="ln127"> *  |  MakeUnmakeMove_Original | (r3k2(...)1, 4) [73] | 522.154 ms | 10.4351 ms | 12.4222 ms | 519.825 ms |  0.92 |    0.07 |  4000.0000 |       - |  102.19 MB |        0.13 |</a>
+<a name="ln128"> *  | MakeUnmakeMove_AllocBase | (r3k2(...)1, 4) [73] | ~~~~~~~ ms |  4.5536 ms | 11.5904 ms | 231.478 ms |  0.43 |    0.04 |  4333.3333 |       - |  115.47 MB |        0.15 |</a>
+<a name="ln129"> *  |   MakeUnmakeMove_PassOut | (r3k2(...)1, 4) [73] | 500.713 ms | 10.7942 ms | 31.3159 ms | 493.367 ms |  0.93 |    0.07 |  4000.0000 |       - |  102.19 MB |        0.13 |</a>
+<a name="ln130"> *  |   MakeUnmakeMove_PassRef | (r3k2(...)1, 4) [73] | 635.080 ms | 12.6013 ms | 11.7873 ms | 632.577 ms |  1.11 |    0.07 |  4000.0000 |       - |  102.19 MB |        0.13 | ref worse</a>
+<a name="ln131"> *  |                          |                      |            |            |            |            |       |         |            |         |            |             |</a>
+<a name="ln132"> *  |              NewPosition | (r4rk(...)0, 4) [77] | 411.582 ms |  8.1631 ms | 19.2413 ms | 408.568 ms |  1.00 |    0.00 | 29000.0000 |       - |  747.62 MB |        1.00 |</a>
+<a name="ln133"> *  |  MakeUnmakeMove_Original | (r4rk(...)0, 4) [77] | 410.471 ms |  8.2078 ms | 12.7785 ms | 408.010 ms |  1.00 |    0.05 |  3000.0000 |       - |   94.08 MB |        0.13 |</a>
+<a name="ln134"> *  | MakeUnmakeMove_AllocBase | (r4rk(...)0, 4) [77] | ~~~~~~~ ms |  3.5925 ms |  4.6713 ms | 185.756 ms |  0.45 |    0.03 |  4000.0000 |       - |  101.73 MB |        0.14 |</a>
+<a name="ln135"> *  |   MakeUnmakeMove_PassOut | (r4rk(...)0, 4) [77] | 414.260 ms |  6.4043 ms |  6.8525 ms | 411.839 ms |  1.01 |    0.05 |  3000.0000 |       - |   94.08 MB |        0.13 |</a>
+<a name="ln136"> *  |   MakeUnmakeMove_PassRef | (r4rk(...)0, 4) [77] | 367.889 ms |  7.3063 ms |  8.6977 ms | 366.182 ms |  0.89 |    0.04 |  3000.0000 |       - |   94.08 MB |        0.13 | ref better</a>
+<a name="ln137"> *  |                          |                      |            |            |            |            |       |         |            |         |            |             |</a>
+<a name="ln138"> *  |              NewPosition | (rnbq(...)1, 4) [61] |  27.921 ms |  0.5829 ms |  1.6630 ms |  27.772 ms |  1.00 |    0.00 |  1687.5000 |       - |   42.71 MB |        1.00 |</a>
+<a name="ln139"> *  |  MakeUnmakeMove_Original | (rnbq(...)1, 4) [61] |  26.648 ms |  0.5312 ms |  0.8728 ms |  26.380 ms |  0.96 |    0.06 |   375.0000 |       - |    9.54 MB |        0.22 |</a>
+<a name="ln140"> *  | MakeUnmakeMove_AllocBase | (rnbq(...)1, 4) [61] | ~~~~~~~ ms |  0.1581 ms |  0.4052 ms |   7.838 ms |  0.28 |    0.02 |   343.7500 |       - |    8.61 MB |        0.20 |</a>
+<a name="ln141"> *  |   MakeUnmakeMove_PassOut | (rnbq(...)1, 4) [61] |  28.143 ms |  0.5510 ms |  0.6969 ms |  28.054 ms |  1.00 |    0.05 |   375.0000 |       - |    9.54 MB |        0.22 |</a>
+<a name="ln142"> *  |   MakeUnmakeMove_PassRef | (rnbq(...)1, 4) [61] |  27.016 ms |  0.5351 ms |  0.8940 ms |  26.693 ms |  0.97 |    0.05 |   375.0000 |       - |    9.54 MB |        0.22 |</a>
+<a name="ln143"> */</a>
+<a name="ln144"> </a>
+<a name="ln145">#pragma warning disable S101, S1854 // Types should be named in PascalCase</a>
+<a name="ln146">using BenchmarkDotNet.Attributes;</a>
+<a name="ln147">using Lynx.Model;</a>
+<a name="ln148">using System.Runtime.CompilerServices;</a>
+<a name="ln149"> </a>
+<a name="ln150">namespace Lynx.Benchmark;</a>
+<a name="ln151">public class MakeUnmakeMove_integration_Benchmark : BaseBenchmark</a>
+<a name="ln152">{</a>
+<a name="ln153">    public static IEnumerable&lt;(string, int)&gt; Data =&gt;</a>
+<a name="ln154">    [</a>
+<a name="ln155">        (Constants.InitialPositionFEN, 4),</a>
+<a name="ln156">        (Constants.TrickyTestPositionFEN, 4),</a>
+<a name="ln157">        (&quot;r4rk1/1pp1qppp/p1np1n2/2b1p1B1/2B1P1b1/P1NP1N2/1PP1QPPP/R4RK1 w - - 0 10&quot;, 4),</a>
+<a name="ln158">        (&quot;3K4/8/8/8/8/8/4p3/2k2R2 b - - 0 1&quot;, 6),</a>
+<a name="ln159">        (&quot;2K2r2/4P3/8/8/8/8/8/3k4 w - - 0 1&quot;, 6),</a>
+<a name="ln160">        (&quot;8/p7/8/1P6/K1k3p1/6P1/7P/8 w - -&quot;, 6)</a>
+<a name="ln161">    ];</a>
+<a name="ln162"> </a>
+<a name="ln163">    [Benchmark(Baseline = true)]</a>
+<a name="ln164">    [ArgumentsSource(nameof(Data))]</a>
+<a name="ln165">    public long NewPosition((string Fen, int Depth) data) =&gt; MakeMovePerft.ResultsImpl_Original(new(data.Fen), data.Depth, default);</a>
+<a name="ln166"> </a>
+<a name="ln167">    [Benchmark]</a>
+<a name="ln168">    [ArgumentsSource(nameof(Data))]</a>
+<a name="ln169">    public long MakeUnmakeMove_Original((string Fen, int Depth) data) =&gt; MakeMovePerft.ResultsImpl_MakeUnmakeMove(new(data.Fen), data.Depth, default);</a>
+<a name="ln170"> </a>
+<a name="ln171">    [Benchmark]</a>
+<a name="ln172">    [ArgumentsSource(nameof(Data))]</a>
+<a name="ln173">    public long MakeUnmakeMove_AllocBase((string Fen, int Depth) data) =&gt; MakeMovePerft.ResultsImpl_AllocBase(new(data.Fen), data.Depth, default);</a>
+<a name="ln174"> </a>
+<a name="ln175">    [Benchmark]</a>
+<a name="ln176">    [ArgumentsSource(nameof(Data))]</a>
+<a name="ln177">    public long MakeUnmakeMove_PassOut((string Fen, int Depth) data) =&gt; MakeMovePerft.ResultsImpl_MakeUnmakeMove_PassOut(new(data.Fen), data.Depth, default);</a>
+<a name="ln178"> </a>
+<a name="ln179">    [Benchmark]</a>
+<a name="ln180">    [ArgumentsSource(nameof(Data))]</a>
+<a name="ln181">    public long MakeUnmakeMove_PassRef((string Fen, int Depth) data) =&gt; MakeMovePerft.ResultsImpl_MakeUnmakeMove_PassRef(new(data.Fen), data.Depth, default);</a>
+<a name="ln182"> </a>
+<a name="ln183">    public static class MakeMovePerft</a>
+<a name="ln184">    {</a>
+<a name="ln185">        public static long ResultsImpl_Original(MakeMovePosition position, int depth, long nodes)</a>
+<a name="ln186">        {</a>
+<a name="ln187">            if (depth != 0)</a>
+<a name="ln188">            {</a>
+<a name="ln189">                foreach (var move in MakeMoveMoveGenerator.GenerateAllMoves(position))</a>
+<a name="ln190">                {</a>
+<a name="ln191">                    var newPosition = new MakeMovePosition(position, move);</a>
+<a name="ln192"> </a>
+<a name="ln193">                    if (newPosition.WasProduceByAValidMove())</a>
+<a name="ln194">                    {</a>
+<a name="ln195">                        nodes = ResultsImpl_Original(newPosition, depth - 1, nodes);</a>
+<a name="ln196">                    }</a>
+<a name="ln197">                }</a>
+<a name="ln198"> </a>
+<a name="ln199">                return nodes;</a>
+<a name="ln200">            }</a>
+<a name="ln201"> </a>
+<a name="ln202">            return ++nodes;</a>
+<a name="ln203">        }</a>
+<a name="ln204"> </a>
+<a name="ln205">        public static long ResultsImpl_AllocBase(MakeMovePosition position, int depth, long nodes)</a>
+<a name="ln206">        {</a>
+<a name="ln207">            if (depth != 0)</a>
+<a name="ln208">            {</a>
+<a name="ln209">#pragma warning disable S3267 // Loops should be simplified with &quot;LINQ&quot; expressions</a>
+<a name="ln210">                foreach (var move in MakeMoveMoveGenerator.GenerateAllMoves(position))</a>
+<a name="ln211">                {</a>
+<a name="ln212">                    if (position.WasProduceByAValidMove())</a>
+<a name="ln213">                    {</a>
+<a name="ln214">                        nodes = ResultsImpl_AllocBase(position, depth - 1, nodes);</a>
+<a name="ln215">                    }</a>
+<a name="ln216">                }</a>
+<a name="ln217">#pragma warning restore S3267 // Loops should be simplified with &quot;LINQ&quot; expressions</a>
+<a name="ln218"> </a>
+<a name="ln219">                return nodes;</a>
+<a name="ln220">            }</a>
+<a name="ln221"> </a>
+<a name="ln222">            return ++nodes;</a>
+<a name="ln223">        }</a>
+<a name="ln224"> </a>
+<a name="ln225">        public static long ResultsImpl_MakeUnmakeMove(MakeMovePosition position, int depth, long nodes)</a>
+<a name="ln226">        {</a>
+<a name="ln227">            if (depth != 0)</a>
+<a name="ln228">            {</a>
+<a name="ln229">                foreach (var move in MakeMoveMoveGenerator.GenerateAllMoves(position))</a>
+<a name="ln230">                {</a>
+<a name="ln231">                    //_gameStates.Push(position.MakeMove(move));</a>
+<a name="ln232">                    var state = position.MakeMove_Original(move);</a>
+<a name="ln233"> </a>
+<a name="ln234">                    if (position.WasProduceByAValidMove())</a>
+<a name="ln235">                    {</a>
+<a name="ln236">                        nodes = ResultsImpl_MakeUnmakeMove(position, depth - 1, nodes);</a>
+<a name="ln237">                    }</a>
+<a name="ln238">                    //position.UnmakeMove(move, _gameStates.Pop());</a>
+<a name="ln239">                    position.UnmakeMove_Original(move, state);</a>
+<a name="ln240">                }</a>
+<a name="ln241"> </a>
+<a name="ln242">                return nodes;</a>
+<a name="ln243">            }</a>
+<a name="ln244"> </a>
+<a name="ln245">            return ++nodes;</a>
+<a name="ln246">        }</a>
+<a name="ln247"> </a>
+<a name="ln248">        public static long ResultsImpl_MakeUnmakeMove_PassOut(MakeMovePosition position, int depth, long nodes)</a>
+<a name="ln249">        {</a>
+<a name="ln250">            if (depth != 0)</a>
+<a name="ln251">            {</a>
+<a name="ln252">                foreach (var move in MakeMoveMoveGenerator.GenerateAllMoves(position))</a>
+<a name="ln253">                {</a>
+<a name="ln254">                    //_gameStates.Push(position.MakeMove(move));</a>
+<a name="ln255">                    position.MakeMove_PassOut(move, out var state);</a>
+<a name="ln256"> </a>
+<a name="ln257">                    if (position.WasProduceByAValidMove())</a>
+<a name="ln258">                    {</a>
+<a name="ln259">                        nodes = ResultsImpl_MakeUnmakeMove_PassOut(position, depth - 1, nodes);</a>
+<a name="ln260">                    }</a>
+<a name="ln261">                    //position.UnmakeMove(move, _gameStates.Pop());</a>
+<a name="ln262">                    position.UnmakeMove_PassOut(move, state);</a>
+<a name="ln263">                }</a>
+<a name="ln264"> </a>
+<a name="ln265">                return nodes;</a>
+<a name="ln266">            }</a>
+<a name="ln267"> </a>
+<a name="ln268">            return ++nodes;</a>
+<a name="ln269">        }</a>
+<a name="ln270"> </a>
+<a name="ln271">        public static long ResultsImpl_MakeUnmakeMove_PassRef(MakeMovePosition position, int depth, long nodes)</a>
+<a name="ln272">        {</a>
+<a name="ln273">            if (depth != 0)</a>
+<a name="ln274">            {</a>
+<a name="ln275">                MakeMoveGameState_PassRef state = new();</a>
+<a name="ln276">                foreach (var move in MakeMoveMoveGenerator.GenerateAllMoves(position))</a>
+<a name="ln277">                {</a>
+<a name="ln278">                    //_gameStates.Push(position.MakeMove(move));</a>
+<a name="ln279">                    position.MakeMove_PassRef(move, ref state);</a>
+<a name="ln280"> </a>
+<a name="ln281">                    if (position.WasProduceByAValidMove())</a>
+<a name="ln282">                    {</a>
+<a name="ln283">                        nodes = ResultsImpl_MakeUnmakeMove_PassRef(position, depth - 1, nodes);</a>
+<a name="ln284">                    }</a>
+<a name="ln285">                    //position.UnmakeMove(move, _gameStates.Pop());</a>
+<a name="ln286">                    position.UnmakeMove_PassRef(move, state);</a>
+<a name="ln287">                }</a>
+<a name="ln288"> </a>
+<a name="ln289">                return nodes;</a>
+<a name="ln290">            }</a>
+<a name="ln291"> </a>
+<a name="ln292">            return ++nodes;</a>
+<a name="ln293">        }</a>
+<a name="ln294">    }</a>
+<a name="ln295"> </a>
+<a name="ln296">    public struct MakeMovePosition</a>
+<a name="ln297">    {</a>
+<a name="ln298">        public ulong UniqueIdentifier { get; private set; }</a>
+<a name="ln299"> </a>
+<a name="ln300">        public BitBoard[] PieceBitBoards { get; }</a>
+<a name="ln301"> </a>
+<a name="ln302">        public BitBoard[] OccupancyBitBoards { get; }</a>
+<a name="ln303"> </a>
+<a name="ln304">        public int[] Board { get; }</a>
+<a name="ln305"> </a>
+<a name="ln306">        public Side Side { get; private set; }</a>
+<a name="ln307"> </a>
+<a name="ln308">        public BoardSquare EnPassant { get; private set; }</a>
+<a name="ln309"> </a>
+<a name="ln310">        public byte Castle { get; private set; }</a>
+<a name="ln311"> </a>
+<a name="ln312">        public MakeMovePosition(string fen) : this(FENParser.ParseFEN(fen))</a>
+<a name="ln313">        {</a>
+<a name="ln314">        }</a>
+<a name="ln315"> </a>
+<a name="ln316">        public MakeMovePosition((BitBoard[] PieceBitBoards, BitBoard[] OccupancyBitBoards, int[] board, Side Side, byte Castle, BoardSquare EnPassant,</a>
+<a name="ln317">            int HalfMoveClock/*, int FullMoveCounter*/) parsedFEN)</a>
+<a name="ln318">        {</a>
+<a name="ln319">            PieceBitBoards = parsedFEN.PieceBitBoards;</a>
+<a name="ln320">            OccupancyBitBoards = parsedFEN.OccupancyBitBoards;</a>
+<a name="ln321">            Board = parsedFEN.board;</a>
+<a name="ln322">            Side = parsedFEN.Side;</a>
+<a name="ln323">            Castle = parsedFEN.Castle;</a>
+<a name="ln324">            EnPassant = parsedFEN.EnPassant;</a>
+<a name="ln325"> </a>
+<a name="ln326">            UniqueIdentifier = MakeMoveZobristTable.PositionHash(this);</a>
+<a name="ln327">        }</a>
+<a name="ln328"> </a>
+<a name="ln329">        /// &lt;summary&gt;</a>
+<a name="ln330">        /// Clone constructor</a>
+<a name="ln331">        /// &lt;/summary&gt;</a>
+<a name="ln332">        [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln333">        public MakeMovePosition(MakeMovePosition position)</a>
+<a name="ln334">        {</a>
+<a name="ln335">            UniqueIdentifier = position.UniqueIdentifier;</a>
+<a name="ln336">            PieceBitBoards = new BitBoard[12];</a>
+<a name="ln337">            Array.Copy(position.PieceBitBoards, PieceBitBoards, position.PieceBitBoards.Length);</a>
+<a name="ln338"> </a>
+<a name="ln339">            OccupancyBitBoards = new BitBoard[3];</a>
+<a name="ln340">            Array.Copy(position.OccupancyBitBoards, OccupancyBitBoards, position.OccupancyBitBoards.Length);</a>
+<a name="ln341"> </a>
+<a name="ln342">            Board = new int[64];</a>
+<a name="ln343">            Array.Copy(position.Board, Board, position.Board.Length);</a>
+<a name="ln344"> </a>
+<a name="ln345">            Side = position.Side;</a>
+<a name="ln346">            Castle = position.Castle;</a>
+<a name="ln347">            EnPassant = position.EnPassant;</a>
+<a name="ln348">        }</a>
+<a name="ln349"> </a>
+<a name="ln350">        /// &lt;summary&gt;</a>
+<a name="ln351">        /// Null moves constructor</a>
+<a name="ln352">        /// &lt;/summary&gt;</a>
+<a name="ln353">        [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln354">#pragma warning disable RCS1163, IDE0060 // Unused parameter.</a>
+<a name="ln355">        public MakeMovePosition(MakeMovePosition position, bool nullMove)</a>
+<a name="ln356">        {</a>
+<a name="ln357">            UniqueIdentifier = position.UniqueIdentifier;</a>
+<a name="ln358">            PieceBitBoards = new BitBoard[12];</a>
+<a name="ln359">            Array.Copy(position.PieceBitBoards, PieceBitBoards, position.PieceBitBoards.Length);</a>
+<a name="ln360"> </a>
+<a name="ln361">            OccupancyBitBoards = new BitBoard[3];</a>
+<a name="ln362">            Array.Copy(position.OccupancyBitBoards, OccupancyBitBoards, position.OccupancyBitBoards.Length);</a>
+<a name="ln363"> </a>
+<a name="ln364">            Board = new int[64];</a>
+<a name="ln365">            Array.Copy(position.Board, Board, position.Board.Length);</a>
+<a name="ln366"> </a>
+<a name="ln367">            Side = (Side)Utils.OppositeSide(position.Side);</a>
+<a name="ln368">            Castle = position.Castle;</a>
+<a name="ln369">            EnPassant = BoardSquare.noSquare;</a>
+<a name="ln370"> </a>
+<a name="ln371">            UniqueIdentifier ^=</a>
+<a name="ln372">                ZobristTable.SideHash()</a>
+<a name="ln373">                ^ ZobristTable.EnPassantHash((int)position.EnPassant);</a>
+<a name="ln374">        }</a>
+<a name="ln375"> </a>
+<a name="ln376">        [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln377">        public MakeMovePosition(MakeMovePosition position, Move move) : this(position)</a>
+<a name="ln378">        {</a>
+<a name="ln379">            var oldSide = Side;</a>
+<a name="ln380">            var offset = Utils.PieceOffset(oldSide);</a>
+<a name="ln381">            var oppositeSide = Utils.OppositeSide(oldSide);</a>
+<a name="ln382"> </a>
+<a name="ln383">            int sourceSquare = move.SourceSquare();</a>
+<a name="ln384">            int targetSquare = move.TargetSquare();</a>
+<a name="ln385">            int piece = move.Piece();</a>
+<a name="ln386">            int promotedPiece = move.PromotedPiece();</a>
+<a name="ln387"> </a>
+<a name="ln388">            var newPiece = piece;</a>
+<a name="ln389">            if (promotedPiece != default)</a>
+<a name="ln390">            {</a>
+<a name="ln391">                newPiece = promotedPiece;</a>
+<a name="ln392">            }</a>
+<a name="ln393"> </a>
+<a name="ln394">            EnPassant = BoardSquare.noSquare;</a>
+<a name="ln395"> </a>
+<a name="ln396">            PieceBitBoards[piece].PopBit(sourceSquare);</a>
+<a name="ln397">            OccupancyBitBoards[(int)Side].PopBit(sourceSquare);</a>
+<a name="ln398"> </a>
+<a name="ln399">            PieceBitBoards[newPiece].SetBit(targetSquare);</a>
+<a name="ln400">            OccupancyBitBoards[(int)Side].SetBit(targetSquare);</a>
+<a name="ln401"> </a>
+<a name="ln402">            UniqueIdentifier ^=</a>
+<a name="ln403">                ZobristTable.SideHash()</a>
+<a name="ln404">                ^ ZobristTable.PieceHash(sourceSquare, piece)</a>
+<a name="ln405">                ^ ZobristTable.PieceHash(targetSquare, newPiece)</a>
+<a name="ln406">                ^ ZobristTable.EnPassantHash((int)position.EnPassant)</a>
+<a name="ln407">                ^ ZobristTable.CastleHash(position.Castle);</a>
+<a name="ln408"> </a>
+<a name="ln409">            if (move.IsCapture())</a>
+<a name="ln410">            {</a>
+<a name="ln411">                var oppositeSideOffset = Utils.PieceOffset(oppositeSide);</a>
+<a name="ln412">                var oppositePawnIndex = (int)Piece.P + oppositeSideOffset;</a>
+<a name="ln413"> </a>
+<a name="ln414">                if (move.IsEnPassant())</a>
+<a name="ln415">                {</a>
+<a name="ln416">                    var capturedPawnSquare = Constants.EnPassantCaptureSquares[targetSquare];</a>
+<a name="ln417">                    Utils.Assert(PieceBitBoards[oppositePawnIndex].GetBit(capturedPawnSquare), $&quot;Expected {(Side)oppositeSide} pawn in {capturedPawnSquare}&quot;);</a>
+<a name="ln418"> </a>
+<a name="ln419">                    PieceBitBoards[oppositePawnIndex].PopBit(capturedPawnSquare);</a>
+<a name="ln420">                    OccupancyBitBoards[oppositeSide].PopBit(capturedPawnSquare);</a>
+<a name="ln421">                    UniqueIdentifier ^= ZobristTable.PieceHash(capturedPawnSquare, oppositePawnIndex);</a>
+<a name="ln422">                }</a>
+<a name="ln423">                else</a>
+<a name="ln424">                {</a>
+<a name="ln425">                    var limit = (int)Piece.K + oppositeSideOffset;</a>
+<a name="ln426">                    for (int pieceIndex = oppositePawnIndex; pieceIndex &lt; limit; ++pieceIndex)</a>
+<a name="ln427">                    {</a>
+<a name="ln428">                        if (PieceBitBoards[pieceIndex].GetBit(targetSquare))</a>
+<a name="ln429">                        {</a>
+<a name="ln430">                            PieceBitBoards[pieceIndex].PopBit(targetSquare);</a>
+<a name="ln431">                            UniqueIdentifier ^= ZobristTable.PieceHash(targetSquare, pieceIndex);</a>
+<a name="ln432">                            break;</a>
+<a name="ln433">                        }</a>
+<a name="ln434">                    }</a>
+<a name="ln435"> </a>
+<a name="ln436">                    OccupancyBitBoards[oppositeSide].PopBit(targetSquare);</a>
+<a name="ln437">                }</a>
+<a name="ln438">            }</a>
+<a name="ln439">            else if (move.IsDoublePawnPush())</a>
+<a name="ln440">            {</a>
+<a name="ln441">                var pawnPush = +8 - ((int)oldSide * 16);</a>
+<a name="ln442">                var enPassantSquare = sourceSquare + pawnPush;</a>
+<a name="ln443"> </a>
+<a name="ln444">                EnPassant = (BoardSquare)enPassantSquare;</a>
+<a name="ln445">                UniqueIdentifier ^= ZobristTable.EnPassantHash(enPassantSquare);</a>
+<a name="ln446">            }</a>
+<a name="ln447">            else if (move.IsShortCastle())</a>
+<a name="ln448">            {</a>
+<a name="ln449">                var rookSourceSquare = Utils.ShortCastleRookSourceSquare(oldSide);</a>
+<a name="ln450">                var rookTargetSquare = Utils.ShortCastleRookTargetSquare(oldSide);</a>
+<a name="ln451">                var rookIndex = (int)Piece.R + offset;</a>
+<a name="ln452"> </a>
+<a name="ln453">                PieceBitBoards[rookIndex].PopBit(rookSourceSquare);</a>
+<a name="ln454">                OccupancyBitBoards[(int)Side].PopBit(rookSourceSquare);</a>
+<a name="ln455"> </a>
+<a name="ln456">                PieceBitBoards[rookIndex].SetBit(rookTargetSquare);</a>
+<a name="ln457">                OccupancyBitBoards[(int)Side].SetBit(rookTargetSquare);</a>
+<a name="ln458"> </a>
+<a name="ln459">                UniqueIdentifier ^=</a>
+<a name="ln460">                    ZobristTable.PieceHash(rookSourceSquare, rookIndex)</a>
+<a name="ln461">                    ^ ZobristTable.PieceHash(rookTargetSquare, rookIndex);</a>
+<a name="ln462">            }</a>
+<a name="ln463">            else if (move.IsLongCastle())</a>
+<a name="ln464">            {</a>
+<a name="ln465">                var rookSourceSquare = Utils.LongCastleRookSourceSquare(oldSide);</a>
+<a name="ln466">                var rookTargetSquare = Utils.LongCastleRookTargetSquare(oldSide);</a>
+<a name="ln467">                var rookIndex = (int)Piece.R + offset;</a>
+<a name="ln468"> </a>
+<a name="ln469">                PieceBitBoards[rookIndex].PopBit(rookSourceSquare);</a>
+<a name="ln470">                OccupancyBitBoards[(int)Side].PopBit(rookSourceSquare);</a>
+<a name="ln471"> </a>
+<a name="ln472">                PieceBitBoards[rookIndex].SetBit(rookTargetSquare);</a>
+<a name="ln473">                OccupancyBitBoards[(int)Side].SetBit(rookTargetSquare);</a>
+<a name="ln474"> </a>
+<a name="ln475">                UniqueIdentifier ^=</a>
+<a name="ln476">                    ZobristTable.PieceHash(rookSourceSquare, rookIndex)</a>
+<a name="ln477">                    ^ ZobristTable.PieceHash(rookTargetSquare, rookIndex);</a>
+<a name="ln478">            }</a>
+<a name="ln479"> </a>
+<a name="ln480">            Side = (Side)oppositeSide;</a>
+<a name="ln481">            OccupancyBitBoards[(int)Side.Both] = OccupancyBitBoards[(int)Side.White] | OccupancyBitBoards[(int)Side.Black];</a>
+<a name="ln482"> </a>
+<a name="ln483">            // Updating castling rights</a>
+<a name="ln484">            Castle &amp;= Constants.CastlingRightsUpdateConstants[sourceSquare];</a>
+<a name="ln485">            Castle &amp;= Constants.CastlingRightsUpdateConstants[targetSquare];</a>
+<a name="ln486"> </a>
+<a name="ln487">            UniqueIdentifier ^= ZobristTable.CastleHash(Castle);</a>
+<a name="ln488">        }</a>
+<a name="ln489"> </a>
+<a name="ln490">        [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln491">        public MakeMoveGameState MakeMove_Original(Move move)</a>
+<a name="ln492">        {</a>
+<a name="ln493">            int capturedPiece = -1;</a>
+<a name="ln494">            var castleCopy = Castle;</a>
+<a name="ln495">            BoardSquare enpassantCopy = EnPassant;</a>
+<a name="ln496"> </a>
+<a name="ln497">            var oldSide = Side;</a>
+<a name="ln498">            var offset = Utils.PieceOffset(oldSide);</a>
+<a name="ln499">            var oppositeSide = Utils.OppositeSide(oldSide);</a>
+<a name="ln500"> </a>
+<a name="ln501">            int sourceSquare = move.SourceSquare();</a>
+<a name="ln502">            int targetSquare = move.TargetSquare();</a>
+<a name="ln503">            int piece = move.Piece();</a>
+<a name="ln504">            int promotedPiece = move.PromotedPiece();</a>
+<a name="ln505"> </a>
+<a name="ln506">            var newPiece = piece;</a>
+<a name="ln507">            if (promotedPiece != default)</a>
+<a name="ln508">            {</a>
+<a name="ln509">                newPiece = promotedPiece;</a>
+<a name="ln510">            }</a>
+<a name="ln511"> </a>
+<a name="ln512">            PieceBitBoards[piece].PopBit(sourceSquare);</a>
+<a name="ln513">            OccupancyBitBoards[(int)Side].PopBit(sourceSquare);</a>
+<a name="ln514"> </a>
+<a name="ln515">            PieceBitBoards[newPiece].SetBit(targetSquare);</a>
+<a name="ln516">            OccupancyBitBoards[(int)Side].SetBit(targetSquare);</a>
+<a name="ln517"> </a>
+<a name="ln518">            UniqueIdentifier ^=</a>
+<a name="ln519">                ZobristTable.SideHash()</a>
+<a name="ln520">                ^ ZobristTable.PieceHash(sourceSquare, piece)</a>
+<a name="ln521">                ^ ZobristTable.PieceHash(targetSquare, newPiece)</a>
+<a name="ln522">                ^ ZobristTable.EnPassantHash((int)EnPassant)            // We clear the existing enpassant square, if any</a>
+<a name="ln523">                ^ ZobristTable.CastleHash(Castle);                      // We clear the existing castle rights</a>
+<a name="ln524"> </a>
+<a name="ln525">            EnPassant = BoardSquare.noSquare;</a>
+<a name="ln526">            if (move.IsCapture())</a>
+<a name="ln527">            {</a>
+<a name="ln528">                var oppositeSideOffset = Utils.PieceOffset(oppositeSide);</a>
+<a name="ln529">                var oppositePawnIndex = (int)Piece.P + oppositeSideOffset;</a>
+<a name="ln530"> </a>
+<a name="ln531">                if (move.IsEnPassant())</a>
+<a name="ln532">                {</a>
+<a name="ln533">                    var capturedPawnSquare = Constants.EnPassantCaptureSquares[targetSquare];</a>
+<a name="ln534">                    Utils.Assert(PieceBitBoards[oppositePawnIndex].GetBit(capturedPawnSquare), $&quot;Expected {(Side)oppositeSide} pawn in {capturedPawnSquare}&quot;);</a>
+<a name="ln535"> </a>
+<a name="ln536">                    PieceBitBoards[oppositePawnIndex].PopBit(capturedPawnSquare);</a>
+<a name="ln537">                    OccupancyBitBoards[oppositeSide].PopBit(capturedPawnSquare);</a>
+<a name="ln538">                    UniqueIdentifier ^= ZobristTable.PieceHash(capturedPawnSquare, oppositePawnIndex);</a>
+<a name="ln539">                    capturedPiece = oppositePawnIndex;</a>
+<a name="ln540">                }</a>
+<a name="ln541">                else</a>
+<a name="ln542">                {</a>
+<a name="ln543">                    var limit = (int)Piece.K + oppositeSideOffset;</a>
+<a name="ln544">                    for (int pieceIndex = oppositePawnIndex; pieceIndex &lt; limit; ++pieceIndex)</a>
+<a name="ln545">                    {</a>
+<a name="ln546">                        if (PieceBitBoards[pieceIndex].GetBit(targetSquare))</a>
+<a name="ln547">                        {</a>
+<a name="ln548">                            PieceBitBoards[pieceIndex].PopBit(targetSquare);</a>
+<a name="ln549">                            UniqueIdentifier ^= ZobristTable.PieceHash(targetSquare, pieceIndex);</a>
+<a name="ln550">                            capturedPiece = pieceIndex;</a>
+<a name="ln551">                            break;</a>
+<a name="ln552">                        }</a>
+<a name="ln553">                    }</a>
+<a name="ln554"> </a>
+<a name="ln555">                    OccupancyBitBoards[oppositeSide].PopBit(targetSquare);</a>
+<a name="ln556">                }</a>
+<a name="ln557">            }</a>
+<a name="ln558">            else if (move.IsDoublePawnPush())</a>
+<a name="ln559">            {</a>
+<a name="ln560">                var pawnPush = +8 - ((int)oldSide * 16);</a>
+<a name="ln561">                var enPassantSquare = sourceSquare + pawnPush;</a>
+<a name="ln562"> </a>
+<a name="ln563">                EnPassant = (BoardSquare)enPassantSquare;</a>
+<a name="ln564">                UniqueIdentifier ^= ZobristTable.EnPassantHash(enPassantSquare);</a>
+<a name="ln565">            }</a>
+<a name="ln566">            else if (move.IsShortCastle())</a>
+<a name="ln567">            {</a>
+<a name="ln568">                var rookSourceSquare = Utils.ShortCastleRookSourceSquare(oldSide);</a>
+<a name="ln569">                var rookTargetSquare = Utils.ShortCastleRookTargetSquare(oldSide);</a>
+<a name="ln570">                var rookIndex = (int)Piece.R + offset;</a>
+<a name="ln571"> </a>
+<a name="ln572">                PieceBitBoards[rookIndex].PopBit(rookSourceSquare);</a>
+<a name="ln573">                OccupancyBitBoards[(int)Side].PopBit(rookSourceSquare);</a>
+<a name="ln574"> </a>
+<a name="ln575">                PieceBitBoards[rookIndex].SetBit(rookTargetSquare);</a>
+<a name="ln576">                OccupancyBitBoards[(int)Side].SetBit(rookTargetSquare);</a>
+<a name="ln577"> </a>
+<a name="ln578">                UniqueIdentifier ^=</a>
+<a name="ln579">                    ZobristTable.PieceHash(rookSourceSquare, rookIndex)</a>
+<a name="ln580">                    ^ ZobristTable.PieceHash(rookTargetSquare, rookIndex);</a>
+<a name="ln581">            }</a>
+<a name="ln582">            else if (move.IsLongCastle())</a>
+<a name="ln583">            {</a>
+<a name="ln584">                var rookSourceSquare = Utils.LongCastleRookSourceSquare(oldSide);</a>
+<a name="ln585">                var rookTargetSquare = Utils.LongCastleRookTargetSquare(oldSide);</a>
+<a name="ln586">                var rookIndex = (int)Piece.R + offset;</a>
+<a name="ln587"> </a>
+<a name="ln588">                PieceBitBoards[rookIndex].PopBit(rookSourceSquare);</a>
+<a name="ln589">                OccupancyBitBoards[(int)Side].PopBit(rookSourceSquare);</a>
+<a name="ln590"> </a>
+<a name="ln591">                PieceBitBoards[rookIndex].SetBit(rookTargetSquare);</a>
+<a name="ln592">                OccupancyBitBoards[(int)Side].SetBit(rookTargetSquare);</a>
+<a name="ln593"> </a>
+<a name="ln594">                UniqueIdentifier ^=</a>
+<a name="ln595">                    ZobristTable.PieceHash(rookSourceSquare, rookIndex)</a>
+<a name="ln596">                    ^ ZobristTable.PieceHash(rookTargetSquare, rookIndex);</a>
+<a name="ln597">            }</a>
+<a name="ln598"> </a>
+<a name="ln599">            Side = (Side)oppositeSide;</a>
+<a name="ln600">            OccupancyBitBoards[(int)Side.Both] = OccupancyBitBoards[(int)Side.White] | OccupancyBitBoards[(int)Side.Black];</a>
+<a name="ln601"> </a>
+<a name="ln602">            // Updating castling rights</a>
+<a name="ln603">            Castle &amp;= Constants.CastlingRightsUpdateConstants[sourceSquare];</a>
+<a name="ln604">            Castle &amp;= Constants.CastlingRightsUpdateConstants[targetSquare];</a>
+<a name="ln605"> </a>
+<a name="ln606">            UniqueIdentifier ^= ZobristTable.CastleHash(Castle);</a>
+<a name="ln607"> </a>
+<a name="ln608">            return new MakeMoveGameState(capturedPiece, castleCopy, enpassantCopy);</a>
+<a name="ln609">        }</a>
+<a name="ln610"> </a>
+<a name="ln611">        [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln612">        public void MakeMove_PassOut(Move move, out MakeMoveGameState_PassOut gameState)</a>
+<a name="ln613">        {</a>
+<a name="ln614">            int capturedPiece = -1;</a>
+<a name="ln615">            var castleCopy = Castle;</a>
+<a name="ln616">            BoardSquare enpassantCopy = EnPassant;</a>
+<a name="ln617"> </a>
+<a name="ln618">            var oldSide = Side;</a>
+<a name="ln619">            var offset = Utils.PieceOffset(oldSide);</a>
+<a name="ln620">            var oppositeSide = Utils.OppositeSide(oldSide);</a>
+<a name="ln621"> </a>
+<a name="ln622">            int sourceSquare = move.SourceSquare();</a>
+<a name="ln623">            int targetSquare = move.TargetSquare();</a>
+<a name="ln624">            int piece = move.Piece();</a>
+<a name="ln625">            int promotedPiece = move.PromotedPiece();</a>
+<a name="ln626"> </a>
+<a name="ln627">            var newPiece = piece;</a>
+<a name="ln628">            if (promotedPiece != default)</a>
+<a name="ln629">            {</a>
+<a name="ln630">                newPiece = promotedPiece;</a>
+<a name="ln631">            }</a>
+<a name="ln632"> </a>
+<a name="ln633">            PieceBitBoards[piece].PopBit(sourceSquare);</a>
+<a name="ln634">            OccupancyBitBoards[(int)Side].PopBit(sourceSquare);</a>
+<a name="ln635"> </a>
+<a name="ln636">            PieceBitBoards[newPiece].SetBit(targetSquare);</a>
+<a name="ln637">            OccupancyBitBoards[(int)Side].SetBit(targetSquare);</a>
+<a name="ln638"> </a>
+<a name="ln639">            UniqueIdentifier ^=</a>
+<a name="ln640">                ZobristTable.SideHash()</a>
+<a name="ln641">                ^ ZobristTable.PieceHash(sourceSquare, piece)</a>
+<a name="ln642">                ^ ZobristTable.PieceHash(targetSquare, newPiece)</a>
+<a name="ln643">                ^ ZobristTable.EnPassantHash((int)EnPassant)            // We clear the existing enpassant square, if any</a>
+<a name="ln644">                ^ ZobristTable.CastleHash(Castle);                      // We clear the existing castle rights</a>
+<a name="ln645"> </a>
+<a name="ln646">            EnPassant = BoardSquare.noSquare;</a>
+<a name="ln647">            if (move.IsCapture())</a>
+<a name="ln648">            {</a>
+<a name="ln649">                var oppositeSideOffset = Utils.PieceOffset(oppositeSide);</a>
+<a name="ln650">                var oppositePawnIndex = (int)Piece.P + oppositeSideOffset;</a>
+<a name="ln651"> </a>
+<a name="ln652">                if (move.IsEnPassant())</a>
+<a name="ln653">                {</a>
+<a name="ln654">                    var capturedPawnSquare = Constants.EnPassantCaptureSquares[targetSquare];</a>
+<a name="ln655">                    Utils.Assert(PieceBitBoards[oppositePawnIndex].GetBit(capturedPawnSquare), $&quot;Expected {(Side)oppositeSide} pawn in {capturedPawnSquare}&quot;);</a>
+<a name="ln656"> </a>
+<a name="ln657">                    PieceBitBoards[oppositePawnIndex].PopBit(capturedPawnSquare);</a>
+<a name="ln658">                    OccupancyBitBoards[oppositeSide].PopBit(capturedPawnSquare);</a>
+<a name="ln659">                    UniqueIdentifier ^= ZobristTable.PieceHash(capturedPawnSquare, oppositePawnIndex);</a>
+<a name="ln660">                    capturedPiece = oppositePawnIndex;</a>
+<a name="ln661">                }</a>
+<a name="ln662">                else</a>
+<a name="ln663">                {</a>
+<a name="ln664">                    var limit = (int)Piece.K + oppositeSideOffset;</a>
+<a name="ln665">                    for (int pieceIndex = oppositePawnIndex; pieceIndex &lt; limit; ++pieceIndex)</a>
+<a name="ln666">                    {</a>
+<a name="ln667">                        if (PieceBitBoards[pieceIndex].GetBit(targetSquare))</a>
+<a name="ln668">                        {</a>
+<a name="ln669">                            PieceBitBoards[pieceIndex].PopBit(targetSquare);</a>
+<a name="ln670">                            UniqueIdentifier ^= ZobristTable.PieceHash(targetSquare, pieceIndex);</a>
+<a name="ln671">                            capturedPiece = pieceIndex;</a>
+<a name="ln672">                            break;</a>
+<a name="ln673">                        }</a>
+<a name="ln674">                    }</a>
+<a name="ln675"> </a>
+<a name="ln676">                    OccupancyBitBoards[oppositeSide].PopBit(targetSquare);</a>
+<a name="ln677">                }</a>
+<a name="ln678">            }</a>
+<a name="ln679">            else if (move.IsDoublePawnPush())</a>
+<a name="ln680">            {</a>
+<a name="ln681">                var pawnPush = +8 - ((int)oldSide * 16);</a>
+<a name="ln682">                var enPassantSquare = sourceSquare + pawnPush;</a>
+<a name="ln683"> </a>
+<a name="ln684">                EnPassant = (BoardSquare)enPassantSquare;</a>
+<a name="ln685">                UniqueIdentifier ^= ZobristTable.EnPassantHash(enPassantSquare);</a>
+<a name="ln686">            }</a>
+<a name="ln687">            else if (move.IsShortCastle())</a>
+<a name="ln688">            {</a>
+<a name="ln689">                var rookSourceSquare = Utils.ShortCastleRookSourceSquare(oldSide);</a>
+<a name="ln690">                var rookTargetSquare = Utils.ShortCastleRookTargetSquare(oldSide);</a>
+<a name="ln691">                var rookIndex = (int)Piece.R + offset;</a>
+<a name="ln692"> </a>
+<a name="ln693">                PieceBitBoards[rookIndex].PopBit(rookSourceSquare);</a>
+<a name="ln694">                OccupancyBitBoards[(int)Side].PopBit(rookSourceSquare);</a>
+<a name="ln695"> </a>
+<a name="ln696">                PieceBitBoards[rookIndex].SetBit(rookTargetSquare);</a>
+<a name="ln697">                OccupancyBitBoards[(int)Side].SetBit(rookTargetSquare);</a>
+<a name="ln698"> </a>
+<a name="ln699">                UniqueIdentifier ^=</a>
+<a name="ln700">                    ZobristTable.PieceHash(rookSourceSquare, rookIndex)</a>
+<a name="ln701">                    ^ ZobristTable.PieceHash(rookTargetSquare, rookIndex);</a>
+<a name="ln702">            }</a>
+<a name="ln703">            else if (move.IsLongCastle())</a>
+<a name="ln704">            {</a>
+<a name="ln705">                var rookSourceSquare = Utils.LongCastleRookSourceSquare(oldSide);</a>
+<a name="ln706">                var rookTargetSquare = Utils.LongCastleRookTargetSquare(oldSide);</a>
+<a name="ln707">                var rookIndex = (int)Piece.R + offset;</a>
+<a name="ln708"> </a>
+<a name="ln709">                PieceBitBoards[rookIndex].PopBit(rookSourceSquare);</a>
+<a name="ln710">                OccupancyBitBoards[(int)Side].PopBit(rookSourceSquare);</a>
+<a name="ln711"> </a>
+<a name="ln712">                PieceBitBoards[rookIndex].SetBit(rookTargetSquare);</a>
+<a name="ln713">                OccupancyBitBoards[(int)Side].SetBit(rookTargetSquare);</a>
+<a name="ln714"> </a>
+<a name="ln715">                UniqueIdentifier ^=</a>
+<a name="ln716">                    ZobristTable.PieceHash(rookSourceSquare, rookIndex)</a>
+<a name="ln717">                    ^ ZobristTable.PieceHash(rookTargetSquare, rookIndex);</a>
+<a name="ln718">            }</a>
+<a name="ln719"> </a>
+<a name="ln720">            Side = (Side)oppositeSide;</a>
+<a name="ln721">            OccupancyBitBoards[(int)Side.Both] = OccupancyBitBoards[(int)Side.White] | OccupancyBitBoards[(int)Side.Black];</a>
+<a name="ln722"> </a>
+<a name="ln723">            // Updating castling rights</a>
+<a name="ln724">            Castle &amp;= Constants.CastlingRightsUpdateConstants[sourceSquare];</a>
+<a name="ln725">            Castle &amp;= Constants.CastlingRightsUpdateConstants[targetSquare];</a>
+<a name="ln726"> </a>
+<a name="ln727">            UniqueIdentifier ^= ZobristTable.CastleHash(Castle);</a>
+<a name="ln728"> </a>
+<a name="ln729">            gameState = new MakeMoveGameState_PassOut(capturedPiece, castleCopy, enpassantCopy);</a>
+<a name="ln730">        }</a>
+<a name="ln731"> </a>
+<a name="ln732">        [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln733">        public void MakeMove_PassRef(Move move, ref MakeMoveGameState_PassRef gameState)</a>
+<a name="ln734">        {</a>
+<a name="ln735">            int capturedPiece = -1;</a>
+<a name="ln736">            var castleCopy = Castle;</a>
+<a name="ln737">            BoardSquare enpassantCopy = EnPassant;</a>
+<a name="ln738"> </a>
+<a name="ln739">            var oldSide = Side;</a>
+<a name="ln740">            var offset = Utils.PieceOffset(oldSide);</a>
+<a name="ln741">            var oppositeSide = Utils.OppositeSide(oldSide);</a>
+<a name="ln742"> </a>
+<a name="ln743">            int sourceSquare = move.SourceSquare();</a>
+<a name="ln744">            int targetSquare = move.TargetSquare();</a>
+<a name="ln745">            int piece = move.Piece();</a>
+<a name="ln746">            int promotedPiece = move.PromotedPiece();</a>
+<a name="ln747"> </a>
+<a name="ln748">            var newPiece = piece;</a>
+<a name="ln749">            if (promotedPiece != default)</a>
+<a name="ln750">            {</a>
+<a name="ln751">                newPiece = promotedPiece;</a>
+<a name="ln752">            }</a>
+<a name="ln753"> </a>
+<a name="ln754">            PieceBitBoards[piece].PopBit(sourceSquare);</a>
+<a name="ln755">            OccupancyBitBoards[(int)Side].PopBit(sourceSquare);</a>
+<a name="ln756"> </a>
+<a name="ln757">            PieceBitBoards[newPiece].SetBit(targetSquare);</a>
+<a name="ln758">            OccupancyBitBoards[(int)Side].SetBit(targetSquare);</a>
+<a name="ln759"> </a>
+<a name="ln760">            UniqueIdentifier ^=</a>
+<a name="ln761">                ZobristTable.SideHash()</a>
+<a name="ln762">                ^ ZobristTable.PieceHash(sourceSquare, piece)</a>
+<a name="ln763">                ^ ZobristTable.PieceHash(targetSquare, newPiece)</a>
+<a name="ln764">                ^ ZobristTable.EnPassantHash((int)EnPassant)            // We clear the existing enpassant square, if any</a>
+<a name="ln765">                ^ ZobristTable.CastleHash(Castle);                      // We clear the existing castle rights</a>
+<a name="ln766"> </a>
+<a name="ln767">            EnPassant = BoardSquare.noSquare;</a>
+<a name="ln768">            if (move.IsCapture())</a>
+<a name="ln769">            {</a>
+<a name="ln770">                var oppositeSideOffset = Utils.PieceOffset(oppositeSide);</a>
+<a name="ln771">                var oppositePawnIndex = (int)Piece.P + oppositeSideOffset;</a>
+<a name="ln772"> </a>
+<a name="ln773">                if (move.IsEnPassant())</a>
+<a name="ln774">                {</a>
+<a name="ln775">                    var capturedPawnSquare = Constants.EnPassantCaptureSquares[targetSquare];</a>
+<a name="ln776">                    Utils.Assert(PieceBitBoards[oppositePawnIndex].GetBit(capturedPawnSquare), $&quot;Expected {(Side)oppositeSide} pawn in {capturedPawnSquare}&quot;);</a>
+<a name="ln777"> </a>
+<a name="ln778">                    PieceBitBoards[oppositePawnIndex].PopBit(capturedPawnSquare);</a>
+<a name="ln779">                    OccupancyBitBoards[oppositeSide].PopBit(capturedPawnSquare);</a>
+<a name="ln780">                    UniqueIdentifier ^= ZobristTable.PieceHash(capturedPawnSquare, oppositePawnIndex);</a>
+<a name="ln781">                    capturedPiece = oppositePawnIndex;</a>
+<a name="ln782">                }</a>
+<a name="ln783">                else</a>
+<a name="ln784">                {</a>
+<a name="ln785">                    var limit = (int)Piece.K + oppositeSideOffset;</a>
+<a name="ln786">                    for (int pieceIndex = oppositePawnIndex; pieceIndex &lt; limit; ++pieceIndex)</a>
+<a name="ln787">                    {</a>
+<a name="ln788">                        if (PieceBitBoards[pieceIndex].GetBit(targetSquare))</a>
+<a name="ln789">                        {</a>
+<a name="ln790">                            PieceBitBoards[pieceIndex].PopBit(targetSquare);</a>
+<a name="ln791">                            UniqueIdentifier ^= ZobristTable.PieceHash(targetSquare, pieceIndex);</a>
+<a name="ln792">                            capturedPiece = pieceIndex;</a>
+<a name="ln793">                            break;</a>
+<a name="ln794">                        }</a>
+<a name="ln795">                    }</a>
+<a name="ln796"> </a>
+<a name="ln797">                    OccupancyBitBoards[oppositeSide].PopBit(targetSquare);</a>
+<a name="ln798">                }</a>
+<a name="ln799">            }</a>
+<a name="ln800">            else if (move.IsDoublePawnPush())</a>
+<a name="ln801">            {</a>
+<a name="ln802">                var pawnPush = +8 - ((int)oldSide * 16);</a>
+<a name="ln803">                var enPassantSquare = sourceSquare + pawnPush;</a>
+<a name="ln804"> </a>
+<a name="ln805">                EnPassant = (BoardSquare)enPassantSquare;</a>
+<a name="ln806">                UniqueIdentifier ^= ZobristTable.EnPassantHash(enPassantSquare);</a>
+<a name="ln807">            }</a>
+<a name="ln808">            else if (move.IsShortCastle())</a>
+<a name="ln809">            {</a>
+<a name="ln810">                var rookSourceSquare = Utils.ShortCastleRookSourceSquare(oldSide);</a>
+<a name="ln811">                var rookTargetSquare = Utils.ShortCastleRookTargetSquare(oldSide);</a>
+<a name="ln812">                var rookIndex = (int)Piece.R + offset;</a>
+<a name="ln813"> </a>
+<a name="ln814">                PieceBitBoards[rookIndex].PopBit(rookSourceSquare);</a>
+<a name="ln815">                OccupancyBitBoards[(int)Side].PopBit(rookSourceSquare);</a>
+<a name="ln816"> </a>
+<a name="ln817">                PieceBitBoards[rookIndex].SetBit(rookTargetSquare);</a>
+<a name="ln818">                OccupancyBitBoards[(int)Side].SetBit(rookTargetSquare);</a>
+<a name="ln819"> </a>
+<a name="ln820">                UniqueIdentifier ^=</a>
+<a name="ln821">                    ZobristTable.PieceHash(rookSourceSquare, rookIndex)</a>
+<a name="ln822">                    ^ ZobristTable.PieceHash(rookTargetSquare, rookIndex);</a>
+<a name="ln823">            }</a>
+<a name="ln824">            else if (move.IsLongCastle())</a>
+<a name="ln825">            {</a>
+<a name="ln826">                var rookSourceSquare = Utils.LongCastleRookSourceSquare(oldSide);</a>
+<a name="ln827">                var rookTargetSquare = Utils.LongCastleRookTargetSquare(oldSide);</a>
+<a name="ln828">                var rookIndex = (int)Piece.R + offset;</a>
+<a name="ln829"> </a>
+<a name="ln830">                PieceBitBoards[rookIndex].PopBit(rookSourceSquare);</a>
+<a name="ln831">                OccupancyBitBoards[(int)Side].PopBit(rookSourceSquare);</a>
+<a name="ln832"> </a>
+<a name="ln833">                PieceBitBoards[rookIndex].SetBit(rookTargetSquare);</a>
+<a name="ln834">                OccupancyBitBoards[(int)Side].SetBit(rookTargetSquare);</a>
+<a name="ln835"> </a>
+<a name="ln836">                UniqueIdentifier ^=</a>
+<a name="ln837">                    ZobristTable.PieceHash(rookSourceSquare, rookIndex)</a>
+<a name="ln838">                    ^ ZobristTable.PieceHash(rookTargetSquare, rookIndex);</a>
+<a name="ln839">            }</a>
+<a name="ln840"> </a>
+<a name="ln841">            Side = (Side)oppositeSide;</a>
+<a name="ln842">            OccupancyBitBoards[(int)Side.Both] = OccupancyBitBoards[(int)Side.White] | OccupancyBitBoards[(int)Side.Black];</a>
+<a name="ln843"> </a>
+<a name="ln844">            // Updating castling rights</a>
+<a name="ln845">            Castle &amp;= Constants.CastlingRightsUpdateConstants[sourceSquare];</a>
+<a name="ln846">            Castle &amp;= Constants.CastlingRightsUpdateConstants[targetSquare];</a>
+<a name="ln847"> </a>
+<a name="ln848">            UniqueIdentifier ^= ZobristTable.CastleHash(Castle);</a>
+<a name="ln849"> </a>
+<a name="ln850">            gameState.CapturedPiece = capturedPiece;</a>
+<a name="ln851">            gameState.Castle = castleCopy;</a>
+<a name="ln852">            gameState.EnPassant = enpassantCopy;</a>
+<a name="ln853">        }</a>
+<a name="ln854"> </a>
+<a name="ln855">        [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln856">        public void UnmakeMove_Original(Move move, MakeMoveGameState gameState)</a>
+<a name="ln857">        {</a>
+<a name="ln858">            var oppositeSide = (int)Side;</a>
+<a name="ln859">            Side = (Side)Utils.OppositeSide(Side);</a>
+<a name="ln860">            var offset = Utils.PieceOffset(Side);</a>
+<a name="ln861"> </a>
+<a name="ln862">            int sourceSquare = move.SourceSquare();</a>
+<a name="ln863">            int targetSquare = move.TargetSquare();</a>
+<a name="ln864">            int piece = move.Piece();</a>
+<a name="ln865">            int promotedPiece = move.PromotedPiece();</a>
+<a name="ln866"> </a>
+<a name="ln867">            var newPiece = piece;</a>
+<a name="ln868">            if (promotedPiece != default)</a>
+<a name="ln869">            {</a>
+<a name="ln870">                newPiece = promotedPiece;</a>
+<a name="ln871">            }</a>
+<a name="ln872"> </a>
+<a name="ln873">            PieceBitBoards[newPiece].PopBit(targetSquare);</a>
+<a name="ln874">            OccupancyBitBoards[(int)Side].PopBit(targetSquare);</a>
+<a name="ln875"> </a>
+<a name="ln876">            PieceBitBoards[piece].SetBit(sourceSquare);</a>
+<a name="ln877">            OccupancyBitBoards[(int)Side].SetBit(sourceSquare);</a>
+<a name="ln878"> </a>
+<a name="ln879">            UniqueIdentifier ^=</a>
+<a name="ln880">                ZobristTable.SideHash()</a>
+<a name="ln881">                ^ ZobristTable.PieceHash(sourceSquare, piece)</a>
+<a name="ln882">                ^ ZobristTable.PieceHash(targetSquare, newPiece)</a>
+<a name="ln883">                ^ ZobristTable.EnPassantHash((int)EnPassant)        // We clear the existing enpassant square, if any</a>
+<a name="ln884">                ^ ZobristTable.CastleHash(Castle);                  // We clear the existing castling rights</a>
+<a name="ln885"> </a>
+<a name="ln886">            EnPassant = BoardSquare.noSquare;</a>
+<a name="ln887">            if (move.IsCapture())</a>
+<a name="ln888">            {</a>
+<a name="ln889">                var oppositeSideOffset = Utils.PieceOffset(oppositeSide);</a>
+<a name="ln890">                var oppositePawnIndex = (int)Piece.P + oppositeSideOffset;</a>
+<a name="ln891"> </a>
+<a name="ln892">                if (move.IsEnPassant())</a>
+<a name="ln893">                {</a>
+<a name="ln894">                    var capturedPawnSquare = Constants.EnPassantCaptureSquares[targetSquare];</a>
+<a name="ln895">                    Utils.Assert(OccupancyBitBoards[(int)Side.Both].GetBit(capturedPawnSquare) == default,</a>
+<a name="ln896">                        $&quot;Expected empty {capturedPawnSquare}&quot;);</a>
+<a name="ln897"> </a>
+<a name="ln898">                    PieceBitBoards[oppositePawnIndex].SetBit(capturedPawnSquare);</a>
+<a name="ln899">                    OccupancyBitBoards[oppositeSide].SetBit(capturedPawnSquare);</a>
+<a name="ln900">                    UniqueIdentifier ^= ZobristTable.PieceHash(capturedPawnSquare, oppositePawnIndex);</a>
+<a name="ln901">                }</a>
+<a name="ln902">                else</a>
+<a name="ln903">                {</a>
+<a name="ln904">                    PieceBitBoards[gameState.CapturedPiece].SetBit(targetSquare);</a>
+<a name="ln905">                    UniqueIdentifier ^= ZobristTable.PieceHash(targetSquare, gameState.CapturedPiece);</a>
+<a name="ln906"> </a>
+<a name="ln907">                    OccupancyBitBoards[oppositeSide].SetBit(targetSquare);</a>
+<a name="ln908">                }</a>
+<a name="ln909">            }</a>
+<a name="ln910">            else if (move.IsDoublePawnPush())</a>
+<a name="ln911">            {</a>
+<a name="ln912">                EnPassant = gameState.EnPassant;</a>
+<a name="ln913">                UniqueIdentifier ^= ZobristTable.EnPassantHash((int)EnPassant);</a>
+<a name="ln914">            }</a>
+<a name="ln915">            else if (move.IsShortCastle())</a>
+<a name="ln916">            {</a>
+<a name="ln917">                var rookSourceSquare = Utils.ShortCastleRookSourceSquare(Side);</a>
+<a name="ln918">                var rookTargetSquare = Utils.ShortCastleRookTargetSquare(Side);</a>
+<a name="ln919">                var rookIndex = (int)Piece.R + offset;</a>
+<a name="ln920"> </a>
+<a name="ln921">                PieceBitBoards[rookIndex].SetBit(rookSourceSquare);</a>
+<a name="ln922">                OccupancyBitBoards[(int)Side].SetBit(rookSourceSquare);</a>
+<a name="ln923"> </a>
+<a name="ln924">                PieceBitBoards[rookIndex].PopBit(rookTargetSquare);</a>
+<a name="ln925">                OccupancyBitBoards[(int)Side].PopBit(rookTargetSquare);</a>
+<a name="ln926"> </a>
+<a name="ln927">                UniqueIdentifier ^=</a>
+<a name="ln928">                    ZobristTable.PieceHash(rookSourceSquare, rookIndex)</a>
+<a name="ln929">                    ^ ZobristTable.PieceHash(rookTargetSquare, rookIndex);</a>
+<a name="ln930">            }</a>
+<a name="ln931">            else if (move.IsLongCastle())</a>
+<a name="ln932">            {</a>
+<a name="ln933">                var rookSourceSquare = Utils.LongCastleRookSourceSquare(Side);</a>
+<a name="ln934">                var rookTargetSquare = Utils.LongCastleRookTargetSquare(Side);</a>
+<a name="ln935">                var rookIndex = (int)Piece.R + offset;</a>
+<a name="ln936"> </a>
+<a name="ln937">                PieceBitBoards[rookIndex].SetBit(rookSourceSquare);</a>
+<a name="ln938">                OccupancyBitBoards[(int)Side].SetBit(rookSourceSquare);</a>
+<a name="ln939"> </a>
+<a name="ln940">                PieceBitBoards[rookIndex].PopBit(rookTargetSquare);</a>
+<a name="ln941">                OccupancyBitBoards[(int)Side].PopBit(rookTargetSquare);</a>
+<a name="ln942"> </a>
+<a name="ln943">                UniqueIdentifier ^=</a>
+<a name="ln944">                    ZobristTable.PieceHash(rookSourceSquare, rookIndex)</a>
+<a name="ln945">                    ^ ZobristTable.PieceHash(rookTargetSquare, rookIndex);</a>
+<a name="ln946">            }</a>
+<a name="ln947"> </a>
+<a name="ln948">            OccupancyBitBoards[(int)Side.Both] = OccupancyBitBoards[(int)Side.White] | OccupancyBitBoards[(int)Side.Black];</a>
+<a name="ln949"> </a>
+<a name="ln950">            // Updating castling rights</a>
+<a name="ln951">            Castle = gameState.Castle;</a>
+<a name="ln952"> </a>
+<a name="ln953">            UniqueIdentifier ^= ZobristTable.CastleHash(Castle);</a>
+<a name="ln954">        }</a>
+<a name="ln955"> </a>
+<a name="ln956">        [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln957">        public void UnmakeMove_PassOut(Move move, MakeMoveGameState_PassOut gameState)</a>
+<a name="ln958">        {</a>
+<a name="ln959">            var oppositeSide = (int)Side;</a>
+<a name="ln960">            Side = (Side)Utils.OppositeSide(Side);</a>
+<a name="ln961">            var offset = Utils.PieceOffset(Side);</a>
+<a name="ln962"> </a>
+<a name="ln963">            int sourceSquare = move.SourceSquare();</a>
+<a name="ln964">            int targetSquare = move.TargetSquare();</a>
+<a name="ln965">            int piece = move.Piece();</a>
+<a name="ln966">            int promotedPiece = move.PromotedPiece();</a>
+<a name="ln967"> </a>
+<a name="ln968">            var newPiece = piece;</a>
+<a name="ln969">            if (promotedPiece != default)</a>
+<a name="ln970">            {</a>
+<a name="ln971">                newPiece = promotedPiece;</a>
+<a name="ln972">            }</a>
+<a name="ln973"> </a>
+<a name="ln974">            PieceBitBoards[newPiece].PopBit(targetSquare);</a>
+<a name="ln975">            OccupancyBitBoards[(int)Side].PopBit(targetSquare);</a>
+<a name="ln976"> </a>
+<a name="ln977">            PieceBitBoards[piece].SetBit(sourceSquare);</a>
+<a name="ln978">            OccupancyBitBoards[(int)Side].SetBit(sourceSquare);</a>
+<a name="ln979"> </a>
+<a name="ln980">            UniqueIdentifier ^=</a>
+<a name="ln981">                ZobristTable.SideHash()</a>
+<a name="ln982">                ^ ZobristTable.PieceHash(sourceSquare, piece)</a>
+<a name="ln983">                ^ ZobristTable.PieceHash(targetSquare, newPiece)</a>
+<a name="ln984">                ^ ZobristTable.EnPassantHash((int)EnPassant)        // We clear the existing enpassant square, if any</a>
+<a name="ln985">                ^ ZobristTable.CastleHash(Castle);                  // We clear the existing castling rights</a>
+<a name="ln986"> </a>
+<a name="ln987">            EnPassant = BoardSquare.noSquare;</a>
+<a name="ln988">            if (move.IsCapture())</a>
+<a name="ln989">            {</a>
+<a name="ln990">                var oppositeSideOffset = Utils.PieceOffset(oppositeSide);</a>
+<a name="ln991">                var oppositePawnIndex = (int)Piece.P + oppositeSideOffset;</a>
+<a name="ln992"> </a>
+<a name="ln993">                if (move.IsEnPassant())</a>
+<a name="ln994">                {</a>
+<a name="ln995">                    var capturedPawnSquare = Constants.EnPassantCaptureSquares[targetSquare];</a>
+<a name="ln996">                    Utils.Assert(OccupancyBitBoards[(int)Side.Both].GetBit(capturedPawnSquare) == default,</a>
+<a name="ln997">                        $&quot;Expected empty {capturedPawnSquare}&quot;);</a>
+<a name="ln998"> </a>
+<a name="ln999">                    PieceBitBoards[oppositePawnIndex].SetBit(capturedPawnSquare);</a>
+<a name="ln1000">                    OccupancyBitBoards[oppositeSide].SetBit(capturedPawnSquare);</a>
+<a name="ln1001">                    UniqueIdentifier ^= ZobristTable.PieceHash(capturedPawnSquare, oppositePawnIndex);</a>
+<a name="ln1002">                }</a>
+<a name="ln1003">                else</a>
+<a name="ln1004">                {</a>
+<a name="ln1005">                    PieceBitBoards[gameState.CapturedPiece].SetBit(targetSquare);</a>
+<a name="ln1006">                    UniqueIdentifier ^= ZobristTable.PieceHash(targetSquare, gameState.CapturedPiece);</a>
+<a name="ln1007"> </a>
+<a name="ln1008">                    OccupancyBitBoards[oppositeSide].SetBit(targetSquare);</a>
+<a name="ln1009">                }</a>
+<a name="ln1010">            }</a>
+<a name="ln1011">            else if (move.IsDoublePawnPush())</a>
+<a name="ln1012">            {</a>
+<a name="ln1013">                EnPassant = gameState.EnPassant;</a>
+<a name="ln1014">                UniqueIdentifier ^= ZobristTable.EnPassantHash((int)EnPassant);</a>
+<a name="ln1015">            }</a>
+<a name="ln1016">            else if (move.IsShortCastle())</a>
+<a name="ln1017">            {</a>
+<a name="ln1018">                var rookSourceSquare = Utils.ShortCastleRookSourceSquare(Side);</a>
+<a name="ln1019">                var rookTargetSquare = Utils.ShortCastleRookTargetSquare(Side);</a>
+<a name="ln1020">                var rookIndex = (int)Piece.R + offset;</a>
+<a name="ln1021"> </a>
+<a name="ln1022">                PieceBitBoards[rookIndex].SetBit(rookSourceSquare);</a>
+<a name="ln1023">                OccupancyBitBoards[(int)Side].SetBit(rookSourceSquare);</a>
+<a name="ln1024"> </a>
+<a name="ln1025">                PieceBitBoards[rookIndex].PopBit(rookTargetSquare);</a>
+<a name="ln1026">                OccupancyBitBoards[(int)Side].PopBit(rookTargetSquare);</a>
+<a name="ln1027"> </a>
+<a name="ln1028">                UniqueIdentifier ^=</a>
+<a name="ln1029">                    ZobristTable.PieceHash(rookSourceSquare, rookIndex)</a>
+<a name="ln1030">                    ^ ZobristTable.PieceHash(rookTargetSquare, rookIndex);</a>
+<a name="ln1031">            }</a>
+<a name="ln1032">            else if (move.IsLongCastle())</a>
+<a name="ln1033">            {</a>
+<a name="ln1034">                var rookSourceSquare = Utils.LongCastleRookSourceSquare(Side);</a>
+<a name="ln1035">                var rookTargetSquare = Utils.LongCastleRookTargetSquare(Side);</a>
+<a name="ln1036">                var rookIndex = (int)Piece.R + offset;</a>
+<a name="ln1037"> </a>
+<a name="ln1038">                PieceBitBoards[rookIndex].SetBit(rookSourceSquare);</a>
+<a name="ln1039">                OccupancyBitBoards[(int)Side].SetBit(rookSourceSquare);</a>
+<a name="ln1040"> </a>
+<a name="ln1041">                PieceBitBoards[rookIndex].PopBit(rookTargetSquare);</a>
+<a name="ln1042">                OccupancyBitBoards[(int)Side].PopBit(rookTargetSquare);</a>
+<a name="ln1043"> </a>
+<a name="ln1044">                UniqueIdentifier ^=</a>
+<a name="ln1045">                    ZobristTable.PieceHash(rookSourceSquare, rookIndex)</a>
+<a name="ln1046">                    ^ ZobristTable.PieceHash(rookTargetSquare, rookIndex);</a>
+<a name="ln1047">            }</a>
+<a name="ln1048"> </a>
+<a name="ln1049">            OccupancyBitBoards[(int)Side.Both] = OccupancyBitBoards[(int)Side.White] | OccupancyBitBoards[(int)Side.Black];</a>
+<a name="ln1050"> </a>
+<a name="ln1051">            // Updating castling rights</a>
+<a name="ln1052">            Castle = gameState.Castle;</a>
+<a name="ln1053"> </a>
+<a name="ln1054">            UniqueIdentifier ^= ZobristTable.CastleHash(Castle);</a>
+<a name="ln1055">        }</a>
+<a name="ln1056"> </a>
+<a name="ln1057">        [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1058">        public void UnmakeMove_PassRef(Move move, MakeMoveGameState_PassRef gameState)</a>
+<a name="ln1059">        {</a>
+<a name="ln1060">            var oppositeSide = (int)Side;</a>
+<a name="ln1061">            Side = (Side)Utils.OppositeSide(Side);</a>
+<a name="ln1062">            var offset = Utils.PieceOffset(Side);</a>
+<a name="ln1063"> </a>
+<a name="ln1064">            int sourceSquare = move.SourceSquare();</a>
+<a name="ln1065">            int targetSquare = move.TargetSquare();</a>
+<a name="ln1066">            int piece = move.Piece();</a>
+<a name="ln1067">            int promotedPiece = move.PromotedPiece();</a>
+<a name="ln1068"> </a>
+<a name="ln1069">            var newPiece = piece;</a>
+<a name="ln1070">            if (promotedPiece != default)</a>
+<a name="ln1071">            {</a>
+<a name="ln1072">                newPiece = promotedPiece;</a>
+<a name="ln1073">            }</a>
+<a name="ln1074"> </a>
+<a name="ln1075">            PieceBitBoards[newPiece].PopBit(targetSquare);</a>
+<a name="ln1076">            OccupancyBitBoards[(int)Side].PopBit(targetSquare);</a>
+<a name="ln1077"> </a>
+<a name="ln1078">            PieceBitBoards[piece].SetBit(sourceSquare);</a>
+<a name="ln1079">            OccupancyBitBoards[(int)Side].SetBit(sourceSquare);</a>
+<a name="ln1080"> </a>
+<a name="ln1081">            UniqueIdentifier ^=</a>
+<a name="ln1082">                ZobristTable.SideHash()</a>
+<a name="ln1083">                ^ ZobristTable.PieceHash(sourceSquare, piece)</a>
+<a name="ln1084">                ^ ZobristTable.PieceHash(targetSquare, newPiece)</a>
+<a name="ln1085">                ^ ZobristTable.EnPassantHash((int)EnPassant)        // We clear the existing enpassant square, if any</a>
+<a name="ln1086">                ^ ZobristTable.CastleHash(Castle);                  // We clear the existing castling rights</a>
+<a name="ln1087"> </a>
+<a name="ln1088">            EnPassant = BoardSquare.noSquare;</a>
+<a name="ln1089">            if (move.IsCapture())</a>
+<a name="ln1090">            {</a>
+<a name="ln1091">                var oppositeSideOffset = Utils.PieceOffset(oppositeSide);</a>
+<a name="ln1092">                var oppositePawnIndex = (int)Piece.P + oppositeSideOffset;</a>
+<a name="ln1093"> </a>
+<a name="ln1094">                if (move.IsEnPassant())</a>
+<a name="ln1095">                {</a>
+<a name="ln1096">                    var capturedPawnSquare = Constants.EnPassantCaptureSquares[targetSquare];</a>
+<a name="ln1097">                    Utils.Assert(OccupancyBitBoards[(int)Side.Both].GetBit(capturedPawnSquare) == default,</a>
+<a name="ln1098">                        $&quot;Expected empty {capturedPawnSquare}&quot;);</a>
+<a name="ln1099"> </a>
+<a name="ln1100">                    PieceBitBoards[oppositePawnIndex].SetBit(capturedPawnSquare);</a>
+<a name="ln1101">                    OccupancyBitBoards[oppositeSide].SetBit(capturedPawnSquare);</a>
+<a name="ln1102">                    UniqueIdentifier ^= ZobristTable.PieceHash(capturedPawnSquare, oppositePawnIndex);</a>
+<a name="ln1103">                }</a>
+<a name="ln1104">                else</a>
+<a name="ln1105">                {</a>
+<a name="ln1106">                    PieceBitBoards[gameState.CapturedPiece].SetBit(targetSquare);</a>
+<a name="ln1107">                    UniqueIdentifier ^= ZobristTable.PieceHash(targetSquare, gameState.CapturedPiece);</a>
+<a name="ln1108"> </a>
+<a name="ln1109">                    OccupancyBitBoards[oppositeSide].SetBit(targetSquare);</a>
+<a name="ln1110">                }</a>
+<a name="ln1111">            }</a>
+<a name="ln1112">            else if (move.IsDoublePawnPush())</a>
+<a name="ln1113">            {</a>
+<a name="ln1114">                EnPassant = gameState.EnPassant;</a>
+<a name="ln1115">                UniqueIdentifier ^= ZobristTable.EnPassantHash((int)EnPassant);</a>
+<a name="ln1116">            }</a>
+<a name="ln1117">            else if (move.IsShortCastle())</a>
+<a name="ln1118">            {</a>
+<a name="ln1119">                var rookSourceSquare = Utils.ShortCastleRookSourceSquare(Side);</a>
+<a name="ln1120">                var rookTargetSquare = Utils.ShortCastleRookTargetSquare(Side);</a>
+<a name="ln1121">                var rookIndex = (int)Piece.R + offset;</a>
+<a name="ln1122"> </a>
+<a name="ln1123">                PieceBitBoards[rookIndex].SetBit(rookSourceSquare);</a>
+<a name="ln1124">                OccupancyBitBoards[(int)Side].SetBit(rookSourceSquare);</a>
+<a name="ln1125"> </a>
+<a name="ln1126">                PieceBitBoards[rookIndex].PopBit(rookTargetSquare);</a>
+<a name="ln1127">                OccupancyBitBoards[(int)Side].PopBit(rookTargetSquare);</a>
+<a name="ln1128"> </a>
+<a name="ln1129">                UniqueIdentifier ^=</a>
+<a name="ln1130">                    ZobristTable.PieceHash(rookSourceSquare, rookIndex)</a>
+<a name="ln1131">                    ^ ZobristTable.PieceHash(rookTargetSquare, rookIndex);</a>
+<a name="ln1132">            }</a>
+<a name="ln1133">            else if (move.IsLongCastle())</a>
+<a name="ln1134">            {</a>
+<a name="ln1135">                var rookSourceSquare = Utils.LongCastleRookSourceSquare(Side);</a>
+<a name="ln1136">                var rookTargetSquare = Utils.LongCastleRookTargetSquare(Side);</a>
+<a name="ln1137">                var rookIndex = (int)Piece.R + offset;</a>
+<a name="ln1138"> </a>
+<a name="ln1139">                PieceBitBoards[rookIndex].SetBit(rookSourceSquare);</a>
+<a name="ln1140">                OccupancyBitBoards[(int)Side].SetBit(rookSourceSquare);</a>
+<a name="ln1141"> </a>
+<a name="ln1142">                PieceBitBoards[rookIndex].PopBit(rookTargetSquare);</a>
+<a name="ln1143">                OccupancyBitBoards[(int)Side].PopBit(rookTargetSquare);</a>
+<a name="ln1144"> </a>
+<a name="ln1145">                UniqueIdentifier ^=</a>
+<a name="ln1146">                    ZobristTable.PieceHash(rookSourceSquare, rookIndex)</a>
+<a name="ln1147">                    ^ ZobristTable.PieceHash(rookTargetSquare, rookIndex);</a>
+<a name="ln1148">            }</a>
+<a name="ln1149"> </a>
+<a name="ln1150">            OccupancyBitBoards[(int)Side.Both] = OccupancyBitBoards[(int)Side.White] | OccupancyBitBoards[(int)Side.Black];</a>
+<a name="ln1151"> </a>
+<a name="ln1152">            // Updating castling rights</a>
+<a name="ln1153">            Castle = gameState.Castle;</a>
+<a name="ln1154"> </a>
+<a name="ln1155">            UniqueIdentifier ^= ZobristTable.CastleHash(Castle);</a>
+<a name="ln1156">        }</a>
+<a name="ln1157"> </a>
+<a name="ln1158">        [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1159">        public void MakeNullMove()</a>
+<a name="ln1160">        {</a>
+<a name="ln1161">            Side = (Side)Utils.OppositeSide(Side);</a>
+<a name="ln1162">            var oldEnPassant = EnPassant;</a>
+<a name="ln1163">            EnPassant = BoardSquare.noSquare;</a>
+<a name="ln1164"> </a>
+<a name="ln1165">            UniqueIdentifier ^=</a>
+<a name="ln1166">                ZobristTable.SideHash()</a>
+<a name="ln1167">                ^ ZobristTable.EnPassantHash((int)oldEnPassant);</a>
+<a name="ln1168">        }</a>
+<a name="ln1169"> </a>
+<a name="ln1170">        [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1171">        public void UnMakeNullMove(MakeMoveGameState gameState)</a>
+<a name="ln1172">        {</a>
+<a name="ln1173">            Side = (Side)Utils.OppositeSide(Side);</a>
+<a name="ln1174">            EnPassant = gameState.EnPassant;</a>
+<a name="ln1175"> </a>
+<a name="ln1176">            UniqueIdentifier ^=</a>
+<a name="ln1177">                ZobristTable.SideHash()</a>
+<a name="ln1178">                ^ ZobristTable.EnPassantHash((int)EnPassant);</a>
+<a name="ln1179">        }</a>
+<a name="ln1180"> </a>
+<a name="ln1181">        /// &lt;summary&gt;</a>
+<a name="ln1182">        /// False if any of the kings has been captured, or if the opponent king is in check.</a>
+<a name="ln1183">        /// &lt;/summary&gt;</a>
+<a name="ln1184">        [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1185">        internal readonly bool IsValid()</a>
+<a name="ln1186">        {</a>
+<a name="ln1187">            var kingBitBoard = PieceBitBoards[(int)Piece.K + Utils.PieceOffset(Side)];</a>
+<a name="ln1188">            var kingSquare = kingBitBoard == default ? -1 : kingBitBoard.GetLS1BIndex();</a>
+<a name="ln1189"> </a>
+<a name="ln1190">            var oppositeKingBitBoard = PieceBitBoards[(int)Piece.K + Utils.PieceOffset((Side)Utils.OppositeSide(Side))];</a>
+<a name="ln1191">            var oppositeKingSquare = oppositeKingBitBoard == default ? -1 : oppositeKingBitBoard.GetLS1BIndex();</a>
+<a name="ln1192"> </a>
+<a name="ln1193">            return kingSquare &gt;= 0 &amp;&amp; oppositeKingSquare &gt;= 0</a>
+<a name="ln1194">                &amp;&amp; !MakeMoveAttacks.IsSquaredAttacked(oppositeKingSquare, Side, PieceBitBoards, OccupancyBitBoards);</a>
+<a name="ln1195">        }</a>
+<a name="ln1196"> </a>
+<a name="ln1197">        /// &lt;summary&gt;</a>
+<a name="ln1198">        /// Lightweight version of &lt;see cref=&quot;IsValid&quot;/&gt;</a>
+<a name="ln1199">        /// False if the opponent king is in check.</a>
+<a name="ln1200">        /// This method is meant to be invoked only after &lt;see cref=&quot;Position.MakeMove(int)&quot;/&gt;</a>
+<a name="ln1201">        /// &lt;/summary&gt;</a>
+<a name="ln1202">        [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1203">        public readonly bool WasProduceByAValidMove()</a>
+<a name="ln1204">        {</a>
+<a name="ln1205">            var oppositeKingBitBoard = PieceBitBoards[(int)Piece.K + Utils.PieceOffset((Side)Utils.OppositeSide(Side))];</a>
+<a name="ln1206">            var oppositeKingSquare = oppositeKingBitBoard == default ? -1 : oppositeKingBitBoard.GetLS1BIndex();</a>
+<a name="ln1207"> </a>
+<a name="ln1208">            return oppositeKingSquare &gt;= 0 &amp;&amp; !MakeMoveAttacks.IsSquaredAttacked(oppositeKingSquare, Side, PieceBitBoards, OccupancyBitBoards);</a>
+<a name="ln1209">        }</a>
+<a name="ln1210"> </a>
+<a name="ln1211">        [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1212">        public readonly IEnumerable&lt;Move&gt; AllPossibleMoves(Move[]? movePool = null) =&gt; MakeMoveMoveGenerator.GenerateAllMoves(this, movePool);</a>
+<a name="ln1213">    }</a>
+<a name="ln1214"> </a>
+<a name="ln1215">    public readonly struct MakeMoveGameState</a>
+<a name="ln1216">    {</a>
+<a name="ln1217">        public readonly byte Castle;</a>
+<a name="ln1218"> </a>
+<a name="ln1219">        public readonly int CapturedPiece;</a>
+<a name="ln1220"> </a>
+<a name="ln1221">        public readonly BoardSquare EnPassant;</a>
+<a name="ln1222"> </a>
+<a name="ln1223">        public MakeMoveGameState(int capturedPiece, byte castle, BoardSquare enpassant)</a>
+<a name="ln1224">        {</a>
+<a name="ln1225">            CapturedPiece = capturedPiece;</a>
+<a name="ln1226">            Castle = castle;</a>
+<a name="ln1227">            EnPassant = enpassant;</a>
+<a name="ln1228">        }</a>
+<a name="ln1229">    }</a>
+<a name="ln1230"> </a>
+<a name="ln1231">#pragma warning disable S1104 // Fields should not have public accessibility</a>
+<a name="ln1232">    public struct MakeMoveGameState_PassOut</a>
+<a name="ln1233">    {</a>
+<a name="ln1234">        public int CapturedPiece;</a>
+<a name="ln1235"> </a>
+<a name="ln1236">        public byte Castle;</a>
+<a name="ln1237"> </a>
+<a name="ln1238">        public BoardSquare EnPassant;</a>
+<a name="ln1239"> </a>
+<a name="ln1240">        public MakeMoveGameState_PassOut(int capturedPiece, byte castle, BoardSquare enpassant)</a>
+<a name="ln1241">        {</a>
+<a name="ln1242">            CapturedPiece = capturedPiece;</a>
+<a name="ln1243">            Castle = castle;</a>
+<a name="ln1244">            EnPassant = enpassant;</a>
+<a name="ln1245">        }</a>
+<a name="ln1246">    }</a>
+<a name="ln1247">#pragma warning restore IDE0290 // Use primary constructor</a>
+<a name="ln1248"> </a>
+<a name="ln1249">    public struct MakeMoveGameState_PassRef</a>
+<a name="ln1250">    {</a>
+<a name="ln1251">#pragma warning disable S1104 // Fields should not have public accessibility</a>
+<a name="ln1252">        public int CapturedPiece;</a>
+<a name="ln1253"> </a>
+<a name="ln1254">        public byte Castle;</a>
+<a name="ln1255"> </a>
+<a name="ln1256">        public BoardSquare EnPassant;</a>
+<a name="ln1257">#pragma warning restore S1104 // Fields should not have public accessibility</a>
+<a name="ln1258">    }</a>
+<a name="ln1259"> </a>
+<a name="ln1260">    #region</a>
+<a name="ln1261"> </a>
+<a name="ln1262">    public static class MakeMoveZobristTable</a>
+<a name="ln1263">    {</a>
+<a name="ln1264">        private static readonly ulong[,] _table = Initialize();</a>
+<a name="ln1265"> </a>
+<a name="ln1266">        [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1267">        public static ulong PieceHash(int boardSquare, int piece) =&gt; _table[boardSquare, piece];</a>
+<a name="ln1268"> </a>
+<a name="ln1269">        /// &lt;summary&gt;</a>
+<a name="ln1270">        /// Uses &lt;see cref=&quot;Piece.P&quot;/&gt; and squares &lt;see cref=&quot;BoardSquare.a1&quot;/&gt;-&lt;see cref=&quot;BoardSquare.h1&quot;/&gt;</a>
+<a name="ln1271">        /// &lt;/summary&gt;</a>
+<a name="ln1272">        [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1273">        public static ulong EnPassantHash(int enPassantSquare)</a>
+<a name="ln1274">        {</a>
+<a name="ln1275">            if (enPassantSquare == (int)BoardSquare.noSquare)</a>
+<a name="ln1276">            {</a>
+<a name="ln1277">                return default;</a>
+<a name="ln1278">            }</a>
+<a name="ln1279"> </a>
+<a name="ln1280">            var file = enPassantSquare % 8;</a>
+<a name="ln1281"> </a>
+<a name="ln1282">            return _table[file, (int)Piece.P];</a>
+<a name="ln1283">        }</a>
+<a name="ln1284"> </a>
+<a name="ln1285">        /// &lt;summary&gt;</a>
+<a name="ln1286">        /// Uses &lt;see cref=&quot;Piece.p&quot;/&gt; and &lt;see cref=&quot;BoardSquare.h8&quot;/&gt;</a>
+<a name="ln1287">        /// &lt;/summary&gt;</a>
+<a name="ln1288">        [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1289">        public static ulong SideHash()</a>
+<a name="ln1290">        {</a>
+<a name="ln1291">            return _table[(int)BoardSquare.h8, (int)Piece.p];</a>
+<a name="ln1292">        }</a>
+<a name="ln1293"> </a>
+<a name="ln1294">        /// &lt;summary&gt;</a>
+<a name="ln1295">        /// Uses &lt;see cref=&quot;Piece.p&quot;/&gt; and</a>
+<a name="ln1296">        /// &lt;see cref=&quot;BoardSquare.a8&quot;/&gt; for &lt;see cref=&quot;CastlingRights.WK&quot;/&gt;, &lt;see cref=&quot;BoardSquare.b8&quot;/&gt; for &lt;see cref=&quot;CastlingRights.WQ&quot;/&gt;</a>
+<a name="ln1297">        /// &lt;see cref=&quot;BoardSquare.c8&quot;/&gt; for &lt;see cref=&quot;CastlingRights.BK&quot;/&gt;, &lt;see cref=&quot;BoardSquare.d8&quot;/&gt; for &lt;see cref=&quot;CastlingRights.BQ&quot;/&gt;</a>
+<a name="ln1298">        /// &lt;/summary&gt;</a>
+<a name="ln1299">        [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1300">        public static ulong CastleHash(int castle)</a>
+<a name="ln1301">        {</a>
+<a name="ln1302">            ulong combinedHash = 0;</a>
+<a name="ln1303"> </a>
+<a name="ln1304">            if ((castle &amp; (int)CastlingRights.WK) != default)</a>
+<a name="ln1305">            {</a>
+<a name="ln1306">                combinedHash ^= _table[(int)BoardSquare.a8, (int)Piece.p];        // a8</a>
+<a name="ln1307">            }</a>
+<a name="ln1308"> </a>
+<a name="ln1309">            if ((castle &amp; (int)CastlingRights.WQ) != default)</a>
+<a name="ln1310">            {</a>
+<a name="ln1311">                combinedHash ^= _table[(int)BoardSquare.b8, (int)Piece.p];        // b8</a>
+<a name="ln1312">            }</a>
+<a name="ln1313"> </a>
+<a name="ln1314">            if ((castle &amp; (int)CastlingRights.BK) != default)</a>
+<a name="ln1315">            {</a>
+<a name="ln1316">                combinedHash ^= _table[(int)BoardSquare.c8, (int)Piece.p];        // c8</a>
+<a name="ln1317">            }</a>
+<a name="ln1318"> </a>
+<a name="ln1319">            if ((castle &amp; (int)CastlingRights.BQ) != default)</a>
+<a name="ln1320">            {</a>
+<a name="ln1321">                combinedHash ^= _table[(int)BoardSquare.d8, (int)Piece.p];        // d8</a>
+<a name="ln1322">            }</a>
+<a name="ln1323"> </a>
+<a name="ln1324">            return combinedHash;</a>
+<a name="ln1325">        }</a>
+<a name="ln1326"> </a>
+<a name="ln1327">        /// &lt;summary&gt;</a>
+<a name="ln1328">        /// Calculates from scratch the hash of a position</a>
+<a name="ln1329">        /// &lt;/summary&gt;</a>
+<a name="ln1330">        [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1331">        public static ulong PositionHash(MakeMovePosition position)</a>
+<a name="ln1332">        {</a>
+<a name="ln1333">            ulong positionHash = 0;</a>
+<a name="ln1334"> </a>
+<a name="ln1335">            for (int squareIndex = 0; squareIndex &lt; 64; ++squareIndex)</a>
+<a name="ln1336">            {</a>
+<a name="ln1337">                for (int pieceIndex = 0; pieceIndex &lt; 12; ++pieceIndex)</a>
+<a name="ln1338">                {</a>
+<a name="ln1339">                    if (position.PieceBitBoards[pieceIndex].GetBit(squareIndex))</a>
+<a name="ln1340">                    {</a>
+<a name="ln1341">                        positionHash ^= PieceHash(squareIndex, pieceIndex);</a>
+<a name="ln1342">                    }</a>
+<a name="ln1343">                }</a>
+<a name="ln1344">            }</a>
+<a name="ln1345"> </a>
+<a name="ln1346">            positionHash ^= EnPassantHash((int)position.EnPassant)</a>
+<a name="ln1347">                ^ SideHash()</a>
+<a name="ln1348">                ^ CastleHash(position.Castle);</a>
+<a name="ln1349"> </a>
+<a name="ln1350">            return positionHash;</a>
+<a name="ln1351">        }</a>
+<a name="ln1352"> </a>
+<a name="ln1353">        /// &lt;summary&gt;</a>
+<a name="ln1354">        /// Initializes Zobrist table (long[64, 12])</a>
+<a name="ln1355">        /// &lt;/summary&gt;</a>
+<a name="ln1356">        [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1357">        internal static ulong[,] Initialize()</a>
+<a name="ln1358">        {</a>
+<a name="ln1359">            var zobristTable = new ulong[64, 12];</a>
+<a name="ln1360">            var randomInstance = new LynxRandom(int.MaxValue);</a>
+<a name="ln1361"> </a>
+<a name="ln1362">            for (int squareIndex = 0; squareIndex &lt; 64; ++squareIndex)</a>
+<a name="ln1363">            {</a>
+<a name="ln1364">                for (int pieceIndex = 0; pieceIndex &lt; 12; ++pieceIndex)</a>
+<a name="ln1365">                {</a>
+<a name="ln1366">                    zobristTable[squareIndex, pieceIndex] = randomInstance.NextUInt64();</a>
+<a name="ln1367">                }</a>
+<a name="ln1368">            }</a>
+<a name="ln1369"> </a>
+<a name="ln1370">            return zobristTable;</a>
+<a name="ln1371">        }</a>
+<a name="ln1372">    }</a>
+<a name="ln1373"> </a>
+<a name="ln1374">    public static class MakeMoveMoveGenerator</a>
+<a name="ln1375">    {</a>
+<a name="ln1376">#if DEBUG</a>
+<a name="ln1377">        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();</a>
+<a name="ln1378">#endif</a>
+<a name="ln1379"> </a>
+<a name="ln1380">        /// &lt;summary&gt;</a>
+<a name="ln1381">        /// Indexed by &lt;see cref=&quot;Piece&quot;/&gt;.</a>
+<a name="ln1382">        /// Checks are not considered</a>
+<a name="ln1383">        /// &lt;/summary&gt;</a>
+<a name="ln1384">        private static readonly Func&lt;int, BitBoard, BitBoard&gt;[] _pieceAttacks =</a>
+<a name="ln1385">        [</a>
+<a name="ln1386">            (int origin, BitBoard _) =&gt; MakeMoveAttacks.PawnAttacks[(int)Side.White][origin],</a>
+<a name="ln1387">            (int origin, BitBoard _) =&gt; MakeMoveAttacks.KnightAttacks[origin],</a>
+<a name="ln1388">            MakeMoveAttacks.BishopAttacks,</a>
+<a name="ln1389">            MakeMoveAttacks.RookAttacks,</a>
+<a name="ln1390">            MakeMoveAttacks.QueenAttacks,</a>
+<a name="ln1391">            (int origin, BitBoard _) =&gt; MakeMoveAttacks.KingAttacks[origin],</a>
+<a name="ln1392"> </a>
+<a name="ln1393">            (int origin, BitBoard _) =&gt; MakeMoveAttacks.PawnAttacks[(int)Side.Black][origin],</a>
+<a name="ln1394">            (int origin, BitBoard _) =&gt; MakeMoveAttacks.KnightAttacks[origin],</a>
+<a name="ln1395">            MakeMoveAttacks.BishopAttacks,</a>
+<a name="ln1396">            MakeMoveAttacks.RookAttacks,</a>
+<a name="ln1397">            MakeMoveAttacks.QueenAttacks,</a>
+<a name="ln1398">            (int origin, BitBoard _) =&gt; MakeMoveAttacks.KingAttacks[origin],</a>
+<a name="ln1399">        ];</a>
+<a name="ln1400"> </a>
+<a name="ln1401">        /// &lt;summary&gt;</a>
+<a name="ln1402">        /// Generates all psuedo-legal moves from &lt;paramref name=&quot;position&quot;/&gt;, ordered by &lt;see cref=&quot;Move.Score(Position)&quot;/&gt;</a>
+<a name="ln1403">        /// &lt;/summary&gt;</a>
+<a name="ln1404">        /// &lt;param name=&quot;capturesOnly&quot;&gt;Filters out all moves but captures&lt;/param&gt;</a>
+<a name="ln1405">        [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1406">        public static IEnumerable&lt;Move&gt; GenerateAllMoves(MakeMovePosition position, Move[]? movePool = null, bool capturesOnly = false)</a>
+<a name="ln1407">        {</a>
+<a name="ln1408">#if DEBUG</a>
+<a name="ln1409">            if (position.Side == Side.Both)</a>
+<a name="ln1410">            {</a>
+<a name="ln1411">                return [];</a>
+<a name="ln1412">            }</a>
+<a name="ln1413">#endif</a>
+<a name="ln1414"> </a>
+<a name="ln1415">            movePool ??= new Move[Constants.MaxNumberOfPossibleMovesInAPosition];</a>
+<a name="ln1416">            int localIndex = 0;</a>
+<a name="ln1417"> </a>
+<a name="ln1418">            var offset = Utils.PieceOffset(position.Side);</a>
+<a name="ln1419"> </a>
+<a name="ln1420">            GeneratePawnMoves(ref localIndex, movePool, position, offset, capturesOnly);</a>
+<a name="ln1421">            GenerateCastlingMoves(ref localIndex, movePool, position, offset);</a>
+<a name="ln1422">            GeneratePieceMoves(ref localIndex, movePool, (int)Piece.K + offset, position, capturesOnly);</a>
+<a name="ln1423">            GeneratePieceMoves(ref localIndex, movePool, (int)Piece.N + offset, position, capturesOnly);</a>
+<a name="ln1424">            GeneratePieceMoves(ref localIndex, movePool, (int)Piece.B + offset, position, capturesOnly);</a>
+<a name="ln1425">            GeneratePieceMoves(ref localIndex, movePool, (int)Piece.R + offset, position, capturesOnly);</a>
+<a name="ln1426">            GeneratePieceMoves(ref localIndex, movePool, (int)Piece.Q + offset, position, capturesOnly);</a>
+<a name="ln1427"> </a>
+<a name="ln1428">            return movePool.Take(localIndex);</a>
+<a name="ln1429">        }</a>
+<a name="ln1430"> </a>
+<a name="ln1431">        [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1432">        internal static void GeneratePawnMoves(ref int localIndex, Move[] movePool, MakeMovePosition position, int offset, bool capturesOnly = false)</a>
+<a name="ln1433">        {</a>
+<a name="ln1434">            int sourceSquare, targetSquare;</a>
+<a name="ln1435"> </a>
+<a name="ln1436">            var piece = (int)Piece.P + offset;</a>
+<a name="ln1437">            var pawnPush = +8 - ((int)position.Side * 16);          // position.Side == Side.White ? -8 : +8</a>
+<a name="ln1438">            int oppositeSide = Utils.OppositeSide(position.Side);   // position.Side == Side.White ? (int)Side.Black : (int)Side.White</a>
+<a name="ln1439">            var bitboard = position.PieceBitBoards[piece];</a>
+<a name="ln1440"> </a>
+<a name="ln1441">            while (bitboard != default)</a>
+<a name="ln1442">            {</a>
+<a name="ln1443">                sourceSquare = bitboard.GetLS1BIndex();</a>
+<a name="ln1444">                bitboard.ResetLS1B();</a>
+<a name="ln1445"> </a>
+<a name="ln1446">                var sourceRank = (sourceSquare / 8) + 1;</a>
+<a name="ln1447"> </a>
+<a name="ln1448">#if DEBUG</a>
+<a name="ln1449">                if (sourceRank == 1 || sourceRank == 8)</a>
+<a name="ln1450">                {</a>
+<a name="ln1451">                    _logger.Warn(&quot;There's a non-promoted {0} pawn in rank {1}&quot;, position.Side, sourceRank);</a>
+<a name="ln1452">                    continue;</a>
+<a name="ln1453">                }</a>
+<a name="ln1454">#endif</a>
+<a name="ln1455"> </a>
+<a name="ln1456">                // Pawn pushes</a>
+<a name="ln1457">                var singlePushSquare = sourceSquare + pawnPush;</a>
+<a name="ln1458">                if (!position.OccupancyBitBoards[2].GetBit(singlePushSquare))</a>
+<a name="ln1459">                {</a>
+<a name="ln1460">                    // Single pawn push</a>
+<a name="ln1461">                    var targetRank = (singlePushSquare / 8) + 1;</a>
+<a name="ln1462">                    if (targetRank == 1 || targetRank == 8)  // Promotion</a>
+<a name="ln1463">                    {</a>
+<a name="ln1464">                        movePool[localIndex++] = MoveExtensions.EncodePromotion(sourceSquare, singlePushSquare, piece, promotedPiece: (int)Piece.Q + offset);</a>
+<a name="ln1465">                        movePool[localIndex++] = MoveExtensions.EncodePromotion(sourceSquare, singlePushSquare, piece, promotedPiece: (int)Piece.R + offset);</a>
+<a name="ln1466">                        movePool[localIndex++] = MoveExtensions.EncodePromotion(sourceSquare, singlePushSquare, piece, promotedPiece: (int)Piece.N + offset);</a>
+<a name="ln1467">                        movePool[localIndex++] = MoveExtensions.EncodePromotion(sourceSquare, singlePushSquare, piece, promotedPiece: (int)Piece.B + offset);</a>
+<a name="ln1468">                    }</a>
+<a name="ln1469">                    else if (!capturesOnly)</a>
+<a name="ln1470">                    {</a>
+<a name="ln1471">                        movePool[localIndex++] = MoveExtensions.Encode(sourceSquare, singlePushSquare, piece);</a>
+<a name="ln1472">                    }</a>
+<a name="ln1473"> </a>
+<a name="ln1474">                    // Double pawn push</a>
+<a name="ln1475">                    // Inside of the if because singlePush square cannot be occupied either</a>
+<a name="ln1476">                    if (!capturesOnly)</a>
+<a name="ln1477">                    {</a>
+<a name="ln1478">                        var doublePushSquare = sourceSquare + (2 * pawnPush);</a>
+<a name="ln1479">                        if (!position.OccupancyBitBoards[2].GetBit(doublePushSquare)</a>
+<a name="ln1480">                            &amp;&amp; ((sourceRank == 2 &amp;&amp; position.Side == Side.Black) || (sourceRank == 7 &amp;&amp; position.Side == Side.White)))</a>
+<a name="ln1481">                        {</a>
+<a name="ln1482">                            movePool[localIndex++] = MoveExtensions.EncodeDoublePawnPush(sourceSquare, doublePushSquare, piece);</a>
+<a name="ln1483">                        }</a>
+<a name="ln1484">                    }</a>
+<a name="ln1485">                }</a>
+<a name="ln1486"> </a>
+<a name="ln1487">                var attacks = MakeMoveAttacks.PawnAttacks[(int)position.Side][sourceSquare];</a>
+<a name="ln1488"> </a>
+<a name="ln1489">                // En passant</a>
+<a name="ln1490">                if (position.EnPassant != BoardSquare.noSquare &amp;&amp; attacks.GetBit(position.EnPassant))</a>
+<a name="ln1491">                // We assume that position.OccupancyBitBoards[oppositeOccupancy].GetBit(targetSquare + singlePush) == true</a>
+<a name="ln1492">                {</a>
+<a name="ln1493">                    movePool[localIndex++] = MoveExtensions.EncodeEnPassant(sourceSquare, (int)position.EnPassant, piece);</a>
+<a name="ln1494">                }</a>
+<a name="ln1495"> </a>
+<a name="ln1496">                // Captures</a>
+<a name="ln1497">                var attackedSquares = attacks &amp; position.OccupancyBitBoards[oppositeSide];</a>
+<a name="ln1498">                while (attackedSquares != default)</a>
+<a name="ln1499">                {</a>
+<a name="ln1500">                    targetSquare = attackedSquares.GetLS1BIndex();</a>
+<a name="ln1501">                    attackedSquares.ResetLS1B();</a>
+<a name="ln1502"> </a>
+<a name="ln1503">                    var targetRank = (targetSquare / 8) + 1;</a>
+<a name="ln1504">                    if (targetRank == 1 || targetRank == 8)  // Capture with promotion</a>
+<a name="ln1505">                    {</a>
+<a name="ln1506">                        movePool[localIndex++] = MoveExtensions.EncodePromotion(sourceSquare, targetSquare, piece, promotedPiece: (int)Piece.Q + offset);</a>
+<a name="ln1507">                        movePool[localIndex++] = MoveExtensions.EncodePromotion(sourceSquare, targetSquare, piece, promotedPiece: (int)Piece.R + offset);</a>
+<a name="ln1508">                        movePool[localIndex++] = MoveExtensions.EncodePromotion(sourceSquare, targetSquare, piece, promotedPiece: (int)Piece.N + offset);</a>
+<a name="ln1509">                        movePool[localIndex++] = MoveExtensions.EncodePromotion(sourceSquare, targetSquare, piece, promotedPiece: (int)Piece.B + offset);</a>
+<a name="ln1510">                    }</a>
+<a name="ln1511">                    else</a>
+<a name="ln1512">                    {</a>
+<a name="ln1513">                        movePool[localIndex++] = MoveExtensions.EncodeCapture(sourceSquare, targetSquare, piece, position.Board[targetSquare]);</a>
+<a name="ln1514">                    }</a>
+<a name="ln1515">                }</a>
+<a name="ln1516">            }</a>
+<a name="ln1517">        }</a>
+<a name="ln1518"> </a>
+<a name="ln1519">        /// &lt;summary&gt;</a>
+<a name="ln1520">        /// Obvious moves that put the king in check have been discarded, but the rest still need to be discarded</a>
+<a name="ln1521">        /// see FEN position &quot;8/8/8/2bbb3/2bKb3/2bbb3/8/8 w - - 0 1&quot;, where 4 legal moves (corners) are found</a>
+<a name="ln1522">        /// &lt;/summary&gt;</a>
+<a name="ln1523">        [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1524">        internal static void GenerateCastlingMoves(ref int localIndex, Move[] movePool, MakeMovePosition position, int offset)</a>
+<a name="ln1525">        {</a>
+<a name="ln1526">            var piece = (int)Piece.K + offset;</a>
+<a name="ln1527">            var oppositeSide = (Side)Utils.OppositeSide(position.Side);</a>
+<a name="ln1528"> </a>
+<a name="ln1529">            int sourceSquare = position.PieceBitBoards[piece].GetLS1BIndex(); // There's for sure only one</a>
+<a name="ln1530"> </a>
+<a name="ln1531">            // Castles</a>
+<a name="ln1532">            if (position.Castle != default)</a>
+<a name="ln1533">            {</a>
+<a name="ln1534">                if (position.Side == Side.White)</a>
+<a name="ln1535">                {</a>
+<a name="ln1536">                    bool ise1Attacked = MakeMoveAttacks.IsSquaredAttackedBySide((int)BoardSquare.e1, position, oppositeSide);</a>
+<a name="ln1537">                    if (((position.Castle &amp; (int)CastlingRights.WK) != default)</a>
+<a name="ln1538">                        &amp;&amp; !position.OccupancyBitBoards[(int)Side.Both].GetBit(BoardSquare.f1)</a>
+<a name="ln1539">                        &amp;&amp; !position.OccupancyBitBoards[(int)Side.Both].GetBit(BoardSquare.g1)</a>
+<a name="ln1540">                        &amp;&amp; !ise1Attacked</a>
+<a name="ln1541">                        &amp;&amp; !MakeMoveAttacks.IsSquaredAttackedBySide((int)BoardSquare.f1, position, oppositeSide)</a>
+<a name="ln1542">                        &amp;&amp; !MakeMoveAttacks.IsSquaredAttackedBySide((int)BoardSquare.g1, position, oppositeSide))</a>
+<a name="ln1543">                    {</a>
+<a name="ln1544">                        movePool[localIndex++] = MoveExtensions.EncodeShortCastle(sourceSquare, Constants.WhiteShortCastleKingSquare, piece);</a>
+<a name="ln1545">                    }</a>
+<a name="ln1546"> </a>
+<a name="ln1547">                    if (((position.Castle &amp; (int)CastlingRights.WQ) != default)</a>
+<a name="ln1548">                        &amp;&amp; !position.OccupancyBitBoards[(int)Side.Both].GetBit(BoardSquare.d1)</a>
+<a name="ln1549">                        &amp;&amp; !position.OccupancyBitBoards[(int)Side.Both].GetBit(BoardSquare.c1)</a>
+<a name="ln1550">                        &amp;&amp; !position.OccupancyBitBoards[(int)Side.Both].GetBit(BoardSquare.b1)</a>
+<a name="ln1551">                        &amp;&amp; !ise1Attacked</a>
+<a name="ln1552">                        &amp;&amp; !MakeMoveAttacks.IsSquaredAttackedBySide((int)BoardSquare.d1, position, oppositeSide)</a>
+<a name="ln1553">                        &amp;&amp; !MakeMoveAttacks.IsSquaredAttackedBySide((int)BoardSquare.c1, position, oppositeSide))</a>
+<a name="ln1554">                    {</a>
+<a name="ln1555">                        movePool[localIndex++] = MoveExtensions.EncodeLongCastle(sourceSquare, Constants.WhiteLongCastleKingSquare, piece);</a>
+<a name="ln1556">                    }</a>
+<a name="ln1557">                }</a>
+<a name="ln1558">                else</a>
+<a name="ln1559">                {</a>
+<a name="ln1560">                    bool ise8Attacked = MakeMoveAttacks.IsSquaredAttackedBySide((int)BoardSquare.e8, position, oppositeSide);</a>
+<a name="ln1561">                    if (((position.Castle &amp; (int)CastlingRights.BK) != default)</a>
+<a name="ln1562">                        &amp;&amp; !position.OccupancyBitBoards[(int)Side.Both].GetBit(BoardSquare.f8)</a>
+<a name="ln1563">                        &amp;&amp; !position.OccupancyBitBoards[(int)Side.Both].GetBit(BoardSquare.g8)</a>
+<a name="ln1564">                        &amp;&amp; !ise8Attacked</a>
+<a name="ln1565">                        &amp;&amp; !MakeMoveAttacks.IsSquaredAttackedBySide((int)BoardSquare.f8, position, oppositeSide)</a>
+<a name="ln1566">                        &amp;&amp; !MakeMoveAttacks.IsSquaredAttackedBySide((int)BoardSquare.g8, position, oppositeSide))</a>
+<a name="ln1567">                    {</a>
+<a name="ln1568">                        movePool[localIndex++] = MoveExtensions.EncodeShortCastle(sourceSquare, Constants.BlackShortCastleKingSquare, piece);</a>
+<a name="ln1569">                    }</a>
+<a name="ln1570"> </a>
+<a name="ln1571">                    if (((position.Castle &amp; (int)CastlingRights.BQ) != default)</a>
+<a name="ln1572">                        &amp;&amp; !position.OccupancyBitBoards[(int)Side.Both].GetBit(BoardSquare.d8)</a>
+<a name="ln1573">                        &amp;&amp; !position.OccupancyBitBoards[(int)Side.Both].GetBit(BoardSquare.c8)</a>
+<a name="ln1574">                        &amp;&amp; !position.OccupancyBitBoards[(int)Side.Both].GetBit(BoardSquare.b8)</a>
+<a name="ln1575">                        &amp;&amp; !ise8Attacked</a>
+<a name="ln1576">                        &amp;&amp; !MakeMoveAttacks.IsSquaredAttackedBySide((int)BoardSquare.d8, position, oppositeSide)</a>
+<a name="ln1577">                        &amp;&amp; !MakeMoveAttacks.IsSquaredAttackedBySide((int)BoardSquare.c8, position, oppositeSide))</a>
+<a name="ln1578">                    {</a>
+<a name="ln1579">                        movePool[localIndex++] = MoveExtensions.EncodeLongCastle(sourceSquare, Constants.BlackLongCastleKingSquare, piece);</a>
+<a name="ln1580">                    }</a>
+<a name="ln1581">                }</a>
+<a name="ln1582">            }</a>
+<a name="ln1583">        }</a>
+<a name="ln1584"> </a>
+<a name="ln1585">        /// &lt;summary&gt;</a>
+<a name="ln1586">        /// Generate Knight, Bishop, Rook and Queen moves</a>
+<a name="ln1587">        /// &lt;/summary&gt;</a>
+<a name="ln1588">        /// &lt;param name=&quot;piece&quot;&gt;&lt;see cref=&quot;Piece&quot;/&gt;&lt;/param&gt;</a>
+<a name="ln1589">        [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1590">        internal static void GeneratePieceMoves(ref int localIndex, Move[] movePool, int piece, MakeMovePosition position, bool capturesOnly = false)</a>
+<a name="ln1591">        {</a>
+<a name="ln1592">            var bitboard = position.PieceBitBoards[piece];</a>
+<a name="ln1593">            int sourceSquare, targetSquare;</a>
+<a name="ln1594"> </a>
+<a name="ln1595">            while (bitboard != default)</a>
+<a name="ln1596">            {</a>
+<a name="ln1597">                sourceSquare = bitboard.GetLS1BIndex();</a>
+<a name="ln1598">                bitboard.ResetLS1B();</a>
+<a name="ln1599"> </a>
+<a name="ln1600">                var attacks = _pieceAttacks[piece](sourceSquare, position.OccupancyBitBoards[(int)Side.Both])</a>
+<a name="ln1601">                    &amp; ~position.OccupancyBitBoards[(int)position.Side];</a>
+<a name="ln1602"> </a>
+<a name="ln1603">                while (attacks != default)</a>
+<a name="ln1604">                {</a>
+<a name="ln1605">                    targetSquare = attacks.GetLS1BIndex();</a>
+<a name="ln1606">                    attacks.ResetLS1B();</a>
+<a name="ln1607"> </a>
+<a name="ln1608">                    if (position.OccupancyBitBoards[(int)Side.Both].GetBit(targetSquare))</a>
+<a name="ln1609">                    {</a>
+<a name="ln1610">                        movePool[localIndex++] = MoveExtensions.EncodeCapture(sourceSquare, targetSquare, piece, 1);</a>
+<a name="ln1611">                    }</a>
+<a name="ln1612">                    else if (!capturesOnly)</a>
+<a name="ln1613">                    {</a>
+<a name="ln1614">                        movePool[localIndex++] = MoveExtensions.Encode(sourceSquare, targetSquare, piece);</a>
+<a name="ln1615">                    }</a>
+<a name="ln1616">                }</a>
+<a name="ln1617">            }</a>
+<a name="ln1618">        }</a>
+<a name="ln1619">    }</a>
+<a name="ln1620"> </a>
+<a name="ln1621">    public static class MakeMoveAttacks</a>
+<a name="ln1622">    {</a>
+<a name="ln1623">        private static readonly BitBoard[] _bishopOccupancyMasks;</a>
+<a name="ln1624">        private static readonly BitBoard[] _rookOccupancyMasks;</a>
+<a name="ln1625"> </a>
+<a name="ln1626">        /// &lt;summary&gt;</a>
+<a name="ln1627">        /// [64 (Squares), 512 (Occupancies)]</a>
+<a name="ln1628">        /// Use &lt;see cref=&quot;BishopAttacks(int, BitBoard)&quot;/&gt;</a>
+<a name="ln1629">        /// &lt;/summary&gt;</a>
+<a name="ln1630">        private static readonly BitBoard[][] _bishopAttacks;</a>
+<a name="ln1631"> </a>
+<a name="ln1632">        /// &lt;summary&gt;</a>
+<a name="ln1633">        /// [64 (Squares), 4096 (Occupancies)]</a>
+<a name="ln1634">        /// Use &lt;see cref=&quot;RookAttacks(int, BitBoard)&quot;/&gt;</a>
+<a name="ln1635">        /// &lt;/summary&gt;</a>
+<a name="ln1636">        private static readonly BitBoard[][] _rookAttacks;</a>
+<a name="ln1637"> </a>
+<a name="ln1638">        /// &lt;summary&gt;</a>
+<a name="ln1639">        /// [2 (B|W), 64 (Squares)]</a>
+<a name="ln1640">        /// &lt;/summary&gt;</a>
+<a name="ln1641">        public static BitBoard[][] PawnAttacks { get; }</a>
+<a name="ln1642">        public static BitBoard[] KnightAttacks { get; }</a>
+<a name="ln1643">        public static BitBoard[] KingAttacks { get; }</a>
+<a name="ln1644"> </a>
+<a name="ln1645">        static MakeMoveAttacks()</a>
+<a name="ln1646">        {</a>
+<a name="ln1647">            KingAttacks = AttackGenerator.InitializeKingAttacks();</a>
+<a name="ln1648">            PawnAttacks = AttackGenerator.InitializePawnAttacks();</a>
+<a name="ln1649">            KnightAttacks = AttackGenerator.InitializeKnightAttacks();</a>
+<a name="ln1650"> </a>
+<a name="ln1651">            (_bishopOccupancyMasks, _bishopAttacks) = AttackGenerator.InitializeBishopMagicAttacks();</a>
+<a name="ln1652">            (_rookOccupancyMasks, _rookAttacks) = AttackGenerator.InitializeRookMagicAttacks();</a>
+<a name="ln1653">        }</a>
+<a name="ln1654"> </a>
+<a name="ln1655">        /// &lt;summary&gt;</a>
+<a name="ln1656">        /// Get Bishop attacks assuming current board occupancy</a>
+<a name="ln1657">        /// &lt;/summary&gt;</a>
+<a name="ln1658">        /// &lt;param name=&quot;occupancy&quot;&gt;Occupancy of &lt;see cref=&quot;Side.Both&quot;/&gt;&lt;/param&gt;</a>
+<a name="ln1659">        [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1660">        public static BitBoard BishopAttacks(int squareIndex, BitBoard occupancy)</a>
+<a name="ln1661">        {</a>
+<a name="ln1662">            var occ = occupancy &amp; _bishopOccupancyMasks[squareIndex];</a>
+<a name="ln1663">            occ *= Constants.BishopMagicNumbers[squareIndex];</a>
+<a name="ln1664">            occ &gt;&gt;= (64 - Constants.BishopRelevantOccupancyBits[squareIndex]);</a>
+<a name="ln1665"> </a>
+<a name="ln1666">            return _bishopAttacks[squareIndex][occ];</a>
+<a name="ln1667">        }</a>
+<a name="ln1668"> </a>
+<a name="ln1669">        /// &lt;summary&gt;</a>
+<a name="ln1670">        /// Get Rook attacks assuming current board occupancy</a>
+<a name="ln1671">        /// &lt;/summary&gt;</a>
+<a name="ln1672">        /// &lt;param name=&quot;occupancy&quot;&gt;Occupancy of &lt;see cref=&quot;Side.Both&quot;/&gt;&lt;/param&gt;</a>
+<a name="ln1673">        [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1674">        public static BitBoard RookAttacks(int squareIndex, BitBoard occupancy)</a>
+<a name="ln1675">        {</a>
+<a name="ln1676">            var occ = occupancy &amp; _rookOccupancyMasks[squareIndex];</a>
+<a name="ln1677">            occ *= Constants.RookMagicNumbers[squareIndex];</a>
+<a name="ln1678">            occ &gt;&gt;= (64 - Constants.RookRelevantOccupancyBits[squareIndex]);</a>
+<a name="ln1679"> </a>
+<a name="ln1680">            return _rookAttacks[squareIndex][occ];</a>
+<a name="ln1681">        }</a>
+<a name="ln1682"> </a>
+<a name="ln1683">        /// &lt;summary&gt;</a>
+<a name="ln1684">        /// Get Queen attacks assuming current board occupancy</a>
+<a name="ln1685">        /// Use &lt;see cref=&quot;QueenAttacks(BitBoard, BitBoard)&quot;/&gt; if rook and bishop attacks are already calculated</a>
+<a name="ln1686">        /// &lt;/summary&gt;</a>
+<a name="ln1687">        /// &lt;param name=&quot;occupancy&quot;&gt;Occupancy of &lt;see cref=&quot;Side.Both&quot;/&gt;&lt;/param&gt;</a>
+<a name="ln1688">        [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1689">        public static BitBoard QueenAttacks(int squareIndex, BitBoard occupancy)</a>
+<a name="ln1690">        {</a>
+<a name="ln1691">            return QueenAttacks(</a>
+<a name="ln1692">                RookAttacks(squareIndex, occupancy),</a>
+<a name="ln1693">                BishopAttacks(squareIndex, occupancy));</a>
+<a name="ln1694">        }</a>
+<a name="ln1695"> </a>
+<a name="ln1696">        /// &lt;summary&gt;</a>
+<a name="ln1697">        /// Get Queen attacks having rook and bishop attacks pre-calculated</a>
+<a name="ln1698">        /// &lt;/summary&gt;</a>
+<a name="ln1699">        [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1700">        public static BitBoard QueenAttacks(BitBoard rookAttacks, BitBoard bishopAttacks)</a>
+<a name="ln1701">        {</a>
+<a name="ln1702">            return rookAttacks | bishopAttacks;</a>
+<a name="ln1703">        }</a>
+<a name="ln1704"> </a>
+<a name="ln1705">        [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1706">        public static bool IsSquaredAttackedBySide(int squaredIndex, MakeMovePosition position, Side sideToMove) =&gt;</a>
+<a name="ln1707">            IsSquaredAttacked(squaredIndex, sideToMove, position.PieceBitBoards, position.OccupancyBitBoards);</a>
+<a name="ln1708"> </a>
+<a name="ln1709">        [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1710">        public static bool IsSquaredAttacked(int squareIndex, Side sideToMove, BitBoard[] piecePosition, BitBoard[] occupancy)</a>
+<a name="ln1711">        {</a>
+<a name="ln1712">            Utils.Assert(sideToMove != Side.Both);</a>
+<a name="ln1713"> </a>
+<a name="ln1714">            var offset = Utils.PieceOffset(sideToMove);</a>
+<a name="ln1715"> </a>
+<a name="ln1716">            // I tried to order them from most to least likely</a>
+<a name="ln1717">            return</a>
+<a name="ln1718">                IsSquareAttackedByPawns(squareIndex, sideToMove, offset, piecePosition)</a>
+<a name="ln1719">                || IsSquareAttackedByKnights(squareIndex, offset, piecePosition)</a>
+<a name="ln1720">                || IsSquareAttackedByBishops(squareIndex, offset, piecePosition, occupancy, out var bishopAttacks)</a>
+<a name="ln1721">                || IsSquareAttackedByRooks(squareIndex, offset, piecePosition, occupancy, out var rookAttacks)</a>
+<a name="ln1722">                || IsSquareAttackedByQueens(offset, bishopAttacks, rookAttacks, piecePosition)</a>
+<a name="ln1723">                || IsSquareAttackedByKing(squareIndex, offset, piecePosition);</a>
+<a name="ln1724">        }</a>
+<a name="ln1725"> </a>
+<a name="ln1726">        [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1727">        public static bool IsSquareInCheck(int squareIndex, Side sideToMove, BitBoard[] piecePosition, BitBoard[] occupancy)</a>
+<a name="ln1728">        {</a>
+<a name="ln1729">            Utils.Assert(sideToMove != Side.Both);</a>
+<a name="ln1730"> </a>
+<a name="ln1731">            var offset = Utils.PieceOffset(sideToMove);</a>
+<a name="ln1732"> </a>
+<a name="ln1733">            // I tried to order them from most to least likely</a>
+<a name="ln1734">            return</a>
+<a name="ln1735">                IsSquareAttackedByRooks(squareIndex, offset, piecePosition, occupancy, out var rookAttacks)</a>
+<a name="ln1736">                || IsSquareAttackedByBishops(squareIndex, offset, piecePosition, occupancy, out var bishopAttacks)</a>
+<a name="ln1737">                || IsSquareAttackedByQueens(offset, bishopAttacks, rookAttacks, piecePosition)</a>
+<a name="ln1738">                || IsSquareAttackedByKnights(squareIndex, offset, piecePosition)</a>
+<a name="ln1739">                || IsSquareAttackedByPawns(squareIndex, sideToMove, offset, piecePosition);</a>
+<a name="ln1740">        }</a>
+<a name="ln1741"> </a>
+<a name="ln1742">        [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1743">        private static bool IsSquareAttackedByPawns(int squareIndex, Side sideToMove, int offset, BitBoard[] pieces)</a>
+<a name="ln1744">        {</a>
+<a name="ln1745">            var oppositeColorIndex = ((int)sideToMove + 1) % 2;</a>
+<a name="ln1746"> </a>
+<a name="ln1747">            return (PawnAttacks[oppositeColorIndex][squareIndex] &amp; pieces[offset]) != default;</a>
+<a name="ln1748">        }</a>
+<a name="ln1749"> </a>
+<a name="ln1750">        [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1751">        private static bool IsSquareAttackedByKnights(int squareIndex, int offset, BitBoard[] piecePosition)</a>
+<a name="ln1752">        {</a>
+<a name="ln1753">            return (KnightAttacks[squareIndex] &amp; piecePosition[(int)Piece.N + offset]) != default;</a>
+<a name="ln1754">        }</a>
+<a name="ln1755"> </a>
+<a name="ln1756">        [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1757">        private static bool IsSquareAttackedByKing(int squareIndex, int offset, BitBoard[] piecePosition)</a>
+<a name="ln1758">        {</a>
+<a name="ln1759">            return (KingAttacks[squareIndex] &amp; piecePosition[(int)Piece.K + offset]) != default;</a>
+<a name="ln1760">        }</a>
+<a name="ln1761"> </a>
+<a name="ln1762">        [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1763">        private static bool IsSquareAttackedByBishops(int squareIndex, int offset, BitBoard[] piecePosition, BitBoard[] occupancy, out BitBoard bishopAttacks)</a>
+<a name="ln1764">        {</a>
+<a name="ln1765">            bishopAttacks = BishopAttacks(squareIndex, occupancy[(int)Side.Both]);</a>
+<a name="ln1766">            return (bishopAttacks &amp; piecePosition[(int)Piece.B + offset]) != default;</a>
+<a name="ln1767">        }</a>
+<a name="ln1768"> </a>
+<a name="ln1769">        [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1770">        private static bool IsSquareAttackedByRooks(int squareIndex, int offset, BitBoard[] piecePosition, BitBoard[] occupancy, out BitBoard rookAttacks)</a>
+<a name="ln1771">        {</a>
+<a name="ln1772">            rookAttacks = RookAttacks(squareIndex, occupancy[(int)Side.Both]);</a>
+<a name="ln1773">            return (rookAttacks &amp; piecePosition[(int)Piece.R + offset]) != default;</a>
+<a name="ln1774">        }</a>
+<a name="ln1775"> </a>
+<a name="ln1776">        [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1777">        private static bool IsSquareAttackedByQueens(int offset, BitBoard bishopAttacks, BitBoard rookAttacks, BitBoard[] piecePosition)</a>
+<a name="ln1778">        {</a>
+<a name="ln1779">            var queenAttacks = QueenAttacks(rookAttacks, bishopAttacks);</a>
+<a name="ln1780">            return (queenAttacks &amp; piecePosition[(int)Piece.Q + offset]) != default;</a>
+<a name="ln1781">        }</a>
+<a name="ln1782">    }</a>
+<a name="ln1783"> </a>
+<a name="ln1784">    #endregion</a>
+<a name="ln1785">}</a>
+<a name="ln1786"> </a>
+<a name="ln1787">#pragma warning restore S101, S1854 // Types should be named in PascalCase</a>
+</code></pre>
+<div class="balloon" rel="355"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3117/" target="_blank">V3117</a> Constructor parameter 'nullMove' is not used.</p></div>
+<div class="balloon" rel="1441"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3150/" target="_blank">V3150</a> Loop break conditions do not depend on the number of iterations.</p></div>
+<div class="balloon" rel="1498"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3150/" target="_blank">V3150</a> Loop break conditions do not depend on the number of iterations.</p></div>
+<div class="balloon" rel="1595"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3150/" target="_blank">V3150</a> Loop break conditions do not depend on the number of iterations.</p></div>
+<div class="balloon" rel="1603"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3150/" target="_blank">V3150</a> Loop break conditions do not depend on the number of iterations.</p></div>
+<link rel="stylesheet" href="highlight.css">
+<script src="highlight.pack.js"></script>
+<script src="highlightjs-line-numbers.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script>hljs.initLineNumbersOnLoad();</script>
+<script>
+  $(document).ready(function() {
+      $('.balloon').each(function () {
+          var bl = $(this);
+          var line = bl.attr('rel');
+          var text = $('a[name="ln'+line+'"]').text();
+
+          var space_count = 0;
+          for(var i = 0; i<text.length; i++){
+              var char = text[i];
+              if((char !== ' ')&&(char !== '\t'))break;
+              if(char === '\t')space_count++;
+              space_count++;
+          }
+
+          bl.css('margin-left', space_count*8);
+          $('a[name="ln'+line+'"]').after(bl);
+      });
+
+      window.location = window.location;
+  });
+</script>
+</body>
+</html>

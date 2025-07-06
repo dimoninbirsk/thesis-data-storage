@@ -1,0 +1,695 @@
+﻿[
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Meziantou.Analyzer",
+        "CurrentVersion":  "2.0.189",
+        "LatestVersion":  "2.0.196",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Microsoft.Bcl.AsyncInterfaces",
+        "CurrentVersion":  "8.0.0",
+        "LatestVersion":  "9.0.4",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Polyfill",
+        "CurrentVersion":  "7.13.0",
+        "LatestVersion":  "7.27.0",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "SonarAnalyzer.CSharp",
+        "CurrentVersion":  "10.7.0.110445",
+        "LatestVersion":  "10.8.0.113526",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "System.Memory",
+        "CurrentVersion":  "4.6.0",
+        "LatestVersion":  "4.6.3",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Meziantou.Analyzer",
+        "CurrentVersion":  "2.0.189",
+        "LatestVersion":  "2.0.196",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Polyfill",
+        "CurrentVersion":  "7.13.0",
+        "LatestVersion":  "7.27.0",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "SonarAnalyzer.CSharp",
+        "CurrentVersion":  "10.7.0.110445",
+        "LatestVersion":  "10.8.0.113526",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Meziantou.Analyzer",
+        "CurrentVersion":  "2.0.189",
+        "LatestVersion":  "2.0.196",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Polyfill",
+        "CurrentVersion":  "7.13.0",
+        "LatestVersion":  "7.27.0",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "SonarAnalyzer.CSharp",
+        "CurrentVersion":  "10.7.0.110445",
+        "LatestVersion":  "10.8.0.113526",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Meziantou.Analyzer",
+        "CurrentVersion":  "2.0.189",
+        "LatestVersion":  "2.0.196",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Polyfill",
+        "CurrentVersion":  "7.13.0",
+        "LatestVersion":  "7.27.0",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "SonarAnalyzer.CSharp",
+        "CurrentVersion":  "10.7.0.110445",
+        "LatestVersion":  "10.8.0.113526",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Bogus",
+        "CurrentVersion":  "35.6.2",
+        "LatestVersion":  "35.6.3",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Meziantou.Analyzer",
+        "CurrentVersion":  "2.0.189",
+        "LatestVersion":  "2.0.196",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "SonarAnalyzer.CSharp",
+        "CurrentVersion":  "10.7.0.110445",
+        "LatestVersion":  "10.8.0.113526",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "System.Collections.Immutable",
+        "CurrentVersion":  "9.0.3",
+        "LatestVersion":  "9.0.4",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "System.Drawing.Common",
+        "CurrentVersion":  "9.0.3",
+        "LatestVersion":  "9.0.4",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Verify.Xunit",
+        "CurrentVersion":  "28.16.0",
+        "LatestVersion":  "29.2.0",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Xunit.Combinatorial",
+        "CurrentVersion":  "1.6.24",
+        "LatestVersion":  "2.0.24",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Bogus",
+        "CurrentVersion":  "35.6.2",
+        "LatestVersion":  "35.6.3",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Meziantou.Analyzer",
+        "CurrentVersion":  "2.0.189",
+        "LatestVersion":  "2.0.196",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "SonarAnalyzer.CSharp",
+        "CurrentVersion":  "10.7.0.110445",
+        "LatestVersion":  "10.8.0.113526",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "System.Drawing.Common",
+        "CurrentVersion":  "9.0.3",
+        "LatestVersion":  "9.0.4",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Verify.Xunit",
+        "CurrentVersion":  "28.16.0",
+        "LatestVersion":  "29.2.0",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Xunit.Combinatorial",
+        "CurrentVersion":  "1.6.24",
+        "LatestVersion":  "2.0.24",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Bogus",
+        "CurrentVersion":  "35.6.2",
+        "LatestVersion":  "35.6.3",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Meziantou.Analyzer",
+        "CurrentVersion":  "2.0.189",
+        "LatestVersion":  "2.0.196",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "SonarAnalyzer.CSharp",
+        "CurrentVersion":  "10.7.0.110445",
+        "LatestVersion":  "10.8.0.113526",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "System.Drawing.Common",
+        "CurrentVersion":  "9.0.3",
+        "LatestVersion":  "9.0.4",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Verify.Xunit",
+        "CurrentVersion":  "28.16.0",
+        "LatestVersion":  "29.2.0",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Xunit.Combinatorial",
+        "CurrentVersion":  "1.6.24",
+        "LatestVersion":  "2.0.24",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Meziantou.Analyzer",
+        "CurrentVersion":  "2.0.189",
+        "LatestVersion":  "2.0.196",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "SonarAnalyzer.CSharp",
+        "CurrentVersion":  "10.7.0.110445",
+        "LatestVersion":  "10.8.0.113526",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "System.Drawing.Common",
+        "CurrentVersion":  "9.0.3",
+        "LatestVersion":  "9.0.4",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "System.Reflection.Metadata",
+        "CurrentVersion":  "9.0.3",
+        "LatestVersion":  "9.0.4",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Meziantou.Analyzer",
+        "CurrentVersion":  "2.0.189",
+        "LatestVersion":  "2.0.196",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "SonarAnalyzer.CSharp",
+        "CurrentVersion":  "10.7.0.110445",
+        "LatestVersion":  "10.8.0.113526",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "System.Drawing.Common",
+        "CurrentVersion":  "9.0.3",
+        "LatestVersion":  "9.0.4",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "System.Reflection.Metadata",
+        "CurrentVersion":  "9.0.3",
+        "LatestVersion":  "9.0.4",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Meziantou.Analyzer",
+        "CurrentVersion":  "2.0.189",
+        "LatestVersion":  "2.0.196",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "SonarAnalyzer.CSharp",
+        "CurrentVersion":  "10.7.0.110445",
+        "LatestVersion":  "10.8.0.113526",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "System.Drawing.Common",
+        "CurrentVersion":  "9.0.3",
+        "LatestVersion":  "9.0.4",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "System.Reflection.Metadata",
+        "CurrentVersion":  "9.0.3",
+        "LatestVersion":  "9.0.4",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Meziantou.Analyzer",
+        "CurrentVersion":  "2.0.189",
+        "LatestVersion":  "2.0.196",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "SonarAnalyzer.CSharp",
+        "CurrentVersion":  "10.7.0.110445",
+        "LatestVersion":  "10.8.0.113526",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Meziantou.Analyzer",
+        "CurrentVersion":  "2.0.189",
+        "LatestVersion":  "2.0.196",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Microsoft.CodeAnalysis.Analyzers",
+        "CurrentVersion":  "3.3.4",
+        "LatestVersion":  "3.11.0",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Microsoft.CodeAnalysis.CSharp.Workspaces",
+        "CurrentVersion":  "4.9.2",
+        "LatestVersion":  "4.13.0",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Polyfill",
+        "CurrentVersion":  "7.13.0",
+        "LatestVersion":  "7.27.0",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "SonarAnalyzer.CSharp",
+        "CurrentVersion":  "10.7.0.110445",
+        "LatestVersion":  "10.8.0.113526",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Meziantou.Analyzer",
+        "CurrentVersion":  "2.0.189",
+        "LatestVersion":  "2.0.196",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Polyfill",
+        "CurrentVersion":  "7.13.0",
+        "LatestVersion":  "7.27.0",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "SonarAnalyzer.CSharp",
+        "CurrentVersion":  "10.7.0.110445",
+        "LatestVersion":  "10.8.0.113526",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Xunit.Combinatorial",
+        "CurrentVersion":  "1.6.24",
+        "LatestVersion":  "2.0.24",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Meziantou.Analyzer",
+        "CurrentVersion":  "2.0.189",
+        "LatestVersion":  "2.0.196",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Polyfill",
+        "CurrentVersion":  "7.13.0",
+        "LatestVersion":  "7.27.0",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "SonarAnalyzer.CSharp",
+        "CurrentVersion":  "10.7.0.110445",
+        "LatestVersion":  "10.8.0.113526",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Xunit.Combinatorial",
+        "CurrentVersion":  "1.6.24",
+        "LatestVersion":  "2.0.24",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Meziantou.Analyzer",
+        "CurrentVersion":  "2.0.189",
+        "LatestVersion":  "2.0.196",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Polyfill",
+        "CurrentVersion":  "7.13.0",
+        "LatestVersion":  "7.27.0",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "SonarAnalyzer.CSharp",
+        "CurrentVersion":  "10.7.0.110445",
+        "LatestVersion":  "10.8.0.113526",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Xunit.Combinatorial",
+        "CurrentVersion":  "1.6.24",
+        "LatestVersion":  "2.0.24",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Meziantou.Analyzer",
+        "CurrentVersion":  "2.0.189",
+        "LatestVersion":  "2.0.196",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Microsoft.CodeAnalysis.Analyzers",
+        "CurrentVersion":  "3.3.4",
+        "LatestVersion":  "3.11.0",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Microsoft.CodeAnalysis.CSharp.Workspaces",
+        "CurrentVersion":  "4.9.2",
+        "LatestVersion":  "4.13.0",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "SonarAnalyzer.CSharp",
+        "CurrentVersion":  "10.7.0.110445",
+        "LatestVersion":  "10.8.0.113526",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "System.Formats.Asn1",
+        "CurrentVersion":  "9.0.3",
+        "LatestVersion":  "9.0.4",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Verify.Xunit",
+        "CurrentVersion":  "28.16.0",
+        "LatestVersion":  "29.2.0",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Meziantou.Analyzer",
+        "CurrentVersion":  "2.0.189",
+        "LatestVersion":  "2.0.196",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "SonarAnalyzer.CSharp",
+        "CurrentVersion":  "10.7.0.110445",
+        "LatestVersion":  "10.8.0.113526",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Meziantou.Analyzer",
+        "CurrentVersion":  "2.0.189",
+        "LatestVersion":  "2.0.196",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "SonarAnalyzer.CSharp",
+        "CurrentVersion":  "10.7.0.110445",
+        "LatestVersion":  "10.8.0.113526",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Meziantou.Analyzer",
+        "CurrentVersion":  "2.0.189",
+        "LatestVersion":  "2.0.196",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Polyfill",
+        "CurrentVersion":  "7.13.0",
+        "LatestVersion":  "7.27.0",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "SonarAnalyzer.CSharp",
+        "CurrentVersion":  "10.7.0.110445",
+        "LatestVersion":  "10.8.0.113526",
+        "Reason":  "New version available",
+        "Solution":  "spreadcheetah",
+        "Timestamp":  "20250416_175856"
+    }
+]

@@ -1,0 +1,14 @@
+Key,Type,Severity,File,Line,Message,Effort,Debt,Rule,Tags
+8103e850-ca85-4a3b-b8a5-ca00ff4b578a,BUG,MINOR,Chloe:Chloe/Utility/PublicConstants.cs,21,Use an immutable collection or reduce the accessibility of the non-private readonly field 'EmptyArray'.,15min,15min,csharpsquid:S3887,
+891b125b-8325-4c38-a3b1-7a40fda38614,BUG,CRITICAL,Chloe:Chloe/DbExpressions/DbSubqueryExpression.cs,13,Refactor this getter so that it actually refers to the field '_type'.,5min,5min,csharpsquid:S4275,pitfall
+67f99ecf-20ef-468e-ae19-e1f71e072b0f,BUG,MAJOR,Chloe:ChloeDemo/DemoBase.cs,459,Use the return value of method 'First'.,10min,10min,csharpsquid:S2201,confusing;suspicious
+d129f932-4914-4583-b939-4a7d62e51e4e,BUG,MAJOR,Chloe:ChloeDemo/DemoBase.cs,464,Use the return value of method 'First'.,10min,10min,csharpsquid:S2201,confusing;suspicious
+9ae8c860-5898-49a0-ac62-30d80fdae29a,BUG,MINOR,Chloe:ChloeDemo/Sharding/ShardingQueryTest.cs,538,Cast one of the operands of this division to 'decimal'.,2min,2min,csharpsquid:S2184,cwe;overflow
+1f66ba89-7327-43bf-804c-865c0fd139c5,BUG,MINOR,Chloe:Chloe/Sharding/PriorityQueue.cs,113,Use a comparison to 'default(T)' instead or add a constraint to 'T' so that it can't be a value type.,10min,10min,csharpsquid:S2955,
+0e5cef64-8bcd-40c4-b218-0c5a2211e1ba,BUG,CRITICAL,Chloe:Chloe/Sharding/SharedObjectPool.cs,87,Lock on a dedicated object instance instead.,15min,15min,csharpsquid:S2551,multi-threading
+8ad94aad-d197-42df-a911-6d05dd5a2e19,BUG,CRITICAL,Chloe:Chloe/Sharding/SharedObjectPool.cs,104,Lock on a dedicated object instance instead.,15min,15min,csharpsquid:S2551,multi-threading
+ad79dcac-73e0-4a63-9a55-e009d48940c2,BUG,MINOR,Chloe:Chloe.Extension/QueryExtension.cs,38,Use a comparison to 'default(V)' instead or add a constraint to 'V' so that it can't be a value type.,10min,10min,csharpsquid:S2955,
+fca5c78a-a9d2-4cc5-ada7-3be3548b467b,BUG,CRITICAL,Chloe:Chloe/DbExpressions/DbMemberAccessExpression.cs,24,Refactor this getter so that it actually refers to the field '_type'.,5min,5min,csharpsquid:S4275,pitfall
+bc4051af-96b1-4820-b748-ef1c2d83ce21,BUG,CRITICAL,Chloe:Chloe/DbExpressions/DbMethodCallExpression.cs,21,Refactor this getter so that it actually refers to the field '_type'.,5min,5min,csharpsquid:S4275,pitfall
+b16196f8-43b6-437d-9b23-fdade3dfb4ec,BUG,MINOR,Chloe:Chloe/DbParam.cs,50,Use a comparison to 'default(T)' instead or add a constraint to 'T' so that it can't be a value type.,10min,10min,csharpsquid:S2955,
+ff055760-b208-49e9-8f78-92f86ed1e70f,BUG,CRITICAL,Chloe:Chloe/Mapper/ObjectMemberMapper.cs,78,Lock on a dedicated object instance instead.,15min,15min,csharpsquid:S2551,multi-threading

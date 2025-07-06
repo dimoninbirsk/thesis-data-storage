@@ -1,0 +1,13 @@
+files,language,blank,comment,code,"github.com/AlDanial/cloc v 2.04  T=1.41 s (169.3 files/s 243257.6 lines/s)"
+27,Text,0,0,275005
+36,JSON,0,0,49511
+104,C#,1828,1761,8997
+38,XML,0,0,3718
+1,Properties,15,0,229
+6,Markdown,77,20,208
+6,MSBuild script,27,0,147
+9,INI,0,0,121
+4,YAML,15,5,94
+6,C# Generated,24,58,60
+1,Visual Studio Solution,1,1,60
+238,SUM,1987,1845,338150

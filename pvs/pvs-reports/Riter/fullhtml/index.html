@@ -1,0 +1,147 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>PVS-Studio HTML Report</title>
+<style type="text/css">
+   TABLE {
+    width: 100%;
+   }
+   #col_group, #col_level, #col_code, #col_cwe, #col_sast {
+    text-align: center;
+    white-space: nowrap;
+    width: 0;
+   }
+   #col_file, #col_info, #col_projects {
+    white-space: nowrap;
+    text-align: left;
+    width: 0;
+   }
+   #col_info {
+    width: 120px;
+   }
+   #col_message {
+    text-align: left;
+   }
+  </style>
+<link rel="stylesheet" href="style.css" />
+<script type="text/javascript" src="script.js"></script>
+<script type="text/javascript" src="toggle-cell.js"></script>
+</head>
+<body>
+  <div class="header">
+    <img src="images/logo.png" alt=""/>
+    <h1>PVS-Studio Analysis Results</h1>
+    <br class="clear">
+  </div>
+  <table cellpadding="0" cellspacing="0" border="0" class="infotopic">
+     <tr><th id="col_info">Date:</th><td>04/16/25 21:08:17</td></tr>
+     <tr><th id="col_info">PVS-Studio Version:</th><td>7.36.91321.1771</td></tr>
+     <tr><th id="col_info">Total Warnings (GA):</th><td>7</td></tr>
+     <tr><th id="col_info">Total Warnings (OWASP):</th><td>1</td></tr>
+     <tr><th id="col_info">Fails/Info:</th><td>1</td></tr>
+  </table>
+  <div class="toggle-box">
+    <label>
+      Show full paths
+    <input class="path-toggle toggle-button" type="checkbox" name="toggle-path" onclick="togglePathView()" />
+    </label>
+  </div>
+  <table cellpadding="0" cellspacing="0" border="0" class="sortable" id="sorter">
+    <tr>
+      <th class="gsort">Group</th>
+      <th class="psort">Projects</th>
+      <th>Location</th>
+      <th class="lsort">Level</th>
+      <th class="vsort">Code</th>
+      <th class="rsort">SAST</th>
+      <th>Message</th>
+    </tr>
+    <tr>
+      <td id="col_group"></td>
+      <td id="col_projects"><p></p></td>
+      <td id="col_file"></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/renewal/">Renew</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Your license will expire in 29 days. Click 'Renew' to learn more or contact us via Feedback form on our website. This is an information message. You can continue using the analyzer with your current license. To hide this message, use the '--disableLicenseExpirationCheck' flag.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Riter</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/SettingPanel.xaml.cs_0.html#ln21">SettingPanel.xaml.cs:21</a><a target="_blank" class="file-link display-none" href="sources/SettingPanel.xaml.cs_0.html#ln21">C:\Users\dimoninbirsk\source\thesis\Riter\src\Riter\Core\UI\SettingPanel.xaml.cs:21</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3146/">V3146</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Possible null dereference. The 'FirstOrDefault' can return default null value.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Riter</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/SettingPanel.xaml.cs_0.html#ln22">SettingPanel.xaml.cs:22</a><a target="_blank" class="file-link display-none" href="sources/SettingPanel.xaml.cs_0.html#ln22">C:\Users\dimoninbirsk\source\thesis\Riter\src\Riter\Core\UI\SettingPanel.xaml.cs:22</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3146/">V3146</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Possible null dereference. The 'FirstOrDefault' can return default null value.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Riter</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/SettingPanel.xaml.cs_0.html#ln23">SettingPanel.xaml.cs:23</a><a target="_blank" class="file-link display-none" href="sources/SettingPanel.xaml.cs_0.html#ln23">C:\Users\dimoninbirsk\source\thesis\Riter\src\Riter\Core\UI\SettingPanel.xaml.cs:23</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3146/">V3146</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Possible null dereference. The 'FirstOrDefault' can return default null value.</td>
+    </tr>
+    <tr>
+      <td id="col_group">OWASP</td>
+      <td id="col_projects"><p>Riter</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/UpdatePanel.xaml.cs_1.html#ln40">UpdatePanel.xaml.cs:40</a><a target="_blank" class="file-link display-none" href="sources/UpdatePanel.xaml.cs_1.html#ln40">C:\Users\dimoninbirsk\source\thesis\Riter\src\Riter\Core\UI\SubPanels\UpdatePanel.xaml.cs:40</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v5606/">V5606</td>
+      <td id="col_sast">OWASP-7.4.2</td>
+      <td id="col_message">An empty exception handler. Silent suppression of exceptions may hide the presence of bugs or vulnerabilities.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Riter</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/StrokeHistoryService.cs_2.html#ln107">StrokeHistoryService.cs:107</a><a target="_blank" class="file-link display-none" href="sources/StrokeHistoryService.cs_2.html#ln107">C:\Users\dimoninbirsk\source\thesis\Riter\src\Riter\Services\StrokeHistoryService.cs:107</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3080/">V3080</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Possible null dereference. Consider inspecting 'lastItem'.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Riter</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/SettingsStatePanelHandler.cs_3.html#ln22">SettingsStatePanelHandler.cs:22</a><a target="_blank" class="file-link display-none" href="sources/SettingsStatePanelHandler.cs_3.html#ln22">C:\Users\dimoninbirsk\source\thesis\Riter\src\Riter\ViewModel\StateHandlers\SettingsStatePanelHandler.cs:22</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3008/">V3008</td>
+      <td id="col_sast"></td>
+      <td id="col_message">The '_isSettingPanelOpened' variable is assigned values twice successively. Perhaps this is a mistake. Check lines: 22, 20.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Riter.Tests</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/StrokeHistoryServiceTests.cs_4.html#ln21">StrokeHistoryServiceTests.cs:21</a><a target="_blank" class="file-link display-none" href="sources/StrokeHistoryServiceTests.cs_4.html#ln21">C:\Users\dimoninbirsk\source\thesis\Riter\tests\Riter.Tests\Services\StrokeHistoryServiceTests.cs:21</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3012/">V3012</td>
+      <td id="col_sast"></td>
+      <td id="col_message">The '?:' operator, regardless of its conditional expression, always returns one and the same value.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Riter.Tests</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/InkEditingModeStateHandlerTests.cs_5.html#ln18">InkEditingModeStateHandlerTests.cs:18</a><a target="_blank" class="file-link display-none" href="sources/InkEditingModeStateHandlerTests.cs_5.html#ln18">C:\Users\dimoninbirsk\source\thesis\Riter\tests\Riter.Tests\ViewModel\StateHandlers\InkEditingModeStateHandlerTests.cs:18</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3125/">V3125</td>
+      <td id="col_sast"></td>
+      <td id="col_message">The 'Application.Current' object was used after it was verified against null. Check lines: 18, 13.</td>
+    </tr>
+  </table>
+<script type="text/javascript">
+var sorter=new table.sorter("sorter");
+sorter.init("sorter",0);
+</script>
+</body>
+</html>

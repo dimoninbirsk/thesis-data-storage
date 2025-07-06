@@ -1,0 +1,388 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII" />
+  <title>NullableIntegerBox.cs</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <script src="../jquery-3.5.1.min.js"></script>
+</head>
+<body>
+<pre><code class = "cs">
+<a name="ln1">using System;</a>
+<a name="ln2">using System.ComponentModel;</a>
+<a name="ln3">using System.Text.RegularExpressions;</a>
+<a name="ln4">using System.Windows;</a>
+<a name="ln5">using System.Windows.Controls;</a>
+<a name="ln6">using System.Windows.Input;</a>
+<a name="ln7"> </a>
+<a name="ln8">namespace ScreenToGif.Controls;</a>
+<a name="ln9"> </a>
+<a name="ln10">public class NullableIntegerBox : ExtendedTextBox</a>
+<a name="ln11">{</a>
+<a name="ln12">    private static bool _ignore;</a>
+<a name="ln13"> </a>
+<a name="ln14">    /// &lt;summary&gt;</a>
+<a name="ln15">    /// To avoid losing decimals.</a>
+<a name="ln16">    /// &lt;/summary&gt;</a>
+<a name="ln17">    public bool UseTemporary;</a>
+<a name="ln18">    public double Temporary;</a>
+<a name="ln19"> </a>
+<a name="ln20">    /// &lt;summary&gt;</a>
+<a name="ln21">    /// True if it's necessary to prevent the value changed event from firing.</a>
+<a name="ln22">    /// &lt;/summary&gt;</a>
+<a name="ln23">    public bool IgnoreValueChanged { get; set; }</a>
+<a name="ln24"> </a>
+<a name="ln25">    #region Dependency Property</a>
+<a name="ln26"> </a>
+<a name="ln27">    public static readonly DependencyProperty MaximumProperty = DependencyProperty.Register(nameof(Maximum), typeof(int), typeof(NullableIntegerBox),</a>
+<a name="ln28">        new FrameworkPropertyMetadata(int.MaxValue, OnMaximumPropertyChanged));</a>
+<a name="ln29"> </a>
+<a name="ln30">    public static readonly DependencyProperty ValueProperty = DependencyProperty.Register(nameof(Value), typeof(int?), typeof(NullableIntegerBox),</a>
+<a name="ln31">        new FrameworkPropertyMetadata(0, OnValuePropertyChanged));</a>
+<a name="ln32"> </a>
+<a name="ln33">    public static readonly DependencyProperty MinimumProperty = DependencyProperty.Register(nameof(Minimum), typeof(int), typeof(NullableIntegerBox),</a>
+<a name="ln34">        new FrameworkPropertyMetadata(0, OnMinimumPropertyChanged));</a>
+<a name="ln35"> </a>
+<a name="ln36">    public static readonly DependencyProperty StepProperty = DependencyProperty.Register(nameof(StepValue), typeof(int), typeof(NullableIntegerBox),</a>
+<a name="ln37">        new FrameworkPropertyMetadata(1));</a>
+<a name="ln38"> </a>
+<a name="ln39">    public static readonly DependencyProperty UpdateOnInputProperty = DependencyProperty.Register(nameof(UpdateOnInput), typeof(bool), typeof(NullableIntegerBox),</a>
+<a name="ln40">        new FrameworkPropertyMetadata(false, OnUpdateOnInputPropertyChanged));</a>
+<a name="ln41"> </a>
+<a name="ln42">    public static readonly DependencyProperty DefaultValueIfEmptyProperty = DependencyProperty.Register(nameof(DefaultValueIfEmpty), typeof(int?), typeof(NullableIntegerBox),</a>
+<a name="ln43">        new FrameworkPropertyMetadata(null));</a>
+<a name="ln44"> </a>
+<a name="ln45">    public static readonly DependencyProperty PropagateWheelEventProperty = DependencyProperty.Register(nameof(PropagateWheelEvent), typeof(bool), typeof(NullableIntegerBox), new PropertyMetadata(default(bool)));</a>
+<a name="ln46">        </a>
+<a name="ln47">    #endregion</a>
+<a name="ln48"> </a>
+<a name="ln49">    #region Property Accessor</a>
+<a name="ln50"> </a>
+<a name="ln51">    [Bindable(true), Category(&quot;Common&quot;)]</a>
+<a name="ln52">    public int Maximum</a>
+<a name="ln53">    {</a>
+<a name="ln54">        get =&gt; (int)GetValue(MaximumProperty);</a>
+<a name="ln55">        set =&gt; SetValue(MaximumProperty, value);</a>
+<a name="ln56">    }</a>
+<a name="ln57"> </a>
+<a name="ln58">    [Bindable(true), Category(&quot;Common&quot;)]</a>
+<a name="ln59">    public int? Value</a>
+<a name="ln60">    {</a>
+<a name="ln61">        get =&gt; (int?)GetValue(ValueProperty);</a>
+<a name="ln62">        set =&gt; SetValue(ValueProperty, value);</a>
+<a name="ln63">    }</a>
+<a name="ln64"> </a>
+<a name="ln65">    [Bindable(true), Category(&quot;Common&quot;)]</a>
+<a name="ln66">    public int Minimum</a>
+<a name="ln67">    {</a>
+<a name="ln68">        get =&gt; (int)GetValue(MinimumProperty);</a>
+<a name="ln69">        set =&gt; SetValue(MinimumProperty, value);</a>
+<a name="ln70">    }</a>
+<a name="ln71"> </a>
+<a name="ln72">    /// &lt;summary&gt;</a>
+<a name="ln73">    /// The Increment/Decrement value.</a>
+<a name="ln74">    /// &lt;/summary&gt;</a>
+<a name="ln75">    [Description(&quot;The Increment/Decrement value.&quot;)]</a>
+<a name="ln76">    public int StepValue</a>
+<a name="ln77">    {</a>
+<a name="ln78">        get =&gt; (int)GetValue(StepProperty);</a>
+<a name="ln79">        set =&gt; SetValue(StepProperty, value);</a>
+<a name="ln80">    }</a>
+<a name="ln81"> </a>
+<a name="ln82">    [Bindable(true), Category(&quot;Common&quot;)]</a>
+<a name="ln83">    public bool UpdateOnInput</a>
+<a name="ln84">    {</a>
+<a name="ln85">        get =&gt; (bool)GetValue(UpdateOnInputProperty);</a>
+<a name="ln86">        set =&gt; SetValue(UpdateOnInputProperty, value);</a>
+<a name="ln87">    }</a>
+<a name="ln88"> </a>
+<a name="ln89">    [Bindable(true), Category(&quot;Common&quot;)]</a>
+<a name="ln90">    public int? DefaultValueIfEmpty</a>
+<a name="ln91">    {</a>
+<a name="ln92">        get =&gt; (int?)GetValue(DefaultValueIfEmptyProperty);</a>
+<a name="ln93">        set =&gt; SetValue(DefaultValueIfEmptyProperty, value);</a>
+<a name="ln94">    }</a>
+<a name="ln95"> </a>
+<a name="ln96">    /// &lt;summary&gt;</a>
+<a name="ln97">    /// True if the wheel events should not be set as handled.</a>
+<a name="ln98">    /// &lt;/summary&gt;</a>
+<a name="ln99">    [Bindable(true), Category(&quot;Behavior&quot;)]</a>
+<a name="ln100">    public bool PropagateWheelEvent</a>
+<a name="ln101">    {</a>
+<a name="ln102">        get =&gt; (bool)GetValue(PropagateWheelEventProperty);</a>
+<a name="ln103">        set =&gt; SetValue(PropagateWheelEventProperty, value);</a>
+<a name="ln104">    }</a>
+<a name="ln105"> </a>
+<a name="ln106">    #endregion</a>
+<a name="ln107"> </a>
+<a name="ln108">    #region Properties Changed</a>
+<a name="ln109"> </a>
+<a name="ln110">    private static void OnMaximumPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)</a>
+<a name="ln111">    {</a>
+<a name="ln112">        var intBox = d as NullableIntegerBox;</a>
+<a name="ln113"> </a>
+<a name="ln114">        if (intBox?.Value &gt; intBox?.Maximum)</a>
+<a name="ln115">            intBox.Value = intBox.Maximum;</a>
+<a name="ln116">    }</a>
+<a name="ln117"> </a>
+<a name="ln118">    private static void OnValuePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)</a>
+<a name="ln119">    {</a>
+<a name="ln120">        if (d is not NullableIntegerBox box || _ignore) </a>
+<a name="ln121">            return;</a>
+<a name="ln122"> </a>
+<a name="ln123">        _ignore = true;</a>
+<a name="ln124"> </a>
+<a name="ln125">        if (box.Value &gt; box.Maximum)</a>
+<a name="ln126">        {</a>
+<a name="ln127">            box.UseTemporary = false;</a>
+<a name="ln128">            box.Temporary = box.Maximum;</a>
+<a name="ln129">            box.Value = box.Maximum;</a>
+<a name="ln130">        }</a>
+<a name="ln131"> </a>
+<a name="ln132">        if (box.Value &lt; box.Minimum)</a>
+<a name="ln133">        {</a>
+<a name="ln134">            box.UseTemporary = false;</a>
+<a name="ln135">            box.Temporary = box.Minimum;</a>
+<a name="ln136">            box.Value = box.Minimum;</a>
+<a name="ln137">        }</a>
+<a name="ln138"> </a>
+<a name="ln139">        _ignore = false;</a>
+<a name="ln140"> </a>
+<a name="ln141">        var value = box.Value.ToString();</a>
+<a name="ln142"> </a>
+<a name="ln143">        if (!string.Equals(box.Text, value))</a>
+<a name="ln144">            box.Text = value;</a>
+<a name="ln145"> </a>
+<a name="ln146">        if (!box.IgnoreValueChanged)</a>
+<a name="ln147">            box.RaiseValueChangedEvent();</a>
+<a name="ln148">    }</a>
+<a name="ln149"> </a>
+<a name="ln150">    private static void OnMinimumPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)</a>
+<a name="ln151">    {</a>
+<a name="ln152">        var intBox = d as NullableIntegerBox;</a>
+<a name="ln153"> </a>
+<a name="ln154">        if (intBox?.Value &lt; intBox?.Minimum)</a>
+<a name="ln155">            intBox.Value = intBox.Minimum;</a>
+<a name="ln156">    }</a>
+<a name="ln157"> </a>
+<a name="ln158">    private static void OnUpdateOnInputPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)</a>
+<a name="ln159">    {</a>
+<a name="ln160">        ((NullableIntegerBox)d).UpdateOnInput = (bool)e.NewValue;</a>
+<a name="ln161">    }</a>
+<a name="ln162"> </a>
+<a name="ln163">    #endregion</a>
+<a name="ln164"> </a>
+<a name="ln165">    static NullableIntegerBox()</a>
+<a name="ln166">    {</a>
+<a name="ln167">        DefaultStyleKeyProperty.OverrideMetadata(typeof(NullableIntegerBox), new FrameworkPropertyMetadata(typeof(NullableIntegerBox)));</a>
+<a name="ln168">    }</a>
+<a name="ln169"> </a>
+<a name="ln170">    #region Custom Events</a>
+<a name="ln171"> </a>
+<a name="ln172">    /// &lt;summary&gt;</a>
+<a name="ln173">    /// Create a custom routed event by first registering a RoutedEventID, this event uses the bubbling routing strategy.</a>
+<a name="ln174">    /// &lt;/summary&gt;</a>
+<a name="ln175">    public static readonly RoutedEvent ValueChangedEvent = EventManager.RegisterRoutedEvent(nameof(ValueChanged), RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(NullableIntegerBox));</a>
+<a name="ln176"> </a>
+<a name="ln177">    /// &lt;summary&gt;</a>
+<a name="ln178">    /// Event raised when the numeric value is changed.</a>
+<a name="ln179">    /// &lt;/summary&gt;</a>
+<a name="ln180">    public event RoutedEventHandler ValueChanged</a>
+<a name="ln181">    {</a>
+<a name="ln182">        add =&gt; AddHandler(ValueChangedEvent, value);</a>
+<a name="ln183">        remove =&gt; RemoveHandler(ValueChangedEvent, value);</a>
+<a name="ln184">    }</a>
+<a name="ln185"> </a>
+<a name="ln186">    public void RaiseValueChangedEvent()</a>
+<a name="ln187">    {</a>
+<a name="ln188">        if (ValueChangedEvent == null || !IsLoaded)</a>
+<a name="ln189">            return;</a>
+<a name="ln190"> </a>
+<a name="ln191">        var newEventArgs = new RoutedEventArgs(ValueChangedEvent);</a>
+<a name="ln192">        RaiseEvent(newEventArgs);</a>
+<a name="ln193">    }</a>
+<a name="ln194"> </a>
+<a name="ln195">    #endregion</a>
+<a name="ln196"> </a>
+<a name="ln197">    #region Overrides</a>
+<a name="ln198"> </a>
+<a name="ln199">    public override void OnApplyTemplate()</a>
+<a name="ln200">    {</a>
+<a name="ln201">        base.OnApplyTemplate();</a>
+<a name="ln202"> </a>
+<a name="ln203">        AddHandler(DataObject.PastingEvent, new DataObjectPastingEventHandler(OnPasting));</a>
+<a name="ln204">    }</a>
+<a name="ln205"> </a>
+<a name="ln206">    protected override void OnInitialized(EventArgs e)</a>
+<a name="ln207">    {</a>
+<a name="ln208">        base.OnInitialized(e);</a>
+<a name="ln209"> </a>
+<a name="ln210">        Text = Value.ToString();</a>
+<a name="ln211">    }</a>
+<a name="ln212"> </a>
+<a name="ln213">    protected override void OnGotFocus(RoutedEventArgs e)</a>
+<a name="ln214">    {</a>
+<a name="ln215">        base.OnGotFocus(e);</a>
+<a name="ln216"> </a>
+<a name="ln217">        if (e.Source is NullableIntegerBox)</a>
+<a name="ln218">            SelectAll();</a>
+<a name="ln219">    }</a>
+<a name="ln220"> </a>
+<a name="ln221">    protected override void OnPreviewMouseLeftButtonDown(MouseButtonEventArgs e)</a>
+<a name="ln222">    {</a>
+<a name="ln223">        //Only sets the focus if not clicking on the Up/Down buttons of a IntegerUpDown.</a>
+<a name="ln224">        if (e.OriginalSource is TextBlock or Border)</a>
+<a name="ln225">            return;</a>
+<a name="ln226"> </a>
+<a name="ln227">        if (IsKeyboardFocusWithin)</a>
+<a name="ln228">            return;</a>
+<a name="ln229"> </a>
+<a name="ln230">        e.Handled = true;</a>
+<a name="ln231">        Focus();</a>
+<a name="ln232">    }</a>
+<a name="ln233"> </a>
+<a name="ln234">    protected override void OnPreviewTextInput(TextCompositionEventArgs e)</a>
+<a name="ln235">    {</a>
+<a name="ln236">        if (string.IsNullOrEmpty(e.Text))</a>
+<a name="ln237">        {</a>
+<a name="ln238">            e.Handled = true;</a>
+<a name="ln239">            return;</a>
+<a name="ln240">        }</a>
+<a name="ln241"> </a>
+<a name="ln242">        if (!IsEntryAllowed(e.Text))</a>
+<a name="ln243">        {</a>
+<a name="ln244">            e.Handled = true;</a>
+<a name="ln245">            return;</a>
+<a name="ln246">        }</a>
+<a name="ln247"> </a>
+<a name="ln248">        base.OnPreviewTextInput(e);</a>
+<a name="ln249">    }</a>
+<a name="ln250"> </a>
+<a name="ln251">    protected override void OnTextChanged(TextChangedEventArgs e)</a>
+<a name="ln252">    {</a>
+<a name="ln253">        if (!UpdateOnInput || string.IsNullOrEmpty(Text) || !IsTextAllowed(Text))</a>
+<a name="ln254">            return;</a>
+<a name="ln255">            </a>
+<a name="ln256">        Value = int.TryParse(Text, out var value) ? value : new int?();</a>
+<a name="ln257"> </a>
+<a name="ln258">        base.OnTextChanged(e);</a>
+<a name="ln259">    }</a>
+<a name="ln260"> </a>
+<a name="ln261">    protected override void OnLostFocus(RoutedEventArgs e)</a>
+<a name="ln262">    {</a>
+<a name="ln263">        base.OnLostFocus(e);</a>
+<a name="ln264"> </a>
+<a name="ln265">        if (!UpdateOnInput)</a>
+<a name="ln266">        {</a>
+<a name="ln267">            if (string.IsNullOrEmpty(Text) || !IsTextAllowed(Text))</a>
+<a name="ln268">            {</a>
+<a name="ln269">                Value = DefaultValueIfEmpty;</a>
+<a name="ln270">                return;</a>
+<a name="ln271">            }</a>
+<a name="ln272"> </a>
+<a name="ln273">            Value = int.TryParse(Text, out var value) ? value : new int?();</a>
+<a name="ln274">            return;</a>
+<a name="ln275">        }</a>
+<a name="ln276">            </a>
+<a name="ln277">        Text = Value.ToString();</a>
+<a name="ln278">    }</a>
+<a name="ln279"> </a>
+<a name="ln280">    protected override void OnKeyDown(KeyEventArgs e)</a>
+<a name="ln281">    {</a>
+<a name="ln282">        if (e.Key is Key.Enter or Key.Return)</a>
+<a name="ln283">        {</a>
+<a name="ln284">            e.Handled = true;</a>
+<a name="ln285">            MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));</a>
+<a name="ln286">        }</a>
+<a name="ln287"> </a>
+<a name="ln288">        base.OnKeyDown(e);</a>
+<a name="ln289">    }</a>
+<a name="ln290"> </a>
+<a name="ln291">    protected override void OnMouseWheel(MouseWheelEventArgs e)</a>
+<a name="ln292">    {</a>
+<a name="ln293">        base.OnMouseWheel(e);</a>
+<a name="ln294"> </a>
+<a name="ln295">        var step = Keyboard.Modifiers switch</a>
+<a name="ln296">        {</a>
+<a name="ln297">            ModifierKeys.Shift | ModifierKeys.Control =&gt; 50,</a>
+<a name="ln298">            ModifierKeys.Shift =&gt; 10,</a>
+<a name="ln299">            ModifierKeys.Control =&gt; 5,</a>
+<a name="ln300">            _ =&gt; StepValue</a>
+<a name="ln301">        };</a>
+<a name="ln302"> </a>
+<a name="ln303">        Value = e.Delta &gt; 0 ? </a>
+<a name="ln304">            Math.Min(Maximum, (Value ?? 0) + step) : </a>
+<a name="ln305">            Math.Max(Minimum, (Value ?? 0) - step);</a>
+<a name="ln306"> </a>
+<a name="ln307">        e.Handled = !PropagateWheelEvent;</a>
+<a name="ln308">    }</a>
+<a name="ln309"> </a>
+<a name="ln310">    #endregion</a>
+<a name="ln311"> </a>
+<a name="ln312">    #region Base Properties Changed</a>
+<a name="ln313"> </a>
+<a name="ln314">    private void OnPasting(object sender, DataObjectPastingEventArgs e)</a>
+<a name="ln315">    {</a>
+<a name="ln316">        if (e.DataObject.GetDataPresent(typeof(string)))</a>
+<a name="ln317">        {</a>
+<a name="ln318">            var text = e.DataObject.GetData(typeof(string)) as string;</a>
+<a name="ln319"> </a>
+<a name="ln320">            if (!IsTextAllowed(text))</a>
+<a name="ln321">                e.CancelCommand();</a>
+<a name="ln322">        }</a>
+<a name="ln323">        else</a>
+<a name="ln324">        {</a>
+<a name="ln325">            e.CancelCommand();</a>
+<a name="ln326">        }</a>
+<a name="ln327">    }</a>
+<a name="ln328"> </a>
+<a name="ln329">    #endregion</a>
+<a name="ln330"> </a>
+<a name="ln331">    #region Methods</a>
+<a name="ln332"> </a>
+<a name="ln333">    private bool IsEntryAllowed(string text)</a>
+<a name="ln334">    {</a>
+<a name="ln335">        //Only numbers.</a>
+<a name="ln336">        var regex = new Regex(@&quot;^-|[0-9]$&quot;);</a>
+<a name="ln337"> </a>
+<a name="ln338">        //Checks if it's a valid char based on the context.</a>
+<a name="ln339">        return regex.IsMatch(text);</a>
+<a name="ln340">    }</a>
+<a name="ln341"> </a>
+<a name="ln342">    private bool IsTextAllowed(string text)</a>
+<a name="ln343">    {</a>
+<a name="ln344">        return Minimum &lt; 0 ? Regex.IsMatch(text, @&quot;^[-]?(?:[0-9]{1,9})?$&quot;) : Regex.IsMatch(text, @&quot;^(?:[0-9]{1,9})?$&quot;);</a>
+<a name="ln345">    }</a>
+<a name="ln346"> </a>
+<a name="ln347">    #endregion</a>
+<a name="ln348">}</a>
+</code></pre>
+<div class="balloon" rel="139"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3008/" target="_blank">V3008</a> The '_ignore' variable is assigned values twice successively. Perhaps this is a mistake. Check lines: 139, 123.</p></div>
+<link rel="stylesheet" href="highlight.css">
+<script src="highlight.pack.js"></script>
+<script src="highlightjs-line-numbers.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script>hljs.initLineNumbersOnLoad();</script>
+<script>
+  $(document).ready(function() {
+      $('.balloon').each(function () {
+          var bl = $(this);
+          var line = bl.attr('rel');
+          var text = $('a[name="ln'+line+'"]').text();
+
+          var space_count = 0;
+          for(var i = 0; i<text.length; i++){
+              var char = text[i];
+              if((char !== ' ')&&(char !== '\t'))break;
+              if(char === '\t')space_count++;
+              space_count++;
+          }
+
+          bl.css('margin-left', space_count*8);
+          $('a[name="ln'+line+'"]').after(bl);
+      });
+
+      window.location = window.location;
+  });
+</script>
+</body>
+</html>

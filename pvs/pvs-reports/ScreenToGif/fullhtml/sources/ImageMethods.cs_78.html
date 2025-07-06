@@ -1,0 +1,2340 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII" />
+  <title>ImageMethods.cs</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <script src="../jquery-3.5.1.min.js"></script>
+</head>
+<body>
+<pre><code class = "cs">
+<a name="ln1">using ScreenToGif.Domain.Enums;</a>
+<a name="ln2">using ScreenToGif.Domain.Interfaces;</a>
+<a name="ln3">using ScreenToGif.Domain.Models;</a>
+<a name="ln4">using ScreenToGif.Util;</a>
+<a name="ln5">using ScreenToGif.Util.Codification;</a>
+<a name="ln6">using ScreenToGif.Util.Codification.Gif.Decoder;</a>
+<a name="ln7">using ScreenToGif.Util.Codification.Gif.LegacyEncoder;</a>
+<a name="ln8">using ScreenToGif.Util.Extensions;</a>
+<a name="ln9">using System;</a>
+<a name="ln10">using System.Collections.Generic;</a>
+<a name="ln11">using System.ComponentModel;</a>
+<a name="ln12">using System.Data;</a>
+<a name="ln13">using System.Drawing;</a>
+<a name="ln14">using System.Drawing.Imaging;</a>
+<a name="ln15">using System.IO;</a>
+<a name="ln16">using System.Linq;</a>
+<a name="ln17">using System.Threading;</a>
+<a name="ln18">using System.Threading.Tasks;</a>
+<a name="ln19">using System.Windows;</a>
+<a name="ln20">using System.Windows.Controls;</a>
+<a name="ln21">using System.Windows.Media;</a>
+<a name="ln22">using System.Windows.Media.Imaging;</a>
+<a name="ln23">using System.Windows.Resources;</a>
+<a name="ln24">using Image = System.Drawing.Image;</a>
+<a name="ln25">using PixelFormat = System.Windows.Media.PixelFormat;</a>
+<a name="ln26">using Size = System.Drawing.Size;</a>
+<a name="ln27">using Color = System.Windows.Media.Color;</a>
+<a name="ln28"> </a>
+<a name="ln29">namespace ScreenToGif.ImageUtil;</a>
+<a name="ln30"> </a>
+<a name="ln31">/// &lt;summary&gt;</a>
+<a name="ln32">/// Image algorithms.</a>
+<a name="ln33">/// &lt;/summary&gt;</a>
+<a name="ln34">public static class ImageMethods</a>
+<a name="ln35">{</a>
+<a name="ln36">    #region Gif transparency</a>
+<a name="ln37"> </a>
+<a name="ln38">    /// &lt;summary&gt;</a>
+<a name="ln39">    /// Gets the project, scans the each image in the list, replacing the color with a color that will be treated as transparent by the encoder.</a>
+<a name="ln40">    /// &lt;/summary&gt;</a>
+<a name="ln41">    /// &lt;param name=&quot;project&quot;&gt;The exported project.&lt;/param&gt;</a>
+<a name="ln42">    /// &lt;param name=&quot;source&quot;&gt;The color that will be converted to the chroma key, which in turn will be treated as transparent. If null, takes all colors with transparency and convert to the chroma.&lt;/param&gt;</a>
+<a name="ln43">    /// &lt;param name=&quot;chroma&quot;&gt;The color that will be treated as transparent.&lt;/param&gt;</a>
+<a name="ln44">    /// &lt;param name=&quot;taskId&quot;&gt;The id of the encoding task.&lt;/param&gt;</a>
+<a name="ln45">    /// &lt;param name=&quot;tokenSource&quot;&gt;The cancellation token source.&lt;/param&gt;</a>
+<a name="ln46">    /// &lt;returns&gt;The export project, with the images already scanned and altered.&lt;/returns&gt;</a>
+<a name="ln47">    public static ExportProject PaintAndCutForTransparency(ExportProject project, System.Windows.Media.Color? source, System.Windows.Media.Color chroma, int taskId, CancellationTokenSource tokenSource)</a>
+<a name="ln48">    {</a>
+<a name="ln49">        using (var oldStream = new FileStream(project.ChunkPath, FileMode.Open, FileAccess.Read, FileShare.Read))</a>
+<a name="ln50">        {</a>
+<a name="ln51">            using (var newStream = new FileStream(project.NewChunkPath, FileMode.Create, FileAccess.Write, FileShare.None))</a>
+<a name="ln52">            {</a>
+<a name="ln53">                for (var index = 0; index &lt; project.Frames.Count; index++)</a>
+<a name="ln54">                {</a>
+<a name="ln55">                    #region Cancellation</a>
+<a name="ln56"> </a>
+<a name="ln57">                    if (tokenSource.Token.IsCancellationRequested)</a>
+<a name="ln58">                    {</a>
+<a name="ln59">                        EncodingManager.Update(taskId, EncodingStatus.Canceled);</a>
+<a name="ln60">                        break;</a>
+<a name="ln61">                    }</a>
+<a name="ln62"> </a>
+<a name="ln63">                    #endregion</a>
+<a name="ln64"> </a>
+<a name="ln65">                    #region For each frame</a>
+<a name="ln66"> </a>
+<a name="ln67">                    EncodingManager.Update(taskId, index);</a>
+<a name="ln68"> </a>
+<a name="ln69">                    //var watch = Stopwatch.StartNew();</a>
+<a name="ln70"> </a>
+<a name="ln71">                    #region Get image info</a>
+<a name="ln72"> </a>
+<a name="ln73">                    oldStream.Position = project.Frames[index].DataPosition;</a>
+<a name="ln74">                    var pixels = oldStream.ReadBytes((int)project.Frames[index].DataLength);</a>
+<a name="ln75"> </a>
+<a name="ln76">                    var startY = new bool[project.Frames[index].Rect.Height];</a>
+<a name="ln77">                    var startX = new bool[project.Frames[index].Rect.Width];</a>
+<a name="ln78"> </a>
+<a name="ln79">                    var height = project.Frames[index].Rect.Height;</a>
+<a name="ln80">                    var width = project.Frames[index].Rect.Width;</a>
+<a name="ln81">                    var blockCount = project.Frames[index].ImageDepth / 8;</a>
+<a name="ln82"> </a>
+<a name="ln83">                    #endregion</a>
+<a name="ln84"> </a>
+<a name="ln85">                    //Console.WriteLine(&quot;Info: &quot; + watch.Elapsed);</a>
+<a name="ln86"> </a>
+<a name="ln87">                    //Only use Parallel if the image is big enough.</a>
+<a name="ln88">                    if (width * height &gt; 150000)</a>
+<a name="ln89">                    {</a>
+<a name="ln90">                        #region Parallel loop</a>
+<a name="ln91"> </a>
+<a name="ln92">                        //x - width - sides</a>
+<a name="ln93">                        Parallel.For(0, pixels.Length / blockCount, i =&gt;</a>
+<a name="ln94">                        {</a>
+<a name="ln95">                            i *= blockCount;</a>
+<a name="ln96"> </a>
+<a name="ln97">                            //Replace all transparent color to a transparent version of the chroma key.</a>
+<a name="ln98">                            //Replace all colors that match the source color with a transparent version of the chroma key.</a>
+<a name="ln99">                            if ((!source.HasValue &amp;&amp; pixels[i + 3] == 0) || (source.HasValue &amp;&amp; pixels[i] == source.Value.B &amp;&amp; pixels[i + 1] == source.Value.G &amp;&amp; pixels[i + 2] == source.Value.R))</a>
+<a name="ln100">                            {</a>
+<a name="ln101">                                pixels[i] = chroma.B;</a>
+<a name="ln102">                                pixels[i + 1] = chroma.G;</a>
+<a name="ln103">                                pixels[i + 2] = chroma.R;</a>
+<a name="ln104">                                pixels[i + 3] = 0;</a>
+<a name="ln105">                            }</a>
+<a name="ln106">                            else</a>
+<a name="ln107">                            {</a>
+<a name="ln108">                                var y = i / blockCount / width;</a>
+<a name="ln109">                                var x = i / blockCount - (y * width);</a>
+<a name="ln110"> </a>
+<a name="ln111">                                //var current = (y * image1.Width + x) * blockCount == i;</a>
+<a name="ln112"> </a>
+<a name="ln113">                                startX[x] = true;</a>
+<a name="ln114">                                startY[y] = true;</a>
+<a name="ln115">                            }</a>
+<a name="ln116">                        });</a>
+<a name="ln117"> </a>
+<a name="ln118">                        #endregion</a>
+<a name="ln119">                    }</a>
+<a name="ln120">                    else</a>
+<a name="ln121">                    {</a>
+<a name="ln122">                        #region Sequential loop</a>
+<a name="ln123"> </a>
+<a name="ln124">                        for (var i = 0; i &lt; pixels.Length; i += blockCount)</a>
+<a name="ln125">                        {</a>
+<a name="ln126">                            //Replace all transparent color to a transparent version of the chroma key.</a>
+<a name="ln127">                            //Replace all colors that match the source color with a transparent version of the chroma key.</a>
+<a name="ln128"> </a>
+<a name="ln129">                            if ((!source.HasValue &amp;&amp; pixels[i + 3] == 0) || (source.HasValue &amp;&amp; pixels[i] == source.Value.B &amp;&amp; pixels[i + 1] == source.Value.G &amp;&amp; pixels[i + 2] == source.Value.R))</a>
+<a name="ln130">                            {</a>
+<a name="ln131">                                pixels[i] = chroma.B;</a>
+<a name="ln132">                                pixels[i + 1] = chroma.G;</a>
+<a name="ln133">                                pixels[i + 2] = chroma.R;</a>
+<a name="ln134">                                pixels[i + 3] = 0;</a>
+<a name="ln135">                            }</a>
+<a name="ln136">                            else</a>
+<a name="ln137">                            {</a>
+<a name="ln138">                                //Actual content, that should be ignored.</a>
+<a name="ln139">                                var y = i / blockCount / width;</a>
+<a name="ln140">                                var x = i / blockCount - (y * width);</a>
+<a name="ln141"> </a>
+<a name="ln142">                                //var current = (y * image1.Width + x) * blockCount == i;</a>
+<a name="ln143"> </a>
+<a name="ln144">                                startX[x] = true;</a>
+<a name="ln145">                                startY[y] = true;</a>
+<a name="ln146">                            }</a>
+<a name="ln147">                        }</a>
+<a name="ln148"> </a>
+<a name="ln149">                        #endregion</a>
+<a name="ln150">                    }</a>
+<a name="ln151"> </a>
+<a name="ln152">                    //Console.WriteLine(&quot;Change: &quot; + watch.Elapsed);</a>
+<a name="ln153"> </a>
+<a name="ln154">                    //First frame gets ignored.</a>
+<a name="ln155">                    if (index == 0)</a>
+<a name="ln156">                    {</a>
+<a name="ln157">                        project.Frames[index].DataPosition = newStream.Position;</a>
+<a name="ln158">                        project.Frames[index].DataLength = pixels.LongLength;</a>
+<a name="ln159"> </a>
+<a name="ln160">                        newStream.WriteBytes(pixels);</a>
+<a name="ln161">                        continue;</a>
+<a name="ln162">                    }</a>
+<a name="ln163"> </a>
+<a name="ln164">                    #region Verify positions</a>
+<a name="ln165"> </a>
+<a name="ln166">                    var firstX = startX.ToList().FindIndex(x =&gt; x);</a>
+<a name="ln167">                    var lastX = startX.ToList().FindLastIndex(x =&gt; x);</a>
+<a name="ln168"> </a>
+<a name="ln169">                    if (firstX == -1)</a>
+<a name="ln170">                        firstX = 0;</a>
+<a name="ln171">                    if (lastX == -1)</a>
+<a name="ln172">                        lastX = width;</a>
+<a name="ln173"> </a>
+<a name="ln174">                    var firstY = startY.ToList().FindIndex(x =&gt; x);</a>
+<a name="ln175">                    var lastY = startY.ToList().FindLastIndex(x =&gt; x);</a>
+<a name="ln176"> </a>
+<a name="ln177">                    if (lastY == -1)</a>
+<a name="ln178">                        lastY = height;</a>
+<a name="ln179">                    if (firstY == -1)</a>
+<a name="ln180">                        firstY = 0;</a>
+<a name="ln181"> </a>
+<a name="ln182">                    if (lastX &lt; firstX)</a>
+<a name="ln183">                    {</a>
+<a name="ln184">                        var aux = lastX;</a>
+<a name="ln185">                        lastX = firstX;</a>
+<a name="ln186">                        firstX = aux;</a>
+<a name="ln187">                    }</a>
+<a name="ln188"> </a>
+<a name="ln189">                    if (lastY &lt; firstY)</a>
+<a name="ln190">                    {</a>
+<a name="ln191">                        var aux = lastY;</a>
+<a name="ln192">                        lastY = firstY;</a>
+<a name="ln193">                        firstY = aux;</a>
+<a name="ln194">                    }</a>
+<a name="ln195"> </a>
+<a name="ln196">                    #endregion</a>
+<a name="ln197"> </a>
+<a name="ln198">                    #region Get the Width and Height</a>
+<a name="ln199"> </a>
+<a name="ln200">                    var heightCut = Math.Abs(lastY - firstY);</a>
+<a name="ln201">                    var widthCut = Math.Abs(lastX - firstX);</a>
+<a name="ln202"> </a>
+<a name="ln203">                    //If nothing changed, shift the delay.</a>
+<a name="ln204">                    if (heightCut + widthCut == height + width)</a>
+<a name="ln205">                    {</a>
+<a name="ln206">                        //TODO: Maximum of 2 bytes, 255 x 100: 25.500 ms</a>
+<a name="ln207">                        project.Frames[index].Rect = new Int32Rect(0, 0, 0, 0);</a>
+<a name="ln208">                        project.Frames[index].DataPosition = newStream.Position;</a>
+<a name="ln209">                        project.Frames[index].DataLength = 0;</a>
+<a name="ln210"> </a>
+<a name="ln211">                        GC.Collect(1);</a>
+<a name="ln212">                        continue;</a>
+<a name="ln213">                    }</a>
+<a name="ln214"> </a>
+<a name="ln215">                    if (heightCut != height)</a>
+<a name="ln216">                        heightCut++;</a>
+<a name="ln217"> </a>
+<a name="ln218">                    if (widthCut != width)</a>
+<a name="ln219">                        widthCut++;</a>
+<a name="ln220"> </a>
+<a name="ln221">                    project.Frames[index].Rect = new Int32Rect(firstX, firstY, widthCut, heightCut);</a>
+<a name="ln222"> </a>
+<a name="ln223">                    #endregion</a>
+<a name="ln224"> </a>
+<a name="ln225">                    #region Crop and save</a>
+<a name="ln226"> </a>
+<a name="ln227">                    var newPixels = CropImageArray(pixels, width, 32, project.Frames[index].Rect);</a>
+<a name="ln228"> </a>
+<a name="ln229">                    project.Frames[index].DataPosition = newStream.Position;</a>
+<a name="ln230">                    project.Frames[index].DataLength = newPixels.LongLength;</a>
+<a name="ln231"> </a>
+<a name="ln232">                    newStream.WriteBytes(newPixels);</a>
+<a name="ln233"> </a>
+<a name="ln234">                    #endregion</a>
+<a name="ln235"> </a>
+<a name="ln236">                    //Console.WriteLine(&quot;Save: &quot; + watch.Elapsed);</a>
+<a name="ln237">                    //Console.WriteLine();</a>
+<a name="ln238"> </a>
+<a name="ln239">                    GC.Collect(1);</a>
+<a name="ln240"> </a>
+<a name="ln241">                    #endregion</a>
+<a name="ln242">                }</a>
+<a name="ln243">            }</a>
+<a name="ln244">        }</a>
+<a name="ln245"> </a>
+<a name="ln246">        EncodingManager.Update(taskId, LocalizationHelper.Get(&quot;S.Encoder.SavingAnalysis&quot;), true);</a>
+<a name="ln247"> </a>
+<a name="ln248">        //Detect any empty frame.</a>
+<a name="ln249">        for (var index = project.Frames.Count - 1; index &gt;= 0; index--)</a>
+<a name="ln250">        {</a>
+<a name="ln251">            if (project.Frames[index].DataLength == 0)</a>
+<a name="ln252">                project.Frames[index - 1].Delay += project.Frames[index].Delay;</a>
+<a name="ln253">        }</a>
+<a name="ln254"> </a>
+<a name="ln255">        //Replaces the chunk file.</a>
+<a name="ln256">        File.Delete(project.ChunkPath);</a>
+<a name="ln257">        File.Move(project.NewChunkPath, project.ChunkPath);</a>
+<a name="ln258"> </a>
+<a name="ln259">        return project;</a>
+<a name="ln260">    }</a>
+<a name="ln261"> </a>
+<a name="ln262">    /// &lt;summary&gt;</a>
+<a name="ln263">    /// Analyzes all frames (from the end to the start) and paints all unchanged pixels with a given color,</a>
+<a name="ln264">    /// after, it cuts the image to reduce filesize.</a>
+<a name="ln265">    /// &lt;/summary&gt;</a>
+<a name="ln266">    /// &lt;param name=&quot;project&quot;&gt;The project with frames to analyze.&lt;/param&gt;</a>
+<a name="ln267">    /// &lt;param name=&quot;chroma&quot;&gt;The color to paint the unchanged pixels.&lt;/param&gt;</a>
+<a name="ln268">    /// &lt;param name=&quot;taskId&quot;&gt;The Id of the current Task.&lt;/param&gt;</a>
+<a name="ln269">    /// &lt;param name=&quot;tokenSource&quot;&gt;The cancellation token source.&lt;/param&gt;</a>
+<a name="ln270">    /// &lt;returns&gt;The project containing all frames and its cut points.&lt;/returns&gt;</a>
+<a name="ln271">    public static ExportProject PaintTransparentAndCut(ExportProject project, System.Windows.Media.Color chroma, int taskId, CancellationTokenSource tokenSource)</a>
+<a name="ln272">    {</a>
+<a name="ln273">        using (var oldStream = new FileStream(project.ChunkPath, FileMode.Open, FileAccess.Read, FileShare.Read))</a>
+<a name="ln274">        {</a>
+<a name="ln275">            using (var newFileStream = new FileStream(project.NewChunkPath, FileMode.Create, FileAccess.Write, FileShare.None))</a>
+<a name="ln276">            {</a>
+<a name="ln277">                using (var newStream = new BufferedStream(newFileStream, 100 * 1048576)) //Each 1 MB has 1_048_576 bytes.</a>
+<a name="ln278">                {</a>
+<a name="ln279">                    for (var index = project.Frames.Count - 1; index &gt; 0; index--)</a>
+<a name="ln280">                    {</a>
+<a name="ln281">                        #region Cancellation</a>
+<a name="ln282"> </a>
+<a name="ln283">                        if (tokenSource.Token.IsCancellationRequested)</a>
+<a name="ln284">                        {</a>
+<a name="ln285">                            EncodingManager.Update(taskId, EncodingStatus.Canceled);</a>
+<a name="ln286">                            break;</a>
+<a name="ln287">                        }</a>
+<a name="ln288"> </a>
+<a name="ln289">                        #endregion</a>
+<a name="ln290"> </a>
+<a name="ln291">                        #region For each frame, from the end to the start</a>
+<a name="ln292"> </a>
+<a name="ln293">                        EncodingManager.Update(taskId, project.Frames.Count - index - 1);</a>
+<a name="ln294"> </a>
+<a name="ln295">                        //var watch = Stopwatch.StartNew();</a>
+<a name="ln296"> </a>
+<a name="ln297">                        #region Get image info</a>
+<a name="ln298"> </a>
+<a name="ln299">                        oldStream.Position = project.Frames[index - 1].DataPosition;</a>
+<a name="ln300">                        var image1 = oldStream.ReadBytes((int)project.Frames[index - 1].DataLength); //Previous image.</a>
+<a name="ln301">                        oldStream.Position = project.Frames[index].DataPosition;</a>
+<a name="ln302">                        var image2 = oldStream.ReadBytes((int)project.Frames[index].DataLength); //Current image.</a>
+<a name="ln303"> </a>
+<a name="ln304">                        var startY = new bool[project.Frames[index - 1].Rect.Height];</a>
+<a name="ln305">                        var startX = new bool[project.Frames[index - 1].Rect.Width];</a>
+<a name="ln306"> </a>
+<a name="ln307">                        var height = project.Frames[index - 1].Rect.Height;</a>
+<a name="ln308">                        var width = project.Frames[index - 1].Rect.Width;</a>
+<a name="ln309">                        var blockCount = project.Frames[index - 1].ImageDepth / 8;</a>
+<a name="ln310"> </a>
+<a name="ln311">                        #endregion</a>
+<a name="ln312"> </a>
+<a name="ln313">                        //Console.WriteLine(&quot;Info: &quot; + watch.Elapsed);</a>
+<a name="ln314"> </a>
+<a name="ln315">                        //Only use Parallel if the image is big enough.</a>
+<a name="ln316">                        if (width * height &gt; 150000)</a>
+<a name="ln317">                        {</a>
+<a name="ln318">                            #region Parallel Loop</a>
+<a name="ln319"> </a>
+<a name="ln320">                            //x - width - sides</a>
+<a name="ln321">                            Parallel.For(0, image1.Length / blockCount, i =&gt;</a>
+<a name="ln322">                            {</a>
+<a name="ln323">                                i *= blockCount;</a>
+<a name="ln324"> </a>
+<a name="ln325">                                if (image1[i] != image2[i] || image1[i + 1] != image2[i + 1] || image1[i + 2] != image2[i + 2])</a>
+<a name="ln326">                                {</a>
+<a name="ln327">                                    //Different pixels should remain.</a>
+<a name="ln328">                                    var y = i / blockCount / width;</a>
+<a name="ln329">                                    var x = i / blockCount - (y * width);</a>
+<a name="ln330"> </a>
+<a name="ln331">                                    //image2[i + 3] = 255; When saving frames with transparency without the 'Enable transparency' ticked, the pixels that changed should be set to opaque.</a>
+<a name="ln332"> </a>
+<a name="ln333">                                    startX[x] = true;</a>
+<a name="ln334">                                    startY[y] = true;</a>
+<a name="ln335">                                }</a>
+<a name="ln336">                                else</a>
+<a name="ln337">                                {</a>
+<a name="ln338">                                    image2[i] = chroma.B;</a>
+<a name="ln339">                                    image2[i + 1] = chroma.G;</a>
+<a name="ln340">                                    image2[i + 2] = chroma.R;</a>
+<a name="ln341">                                    image2[i + 3] = 0;</a>
+<a name="ln342">                                }</a>
+<a name="ln343">                            });</a>
+<a name="ln344"> </a>
+<a name="ln345">                            #endregion</a>
+<a name="ln346">                        }</a>
+<a name="ln347">                        else</a>
+<a name="ln348">                        {</a>
+<a name="ln349">                            #region Sequential loop</a>
+<a name="ln350"> </a>
+<a name="ln351">                            for (var i = 0; i &lt; image1.Length; i += blockCount)</a>
+<a name="ln352">                            {</a>
+<a name="ln353">                                if (image1[i] != image2[i] || image1[i + 1] != image2[i + 1] || image1[i + 2] != image2[i + 2])</a>
+<a name="ln354">                                {</a>
+<a name="ln355">                                    //Different pixels should remain.</a>
+<a name="ln356">                                    var y = i / blockCount / width;</a>
+<a name="ln357">                                    var x = i / blockCount - (y * width);</a>
+<a name="ln358"> </a>
+<a name="ln359">                                    //image2[i + 3] = 255; When saving frames with transparency without the 'Enable transparency' ticked, the pixels that changed should be set to opaque.</a>
+<a name="ln360"> </a>
+<a name="ln361">                                    startX[x] = true;</a>
+<a name="ln362">                                    startY[y] = true;</a>
+<a name="ln363">                                }</a>
+<a name="ln364">                                else</a>
+<a name="ln365">                                {</a>
+<a name="ln366">                                    image2[i] = chroma.B;</a>
+<a name="ln367">                                    image2[i + 1] = chroma.G;</a>
+<a name="ln368">                                    image2[i + 2] = chroma.R;</a>
+<a name="ln369">                                    image2[i + 3] = 0;</a>
+<a name="ln370">                                }</a>
+<a name="ln371">                            }</a>
+<a name="ln372"> </a>
+<a name="ln373">                            #endregion</a>
+<a name="ln374">                        }</a>
+<a name="ln375"> </a>
+<a name="ln376">                        //Console.WriteLine(&quot;Change: &quot; + watch.Elapsed);</a>
+<a name="ln377"> </a>
+<a name="ln378">                        #region Verify positions</a>
+<a name="ln379"> </a>
+<a name="ln380">                        var firstX = startX.ToList().FindIndex(x =&gt; x);</a>
+<a name="ln381">                        var lastX = startX.ToList().FindLastIndex(x =&gt; x);</a>
+<a name="ln382"> </a>
+<a name="ln383">                        if (firstX == -1)</a>
+<a name="ln384">                            firstX = 0;</a>
+<a name="ln385">                        if (lastX == -1)</a>
+<a name="ln386">                            lastX = width;</a>
+<a name="ln387"> </a>
+<a name="ln388">                        var firstY = startY.ToList().FindIndex(x =&gt; x);</a>
+<a name="ln389">                        var lastY = startY.ToList().FindLastIndex(x =&gt; x);</a>
+<a name="ln390"> </a>
+<a name="ln391">                        if (lastY == -1)</a>
+<a name="ln392">                            lastY = height;</a>
+<a name="ln393">                        if (firstY == -1)</a>
+<a name="ln394">                            firstY = 0;</a>
+<a name="ln395"> </a>
+<a name="ln396">                        if (lastX &lt; firstX)</a>
+<a name="ln397">                        {</a>
+<a name="ln398">                            var aux = lastX;</a>
+<a name="ln399">                            lastX = firstX;</a>
+<a name="ln400">                            firstX = aux;</a>
+<a name="ln401">                        }</a>
+<a name="ln402"> </a>
+<a name="ln403">                        if (lastY &lt; firstY)</a>
+<a name="ln404">                        {</a>
+<a name="ln405">                            var aux = lastY;</a>
+<a name="ln406">                            lastY = firstY;</a>
+<a name="ln407">                            firstY = aux;</a>
+<a name="ln408">                        }</a>
+<a name="ln409"> </a>
+<a name="ln410">                        #endregion</a>
+<a name="ln411"> </a>
+<a name="ln412">                        #region Get the Width and Height</a>
+<a name="ln413"> </a>
+<a name="ln414">                        var heightCut = Math.Abs(lastY - firstY);</a>
+<a name="ln415">                        var widthCut = Math.Abs(lastX - firstX);</a>
+<a name="ln416"> </a>
+<a name="ln417">                        //If nothing changed, shift the delay.</a>
+<a name="ln418">                        if (heightCut + widthCut == height + width)</a>
+<a name="ln419">                        {</a>
+<a name="ln420">                            //TODO: Maximum of 2 bytes, 255 x 100: 25.500 ms</a>
+<a name="ln421">                            project.Frames[index - 1].Delay += project.Frames[index].Delay;</a>
+<a name="ln422">                            project.Frames[index].Rect = new Int32Rect(0, 0, 0, 0);</a>
+<a name="ln423">                            project.Frames[index].DataPosition = newStream.Position;</a>
+<a name="ln424">                            project.Frames[index].DataLength = 0;</a>
+<a name="ln425"> </a>
+<a name="ln426">                            GC.Collect(1);</a>
+<a name="ln427">                            continue;</a>
+<a name="ln428">                        }</a>
+<a name="ln429"> </a>
+<a name="ln430">                        if (heightCut != height)</a>
+<a name="ln431">                            heightCut++;</a>
+<a name="ln432"> </a>
+<a name="ln433">                        if (widthCut != width)</a>
+<a name="ln434">                            widthCut++;</a>
+<a name="ln435"> </a>
+<a name="ln436">                        project.Frames[index].Rect = new Int32Rect(firstX, firstY, widthCut, heightCut);</a>
+<a name="ln437"> </a>
+<a name="ln438">                        #endregion</a>
+<a name="ln439"> </a>
+<a name="ln440">                        #region Crop and save</a>
+<a name="ln441"> </a>
+<a name="ln442">                        var newPixels = CropImageArray(image2, width, 32, project.Frames[index].Rect);</a>
+<a name="ln443"> </a>
+<a name="ln444">                        //Writes to the buffer from end to start. Since I have the position, it does not matter.</a>
+<a name="ln445">                        project.Frames[index].DataPosition = newStream.Position;</a>
+<a name="ln446">                        project.Frames[index].DataLength = newPixels.LongLength;</a>
+<a name="ln447"> </a>
+<a name="ln448">                        newStream.WriteBytes(newPixels);</a>
+<a name="ln449"> </a>
+<a name="ln450">                        #endregion</a>
+<a name="ln451"> </a>
+<a name="ln452">                        //SavePixelArrayToFile(newPixels, project.Frames[index].Rect.Width, project.Frames[index].Rect.Height, 4, project.ChunkPath + index + &quot;.png&quot;);</a>
+<a name="ln453"> </a>
+<a name="ln454">                        //Console.WriteLine(&quot;Save: &quot; + watch.Elapsed);</a>
+<a name="ln455">                        //Console.WriteLine();</a>
+<a name="ln456"> </a>
+<a name="ln457">                        GC.Collect(1);</a>
+<a name="ln458"> </a>
+<a name="ln459">                        #endregion</a>
+<a name="ln460">                    }</a>
+<a name="ln461"> </a>
+<a name="ln462">                    EncodingManager.Update(taskId, LocalizationHelper.Get(&quot;S.Encoder.SavingAnalysis&quot;), true);</a>
+<a name="ln463"> </a>
+<a name="ln464">                    #region Write the first frame</a>
+<a name="ln465"> </a>
+<a name="ln466">                    oldStream.Position = project.Frames[0].DataPosition;</a>
+<a name="ln467">                    var firstFrame = oldStream.ReadBytes((int)project.Frames[0].DataLength);</a>
+<a name="ln468"> </a>
+<a name="ln469">                    project.Frames[0].DataPosition = newStream.Position;</a>
+<a name="ln470">                    project.Frames[0].DataLength = firstFrame.LongLength;</a>
+<a name="ln471"> </a>
+<a name="ln472">                    //SavePixelArrayToFile(firstFrame, project.Frames[0].Rect.Width, project.Frames[0].Rect.Height, 4, project.ChunkPath + 0 + &quot;.png&quot;);</a>
+<a name="ln473"> </a>
+<a name="ln474">                    newStream.WriteBytes(firstFrame);</a>
+<a name="ln475"> </a>
+<a name="ln476">                    #endregion</a>
+<a name="ln477">                }</a>
+<a name="ln478">            }</a>
+<a name="ln479">        }</a>
+<a name="ln480"> </a>
+<a name="ln481">        //Detect the data position of each frame.</a>
+<a name="ln482">        //for (var index = 1; index &lt; project.Frames.Count - 1; index++)</a>
+<a name="ln483">        //    project.Frames[index].DataPosition = project.Frames[index - 1].DataLength + project.Frames[index - 1].DataPosition;</a>
+<a name="ln484"> </a>
+<a name="ln485">        //Replaces the chunk file.</a>
+<a name="ln486">        File.Delete(project.ChunkPath);</a>
+<a name="ln487">        File.Move(project.NewChunkPath, project.ChunkPath);</a>
+<a name="ln488"> </a>
+<a name="ln489">        return project;</a>
+<a name="ln490">    }</a>
+<a name="ln491"> </a>
+<a name="ln492">    /// &lt;summary&gt;</a>
+<a name="ln493">    /// Analyzes all frames (from the end to the start) and paints all unchanged pixels with a given color,</a>
+<a name="ln494">    /// after, it cuts the image to reduce filesize.</a>
+<a name="ln495">    /// &lt;/summary&gt;</a>
+<a name="ln496">    /// &lt;param name=&quot;project&quot;&gt;The project with frames to analyze.&lt;/param&gt;</a>
+<a name="ln497">    /// &lt;param name=&quot;taskId&quot;&gt;The Id of the Task.&lt;/param&gt;</a>
+<a name="ln498">    /// &lt;param name=&quot;tokenSource&quot;&gt;The cancellation token source.&lt;/param&gt;</a>
+<a name="ln499">    /// &lt;returns&gt;The project containing all frames and its cut points.&lt;/returns&gt;</a>
+<a name="ln500">    public static ExportProject CutUnchanged(ExportProject project, int taskId, CancellationTokenSource tokenSource)</a>
+<a name="ln501">    {</a>
+<a name="ln502">        using (var oldStream = new FileStream(project.ChunkPath, FileMode.Open, FileAccess.Read, FileShare.Read))</a>
+<a name="ln503">        {</a>
+<a name="ln504">            using (var newStream = new FileStream(project.NewChunkPath, FileMode.Create, FileAccess.Write, FileShare.None))</a>
+<a name="ln505">            {</a>
+<a name="ln506">                for (var index = project.Frames.Count - 1; index &gt; 0; index--)</a>
+<a name="ln507">                {</a>
+<a name="ln508">                    #region Cancellation</a>
+<a name="ln509"> </a>
+<a name="ln510">                    if (tokenSource.Token.IsCancellationRequested)</a>
+<a name="ln511">                    {</a>
+<a name="ln512">                        EncodingManager.Update(taskId, EncodingStatus.Canceled);</a>
+<a name="ln513">                        break;</a>
+<a name="ln514">                    }</a>
+<a name="ln515"> </a>
+<a name="ln516">                    #endregion</a>
+<a name="ln517"> </a>
+<a name="ln518">                    #region For each frame, from the end to the start</a>
+<a name="ln519"> </a>
+<a name="ln520">                    EncodingManager.Update(taskId, project.Frames.Count - index - 1);</a>
+<a name="ln521"> </a>
+<a name="ln522">                    //var watch = Stopwatch.StartNew();</a>
+<a name="ln523"> </a>
+<a name="ln524">                    #region Get image info</a>
+<a name="ln525"> </a>
+<a name="ln526">                    oldStream.Position = project.Frames[index - 1].DataPosition;</a>
+<a name="ln527">                    var image1 = oldStream.ReadBytes((int)project.Frames[index - 1].DataLength); //Previous image.</a>
+<a name="ln528">                    oldStream.Position = project.Frames[index].DataPosition;</a>
+<a name="ln529">                    var image2 = oldStream.ReadBytes((int)project.Frames[index].DataLength); //Current image.</a>
+<a name="ln530"> </a>
+<a name="ln531">                    var startY = new bool[project.Frames[index - 1].Rect.Height];</a>
+<a name="ln532">                    var startX = new bool[project.Frames[index - 1].Rect.Width];</a>
+<a name="ln533"> </a>
+<a name="ln534">                    var height = project.Frames[index - 1].Rect.Height;</a>
+<a name="ln535">                    var width = project.Frames[index - 1].Rect.Width;</a>
+<a name="ln536">                    var blockCount = project.Frames[index - 1].ImageDepth / 8;</a>
+<a name="ln537"> </a>
+<a name="ln538">                    #endregion</a>
+<a name="ln539"> </a>
+<a name="ln540">                    //Console.WriteLine(&quot;Info: &quot; + watch.Elapsed);</a>
+<a name="ln541"> </a>
+<a name="ln542">                    //Only use Parallel if the image is big enough.</a>
+<a name="ln543">                    if (width * height &gt; 150000)</a>
+<a name="ln544">                    {</a>
+<a name="ln545">                        #region Parallel Loop</a>
+<a name="ln546"> </a>
+<a name="ln547">                        //x - width - sides</a>
+<a name="ln548">                        Parallel.For(0, image1.Length / blockCount, i =&gt;</a>
+<a name="ln549">                        {</a>
+<a name="ln550">                            i *= blockCount;</a>
+<a name="ln551"> </a>
+<a name="ln552">                            if (image1[i] != image2[i] || image1[i + 1] != image2[i + 1] || image1[i + 2] != image2[i + 2])</a>
+<a name="ln553">                            {</a>
+<a name="ln554">                                //Different pixels should remain.</a>
+<a name="ln555">                                var y = i / blockCount / width;</a>
+<a name="ln556">                                var x = i / blockCount - (y * width);</a>
+<a name="ln557"> </a>
+<a name="ln558">                                //var current = (y * image1.Width + x) * blockCount == i;</a>
+<a name="ln559"> </a>
+<a name="ln560">                                startX[x] = true;</a>
+<a name="ln561">                                startY[y] = true;</a>
+<a name="ln562">                            }</a>
+<a name="ln563">                        });</a>
+<a name="ln564"> </a>
+<a name="ln565">                        #endregion</a>
+<a name="ln566">                    }</a>
+<a name="ln567">                    else</a>
+<a name="ln568">                    {</a>
+<a name="ln569">                        #region Sequential loop</a>
+<a name="ln570"> </a>
+<a name="ln571">                        for (var i = 0; i &lt; image1.Length; i += blockCount)</a>
+<a name="ln572">                        {</a>
+<a name="ln573">                            if (image1[i] != image2[i] || image1[i + 1] != image2[i + 1] || image1[i + 2] != image2[i + 2])</a>
+<a name="ln574">                            {</a>
+<a name="ln575">                                //Different pixels should remain.</a>
+<a name="ln576">                                var y = i / blockCount / width;</a>
+<a name="ln577">                                var x = i / blockCount - (y * width);</a>
+<a name="ln578"> </a>
+<a name="ln579">                                //var current = (y * image1.Width + x) * blockCount == i;</a>
+<a name="ln580"> </a>
+<a name="ln581">                                startX[x] = true;</a>
+<a name="ln582">                                startY[y] = true;</a>
+<a name="ln583">                            }</a>
+<a name="ln584">                        }</a>
+<a name="ln585"> </a>
+<a name="ln586">                        #endregion</a>
+<a name="ln587">                    }</a>
+<a name="ln588"> </a>
+<a name="ln589">                    //Console.WriteLine(&quot;Change: &quot; + watch.Elapsed);</a>
+<a name="ln590"> </a>
+<a name="ln591">                    #region Verify positions</a>
+<a name="ln592"> </a>
+<a name="ln593">                    var firstX = startX.ToList().FindIndex(x =&gt; x);</a>
+<a name="ln594">                    var lastX = startX.ToList().FindLastIndex(x =&gt; x);</a>
+<a name="ln595"> </a>
+<a name="ln596">                    if (firstX == -1)</a>
+<a name="ln597">                        firstX = 0;</a>
+<a name="ln598">                    if (lastX == -1)</a>
+<a name="ln599">                        lastX = width;</a>
+<a name="ln600"> </a>
+<a name="ln601">                    var firstY = startY.ToList().FindIndex(x =&gt; x);</a>
+<a name="ln602">                    var lastY = startY.ToList().FindLastIndex(x =&gt; x);</a>
+<a name="ln603"> </a>
+<a name="ln604">                    if (lastY == -1)</a>
+<a name="ln605">                        lastY = height;</a>
+<a name="ln606">                    if (firstY == -1)</a>
+<a name="ln607">                        firstY = 0;</a>
+<a name="ln608"> </a>
+<a name="ln609">                    if (lastX &lt; firstX)</a>
+<a name="ln610">                    {</a>
+<a name="ln611">                        var aux = lastX;</a>
+<a name="ln612">                        lastX = firstX;</a>
+<a name="ln613">                        firstX = aux;</a>
+<a name="ln614">                    }</a>
+<a name="ln615"> </a>
+<a name="ln616">                    if (lastY &lt; firstY)</a>
+<a name="ln617">                    {</a>
+<a name="ln618">                        var aux = lastY;</a>
+<a name="ln619">                        lastY = firstY;</a>
+<a name="ln620">                        firstY = aux;</a>
+<a name="ln621">                    }</a>
+<a name="ln622"> </a>
+<a name="ln623">                    #endregion</a>
+<a name="ln624"> </a>
+<a name="ln625">                    #region Get the Width and Height</a>
+<a name="ln626"> </a>
+<a name="ln627">                    var heightCut = Math.Abs(lastY - firstY);</a>
+<a name="ln628">                    var widthCut = Math.Abs(lastX - firstX);</a>
+<a name="ln629"> </a>
+<a name="ln630">                    //If nothing changed, shift the delay.</a>
+<a name="ln631">                    if (heightCut + widthCut == height + width)</a>
+<a name="ln632">                    {</a>
+<a name="ln633">                        //TODO: Maximum of 2 bytes, 255 x 100: 25.500 ms</a>
+<a name="ln634">                        project.Frames[index - 1].Delay += project.Frames[index].Delay;</a>
+<a name="ln635">                        project.Frames[index].Rect = new Int32Rect(0, 0, 0, 0);</a>
+<a name="ln636">                        project.Frames[index].DataPosition = newStream.Position;</a>
+<a name="ln637">                        project.Frames[index].DataLength = 0;</a>
+<a name="ln638"> </a>
+<a name="ln639">                        GC.Collect(1);</a>
+<a name="ln640">                        continue;</a>
+<a name="ln641">                    }</a>
+<a name="ln642"> </a>
+<a name="ln643">                    if (heightCut != height)</a>
+<a name="ln644">                        heightCut++;</a>
+<a name="ln645"> </a>
+<a name="ln646">                    if (widthCut != width)</a>
+<a name="ln647">                        widthCut++;</a>
+<a name="ln648"> </a>
+<a name="ln649">                    project.Frames[index].Rect = new Int32Rect(firstX, firstY, widthCut, heightCut);</a>
+<a name="ln650"> </a>
+<a name="ln651">                    #endregion</a>
+<a name="ln652"> </a>
+<a name="ln653">                    #region Crop and save</a>
+<a name="ln654"> </a>
+<a name="ln655">                    var newPixels = CropImageArray(image2, width, 32, project.Frames[index].Rect);</a>
+<a name="ln656"> </a>
+<a name="ln657">                    //Writes to the buffer from end to start. Since I have the position, it does not matter.</a>
+<a name="ln658">                    project.Frames[index].DataPosition = newStream.Position;</a>
+<a name="ln659">                    project.Frames[index].DataLength = newPixels.LongLength;</a>
+<a name="ln660"> </a>
+<a name="ln661">                    newStream.WriteBytes(newPixels);</a>
+<a name="ln662"> </a>
+<a name="ln663">                    #endregion</a>
+<a name="ln664"> </a>
+<a name="ln665">                    //Console.WriteLine(&quot;Save: &quot; + watch.Elapsed);</a>
+<a name="ln666">                    //Console.WriteLine();</a>
+<a name="ln667"> </a>
+<a name="ln668">                    GC.Collect(1);</a>
+<a name="ln669"> </a>
+<a name="ln670">                    #endregion</a>
+<a name="ln671">                }</a>
+<a name="ln672"> </a>
+<a name="ln673">                EncodingManager.Update(taskId, LocalizationHelper.Get(&quot;S.Encoder.SavingAnalysis&quot;), true);</a>
+<a name="ln674"> </a>
+<a name="ln675">                #region Write the first frame</a>
+<a name="ln676"> </a>
+<a name="ln677">                oldStream.Position = project.Frames[0].DataPosition;</a>
+<a name="ln678">                var firstFrame = oldStream.ReadBytes((int)project.Frames[0].DataLength);</a>
+<a name="ln679"> </a>
+<a name="ln680">                project.Frames[0].DataPosition = newStream.Position;</a>
+<a name="ln681">                project.Frames[0].DataLength = firstFrame.LongLength;</a>
+<a name="ln682"> </a>
+<a name="ln683">                newStream.WriteBytes(firstFrame);</a>
+<a name="ln684"> </a>
+<a name="ln685">                #endregion</a>
+<a name="ln686">            }</a>
+<a name="ln687">        }</a>
+<a name="ln688"> </a>
+<a name="ln689">        //Detect the data position of each frame.</a>
+<a name="ln690">        //for (var index = 1; index &lt; project.Frames.Count - 1; index++)</a>
+<a name="ln691">        //    project.Frames[index].DataPosition = project.Frames[index - 1].DataLength + project.Frames[index - 1].DataPosition;</a>
+<a name="ln692"> </a>
+<a name="ln693">        //Replaces the chunk file.</a>
+<a name="ln694">        File.Delete(project.ChunkPath);</a>
+<a name="ln695">        File.Move(project.NewChunkPath, project.ChunkPath);</a>
+<a name="ln696"> </a>
+<a name="ln697">        return project;</a>
+<a name="ln698">    }</a>
+<a name="ln699"> </a>
+<a name="ln700"> </a>
+<a name="ln701">    public static List&lt;IFrame&gt; PaintTransparentAndCut(List&lt;IFrame&gt; listToEncode, System.Windows.Media.Color transparent, int taskId, CancellationTokenSource tokenSource)</a>
+<a name="ln702">    {</a>
+<a name="ln703">        //First frame rect.</a>
+<a name="ln704">        var size = listToEncode[0].Path.ScaledSize();</a>
+<a name="ln705">        listToEncode[0].Rect = new Int32Rect(0, 0, (int)size.Width, (int)size.Height);</a>
+<a name="ln706"> </a>
+<a name="ln707">        //End to start FOR</a>
+<a name="ln708">        for (var index = listToEncode.Count - 1; index &gt; 0; index--)</a>
+<a name="ln709">        {</a>
+<a name="ln710">            #region Cancellation</a>
+<a name="ln711"> </a>
+<a name="ln712">            if (tokenSource.Token.IsCancellationRequested)</a>
+<a name="ln713">            {</a>
+<a name="ln714">                EncodingManager.Update(taskId, EncodingStatus.Canceled);</a>
+<a name="ln715">                break;</a>
+<a name="ln716">            }</a>
+<a name="ln717"> </a>
+<a name="ln718">            #endregion</a>
+<a name="ln719"> </a>
+<a name="ln720">            #region For each Frame, from the end to the start</a>
+<a name="ln721"> </a>
+<a name="ln722">            EncodingManager.Update(taskId, listToEncode.Count - index - 1);</a>
+<a name="ln723"> </a>
+<a name="ln724">            //var watch = Stopwatch.StartNew();</a>
+<a name="ln725"> </a>
+<a name="ln726">            #region Get Image Info</a>
+<a name="ln727"> </a>
+<a name="ln728">            var imageAux1 = listToEncode[index - 1].Path.SourceFrom();</a>
+<a name="ln729">            var imageAux2 = listToEncode[index].Path.SourceFrom();</a>
+<a name="ln730"> </a>
+<a name="ln731">            var startY = new bool[imageAux1.PixelHeight];</a>
+<a name="ln732">            var startX = new bool[imageAux1.PixelWidth];</a>
+<a name="ln733"> </a>
+<a name="ln734">            var image1 = new PixelUtil(imageAux1); //Previous image</a>
+<a name="ln735">            var image2 = new PixelUtil(imageAux2); //Actual image</a>
+<a name="ln736"> </a>
+<a name="ln737">            image1.LockBits();</a>
+<a name="ln738">            image2.LockBits();</a>
+<a name="ln739"> </a>
+<a name="ln740">            var height = imageAux1.PixelHeight;</a>
+<a name="ln741">            var width = imageAux1.PixelWidth;</a>
+<a name="ln742">            var blockCount = image1.Depth / 8;</a>
+<a name="ln743"> </a>
+<a name="ln744">            #endregion</a>
+<a name="ln745"> </a>
+<a name="ln746">            //Console.WriteLine(&quot;Lock: &quot; + watch.Elapsed);</a>
+<a name="ln747"> </a>
+<a name="ln748">            //Only use Parallel if the image is big enough.</a>
+<a name="ln749">            if (width * height &gt; 150000)</a>
+<a name="ln750">            {</a>
+<a name="ln751">                #region Parallel Loop</a>
+<a name="ln752"> </a>
+<a name="ln753">                //x - width - sides</a>
+<a name="ln754">                Parallel.For(0, image1.Pixels.Length / blockCount, i =&gt;</a>
+<a name="ln755">                {</a>
+<a name="ln756">                    i = i * blockCount;</a>
+<a name="ln757"> </a>
+<a name="ln758">                    if (image1.Pixels[i] != image2.Pixels[i] || image1.Pixels[i + 1] != image2.Pixels[i + 1] || image1.Pixels[i + 2] != image2.Pixels[i + 2])</a>
+<a name="ln759">                    {</a>
+<a name="ln760">                        var y = i / blockCount / image1.Width;</a>
+<a name="ln761">                        var x = i / blockCount - (y * image1.Width);</a>
+<a name="ln762"> </a>
+<a name="ln763">                        //var current = (y * image1.Width + x) * blockCount == i;</a>
+<a name="ln764"> </a>
+<a name="ln765">                        startX[x] = true;</a>
+<a name="ln766">                        startY[y] = true;</a>
+<a name="ln767">                    }</a>
+<a name="ln768">                    else</a>
+<a name="ln769">                    {</a>
+<a name="ln770">                        image2.Pixels[i] = transparent.B;</a>
+<a name="ln771">                        image2.Pixels[i + 1] = transparent.G;</a>
+<a name="ln772">                        image2.Pixels[i + 2] = transparent.R;</a>
+<a name="ln773"> </a>
+<a name="ln774">                        if (blockCount == 4)</a>
+<a name="ln775">                            image2.Pixels[i + 3] = transparent.A; //255;</a>
+<a name="ln776">                    }</a>
+<a name="ln777">                });</a>
+<a name="ln778"> </a>
+<a name="ln779">                #endregion</a>
+<a name="ln780">            }</a>
+<a name="ln781">            else</a>
+<a name="ln782">            {</a>
+<a name="ln783">                #region Sequential loop</a>
+<a name="ln784"> </a>
+<a name="ln785">                for (var i = 0; i &lt; image1.Pixels.Length; i += blockCount)</a>
+<a name="ln786">                {</a>
+<a name="ln787">                    if (image1.Pixels[i] != image2.Pixels[i] || image1.Pixels[i + 1] != image2.Pixels[i + 1] || image1.Pixels[i + 2] != image2.Pixels[i + 2])</a>
+<a name="ln788">                    {</a>
+<a name="ln789">                        var y = i / blockCount / image1.Width;</a>
+<a name="ln790">                        var x = i / blockCount - (y * image1.Width);</a>
+<a name="ln791"> </a>
+<a name="ln792">                        //var current = (y * image1.Width + x) * blockCount == i;</a>
+<a name="ln793"> </a>
+<a name="ln794">                        startX[x] = true;</a>
+<a name="ln795">                        startY[y] = true;</a>
+<a name="ln796">                    }</a>
+<a name="ln797">                    else</a>
+<a name="ln798">                    {</a>
+<a name="ln799">                        image2.Pixels[i] = transparent.B;</a>
+<a name="ln800">                        image2.Pixels[i + 1] = transparent.G;</a>
+<a name="ln801">                        image2.Pixels[i + 2] = transparent.R;</a>
+<a name="ln802"> </a>
+<a name="ln803">                        if (blockCount == 4)</a>
+<a name="ln804">                            image2.Pixels[i + 3] = transparent.A; //255;</a>
+<a name="ln805">                    }</a>
+<a name="ln806">                }</a>
+<a name="ln807"> </a>
+<a name="ln808">                #endregion</a>
+<a name="ln809">            }</a>
+<a name="ln810"> </a>
+<a name="ln811">            //Console.WriteLine(&quot;Change: &quot; + watch.Elapsed);</a>
+<a name="ln812"> </a>
+<a name="ln813">            image1.UnlockBitsWithoutCommit();</a>
+<a name="ln814"> </a>
+<a name="ln815">            //Console.WriteLine(&quot;Unlock: &quot; + watch.Elapsed);</a>
+<a name="ln816"> </a>
+<a name="ln817">            #region Verify positions</a>
+<a name="ln818"> </a>
+<a name="ln819">            var firstX = startX.ToList().FindIndex(x =&gt; x);</a>
+<a name="ln820">            var lastX = startX.ToList().FindLastIndex(x =&gt; x);</a>
+<a name="ln821"> </a>
+<a name="ln822">            if (firstX == -1)</a>
+<a name="ln823">                firstX = 0;</a>
+<a name="ln824">            if (lastX == -1)</a>
+<a name="ln825">                lastX = imageAux1.PixelWidth;</a>
+<a name="ln826"> </a>
+<a name="ln827">            var firstY = startY.ToList().FindIndex(x =&gt; x);</a>
+<a name="ln828">            var lastY = startY.ToList().FindLastIndex(x =&gt; x);</a>
+<a name="ln829"> </a>
+<a name="ln830">            if (lastY == -1)</a>
+<a name="ln831">                lastY = imageAux1.PixelHeight;</a>
+<a name="ln832">            if (firstY == -1)</a>
+<a name="ln833">                firstY = 0;</a>
+<a name="ln834"> </a>
+<a name="ln835">            if (lastX &lt; firstX)</a>
+<a name="ln836">            {</a>
+<a name="ln837">                var aux = lastX;</a>
+<a name="ln838">                lastX = firstX;</a>
+<a name="ln839">                firstX = aux;</a>
+<a name="ln840">            }</a>
+<a name="ln841"> </a>
+<a name="ln842">            if (lastY &lt; firstY)</a>
+<a name="ln843">            {</a>
+<a name="ln844">                var aux = lastY;</a>
+<a name="ln845">                lastY = firstY;</a>
+<a name="ln846">                firstY = aux;</a>
+<a name="ln847">            }</a>
+<a name="ln848"> </a>
+<a name="ln849">            #endregion</a>
+<a name="ln850"> </a>
+<a name="ln851">            #region Get the Width and Height</a>
+<a name="ln852"> </a>
+<a name="ln853">            var heightCut = Math.Abs(lastY - firstY);</a>
+<a name="ln854">            var widthCut = Math.Abs(lastX - firstX);</a>
+<a name="ln855"> </a>
+<a name="ln856">            //If nothing changed, shift the delay.</a>
+<a name="ln857">            if (heightCut + widthCut == height + width)</a>
+<a name="ln858">            {</a>
+<a name="ln859">                //TODO: Maximum of 2 bytes, 255 x 100: 25.500 ms</a>
+<a name="ln860">                listToEncode[index - 1].Delay += listToEncode[index].Delay;</a>
+<a name="ln861">                listToEncode[index].Rect = new Int32Rect(0, 0, 0, 0);</a>
+<a name="ln862"> </a>
+<a name="ln863">                GC.Collect(1);</a>
+<a name="ln864">                continue;</a>
+<a name="ln865">            }</a>
+<a name="ln866"> </a>
+<a name="ln867">            if (heightCut != height)</a>
+<a name="ln868">                heightCut++;</a>
+<a name="ln869"> </a>
+<a name="ln870">            if (widthCut != width)</a>
+<a name="ln871">                widthCut++;</a>
+<a name="ln872"> </a>
+<a name="ln873">            listToEncode[index].Rect = new Int32Rect(firstX, firstY, widthCut, heightCut);</a>
+<a name="ln874"> </a>
+<a name="ln875">            #endregion</a>
+<a name="ln876"> </a>
+<a name="ln877">            #region Update Image</a>
+<a name="ln878"> </a>
+<a name="ln879">            using (var fileStream = new FileStream(listToEncode[index].Path, FileMode.Create))</a>
+<a name="ln880">            {</a>
+<a name="ln881">                BitmapEncoder encoder = new PngBitmapEncoder();</a>
+<a name="ln882">                encoder.Frames.Add(BitmapFrame.Create(image2.UnlockBitsAndCrop(new Int32Rect(firstX, firstY, widthCut, heightCut))));</a>
+<a name="ln883">                encoder.Save(fileStream);</a>
+<a name="ln884">            }</a>
+<a name="ln885"> </a>
+<a name="ln886">            imageAux1 = null;</a>
+<a name="ln887">            imageAux2 = null;</a>
+<a name="ln888"> </a>
+<a name="ln889">            #endregion</a>
+<a name="ln890"> </a>
+<a name="ln891">            //Console.WriteLine(&quot;Save: &quot; + watch.Elapsed);</a>
+<a name="ln892">            //Console.WriteLine();</a>
+<a name="ln893"> </a>
+<a name="ln894">            GC.Collect(1);</a>
+<a name="ln895"> </a>
+<a name="ln896">            #endregion</a>
+<a name="ln897">        }</a>
+<a name="ln898"> </a>
+<a name="ln899">        return listToEncode;</a>
+<a name="ln900">    }</a>
+<a name="ln901"> </a>
+<a name="ln902">    public static List&lt;IFrame&gt; CutUnchanged(List&lt;IFrame&gt; listToEncode, int id, CancellationTokenSource tokenSource)</a>
+<a name="ln903">    {</a>
+<a name="ln904">        //First frame rect.</a>
+<a name="ln905">        var size = listToEncode[0].Path.ScaledSize();</a>
+<a name="ln906">        listToEncode[0].Rect = new Int32Rect(0, 0, (int)size.Width, (int)size.Height);</a>
+<a name="ln907"> </a>
+<a name="ln908">        //End to start FOR</a>
+<a name="ln909">        for (var index = listToEncode.Count - 1; index &gt; 0; index--)</a>
+<a name="ln910">        {</a>
+<a name="ln911">            #region Cancellation</a>
+<a name="ln912"> </a>
+<a name="ln913">            if (tokenSource.Token.IsCancellationRequested)</a>
+<a name="ln914">            {</a>
+<a name="ln915">                EncodingManager.Update(id, EncodingStatus.Canceled);</a>
+<a name="ln916">                break;</a>
+<a name="ln917">            }</a>
+<a name="ln918"> </a>
+<a name="ln919">            #endregion</a>
+<a name="ln920"> </a>
+<a name="ln921">            #region For each Frame, from the end to the start</a>
+<a name="ln922"> </a>
+<a name="ln923">            EncodingManager.Update(id, listToEncode.Count - index - 1);</a>
+<a name="ln924"> </a>
+<a name="ln925">            #region Get Image Info</a>
+<a name="ln926"> </a>
+<a name="ln927">            var imageAux1 = listToEncode[index - 1].Path.From();</a>
+<a name="ln928">            var imageAux2 = listToEncode[index].Path.From();</a>
+<a name="ln929"> </a>
+<a name="ln930">            var startY = new bool[imageAux1.Height];</a>
+<a name="ln931">            var startX = new bool[imageAux1.Width];</a>
+<a name="ln932"> </a>
+<a name="ln933">            var image1 = new PixelUtilOld(imageAux1); //Previous image</a>
+<a name="ln934">            var image2 = new PixelUtilOld(imageAux2); //Actual image</a>
+<a name="ln935"> </a>
+<a name="ln936">            image1.LockBits();</a>
+<a name="ln937">            image2.LockBits();</a>
+<a name="ln938"> </a>
+<a name="ln939">            var height = imageAux1.Height;</a>
+<a name="ln940">            var width = imageAux1.Width;</a>
+<a name="ln941"> </a>
+<a name="ln942">            #endregion</a>
+<a name="ln943"> </a>
+<a name="ln944">            //Only use Parallel if the image is big enough.</a>
+<a name="ln945">            if (width * height &gt; 150000)</a>
+<a name="ln946">            {</a>
+<a name="ln947">                #region Parallel Loop</a>
+<a name="ln948"> </a>
+<a name="ln949">                //x - width - sides</a>
+<a name="ln950">                Parallel.For(0, width, x =&gt;</a>
+<a name="ln951">                {</a>
+<a name="ln952">                    //y - height - up/down</a>
+<a name="ln953">                    for (var y = 0; y &lt; height; y++)</a>
+<a name="ln954">                    {</a>
+<a name="ln955">                        if (image1.GetPixel(x, y) != image2.GetPixel(x, y))</a>
+<a name="ln956">                        {</a>
+<a name="ln957">                            #region Get the Changed Pixels</a>
+<a name="ln958"> </a>
+<a name="ln959">                            startX[x] = true;</a>
+<a name="ln960">                            startY[y] = true;</a>
+<a name="ln961"> </a>
+<a name="ln962">                            #endregion</a>
+<a name="ln963">                        }</a>
+<a name="ln964">                    }</a>
+<a name="ln965">                }); //SPEEEEEED, a lot!</a>
+<a name="ln966"> </a>
+<a name="ln967">                #endregion</a>
+<a name="ln968">            }</a>
+<a name="ln969">            else</a>
+<a name="ln970">            {</a>
+<a name="ln971">                #region Sequential Loop</a>
+<a name="ln972"> </a>
+<a name="ln973">                //x - width - sides</a>
+<a name="ln974">                for (var x = 0; x &lt; width; x++)</a>
+<a name="ln975">                {</a>
+<a name="ln976">                    //y - height - up/down</a>
+<a name="ln977">                    for (var y = 0; y &lt; height; y++)</a>
+<a name="ln978">                    {</a>
+<a name="ln979">                        #region For each Pixel</a>
+<a name="ln980"> </a>
+<a name="ln981">                        if (image1.GetPixel(x, y) == image2.GetPixel(x, y)) continue;</a>
+<a name="ln982"> </a>
+<a name="ln983">                        #region Get the Changed Pixels</a>
+<a name="ln984"> </a>
+<a name="ln985">                        startX[x] = true;</a>
+<a name="ln986">                        startY[y] = true;</a>
+<a name="ln987"> </a>
+<a name="ln988">                        #endregion</a>
+<a name="ln989"> </a>
+<a name="ln990">                        #endregion</a>
+<a name="ln991">                    }</a>
+<a name="ln992">                }</a>
+<a name="ln993"> </a>
+<a name="ln994">                #endregion</a>
+<a name="ln995">            }</a>
+<a name="ln996"> </a>
+<a name="ln997">            image1.UnlockBits();</a>
+<a name="ln998">            image2.UnlockBits();</a>
+<a name="ln999"> </a>
+<a name="ln1000">            #region Verify positions</a>
+<a name="ln1001"> </a>
+<a name="ln1002">            var firstX = startX.ToList().FindIndex(x =&gt; x);</a>
+<a name="ln1003">            var lastX = startX.ToList().FindLastIndex(x =&gt; x);</a>
+<a name="ln1004"> </a>
+<a name="ln1005">            if (firstX == -1)</a>
+<a name="ln1006">                firstX = 0;</a>
+<a name="ln1007"> </a>
+<a name="ln1008">            if (lastX == -1)</a>
+<a name="ln1009">                lastX = imageAux1.Width;</a>
+<a name="ln1010"> </a>
+<a name="ln1011">            var firstY = startY.ToList().FindIndex(x =&gt; x);</a>
+<a name="ln1012">            var lastY = startY.ToList().FindLastIndex(x =&gt; x);</a>
+<a name="ln1013"> </a>
+<a name="ln1014">            if (lastY == -1)</a>
+<a name="ln1015">                lastY = imageAux1.Height;</a>
+<a name="ln1016"> </a>
+<a name="ln1017">            if (firstY == -1)</a>
+<a name="ln1018">                firstY = 0;</a>
+<a name="ln1019"> </a>
+<a name="ln1020">            if (lastX &lt; firstX)</a>
+<a name="ln1021">            {</a>
+<a name="ln1022">                var aux = lastX;</a>
+<a name="ln1023">                lastX = firstX;</a>
+<a name="ln1024">                firstX = aux;</a>
+<a name="ln1025">            }</a>
+<a name="ln1026"> </a>
+<a name="ln1027">            if (lastY &lt; firstY)</a>
+<a name="ln1028">            {</a>
+<a name="ln1029">                var aux = lastY;</a>
+<a name="ln1030">                lastY = firstY;</a>
+<a name="ln1031">                firstY = aux;</a>
+<a name="ln1032">            }</a>
+<a name="ln1033"> </a>
+<a name="ln1034">            #endregion</a>
+<a name="ln1035"> </a>
+<a name="ln1036">            #region Get the Width and Height</a>
+<a name="ln1037"> </a>
+<a name="ln1038">            var heightCut = Math.Abs(lastY - firstY);</a>
+<a name="ln1039">            var widthCut = Math.Abs(lastX - firstX);</a>
+<a name="ln1040"> </a>
+<a name="ln1041">            //If nothing changed, shift the delay.</a>
+<a name="ln1042">            if (heightCut + widthCut == height + width)</a>
+<a name="ln1043">            {</a>
+<a name="ln1044">                listToEncode[index - 1].Delay += listToEncode[index].Delay;</a>
+<a name="ln1045">                listToEncode[index].Rect = new Int32Rect(0, 0, 0, 0);</a>
+<a name="ln1046"> </a>
+<a name="ln1047">                GC.Collect(1);</a>
+<a name="ln1048">                continue;</a>
+<a name="ln1049">            }</a>
+<a name="ln1050"> </a>
+<a name="ln1051">            if (heightCut != height)</a>
+<a name="ln1052">            {</a>
+<a name="ln1053">                heightCut++;</a>
+<a name="ln1054">            }</a>
+<a name="ln1055"> </a>
+<a name="ln1056">            if (widthCut != width)</a>
+<a name="ln1057">            {</a>
+<a name="ln1058">                widthCut++;</a>
+<a name="ln1059">            }</a>
+<a name="ln1060"> </a>
+<a name="ln1061">            listToEncode[index].Rect = new Int32Rect(firstX, firstY, widthCut, heightCut);</a>
+<a name="ln1062"> </a>
+<a name="ln1063">            #endregion</a>
+<a name="ln1064"> </a>
+<a name="ln1065">            #region Update Image Info and Save</a>
+<a name="ln1066"> </a>
+<a name="ln1067">            //Cut the images and get the new values.</a>
+<a name="ln1068">            var imageSave2 = new Bitmap(imageAux2.Clone(new Rectangle(firstX, firstY, widthCut, heightCut), imageAux2.PixelFormat));</a>
+<a name="ln1069"> </a>
+<a name="ln1070">            imageAux2.Dispose();</a>
+<a name="ln1071">            imageAux1.Dispose();</a>
+<a name="ln1072"> </a>
+<a name="ln1073">            imageSave2.Save(listToEncode[index].Path);</a>
+<a name="ln1074"> </a>
+<a name="ln1075">            #endregion</a>
+<a name="ln1076"> </a>
+<a name="ln1077">            GC.Collect(1);</a>
+<a name="ln1078"> </a>
+<a name="ln1079">            #endregion</a>
+<a name="ln1080">        }</a>
+<a name="ln1081"> </a>
+<a name="ln1082">        return listToEncode;</a>
+<a name="ln1083">    }</a>
+<a name="ln1084"> </a>
+<a name="ln1085"> </a>
+<a name="ln1086">    /// &lt;summary&gt;</a>
+<a name="ln1087">    /// Calculates the difference between one given frame and another.</a>
+<a name="ln1088">    /// &lt;/summary&gt;</a>
+<a name="ln1089">    /// &lt;param name=&quot;first&quot;&gt;The first frame to compare.&lt;/param&gt;</a>
+<a name="ln1090">    /// &lt;param name=&quot;second&quot;&gt;The second frame to compare.&lt;/param&gt;</a>
+<a name="ln1091">    /// &lt;returns&gt;The similarity between the two frames in percentage.&lt;/returns&gt;</a>
+<a name="ln1092">    public static decimal CalculateDifference(IFrame first, IFrame second)</a>
+<a name="ln1093">    {</a>
+<a name="ln1094">        using var imageAux1 = first.Path.From();</a>
+<a name="ln1095">        using var imageAux2 = second.Path.From();</a>
+<a name="ln1096"> </a>
+<a name="ln1097">        #region Get Image Info</a>
+<a name="ln1098"> </a>
+<a name="ln1099">        var height = imageAux1.Height;</a>
+<a name="ln1100">        var width = imageAux1.Width;</a>
+<a name="ln1101">        var pixelCount = height * width;</a>
+<a name="ln1102"> </a>
+<a name="ln1103">        #endregion</a>
+<a name="ln1104"> </a>
+<a name="ln1105">        var changedPixelCount = EnumerateIndexOfNonEqualPixels(imageAux1, imageAux2).AsParallel().Count();</a>
+<a name="ln1106"> </a>
+<a name="ln1107">        return MathExtensions.CrossMultiplication((decimal)pixelCount, pixelCount - changedPixelCount, null);</a>
+<a name="ln1108">    }</a>
+<a name="ln1109"> </a>
+<a name="ln1110">    private static IEnumerable&lt;int&gt; EnumerateIndexOfNonEqualPixels(Bitmap imageAux1, Bitmap imageAux2)</a>
+<a name="ln1111">    {</a>
+<a name="ln1112">        if (imageAux1.PixelFormat != imageAux2.PixelFormat)</a>
+<a name="ln1113">        {</a>
+<a name="ln1114">            throw new ArgumentException(&quot;Images need to have same PixelFormat.&quot;);</a>
+<a name="ln1115">        }</a>
+<a name="ln1116"> </a>
+<a name="ln1117">        if(Image.GetPixelFormatSize(imageAux1.PixelFormat) &gt; 32)</a>
+<a name="ln1118">        {</a>
+<a name="ln1119">            throw new ArgumentException(&quot;PixelFormat not supported.&quot;);</a>
+<a name="ln1120">        }</a>
+<a name="ln1121"> </a>
+<a name="ln1122">        var height = imageAux1.Height;</a>
+<a name="ln1123">        var width = imageAux1.Width;</a>
+<a name="ln1124"> </a>
+<a name="ln1125">        var lineBuffer1 = new int[width];</a>
+<a name="ln1126">        var lineBuffer2 = new int[width];</a>
+<a name="ln1127">        var format = System.Drawing.Imaging.PixelFormat.Format32bppArgb;</a>
+<a name="ln1128"> </a>
+<a name="ln1129">        for (int y = 0; y &lt; height; y++)</a>
+<a name="ln1130">        {</a>
+<a name="ln1131">            PixelUtilOld.ReadLine(imageAux1, format, y, lineBuffer1);</a>
+<a name="ln1132">            PixelUtilOld.ReadLine(imageAux2, format, y, lineBuffer2);</a>
+<a name="ln1133"> </a>
+<a name="ln1134">            for (int x = 0; x &lt; width; x++)</a>
+<a name="ln1135">            {</a>
+<a name="ln1136">                if (lineBuffer1[x] != lineBuffer2[x])</a>
+<a name="ln1137">                    yield return x + y * width;</a>
+<a name="ln1138">            }</a>
+<a name="ln1139">        }</a>
+<a name="ln1140">    }</a>
+<a name="ln1141"> </a>
+<a name="ln1142">    /// &lt;summary&gt;</a>
+<a name="ln1143">    /// Color distance calculation.</a>
+<a name="ln1144">    /// https://www.compuphase.com/cmetric.htm</a>
+<a name="ln1145">    /// &lt;/summary&gt;</a>
+<a name="ln1146">    public static double ColorDistance(Color e1, Color e2)</a>
+<a name="ln1147">    {</a>
+<a name="ln1148">        var rmean = (e1.R + (long)e2.R) / 2;</a>
+<a name="ln1149">        var r = e1.R - (long)e2.R;</a>
+<a name="ln1150">        var g = e1.G - (long)e2.G;</a>
+<a name="ln1151">        var b = e1.B - (long)e2.B;</a>
+<a name="ln1152"> </a>
+<a name="ln1153">        return Math.Sqrt((((512 + rmean) * r * r) &gt;&gt; 8) + 4 * g * g + (((767 - rmean) * b * b) &gt;&gt; 8));</a>
+<a name="ln1154">    }</a>
+<a name="ln1155"> </a>
+<a name="ln1156">    public static double ColorDistance(byte b1, byte g1, byte r1, byte b2, byte g2, byte r2)</a>
+<a name="ln1157">    {</a>
+<a name="ln1158">        var rMean = (r1 + (long)r2) / 2;</a>
+<a name="ln1159">        var r = r1 - (long)r2;</a>
+<a name="ln1160">        var g = g1 - (long)g2;</a>
+<a name="ln1161">        var b = b1 - (long)b2;</a>
+<a name="ln1162"> </a>
+<a name="ln1163">        return Math.Sqrt((((512 + rMean) * r * r) &gt;&gt; 8) + 4 * g * g + (((767 - rMean) * b * b) &gt;&gt; 8));</a>
+<a name="ln1164">    }</a>
+<a name="ln1165"> </a>
+<a name="ln1166">    #endregion</a>
+<a name="ln1167"> </a>
+<a name="ln1168">    #region Import From Gif</a>
+<a name="ln1169"> </a>
+<a name="ln1170">    public static BitmapDecoder GetDecoder(string fileName, out GifFile gifFile)</a>
+<a name="ln1171">    {</a>
+<a name="ln1172">        gifFile = null;</a>
+<a name="ln1173">        BitmapDecoder decoder = null;</a>
+<a name="ln1174"> </a>
+<a name="ln1175">        using (var stream = new FileStream(fileName, FileMode.Open))</a>
+<a name="ln1176">        {</a>
+<a name="ln1177">            stream.Position = 0;</a>
+<a name="ln1178">            decoder = BitmapDecoder.Create(stream, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);</a>
+<a name="ln1179"> </a>
+<a name="ln1180">            if (decoder is GifBitmapDecoder)// &amp;&amp; !CanReadNativeMetadata(decoder))</a>
+<a name="ln1181">            {</a>
+<a name="ln1182">                stream.Position = 0;</a>
+<a name="ln1183">                gifFile = GifFile.ReadGifFile(stream, true);</a>
+<a name="ln1184">            }</a>
+<a name="ln1185"> </a>
+<a name="ln1186">            //if (decoder == null)</a>
+<a name="ln1187">            //    throw new InvalidOperationException(&quot;Can't get a decoder from the source.&quot;);</a>
+<a name="ln1188">        }</a>
+<a name="ln1189"> </a>
+<a name="ln1190">        return decoder;</a>
+<a name="ln1191">    }</a>
+<a name="ln1192"> </a>
+<a name="ln1193">    private static bool CanReadNativeMetadata(BitmapDecoder decoder)</a>
+<a name="ln1194">    {</a>
+<a name="ln1195">        try</a>
+<a name="ln1196">        {</a>
+<a name="ln1197">            var m = decoder.Metadata;</a>
+<a name="ln1198">            return m != null;</a>
+<a name="ln1199">        }</a>
+<a name="ln1200">        catch</a>
+<a name="ln1201">        {</a>
+<a name="ln1202">            return false;</a>
+<a name="ln1203">        }</a>
+<a name="ln1204">    }</a>
+<a name="ln1205"> </a>
+<a name="ln1206">    public static System.Drawing.Size GetFullSize(BitmapDecoder decoder, GifFile gifMetadata)</a>
+<a name="ln1207">    {</a>
+<a name="ln1208">        if (gifMetadata != null)</a>
+<a name="ln1209">        {</a>
+<a name="ln1210">            var lsd = gifMetadata.Header.LogicalScreenDescriptor;</a>
+<a name="ln1211">            return new System.Drawing.Size(lsd.Width, lsd.Height);</a>
+<a name="ln1212">        }</a>
+<a name="ln1213"> </a>
+<a name="ln1214">        var width = decoder.Metadata.GetQueryOrDefault(&quot;/logscrdesc/Width&quot;, 0);</a>
+<a name="ln1215">        var height = decoder.Metadata.GetQueryOrDefault(&quot;/logscrdesc/Height&quot;, 0);</a>
+<a name="ln1216">        return new System.Drawing.Size(width, height);</a>
+<a name="ln1217">    }</a>
+<a name="ln1218"> </a>
+<a name="ln1219">    private static T GetQueryOrDefault&lt;T&gt;(this BitmapMetadata metadata, string query, T defaultValue)</a>
+<a name="ln1220">    {</a>
+<a name="ln1221">        if (metadata.ContainsQuery(query))</a>
+<a name="ln1222">            return (T)Convert.ChangeType(metadata.GetQuery(query), typeof(T));</a>
+<a name="ln1223"> </a>
+<a name="ln1224">        return defaultValue;</a>
+<a name="ln1225">    }</a>
+<a name="ln1226"> </a>
+<a name="ln1227">    public static FrameMetadata GetFrameMetadata(BitmapDecoder decoder, GifFile gifMetadata, int frameIndex)</a>
+<a name="ln1228">    {</a>
+<a name="ln1229">        if (gifMetadata != null &amp;&amp; gifMetadata.Frames.Count &gt; frameIndex)</a>
+<a name="ln1230">            return GetFrameMetadata(gifMetadata.Frames[frameIndex]);</a>
+<a name="ln1231"> </a>
+<a name="ln1232">        return GetFrameMetadata(decoder.Frames[frameIndex]);</a>
+<a name="ln1233">    }</a>
+<a name="ln1234"> </a>
+<a name="ln1235">    private static FrameMetadata GetFrameMetadata(BitmapFrame frame)</a>
+<a name="ln1236">    {</a>
+<a name="ln1237">        var metadata = (BitmapMetadata)frame.Metadata;</a>
+<a name="ln1238">        var delay = TimeSpan.FromMilliseconds(100);</a>
+<a name="ln1239">        var metadataDelay = metadata.GetQueryOrDefault(&quot;/grctlext/Delay&quot;, 10);</a>
+<a name="ln1240"> </a>
+<a name="ln1241">        if (metadataDelay != 0)</a>
+<a name="ln1242">            delay = TimeSpan.FromMilliseconds(metadataDelay * 10);</a>
+<a name="ln1243"> </a>
+<a name="ln1244">        var disposalMethod = (FrameDisposalMethod)metadata.GetQueryOrDefault(&quot;/grctlext/Disposal&quot;, 0);</a>
+<a name="ln1245"> </a>
+<a name="ln1246">        var frameMetadata = new FrameMetadata</a>
+<a name="ln1247">        {</a>
+<a name="ln1248">            Left = metadata.GetQueryOrDefault(&quot;/imgdesc/Left&quot;, 0),</a>
+<a name="ln1249">            Top = metadata.GetQueryOrDefault(&quot;/imgdesc/Top&quot;, 0),</a>
+<a name="ln1250">            Width = metadata.GetQueryOrDefault(&quot;/imgdesc/Width&quot;, frame.PixelWidth),</a>
+<a name="ln1251">            Height = metadata.GetQueryOrDefault(&quot;/imgdesc/Height&quot;, frame.PixelHeight),</a>
+<a name="ln1252">            Delay = delay,</a>
+<a name="ln1253">            DisposalMethod = disposalMethod</a>
+<a name="ln1254">        };</a>
+<a name="ln1255"> </a>
+<a name="ln1256">        return frameMetadata;</a>
+<a name="ln1257">    }</a>
+<a name="ln1258"> </a>
+<a name="ln1259">    private static FrameMetadata GetFrameMetadata(GifFrame gifMetadata)</a>
+<a name="ln1260">    {</a>
+<a name="ln1261">        var d = gifMetadata.Descriptor;</a>
+<a name="ln1262"> </a>
+<a name="ln1263">        var frameMetadata = new FrameMetadata</a>
+<a name="ln1264">        {</a>
+<a name="ln1265">            Left = d.Left,</a>
+<a name="ln1266">            Top = d.Top,</a>
+<a name="ln1267">            Width = d.Width,</a>
+<a name="ln1268">            Height = d.Height,</a>
+<a name="ln1269">            Delay = TimeSpan.FromMilliseconds(100),</a>
+<a name="ln1270">            DisposalMethod = FrameDisposalMethod.None</a>
+<a name="ln1271">        };</a>
+<a name="ln1272"> </a>
+<a name="ln1273">        var control = gifMetadata.Extensions.OfType&lt;GifGraphicControlExtension&gt;().FirstOrDefault();</a>
+<a name="ln1274"> </a>
+<a name="ln1275">        if (control == null)</a>
+<a name="ln1276">            return frameMetadata;</a>
+<a name="ln1277"> </a>
+<a name="ln1278">        if (control.Delay != 0)</a>
+<a name="ln1279">            frameMetadata.Delay = TimeSpan.FromMilliseconds(control.Delay);</a>
+<a name="ln1280"> </a>
+<a name="ln1281">        frameMetadata.DisposalMethod = (FrameDisposalMethod) control.DisposalMethod;</a>
+<a name="ln1282"> </a>
+<a name="ln1283">        return frameMetadata;</a>
+<a name="ln1284">    }</a>
+<a name="ln1285"> </a>
+<a name="ln1286">    public static BitmapSource MakeFrame(System.Drawing.Size fullSize, BitmapSource rawFrame, FrameMetadata metadata, BitmapSource baseFrame, double? forceDpi = null)</a>
+<a name="ln1287">    {</a>
+<a name="ln1288">        //I removed this so I could save as Pbgra32.</a>
+<a name="ln1289">        //if (baseFrame == null &amp;&amp; IsFullFrame(metadata, fullSize))</a>
+<a name="ln1290">        //{</a>
+<a name="ln1291">        //    //No previous image to combine with, and same size as the full image, so just return as is.</a>
+<a name="ln1292">        //    return rawFrame;</a>
+<a name="ln1293">        //}</a>
+<a name="ln1294"> </a>
+<a name="ln1295">        var visual = new DrawingVisual();</a>
+<a name="ln1296">        using (var context = visual.RenderOpen())</a>
+<a name="ln1297">        {</a>
+<a name="ln1298">            if (baseFrame != null)</a>
+<a name="ln1299">            {</a>
+<a name="ln1300">                var fullRect = new Rect(0, 0, fullSize.Width, fullSize.Height);</a>
+<a name="ln1301">                context.DrawImage(baseFrame, fullRect);</a>
+<a name="ln1302">            }</a>
+<a name="ln1303"> </a>
+<a name="ln1304">            var rect = new Rect(metadata.Left, metadata.Top, metadata.Width, metadata.Height);</a>
+<a name="ln1305">            context.DrawImage(rawFrame, rect);</a>
+<a name="ln1306">        }</a>
+<a name="ln1307"> </a>
+<a name="ln1308">        var bitmap = new RenderTargetBitmap(fullSize.Width, fullSize.Height, forceDpi ?? rawFrame.DpiX, forceDpi ?? rawFrame.DpiY, PixelFormats.Pbgra32);</a>
+<a name="ln1309">        bitmap.Render(visual);</a>
+<a name="ln1310"> </a>
+<a name="ln1311">        if (bitmap.CanFreeze &amp;&amp; !bitmap.IsFrozen)</a>
+<a name="ln1312">            bitmap.Freeze();</a>
+<a name="ln1313"> </a>
+<a name="ln1314">        return bitmap;</a>
+<a name="ln1315">    }</a>
+<a name="ln1316"> </a>
+<a name="ln1317">    public static bool IsFullFrame(FrameMetadata metadata, System.Drawing.Size fullSize)</a>
+<a name="ln1318">    {</a>
+<a name="ln1319">        return metadata.Left == 0 &amp;&amp; metadata.Top == 0 &amp;&amp; metadata.Width == fullSize.Width &amp;&amp; metadata.Height == fullSize.Height;</a>
+<a name="ln1320">    }</a>
+<a name="ln1321"> </a>
+<a name="ln1322">    public static BitmapSource ClearArea(BitmapSource frame, FrameMetadata metadata, double? forcedDpi = null)</a>
+<a name="ln1323">    {</a>
+<a name="ln1324">        var visual = new DrawingVisual();</a>
+<a name="ln1325">        using (var context = visual.RenderOpen())</a>
+<a name="ln1326">        {</a>
+<a name="ln1327">            var fullRect = new Rect(0, 0, frame.PixelWidth, frame.PixelHeight);</a>
+<a name="ln1328">            var clearRect = new Rect(metadata.Left, metadata.Top, metadata.Width, metadata.Height);</a>
+<a name="ln1329">            var clip = Geometry.Combine(new RectangleGeometry(fullRect), new RectangleGeometry(clearRect), GeometryCombineMode.Exclude, null);</a>
+<a name="ln1330"> </a>
+<a name="ln1331">            context.PushClip(clip);</a>
+<a name="ln1332">            context.DrawImage(frame, fullRect);</a>
+<a name="ln1333">        }</a>
+<a name="ln1334"> </a>
+<a name="ln1335">        var bitmap = new RenderTargetBitmap(frame.PixelWidth, frame.PixelHeight, forcedDpi ?? frame.DpiX, forcedDpi ?? frame.DpiY, PixelFormats.Pbgra32);</a>
+<a name="ln1336">        bitmap.Render(visual);</a>
+<a name="ln1337"> </a>
+<a name="ln1338">        if (bitmap.CanFreeze &amp;&amp; !bitmap.IsFrozen)</a>
+<a name="ln1339">            bitmap.Freeze();</a>
+<a name="ln1340"> </a>
+<a name="ln1341">        return bitmap;</a>
+<a name="ln1342">    }</a>
+<a name="ln1343"> </a>
+<a name="ln1344">    /// &lt;summary&gt;</a>
+<a name="ln1345">    /// Return frame(s) as list of binary from jpeg, png, bmp or gif image file</a>
+<a name="ln1346">    /// &lt;/summary&gt;</a>
+<a name="ln1347">    /// &lt;param name=&quot;fileName&quot;&gt;image file name&lt;/param&gt;</a>
+<a name="ln1348">    /// &lt;returns&gt;System.Collections.Generic.List of byte&lt;/returns&gt;</a>
+<a name="ln1349">    [Obsolete]</a>
+<a name="ln1350">    public static List&lt;Bitmap&gt; GetFrames(string fileName)</a>
+<a name="ln1351">    {</a>
+<a name="ln1352">        var tmpFrames = new List&lt;byte[]&gt;();</a>
+<a name="ln1353"> </a>
+<a name="ln1354">        // Check the image format to determine what format</a>
+<a name="ln1355">        // the image will be saved to the memory stream in</a>
+<a name="ln1356">        var guidToImageFormatMap = new Dictionary&lt;Guid, ImageFormat&gt;()</a>
+<a name="ln1357">        {</a>
+<a name="ln1358">            {ImageFormat.Bmp.Guid,  ImageFormat.Bmp},</a>
+<a name="ln1359">            {ImageFormat.Gif.Guid,  ImageFormat.Png},</a>
+<a name="ln1360">            {ImageFormat.Icon.Guid, ImageFormat.Png},</a>
+<a name="ln1361">            {ImageFormat.Jpeg.Guid, ImageFormat.Jpeg},</a>
+<a name="ln1362">            {ImageFormat.Png.Guid,  ImageFormat.Png}</a>
+<a name="ln1363">        };</a>
+<a name="ln1364"> </a>
+<a name="ln1365">        using (var gifImg = Image.FromFile(fileName, true))</a>
+<a name="ln1366">        {</a>
+<a name="ln1367">            var imageGuid = gifImg.RawFormat.Guid;</a>
+<a name="ln1368"> </a>
+<a name="ln1369">            var imageFormat = (from pair in guidToImageFormatMap where imageGuid == pair.Key select pair.Value).FirstOrDefault();</a>
+<a name="ln1370"> </a>
+<a name="ln1371">            if (imageFormat == null)</a>
+<a name="ln1372">                throw new NoNullAllowedException(&quot;Unable to determine image format&quot;);</a>
+<a name="ln1373"> </a>
+<a name="ln1374">            //Get the frame count</a>
+<a name="ln1375">            var dimension = new FrameDimension(gifImg.FrameDimensionsList[0]);</a>
+<a name="ln1376">            var frameCount = gifImg.GetFrameCount(dimension);</a>
+<a name="ln1377"> </a>
+<a name="ln1378">            //Step through each frame</a>
+<a name="ln1379">            for (var i = 0; i &lt; frameCount; i++)</a>
+<a name="ln1380">            {</a>
+<a name="ln1381">                //Set the active frame of the image and then</a>
+<a name="ln1382">                gifImg.SelectActiveFrame(dimension, i);</a>
+<a name="ln1383"> </a>
+<a name="ln1384">                //write the bytes to the tmpFrames array</a>
+<a name="ln1385">                using (var ms = new MemoryStream())</a>
+<a name="ln1386">                {</a>
+<a name="ln1387">                    gifImg.Save(ms, imageFormat);</a>
+<a name="ln1388">                    tmpFrames.Add(ms.ToArray());</a>
+<a name="ln1389">                }</a>
+<a name="ln1390">            }</a>
+<a name="ln1391"> </a>
+<a name="ln1392">            //Get list of frame(s) from image file.</a>
+<a name="ln1393">            var myBitmaps = new List&lt;Bitmap&gt;();</a>
+<a name="ln1394"> </a>
+<a name="ln1395">            foreach (var item in tmpFrames)</a>
+<a name="ln1396">            {</a>
+<a name="ln1397">                var tmpBitmap = ConvertBytesToImage(item);</a>
+<a name="ln1398"> </a>
+<a name="ln1399">                if (tmpBitmap != null)</a>
+<a name="ln1400">                {</a>
+<a name="ln1401">                    myBitmaps.Add(tmpBitmap);</a>
+<a name="ln1402">                }</a>
+<a name="ln1403">            }</a>
+<a name="ln1404"> </a>
+<a name="ln1405">            return myBitmaps;</a>
+<a name="ln1406">        }</a>
+<a name="ln1407">    }</a>
+<a name="ln1408"> </a>
+<a name="ln1409">    /// &lt;summary&gt;</a>
+<a name="ln1410">    /// Convert bytes to Bitamp</a>
+<a name="ln1411">    /// &lt;/summary&gt;</a>
+<a name="ln1412">    /// &lt;param name=&quot;imageBytes&quot;&gt;Image in a byte type&lt;/param&gt;</a>
+<a name="ln1413">    /// &lt;returns&gt;System.Drawing.Bitmap&lt;/returns&gt;</a>
+<a name="ln1414">    private static Bitmap ConvertBytesToImage(byte[] imageBytes)</a>
+<a name="ln1415">    {</a>
+<a name="ln1416">        if (imageBytes == null || imageBytes.Length == 0)</a>
+<a name="ln1417">            return null;</a>
+<a name="ln1418"> </a>
+<a name="ln1419">        //Read bytes into a MemoryStream</a>
+<a name="ln1420">        using (var ms = new MemoryStream(imageBytes))</a>
+<a name="ln1421">        {</a>
+<a name="ln1422">            //Recreate the frame from the MemoryStream</a>
+<a name="ln1423">            using (var bmp = new Bitmap(ms))</a>
+<a name="ln1424">                return (Bitmap)bmp.Clone();</a>
+<a name="ln1425">        }</a>
+<a name="ln1426">    }</a>
+<a name="ln1427"> </a>
+<a name="ln1428">    #endregion</a>
+<a name="ln1429"> </a>
+<a name="ln1430">    #region Create and Save Images</a>
+<a name="ln1431"> </a>
+<a name="ln1432">    /// &lt;summary&gt;</a>
+<a name="ln1433">    /// Creates a solid color BitmapSource.</a>
+<a name="ln1434">    /// &lt;/summary&gt;</a>
+<a name="ln1435">    /// &lt;param name=&quot;color&quot;&gt;The Background color.&lt;/param&gt;</a>
+<a name="ln1436">    /// &lt;param name=&quot;width&quot;&gt;The Width of the image.&lt;/param&gt;</a>
+<a name="ln1437">    /// &lt;param name=&quot;height&quot;&gt;The Height of the image.&lt;/param&gt;</a>
+<a name="ln1438">    /// &lt;param name=&quot;dpi&quot;&gt;The dpi of the image.&lt;/param&gt;</a>
+<a name="ln1439">    /// &lt;param name=&quot;pixelFormat&quot;&gt;The PixelFormat.&lt;/param&gt;</a>
+<a name="ln1440">    /// &lt;returns&gt;A BitmapSource of the given parameters.&lt;/returns&gt;</a>
+<a name="ln1441">    public static BitmapSource CreateEmtpyBitmapSource(System.Windows.Media.Color color, int width, int height, double dpi, PixelFormat pixelFormat)</a>
+<a name="ln1442">    {</a>
+<a name="ln1443">        var rawStride = (width * pixelFormat.BitsPerPixel + 7) / 8;</a>
+<a name="ln1444">        var rawImage = new byte[rawStride * height];</a>
+<a name="ln1445"> </a>
+<a name="ln1446">        var colors = new List&lt;System.Windows.Media.Color&gt; { color };</a>
+<a name="ln1447">        var myPalette = new BitmapPalette(colors);</a>
+<a name="ln1448"> </a>
+<a name="ln1449">        return BitmapSource.Create(width, height, dpi, dpi, pixelFormat, myPalette, rawImage, rawStride);</a>
+<a name="ln1450">    }</a>
+<a name="ln1451"> </a>
+<a name="ln1452">    /// &lt;summary&gt;</a>
+<a name="ln1453">    /// Converts a BitmapSource to a BitmapImage.</a>
+<a name="ln1454">    /// &lt;/summary&gt;</a>
+<a name="ln1455">    /// &lt;typeparam name=&quot;T&quot;&gt;A BitmapEncoder derived class.&lt;/typeparam&gt;</a>
+<a name="ln1456">    /// &lt;param name=&quot;bitmapSource&quot;&gt;The source to convert.&lt;/param&gt;</a>
+<a name="ln1457">    /// &lt;returns&gt;A converted BitmapImage.&lt;/returns&gt;</a>
+<a name="ln1458">    private static BitmapImage GetBitmapImage&lt;T&gt;(BitmapSource bitmapSource) where T : BitmapEncoder, new()</a>
+<a name="ln1459">    {</a>
+<a name="ln1460">        var frame = BitmapFrame.Create(bitmapSource);</a>
+<a name="ln1461">        var encoder = new T();</a>
+<a name="ln1462">        encoder.Frames.Add(frame);</a>
+<a name="ln1463"> </a>
+<a name="ln1464">        var bitmapImage = new BitmapImage();</a>
+<a name="ln1465">        bool isCreated;</a>
+<a name="ln1466"> </a>
+<a name="ln1467">        try</a>
+<a name="ln1468">        {</a>
+<a name="ln1469">            using (var ms = new MemoryStream())</a>
+<a name="ln1470">            {</a>
+<a name="ln1471">                encoder.Save(ms);</a>
+<a name="ln1472"> </a>
+<a name="ln1473">                bitmapImage.BeginInit();</a>
+<a name="ln1474">                bitmapImage.StreamSource = ms;</a>
+<a name="ln1475">                bitmapImage.EndInit();</a>
+<a name="ln1476">                isCreated = true;</a>
+<a name="ln1477">            }</a>
+<a name="ln1478">        }</a>
+<a name="ln1479">        catch</a>
+<a name="ln1480">        {</a>
+<a name="ln1481">            isCreated = false;</a>
+<a name="ln1482">        }</a>
+<a name="ln1483"> </a>
+<a name="ln1484">        return isCreated ? bitmapImage : null;</a>
+<a name="ln1485">    }</a>
+<a name="ln1486"> </a>
+<a name="ln1487">    public static BitmapSource FromArray(List&lt;byte&gt; data, int w, int h, int ch)</a>
+<a name="ln1488">    {</a>
+<a name="ln1489">        var format = PixelFormats.Default;</a>
+<a name="ln1490"> </a>
+<a name="ln1491">        if (ch == 1)</a>
+<a name="ln1492">            format = PixelFormats.Gray8; //Grey scale image 0-255.</a>
+<a name="ln1493">        else if (ch == 3)</a>
+<a name="ln1494">            format = PixelFormats.Bgr24; //RGB.</a>
+<a name="ln1495">        else if (ch == 4)</a>
+<a name="ln1496">            format = PixelFormats.Bgr32; //RGB + alpha.</a>
+<a name="ln1497"> </a>
+<a name="ln1498">        for (var i = data.Count - 1; i &lt; w * h * ch; i++)</a>
+<a name="ln1499">            data.Add(0);</a>
+<a name="ln1500"> </a>
+<a name="ln1501">        var wbm = new WriteableBitmap(w, h, 96, 96, format, null);</a>
+<a name="ln1502">        wbm.WritePixels(new Int32Rect(0, 0, w, h), data.ToArray(), ch * w, 0);</a>
+<a name="ln1503"> </a>
+<a name="ln1504">        return wbm;</a>
+<a name="ln1505">    }</a>
+<a name="ln1506"> </a>
+<a name="ln1507">    public static void SavePixelArrayToFile(byte[] pixels, int width, int height, int channels, string filePath)</a>
+<a name="ln1508">    {</a>
+<a name="ln1509">        //var img = BitmapSource.Create(project.Frames[index].Rect.Width, project.Frames[index].Rect.Height, 96, 96, PixelFormats.Bgra32, null, newPixels, 4 * project.Frames[index].Rect.Width);</a>
+<a name="ln1510"> </a>
+<a name="ln1511">        //using (var stream = new FileStream(project.ChunkPath + index + &quot;.png&quot;, FileMode.Create))</a>
+<a name="ln1512">        //{</a>
+<a name="ln1513">        //    var encoder = new PngBitmapEncoder();</a>
+<a name="ln1514">        //    encoder.Frames.Add(BitmapFrame.Create(img));</a>
+<a name="ln1515">        //    encoder.Save(stream);</a>
+<a name="ln1516">        //    stream.Close();</a>
+<a name="ln1517">        //}</a>
+<a name="ln1518"> </a>
+<a name="ln1519">        using (var fileStream = new FileStream(filePath, FileMode.Create))</a>
+<a name="ln1520">        {</a>
+<a name="ln1521">            BitmapEncoder encoder = new PngBitmapEncoder();</a>
+<a name="ln1522">            encoder.Frames.Add(BitmapFrame.Create(FromArray(pixels.ToList(), width, height, channels)));</a>
+<a name="ln1523">            encoder.Save(fileStream);</a>
+<a name="ln1524">        }</a>
+<a name="ln1525">    }</a>
+<a name="ln1526"> </a>
+<a name="ln1527">    #endregion</a>
+<a name="ln1528"> </a>
+<a name="ln1529">    #region Edit Images</a>
+<a name="ln1530"> </a>
+<a name="ln1531">    public static byte[] CropImageArray(byte[] pixels, int sourceWidth, int bitsPerPixel, Int32Rect rect)</a>
+<a name="ln1532">    {</a>
+<a name="ln1533">        var blockSize = bitsPerPixel / 8;</a>
+<a name="ln1534">        var outputPixels = new byte[rect.Width * rect.Height * blockSize];</a>
+<a name="ln1535"> </a>
+<a name="ln1536">        //Create the array of bytes.</a>
+<a name="ln1537">        for (var line = 0; line &lt;= rect.Height - 1; line++)</a>
+<a name="ln1538">        {</a>
+<a name="ln1539">            var sourceIndex = ((rect.Y + line) * sourceWidth + rect.X) * blockSize;</a>
+<a name="ln1540">            var destinationIndex = line * rect.Width * blockSize;</a>
+<a name="ln1541"> </a>
+<a name="ln1542">            Array.Copy(pixels, sourceIndex, outputPixels, destinationIndex, rect.Width * blockSize);</a>
+<a name="ln1543">        }</a>
+<a name="ln1544"> </a>
+<a name="ln1545">        return outputPixels;</a>
+<a name="ln1546">    }</a>
+<a name="ln1547"> </a>
+<a name="ln1548">    /// &lt;summary&gt;</a>
+<a name="ln1549">    /// Resizes the given image.</a>
+<a name="ln1550">    /// &lt;/summary&gt;</a>
+<a name="ln1551">    /// &lt;param name=&quot;source&quot;&gt;The image source.&lt;/param&gt;</a>
+<a name="ln1552">    /// &lt;param name=&quot;width&quot;&gt;The width of the image.&lt;/param&gt;</a>
+<a name="ln1553">    /// &lt;param name=&quot;height&quot;&gt;The height of the image.&lt;/param&gt;</a>
+<a name="ln1554">    /// &lt;param name=&quot;margin&quot;&gt;Cut margin.&lt;/param&gt;</a>
+<a name="ln1555">    /// &lt;param name=&quot;dpi&quot;&gt;The DPI of the image.&lt;/param&gt;</a>
+<a name="ln1556">    /// &lt;param name=&quot;scalingQuality&quot;&gt;Scaling Quality to use when resizing. &lt;seealso cref=&quot;System.Windows.Media.BitmapScalingMode&quot;/&gt;&lt;/param&gt;</a>
+<a name="ln1557">    /// &lt;returns&gt;A resized ImageSource&lt;/returns&gt;</a>
+<a name="ln1558">    public static BitmapFrame ResizeImage(BitmapImage source, int width, int height, int margin = 0, double dpi = 96d, BitmapScalingMode scalingQuality = BitmapScalingMode.Unspecified)</a>
+<a name="ln1559">    {</a>
+<a name="ln1560">        var scale = dpi / 96d;</a>
+<a name="ln1561"> </a>
+<a name="ln1562">        var drawingVisual = new DrawingVisual();</a>
+<a name="ln1563">        using (var drawingContext = drawingVisual.RenderOpen())</a>
+<a name="ln1564">        {</a>
+<a name="ln1565">            if (scalingQuality != BitmapScalingMode.Unspecified)</a>
+<a name="ln1566">            {</a>
+<a name="ln1567">                var dg = new DrawingGroup();</a>
+<a name="ln1568">                using (var context = dg.Open())</a>
+<a name="ln1569">                {</a>
+<a name="ln1570">                    RenderOptions.SetBitmapScalingMode(dg, scalingQuality);</a>
+<a name="ln1571">                    context.DrawImage(source, new Rect(0, 0, width / scale, height / scale));</a>
+<a name="ln1572">                }</a>
+<a name="ln1573"> </a>
+<a name="ln1574">                drawingContext.DrawDrawing(dg);</a>
+<a name="ln1575">            }</a>
+<a name="ln1576">            else</a>
+<a name="ln1577">            {</a>
+<a name="ln1578">                drawingContext.DrawImage(source, new Rect(0, 0, width / scale, height / scale));</a>
+<a name="ln1579">            }</a>
+<a name="ln1580">        }</a>
+<a name="ln1581"> </a>
+<a name="ln1582">        //(int)Math.Round(width * scale)</a>
+<a name="ln1583"> </a>
+<a name="ln1584">        var resizedImage = new RenderTargetBitmap(width, height, dpi, dpi, PixelFormats.Pbgra32);</a>
+<a name="ln1585">        resizedImage.Render(drawingVisual);</a>
+<a name="ln1586"> </a>
+<a name="ln1587">        return BitmapFrame.Create(resizedImage);</a>
+<a name="ln1588">    }</a>
+<a name="ln1589"> </a>
+<a name="ln1590">    /// &lt;summary&gt;</a>
+<a name="ln1591">    /// Applies the pixelate effect in given frame.</a>
+<a name="ln1592">    /// &lt;/summary&gt;</a>
+<a name="ln1593">    /// &lt;param name=&quot;image&quot;&gt;The image to pixelate.&lt;/param&gt;</a>
+<a name="ln1594">    /// &lt;param name=&quot;rectX&quot;&gt;The X-axis threshold of the area to pixelate.&lt;/param&gt;</a>
+<a name="ln1595">    /// &lt;param name=&quot;rectY&quot;&gt;The Y-axis threshold of the area to pixelate.&lt;/param&gt;</a>
+<a name="ln1596">    /// &lt;param name=&quot;width&quot;&gt;The X-axis threshold of the area to pixelate.&lt;/param&gt;</a>
+<a name="ln1597">    /// &lt;param name=&quot;height&quot;&gt;The Y-axis threshold of the area to pixelate.&lt;/param&gt;</a>
+<a name="ln1598">    /// &lt;param name=&quot;pixelateSize&quot;&gt;The size of the pixel.&lt;/param&gt;</a>
+<a name="ln1599">    /// &lt;param name=&quot;opacityPower&quot;&gt;Determinies how strong the opacity multiplier should be.&lt;/param&gt;</a>
+<a name="ln1600">    /// &lt;param name=&quot;opacityDistance&quot;&gt;Determines how far the opacity should start/end being smaller than 1 (based on the opacity power too).&lt;/param&gt;</a>
+<a name="ln1601">    /// &lt;param name=&quot;useMedian&quot;&gt;Calculate the median color of the pixel block.&lt;/param&gt;</a>
+<a name="ln1602">    /// &lt;param name=&quot;inverted&quot;&gt;Apply the effect to the inverted region of the selection.&lt;/param&gt;</a>
+<a name="ln1603">    /// &lt;returns&gt;A pixelated BitmapSource.&lt;/returns&gt;</a>
+<a name="ln1604">    internal static BitmapSource Pixelate(BitmapSource image, int rectX, int rectY, int width, int height, int pixelateSize, double opacityPower, int opacityDistance, bool useMedian, bool inverted)</a>
+<a name="ln1605">    {</a>
+<a name="ln1606">        var pixelUtil = new PixelUtil(image);</a>
+<a name="ln1607">        pixelUtil.LockBits();</a>
+<a name="ln1608"> </a>
+<a name="ln1609">        var startX = inverted ? 0 : rectX;</a>
+<a name="ln1610">        var startY = inverted ? 0 : rectY;</a>
+<a name="ln1611">        var endX = inverted ? image.PixelWidth : rectX + width;</a>
+<a name="ln1612">        var endY = inverted ? image.PixelHeight : rectY + height;</a>
+<a name="ln1613"> </a>
+<a name="ln1614">        //Loop through all the blocks that should be pixelated.</a>
+<a name="ln1615">        for (var xx = startX; xx &lt; endX; xx += pixelateSize)</a>
+<a name="ln1616">        {</a>
+<a name="ln1617">            for (var yy = startY; yy &lt; endY; yy += pixelateSize)</a>
+<a name="ln1618">            {</a>
+<a name="ln1619">                //Ignore non selected parts of the image.</a>
+<a name="ln1620">                if (inverted &amp;&amp; xx &gt; rectX &amp;&amp; xx &lt; rectX + width &amp;&amp; yy &gt; rectY &amp;&amp; yy &lt; rectY + height)</a>
+<a name="ln1621">                    continue;</a>
+<a name="ln1622"> </a>
+<a name="ln1623">                var offsetX = pixelateSize / 2;</a>
+<a name="ln1624">                var offsetY = pixelateSize / 2;</a>
+<a name="ln1625"> </a>
+<a name="ln1626">                if (xx + offsetX &gt; image.PixelWidth)</a>
+<a name="ln1627">                    offsetX = image.PixelWidth;</a>
+<a name="ln1628"> </a>
+<a name="ln1629">                if (yy + offsetY &gt; image.PixelHeight)</a>
+<a name="ln1630">                    offsetY = image.PixelHeight;</a>
+<a name="ln1631"> </a>
+<a name="ln1632">                //Get the pixel color in the center of the soon to be pixelated area.</a>
+<a name="ln1633">                var changed = useMedian ? pixelUtil.GetMedianColor(xx, yy, offsetX, offsetY) : pixelUtil.GetPixel(xx + offsetX, yy + offsetY);</a>
+<a name="ln1634"> </a>
+<a name="ln1635">                //For each pixel in the pixelate size, set it to the center color.</a>
+<a name="ln1636">                for (var x = xx; x &lt; xx + pixelateSize &amp;&amp; x &lt; image.PixelWidth; x++)</a>
+<a name="ln1637">                {</a>
+<a name="ln1638">                    for (var y = yy; y &lt; yy + pixelateSize &amp;&amp; y &lt; image.PixelHeight; y++)</a>
+<a name="ln1639">                    {</a>
+<a name="ln1640">                        //Ignore non selected parts of the image.</a>
+<a name="ln1641">                        if (!inverted &amp;&amp; (x &lt; rectX || x &gt; rectX + width || y &lt; rectY || y &gt; rectY + height))</a>
+<a name="ln1642">                            continue;</a>
+<a name="ln1643"> </a>
+<a name="ln1644">                        if (inverted &amp;&amp; x &gt; rectX &amp;&amp; x &lt; rectX + width &amp;&amp; y &gt; rectY &amp;&amp; y &lt; rectY + height)</a>
+<a name="ln1645">                            continue;</a>
+<a name="ln1646"> </a>
+<a name="ln1647">                        if (opacityDistance &gt; 0)</a>
+<a name="ln1648">                        {</a>
+<a name="ln1649">                            var opacity = CalculateOpacity(inverted, x, y, rectX, rectY, width, height, opacityDistance, opacityPower);</a>
+<a name="ln1650"> </a>
+<a name="ln1651">                            pixelUtil.SetAndBlendPixel(x, y, changed, opacity);</a>
+<a name="ln1652">                            continue;</a>
+<a name="ln1653">                        }</a>
+<a name="ln1654"> </a>
+<a name="ln1655">                        pixelUtil.SetPixel(x, y, changed);</a>
+<a name="ln1656">                    }</a>
+<a name="ln1657">                }</a>
+<a name="ln1658">            }</a>
+<a name="ln1659">        }</a>
+<a name="ln1660"> </a>
+<a name="ln1661">        return pixelUtil.UnlockBits();</a>
+<a name="ln1662">    }</a>
+<a name="ln1663"> </a>
+<a name="ln1664">    /// &lt;summary&gt;</a>
+<a name="ln1665">    /// Applies the pixelate effect in given frame.</a>
+<a name="ln1666">    /// &lt;/summary&gt;</a>
+<a name="ln1667">    /// &lt;param name=&quot;image&quot;&gt;The image to apply blur.&lt;/param&gt;</a>
+<a name="ln1668">    /// &lt;param name=&quot;rectX&quot;&gt;The X-axis threshold of the area to apply blur.&lt;/param&gt;</a>
+<a name="ln1669">    /// &lt;param name=&quot;rectY&quot;&gt;The Y-axis threshold of the area to apply blur.&lt;/param&gt;</a>
+<a name="ln1670">    /// &lt;param name=&quot;width&quot;&gt;The X-axis threshold of the area to apply blur.&lt;/param&gt;</a>
+<a name="ln1671">    /// &lt;param name=&quot;height&quot;&gt;The Y-axis threshold of the area to apply blur.&lt;/param&gt;</a>
+<a name="ln1672">    /// &lt;param name=&quot;blurLevel&quot;&gt;The level of blur.&lt;/param&gt;</a>
+<a name="ln1673">    /// &lt;param name=&quot;opacityPower&quot;&gt;Determinies how strong the opacity multiplier should be.&lt;/param&gt;</a>
+<a name="ln1674">    /// &lt;param name=&quot;opacityDistance&quot;&gt;Determines how far the opacity should start/end being smaller than 1 (based on the opacity power too).&lt;/param&gt;</a>
+<a name="ln1675">    /// &lt;param name=&quot;inverted&quot;&gt;Apply the effect to the inverted region of the selection.&lt;/param&gt;</a>
+<a name="ln1676">    /// &lt;returns&gt;A pixelated BitmapSource.&lt;/returns&gt;</a>
+<a name="ln1677">    internal static BitmapSource Blur(BitmapSource image, int rectX, int rectY, int width, int height, int blurLevel, double opacityPower, int opacityDistance, bool inverted)</a>
+<a name="ln1678">    {</a>
+<a name="ln1679">        var pixelUtil = new PixelUtil(image);</a>
+<a name="ln1680">        pixelUtil.LockBits();</a>
+<a name="ln1681"> </a>
+<a name="ln1682">        var startX = inverted ? 0 : rectX;</a>
+<a name="ln1683">        var startY = inverted ? 0 : rectY;</a>
+<a name="ln1684">        var endX = inverted ? image.PixelWidth : rectX + width;</a>
+<a name="ln1685">        var endY = inverted ? image.PixelHeight : rectY + height;</a>
+<a name="ln1686"> </a>
+<a name="ln1687">        Parallel.For(startX, pixelUtil.Pixels.Length / pixelUtil.ChannelsPerPixel, i =&gt;</a>
+<a name="ln1688">        {</a>
+<a name="ln1689">            i *= pixelUtil.ChannelsPerPixel;</a>
+<a name="ln1690"> </a>
+<a name="ln1691">            var y = i / pixelUtil.ChannelsPerPixel / image.PixelWidth;</a>
+<a name="ln1692">            var x = i / pixelUtil.ChannelsPerPixel - (y * image.PixelWidth);</a>
+<a name="ln1693"> </a>
+<a name="ln1694">            //Ignore non selected parts of the image.</a>
+<a name="ln1695">            if (!inverted &amp;&amp; (x &lt; startX || x &gt; endX || y &lt; startY || y &gt; endY))</a>
+<a name="ln1696">                return;</a>
+<a name="ln1697"> </a>
+<a name="ln1698">            if (inverted &amp;&amp; x &gt; rectX &amp;&amp; x &lt; rectX + width &amp;&amp; y &gt; rectY &amp;&amp; y &lt; rectY + height)</a>
+<a name="ln1699">                return;</a>
+<a name="ln1700"> </a>
+<a name="ln1701">            //Apply the blur</a>
+<a name="ln1702">            int avgR = 0, avgG = 0, avgB = 0, avgA = 0;</a>
+<a name="ln1703">            var blurPixelCount = 0;</a>
+<a name="ln1704"> </a>
+<a name="ln1705">            //Get the average of the colors in the block.</a>
+<a name="ln1706">            for (var xx = x; xx &lt; x + blurLevel &amp;&amp; xx &lt; image.PixelWidth; xx++)</a>
+<a name="ln1707">            {</a>
+<a name="ln1708">                for (var yy = y; yy &lt; y + blurLevel &amp;&amp; yy &lt; image.PixelHeight; yy++)</a>
+<a name="ln1709">                {</a>
+<a name="ln1710">                    var pixel = pixelUtil.GetPixel(xx, yy);</a>
+<a name="ln1711"> </a>
+<a name="ln1712">                    avgB += pixel.B;</a>
+<a name="ln1713">                    avgG += pixel.G;</a>
+<a name="ln1714">                    avgR += pixel.R;</a>
+<a name="ln1715">                    avgA += pixel.A;</a>
+<a name="ln1716"> </a>
+<a name="ln1717">                    blurPixelCount++;</a>
+<a name="ln1718">                }</a>
+<a name="ln1719">            }</a>
+<a name="ln1720"> </a>
+<a name="ln1721">            if (blurPixelCount &gt; 0)</a>
+<a name="ln1722">            {</a>
+<a name="ln1723">                avgR /= blurPixelCount;</a>
+<a name="ln1724">                avgG /= blurPixelCount;</a>
+<a name="ln1725">                avgB /= blurPixelCount;</a>
+<a name="ln1726">                avgA /= blurPixelCount;</a>
+<a name="ln1727">            }</a>
+<a name="ln1728"> </a>
+<a name="ln1729">            //Apply the average to the block.</a>
+<a name="ln1730">            for (var xx = x; xx &lt; x + blurLevel &amp;&amp; xx &lt; image.PixelWidth; xx++)</a>
+<a name="ln1731">            {</a>
+<a name="ln1732">                for (var yy = y; yy &lt; y + blurLevel &amp;&amp; yy &lt; image.PixelHeight; yy++)</a>
+<a name="ln1733">                {</a>
+<a name="ln1734">                    //Ignore non selected parts of the image.</a>
+<a name="ln1735">                    if (!inverted &amp;&amp; (xx &lt; rectX || xx &gt; rectX + width || yy &lt; rectY || yy &gt; rectY + height))</a>
+<a name="ln1736">                        continue;</a>
+<a name="ln1737"> </a>
+<a name="ln1738">                    if (inverted &amp;&amp; xx &gt; rectX &amp;&amp; xx &lt; rectX + width &amp;&amp; yy &gt; rectY &amp;&amp; yy &lt; rectY + height)</a>
+<a name="ln1739">                        continue;</a>
+<a name="ln1740"> </a>
+<a name="ln1741">                    if (opacityDistance &gt; 0)</a>
+<a name="ln1742">                    {</a>
+<a name="ln1743">                        var opacity = CalculateOpacity(inverted, xx, yy, rectX, rectY, width, height, opacityDistance, opacityPower);</a>
+<a name="ln1744"> </a>
+<a name="ln1745">                        pixelUtil.SetAndBlendPixel(xx, yy, (byte)avgB, (byte)avgG, (byte)avgR, (byte)avgA, opacity);</a>
+<a name="ln1746">                        continue;</a>
+<a name="ln1747">                    }</a>
+<a name="ln1748"> </a>
+<a name="ln1749">                    pixelUtil.SetPixel(xx, yy, (byte)avgB, (byte)avgG, (byte)avgR, (byte)avgA);</a>
+<a name="ln1750">                }</a>
+<a name="ln1751">            }</a>
+<a name="ln1752">        });</a>
+<a name="ln1753"> </a>
+<a name="ln1754">        #region Non parallel</a>
+<a name="ln1755"> </a>
+<a name="ln1756">        //for (var xx = startX; xx &lt; endX; xx++)</a>
+<a name="ln1757">        //{</a>
+<a name="ln1758">        //    for (var yy = startY; yy &lt; endY; yy++)</a>
+<a name="ln1759">        //    {</a>
+<a name="ln1760">        //        //Ignore non selected parts of the image.</a>
+<a name="ln1761">        //        if (inverted &amp;&amp; xx &gt; rectX &amp;&amp; xx &lt; rectX + width &amp;&amp; yy &gt; rectY &amp;&amp; yy &lt; rectY + height)</a>
+<a name="ln1762">        //            continue;</a>
+<a name="ln1763"> </a>
+<a name="ln1764">        //        int avgR = 0, avgG = 0, avgB = 0, avgA = 0;</a>
+<a name="ln1765">        //        var blurPixelCount = 0;</a>
+<a name="ln1766"> </a>
+<a name="ln1767">        //        //Get the average of the colors in the block.</a>
+<a name="ln1768">        //        for (var x = xx; x &lt; xx + blurLevel &amp;&amp; x &lt; image.PixelWidth; x++)</a>
+<a name="ln1769">        //        {</a>
+<a name="ln1770">        //            for (var y = yy; y &lt; yy + blurLevel &amp;&amp; y &lt; image.PixelHeight; y++)</a>
+<a name="ln1771">        //            {</a>
+<a name="ln1772">        //                var pixel = pixelUtil.GetPixel(x, y);</a>
+<a name="ln1773"> </a>
+<a name="ln1774">        //                avgB += pixel.B;</a>
+<a name="ln1775">        //                avgG += pixel.G;</a>
+<a name="ln1776">        //                avgR += pixel.R;</a>
+<a name="ln1777">        //                avgA += pixel.A;</a>
+<a name="ln1778"> </a>
+<a name="ln1779">        //                blurPixelCount++;</a>
+<a name="ln1780">        //            }</a>
+<a name="ln1781">        //        }</a>
+<a name="ln1782"> </a>
+<a name="ln1783">        //        avgR /= blurPixelCount;</a>
+<a name="ln1784">        //        avgG /= blurPixelCount;</a>
+<a name="ln1785">        //        avgB /= blurPixelCount;</a>
+<a name="ln1786">        //        avgA /= blurPixelCount;</a>
+<a name="ln1787"> </a>
+<a name="ln1788">        //        //Apply the average to the block.</a>
+<a name="ln1789">        //        for (var x = xx; x &lt; xx + blurLevel &amp;&amp; x &lt; image.PixelWidth; x++)</a>
+<a name="ln1790">        //        {</a>
+<a name="ln1791">        //            for (var y = yy; y &lt; yy + blurLevel &amp;&amp; y &lt; image.PixelHeight; y++)</a>
+<a name="ln1792">        //            {</a>
+<a name="ln1793">        //                //Ignore non selected parts of the image.</a>
+<a name="ln1794">        //                if (!inverted &amp;&amp; (x &lt; rectX || x &gt; rectX + width || y &lt; rectY || y &gt; rectY + height))</a>
+<a name="ln1795">        //                    continue;</a>
+<a name="ln1796"> </a>
+<a name="ln1797">        //                if (inverted &amp;&amp; x &gt; rectX &amp;&amp; x &lt; rectX + width &amp;&amp; y &gt; rectY &amp;&amp; y &lt; rectY + height)</a>
+<a name="ln1798">        //                    continue;</a>
+<a name="ln1799"> </a>
+<a name="ln1800">        //                if (opacityDistance &gt; 0)</a>
+<a name="ln1801">        //                {</a>
+<a name="ln1802">        //                    var opacity = CalculateOpacity(inverted, x, y, rectX, rectY, width, height, opacityDistance, opacityPower);</a>
+<a name="ln1803"> </a>
+<a name="ln1804">        //                    pixelUtil.SetAndBlendPixel(x, y, (byte)avgB, (byte)avgG, (byte)avgR, (byte)avgA, opacity);</a>
+<a name="ln1805">        //                    continue;</a>
+<a name="ln1806">        //                }</a>
+<a name="ln1807"> </a>
+<a name="ln1808">        //                pixelUtil.SetPixel(x, y, (byte)avgB, (byte)avgG, (byte)avgR, (byte)avgA);</a>
+<a name="ln1809">        //            }</a>
+<a name="ln1810">        //        }</a>
+<a name="ln1811">        //    }</a>
+<a name="ln1812">        //}</a>
+<a name="ln1813"> </a>
+<a name="ln1814">        #endregion</a>
+<a name="ln1815"> </a>
+<a name="ln1816">        return pixelUtil.UnlockBits();</a>
+<a name="ln1817">    }</a>
+<a name="ln1818"> </a>
+<a name="ln1819">    /// &lt;summary&gt;</a>
+<a name="ln1820">    /// Darkens or lightens the given frame.</a>
+<a name="ln1821">    /// &lt;/summary&gt;</a>
+<a name="ln1822">    /// &lt;param name=&quot;image&quot;&gt;The image to have the lightness altered.&lt;/param&gt;</a>
+<a name="ln1823">    /// &lt;param name=&quot;rectX&quot;&gt;The X-axis threshold of the area to be altered.&lt;/param&gt;</a>
+<a name="ln1824">    /// &lt;param name=&quot;rectY&quot;&gt;The Y-axis threshold of the area to be altered.&lt;/param&gt;</a>
+<a name="ln1825">    /// &lt;param name=&quot;width&quot;&gt;The X-axis threshold of the area to be altered.&lt;/param&gt;</a>
+<a name="ln1826">    /// &lt;param name=&quot;height&quot;&gt;The Y-axis threshold of the area to alter lightness.&lt;/param&gt;</a>
+<a name="ln1827">    /// &lt;param name=&quot;isDarken&quot;&gt;True if the images should be darkened, else lightened.&lt;/param&gt;</a>
+<a name="ln1828">    /// &lt;param name=&quot;lightnessLevel&quot;&gt;The level of lightness.&lt;/param&gt;</a>
+<a name="ln1829">    /// &lt;param name=&quot;opacityPower&quot;&gt;Determinies how strong the opacity multiplier should be.&lt;/param&gt;</a>
+<a name="ln1830">    /// &lt;param name=&quot;opacityDistance&quot;&gt;Determines how far the opacity should start/end being smaller than 1 (based on the opacity power too).&lt;/param&gt;</a>
+<a name="ln1831">    /// &lt;param name=&quot;inverted&quot;&gt;Apply the effect to the inverted region of the selection.&lt;/param&gt;</a>
+<a name="ln1832">    /// &lt;returns&gt;A lightness altered BitmapSource.&lt;/returns&gt;</a>
+<a name="ln1833">    internal static BitmapSource Lightness(BitmapSource image, int rectX, int rectY, int width, int height, bool isDarken, double lightnessLevel, double opacityPower, int opacityDistance, bool inverted)</a>
+<a name="ln1834">    {</a>
+<a name="ln1835">        var pixelUtil = new PixelUtil(image);</a>
+<a name="ln1836">        pixelUtil.LockBits();</a>
+<a name="ln1837"> </a>
+<a name="ln1838">        var startX = inverted ? 0 : rectX;</a>
+<a name="ln1839">        var startY = inverted ? 0 : rectY;</a>
+<a name="ln1840">        var endX = inverted ? image.PixelWidth : rectX + width;</a>
+<a name="ln1841">        var endY = inverted ? image.PixelHeight : rectY + height;</a>
+<a name="ln1842"> </a>
+<a name="ln1843">        Parallel.For(startX, pixelUtil.Pixels.Length / pixelUtil.ChannelsPerPixel, i =&gt;</a>
+<a name="ln1844">        {</a>
+<a name="ln1845">            i *= pixelUtil.ChannelsPerPixel;</a>
+<a name="ln1846"> </a>
+<a name="ln1847">            var y = i / pixelUtil.ChannelsPerPixel / image.PixelWidth;</a>
+<a name="ln1848">            var x = i / pixelUtil.ChannelsPerPixel - (y * image.PixelWidth);</a>
+<a name="ln1849"> </a>
+<a name="ln1850">            //Ignore non selected parts of the image.</a>
+<a name="ln1851">            if (!inverted &amp;&amp; (x &lt; startX || x &gt; endX || y &lt; startY || y &gt; endY))</a>
+<a name="ln1852">                return;</a>
+<a name="ln1853"> </a>
+<a name="ln1854">            if (inverted &amp;&amp; x &gt; rectX &amp;&amp; x &lt; rectX + width &amp;&amp; y &gt; rectY &amp;&amp; y &lt; rectY + height)</a>
+<a name="ln1855">                return;</a>
+<a name="ln1856"> </a>
+<a name="ln1857">            //Apply smoothness.</a>
+<a name="ln1858">            var original = pixelUtil.GetPixel(x, y);</a>
+<a name="ln1859">            var changed = ChangeColorBrightness(original, lightnessLevel / 100d * (isDarken ? -1 : 1));</a>
+<a name="ln1860"> </a>
+<a name="ln1861">            if (opacityDistance &gt; 0)</a>
+<a name="ln1862">            {</a>
+<a name="ln1863">                var opacity = CalculateOpacity(inverted, x, y, rectX, rectY, width, height, opacityDistance, opacityPower);</a>
+<a name="ln1864"> </a>
+<a name="ln1865">                pixelUtil.SetAndBlendPixel(x, y, changed, opacity);</a>
+<a name="ln1866">                return;</a>
+<a name="ln1867">            }</a>
+<a name="ln1868"> </a>
+<a name="ln1869">            pixelUtil.SetPixel(x, y, changed);</a>
+<a name="ln1870">        });</a>
+<a name="ln1871"> </a>
+<a name="ln1872">        #region Non parallel</a>
+<a name="ln1873"> </a>
+<a name="ln1874">        //for (var xx = startX; xx &lt; endX; xx++)</a>
+<a name="ln1875">        //{</a>
+<a name="ln1876">        //    for (var yy = startY; yy &lt; endY; yy++)</a>
+<a name="ln1877">        //    {</a>
+<a name="ln1878">        //        //Ignore non selected parts of the image.</a>
+<a name="ln1879">        //        if (inverted &amp;&amp; xx &gt; rectX &amp;&amp; xx &lt; rectX + width &amp;&amp; yy &gt; rectY &amp;&amp; yy &lt; rectY + height)</a>
+<a name="ln1880">        //            continue;</a>
+<a name="ln1881"> </a>
+<a name="ln1882">        //        //Apply smoothness.</a>
+<a name="ln1883">        //        var original = pixelUtil.GetPixel(xx, yy);</a>
+<a name="ln1884">        //        var changed = ChangeColorBrightness(original, lightnessLevel / 100d * (isDarken ? -1 : 1));</a>
+<a name="ln1885"> </a>
+<a name="ln1886">        //        if (opacityDistance &gt; 0)</a>
+<a name="ln1887">        //        {</a>
+<a name="ln1888">        //            var opacity = CalculateOpacity(inverted, xx, yy, rectX, rectY, width, height, opacityDistance, opacityPower);</a>
+<a name="ln1889"> </a>
+<a name="ln1890">        //            pixelUtil.SetAndBlendPixel(xx, yy, changed, opacity);</a>
+<a name="ln1891">        //            continue;</a>
+<a name="ln1892">        //        }</a>
+<a name="ln1893"> </a>
+<a name="ln1894">        //        pixelUtil.SetPixel(xx, yy, changed);</a>
+<a name="ln1895">        //    }</a>
+<a name="ln1896">        //}</a>
+<a name="ln1897"> </a>
+<a name="ln1898">        #endregion</a>
+<a name="ln1899"> </a>
+<a name="ln1900">        return pixelUtil.UnlockBits();</a>
+<a name="ln1901">    }</a>
+<a name="ln1902"> </a>
+<a name="ln1903">    /// &lt;summary&gt;</a>
+<a name="ln1904">    /// Creates color with corrected brightness.</a>
+<a name="ln1905">    /// https://stackoverflow.com/a/12598573/1735672</a>
+<a name="ln1906">    /// &lt;/summary&gt;</a>
+<a name="ln1907">    /// &lt;param name=&quot;color&quot;&gt;Color to correct.&lt;/param&gt;</a>
+<a name="ln1908">    /// &lt;param name=&quot;correctionFactor&quot;&gt;The brightness correction factor. Must be between -1 and 1. Negative values produce darker colors.&lt;/param&gt;</a>
+<a name="ln1909">    public static Color ChangeColorBrightness(Color color, double correctionFactor)</a>
+<a name="ln1910">    {</a>
+<a name="ln1911">        var red = (double)color.R;</a>
+<a name="ln1912">        var green = (double)color.G;</a>
+<a name="ln1913">        var blue = (double)color.B;</a>
+<a name="ln1914"> </a>
+<a name="ln1915">        if (correctionFactor &lt; 0)</a>
+<a name="ln1916">        {</a>
+<a name="ln1917">            correctionFactor = 1 + correctionFactor;</a>
+<a name="ln1918">            red *= correctionFactor;</a>
+<a name="ln1919">            green *= correctionFactor;</a>
+<a name="ln1920">            blue *= correctionFactor;</a>
+<a name="ln1921">        }</a>
+<a name="ln1922">        else</a>
+<a name="ln1923">        {</a>
+<a name="ln1924">            red = (255 - red) * correctionFactor + red;</a>
+<a name="ln1925">            green = (255 - green) * correctionFactor + green;</a>
+<a name="ln1926">            blue = (255 - blue) * correctionFactor + blue;</a>
+<a name="ln1927">        }</a>
+<a name="ln1928"> </a>
+<a name="ln1929">        return Color.FromArgb(color.A, (byte)red, (byte)green, (byte)blue);</a>
+<a name="ln1930">    }</a>
+<a name="ln1931"> </a>
+<a name="ln1932">    /// &lt;summary&gt;</a>
+<a name="ln1933">    /// Blends two colors based on a given opacity percentage.</a>
+<a name="ln1934">    /// &lt;/summary&gt;</a>
+<a name="ln1935">    /// &lt;param name=&quot;bottom&quot;&gt;The current base color.&lt;/param&gt;</a>
+<a name="ln1936">    /// &lt;param name=&quot;top&quot;&gt;The new color that will be put on top of the base one.&lt;/param&gt;</a>
+<a name="ln1937">    /// &lt;param name=&quot;opacity&quot;&gt;The percentage of how much top color to put on top of the base color.&lt;/param&gt;</a>
+<a name="ln1938">    public static Color AlphaBlend(Color bottom, Color top, double opacity)</a>
+<a name="ln1939">    {</a>
+<a name="ln1940">        //var alpha = (byte)(255 * 1 - (1 - bottom.A) * (1 - top.A));</a>
+<a name="ln1941">        var alpha = (byte)((top.A * opacity) + bottom.A * (1 - opacity));</a>
+<a name="ln1942">        var red = (byte)((top.R * opacity) + bottom.R * (1 - opacity));</a>
+<a name="ln1943">        var green = (byte)((top.G * opacity) + bottom.G * (1 - opacity));</a>
+<a name="ln1944">        var blue = (byte)((top.B * opacity) + bottom.B * (1 - opacity));</a>
+<a name="ln1945"> </a>
+<a name="ln1946">        return Color.FromArgb(alpha, red, green, blue);</a>
+<a name="ln1947">    }</a>
+<a name="ln1948"> </a>
+<a name="ln1949">    private static double CalculateOpacity(bool inverted, int xx, int yy, int rectX, int rectY, int width, int height, int opacityDistance, double opacityPower)</a>
+<a name="ln1950">    {</a>
+<a name="ln1951">        if (inverted)</a>
+<a name="ln1952">        {</a>
+<a name="ln1953">            var left = xx &lt;= rectX &amp;&amp; //Left.</a>
+<a name="ln1954">                       yy - opacityDistance &lt;= rectY + height &amp;&amp; //Bottom corner.</a>
+<a name="ln1955">                       yy + opacityDistance &gt;= rectY ? //Top corner.</a>
+<a name="ln1956">                rectX - xx : int.MaxValue;</a>
+<a name="ln1957"> </a>
+<a name="ln1958">            var top = yy &lt;= rectY &amp;&amp; //Top</a>
+<a name="ln1959">                      xx - opacityDistance &lt;= rectX + width &amp;&amp; //Right corner.</a>
+<a name="ln1960">                      xx + opacityDistance &gt;= rectX ? //Left corner.</a>
+<a name="ln1961">                rectY - yy : int.MaxValue;</a>
+<a name="ln1962"> </a>
+<a name="ln1963">            var right = xx &gt;= rectX + width &amp;&amp; //Right.</a>
+<a name="ln1964">                        yy - opacityDistance &lt;= rectY + height &amp;&amp; //Bottom corner.</a>
+<a name="ln1965">                        yy + opacityDistance &gt;= rectY ? //Top corner.</a>
+<a name="ln1966">                xx - (rectX + width) : int.MaxValue;</a>
+<a name="ln1967"> </a>
+<a name="ln1968">            var bottom = yy &gt;= rectY + height &amp;&amp; //Bottom.</a>
+<a name="ln1969">                         xx - opacityDistance &lt;= rectX + width &amp;&amp; //Right corner.</a>
+<a name="ln1970">                         xx + opacityDistance &gt;= rectX ? //Left corner.</a>
+<a name="ln1971">                yy - (rectY + height) : int.MaxValue;</a>
+<a name="ln1972"> </a>
+<a name="ln1973">            if (xx &lt;= rectX &amp;&amp; yy &lt;= rectY) //Top left corner.</a>
+<a name="ln1974">                top = left = Math.Max(top, left);</a>
+<a name="ln1975"> </a>
+<a name="ln1976">            if (xx &gt;= rectX + width &amp;&amp; yy &lt;= rectY) //Top right corner.</a>
+<a name="ln1977">                top = right = Math.Max(right, top);</a>
+<a name="ln1978"> </a>
+<a name="ln1979">            if (xx &gt;= rectX + width &amp;&amp; yy &gt;= rectY + height) //Bottom right corner.</a>
+<a name="ln1980">                bottom = right = Math.Max(bottom, right);</a>
+<a name="ln1981"> </a>
+<a name="ln1982">            if (xx &lt;= rectX &amp;&amp; yy &gt;= rectY + height) //Bottom left corner.</a>
+<a name="ln1983">                bottom = left = Math.Max(bottom, left);</a>
+<a name="ln1984"> </a>
+<a name="ln1985">            var distance = new[] { left, top, right, bottom }.OrderBy(o =&gt; o).First();</a>
+<a name="ln1986">            return distance &lt;= opacityDistance ? opacityPower / 100d * ((distance * 100d) / opacityDistance) / 100d : 1d;</a>
+<a name="ln1987">        }</a>
+<a name="ln1988"> </a>
+<a name="ln1989">        //TODO: Option to avoid smoothing near the edges.</a>
+<a name="ln1990">        //var distance = new[] { xx - rectX, yy - rectY, rectX + width - xx, rectY + height - yy }.OrderBy(o =&gt; o).First();</a>
+<a name="ln1991"> </a>
+<a name="ln1992">        var left2 = xx - rectX;</a>
+<a name="ln1993">        var top2 = yy - rectY;</a>
+<a name="ln1994">        var right2 = rectX + width - xx;</a>
+<a name="ln1995">        var bottom2 = rectY + height - yy;</a>
+<a name="ln1996"> </a>
+<a name="ln1997">        var distance2 = new[] { left2, top2, right2, bottom2 }.OrderBy(o =&gt; o).First();</a>
+<a name="ln1998">        return distance2 &lt;= opacityDistance ? opacityPower / 100d * ((distance2 * 100d) / opacityDistance) / 100d : 1d;</a>
+<a name="ln1999">    }</a>
+<a name="ln2000"> </a>
+<a name="ln2001">    #endregion</a>
+<a name="ln2002"> </a>
+<a name="ln2003">    #region Others</a>
+<a name="ln2004"> </a>
+<a name="ln2005">    /// &lt;summary&gt;</a>
+<a name="ln2006">    /// Gets the Bitmap from the source and closes the file usage.</a>
+<a name="ln2007">    /// &lt;/summary&gt;</a>
+<a name="ln2008">    /// &lt;param name=&quot;fileSource&quot;&gt;The file to open.&lt;/param&gt;</a>
+<a name="ln2009">    /// &lt;returns&gt;The open Bitmap.&lt;/returns&gt;</a>
+<a name="ln2010">    public static Bitmap From(this string fileSource)</a>
+<a name="ln2011">    {</a>
+<a name="ln2012">        var bitmapAux = new Bitmap(fileSource);</a>
+<a name="ln2013">        var bitmapReturn = new Bitmap(bitmapAux);</a>
+<a name="ln2014">        bitmapAux.Dispose();</a>
+<a name="ln2015"> </a>
+<a name="ln2016">        return bitmapReturn;</a>
+<a name="ln2017">    }</a>
+<a name="ln2018"> </a>
+<a name="ln2019">    /// &lt;summary&gt;</a>
+<a name="ln2020">    /// Gets a render of the current UIElement</a>
+<a name="ln2021">    /// &lt;/summary&gt;</a>
+<a name="ln2022">    /// &lt;param name=&quot;source&quot;&gt;UIElement to screenshot&lt;/param&gt;</a>
+<a name="ln2023">    /// &lt;param name=&quot;dpi&quot;&gt;The DPI of the source.&lt;/param&gt;</a>
+<a name="ln2024">    /// &lt;returns&gt;An ImageSource&lt;/returns&gt;</a>
+<a name="ln2025">    public static RenderTargetBitmap GetRender(this UIElement source, double dpi)</a>
+<a name="ln2026">    {</a>
+<a name="ln2027">        var bounds = VisualTreeHelper.GetDescendantBounds(source);</a>
+<a name="ln2028"> </a>
+<a name="ln2029">        //TODO: Fix bounds when values are not rounded.</a>
+<a name="ln2030"> </a>
+<a name="ln2031">        var scale = Math.Round(dpi / 96d, 2);</a>
+<a name="ln2032">        var width = (bounds.Width + bounds.X) * scale;</a>
+<a name="ln2033">        var height = (bounds.Height + bounds.Y) * scale;</a>
+<a name="ln2034"> </a>
+<a name="ln2035">        #region If no bounds</a>
+<a name="ln2036"> </a>
+<a name="ln2037">        if (bounds.IsEmpty)</a>
+<a name="ln2038">        {</a>
+<a name="ln2039">            if (source is Control control)</a>
+<a name="ln2040">            {</a>
+<a name="ln2041">                width = control.ActualWidth * scale;</a>
+<a name="ln2042">                height = control.ActualHeight * scale;</a>
+<a name="ln2043">            }</a>
+<a name="ln2044"> </a>
+<a name="ln2045">            bounds = new Rect(new System.Windows.Point(0d, 0d), new System.Windows.Point(width, height));</a>
+<a name="ln2046">        }</a>
+<a name="ln2047"> </a>
+<a name="ln2048">        #endregion</a>
+<a name="ln2049"> </a>
+<a name="ln2050">        var rtb = new RenderTargetBitmap((int)Math.Round(width), (int)Math.Round(height), dpi, dpi, PixelFormats.Pbgra32);</a>
+<a name="ln2051"> </a>
+<a name="ln2052">        var dv = new DrawingVisual();</a>
+<a name="ln2053">        using (var ctx = dv.RenderOpen())</a>
+<a name="ln2054">        {</a>
+<a name="ln2055">            var vb = new VisualBrush(source);</a>
+<a name="ln2056"> </a>
+<a name="ln2057">            var locationRect = new System.Windows.Point(bounds.X, bounds.Y);</a>
+<a name="ln2058">            var sizeRect = new System.Windows.Size((int)Math.Round(bounds.Width), (int)Math.Round(bounds.Height));</a>
+<a name="ln2059"> </a>
+<a name="ln2060">            ctx.DrawRectangle(vb, null, new Rect(locationRect, sizeRect));</a>
+<a name="ln2061">        }</a>
+<a name="ln2062"> </a>
+<a name="ln2063">        rtb.Render(dv);</a>
+<a name="ln2064">        return (RenderTargetBitmap)rtb.GetAsFrozen();</a>
+<a name="ln2065">    }</a>
+<a name="ln2066"> </a>
+<a name="ln2067">    /// &lt;summary&gt;</a>
+<a name="ln2068">    /// Gets a render of the current UIElement</a>
+<a name="ln2069">    /// &lt;/summary&gt;</a>
+<a name="ln2070">    /// &lt;param name=&quot;source&quot;&gt;UIElement to screenshot&lt;/param&gt;</a>
+<a name="ln2071">    /// &lt;param name=&quot;scale&quot;&gt;The scale of the UI element.&lt;/param&gt;</a>
+<a name="ln2072">    /// &lt;param name=&quot;dpi&quot;&gt;The DPI of the source.&lt;/param&gt;</a>
+<a name="ln2073">    /// &lt;param name=&quot;size&quot;&gt;The size of the destination image.&lt;/param&gt;</a>
+<a name="ln2074">    /// &lt;returns&gt;An ImageSource&lt;/returns&gt;</a>
+<a name="ln2075">    public static RenderTargetBitmap GetScaledRender(this Grid source, double scale, double dpi, System.Windows.Size size)</a>
+<a name="ln2076">    {</a>
+<a name="ln2077">        var rtb = new RenderTargetBitmap((int)Math.Round(size.Width), (int)Math.Round(size.Height), dpi, dpi, PixelFormats.Pbgra32);</a>
+<a name="ln2078"> </a>
+<a name="ln2079">        var dv = new DrawingVisual();</a>
+<a name="ln2080">        using (var ctx = dv.RenderOpen())</a>
+<a name="ln2081">        {</a>
+<a name="ln2082">            var vb = new VisualBrush(source);</a>
+<a name="ln2083"> </a>
+<a name="ln2084">            //Gets the child bounds.</a>
+<a name="ln2085">            var bounds = VisualTreeHelper.GetDescendantBounds(source);</a>
+<a name="ln2086">            var locationRect = new System.Windows.Point(bounds.X * scale, bounds.Y * scale);</a>
+<a name="ln2087">            var sizeRect = new System.Windows.Size(bounds.Width * scale, bounds.Height * scale);</a>
+<a name="ln2088"> </a>
+<a name="ln2089">            ctx.DrawRectangle(vb, null, new Rect(locationRect, sizeRect));</a>
+<a name="ln2090">        }</a>
+<a name="ln2091"> </a>
+<a name="ln2092">        rtb.Render(dv);</a>
+<a name="ln2093">        return (RenderTargetBitmap)rtb.GetAsFrozen();</a>
+<a name="ln2094">    }</a>
+<a name="ln2095"> </a>
+<a name="ln2096">    /// &lt;summary&gt;</a>
+<a name="ln2097">    /// Gets a render of the current UIElement</a>
+<a name="ln2098">    /// &lt;/summary&gt;</a>
+<a name="ln2099">    /// &lt;param name=&quot;source&quot;&gt;UIElement to screenshot&lt;/param&gt;</a>
+<a name="ln2100">    /// &lt;param name=&quot;scale&quot;&gt;The scale of the screen.&lt;/param&gt;</a>
+<a name="ln2101">    /// &lt;param name=&quot;dpi&quot;&gt;The DPI of the output.&lt;/param&gt;</a>
+<a name="ln2102">    /// &lt;param name=&quot;size&quot;&gt;The size of the destination image.&lt;/param&gt;</a>
+<a name="ln2103">    /// &lt;returns&gt;An ImageSource&lt;/returns&gt;</a>
+<a name="ln2104">    public static RenderTargetBitmap GetScaledRender(this UIElement source, double scale, double dpi, System.Windows.Size size)</a>
+<a name="ln2105">    {</a>
+<a name="ln2106">        var bounds = VisualTreeHelper.GetDescendantBounds(source);</a>
+<a name="ln2107"> </a>
+<a name="ln2108">        //var width = (bounds.Width + bounds.X) * scale;</a>
+<a name="ln2109">        //var height = (bounds.Height + bounds.Y) * scale;</a>
+<a name="ln2110"> </a>
+<a name="ln2111">        #region If no bounds</a>
+<a name="ln2112"> </a>
+<a name="ln2113">        if (bounds.IsEmpty)</a>
+<a name="ln2114">        {</a>
+<a name="ln2115">            if (source is FrameworkElement control)</a>
+<a name="ln2116">                bounds = new Rect(new System.Windows.Point(0d, 0d), new System.Windows.Point(control.ActualWidth * scale, control.ActualHeight * scale));</a>
+<a name="ln2117">        }</a>
+<a name="ln2118"> </a>
+<a name="ln2119">        #endregion</a>
+<a name="ln2120"> </a>
+<a name="ln2121">        var rtb = new RenderTargetBitmap((int)Math.Round(size.Width), (int)Math.Round(size.Height), dpi, dpi, PixelFormats.Pbgra32);</a>
+<a name="ln2122"> </a>
+<a name="ln2123">        //source.Clip = new RectangleGeometry(new Rect(0, 0, rtb.Width, rtb.Height));</a>
+<a name="ln2124">        //source.ClipToBounds = true;</a>
+<a name="ln2125"> </a>
+<a name="ln2126">        var dv = new DrawingVisual();</a>
+<a name="ln2127"> </a>
+<a name="ln2128">        using (var ctx = dv.RenderOpen())</a>
+<a name="ln2129">        {</a>
+<a name="ln2130">            var vb = new VisualBrush(source)</a>
+<a name="ln2131">            {</a>
+<a name="ln2132">                AutoLayoutContent = false,</a>
+<a name="ln2133">                Stretch = Stretch.Fill</a>
+<a name="ln2134">            };</a>
+<a name="ln2135"> </a>
+<a name="ln2136">            var uiScale = source.Scale();</a>
+<a name="ln2137"> </a>
+<a name="ln2138">            //Test with high dpi.</a>
+<a name="ln2139">            //For some reason, an InkCanvas with Strokes going beyond the bounds will report a strange bound even if clipped.</a>
+<a name="ln2140">            if (bounds.Width &gt; size.Width / uiScale)</a>
+<a name="ln2141">                bounds.Width = size.Width / uiScale;</a>
+<a name="ln2142"> </a>
+<a name="ln2143">            if (bounds.Height &gt; size.Height / uiScale)</a>
+<a name="ln2144">                bounds.Height = size.Height / uiScale;</a>
+<a name="ln2145"> </a>
+<a name="ln2146">            if (bounds.X &lt; 0)</a>
+<a name="ln2147">                bounds.X = 0;</a>
+<a name="ln2148"> </a>
+<a name="ln2149">            if (bounds.Y &lt; 0)</a>
+<a name="ln2150">                bounds.Y = 0;</a>
+<a name="ln2151"> </a>
+<a name="ln2152">            var locationRect = new System.Windows.Point(bounds.X * scale, bounds.Y * scale);</a>
+<a name="ln2153">            var sizeRect = new System.Windows.Size(bounds.Width * scale, bounds.Height * scale);</a>
+<a name="ln2154"> </a>
+<a name="ln2155">            ctx.DrawRectangle(vb, null, new Rect(locationRect, sizeRect));</a>
+<a name="ln2156">        }</a>
+<a name="ln2157"> </a>
+<a name="ln2158">        rtb.Render(dv);</a>
+<a name="ln2159"> </a>
+<a name="ln2160">        //source.Clip = null;</a>
+<a name="ln2161"> </a>
+<a name="ln2162">        return (RenderTargetBitmap)rtb.GetAsFrozen();</a>
+<a name="ln2163">    }</a>
+<a name="ln2164"> </a>
+<a name="ln2165">    /// &lt;summary&gt;</a>
+<a name="ln2166">    /// Gets the DPI of given image.</a>
+<a name="ln2167">    /// &lt;/summary&gt;</a>
+<a name="ln2168">    /// &lt;param name=&quot;fileSource&quot;&gt;The filename of the source.&lt;/param&gt;</a>
+<a name="ln2169">    /// &lt;returns&gt;The DPI.&lt;/returns&gt;</a>
+<a name="ln2170">    public static double DpiOf(this string fileSource)</a>
+<a name="ln2171">    {</a>
+<a name="ln2172">        using (var stream = new FileStream(fileSource, FileMode.Open, FileAccess.Read))</a>
+<a name="ln2173">        {</a>
+<a name="ln2174">            var bitmapImage = new BitmapImage();</a>
+<a name="ln2175">            bitmapImage.BeginInit();</a>
+<a name="ln2176">            bitmapImage.CacheOption = BitmapCacheOption.OnDemand;</a>
+<a name="ln2177"> </a>
+<a name="ln2178">            bitmapImage.StreamSource = stream;</a>
+<a name="ln2179">            bitmapImage.EndInit();</a>
+<a name="ln2180">            return bitmapImage.DpiX;</a>
+<a name="ln2181">        }</a>
+<a name="ln2182">    }</a>
+<a name="ln2183"> </a>
+<a name="ln2184">    /// &lt;summary&gt;</a>
+<a name="ln2185">    /// Gets the scale (dpi/96) of given image.</a>
+<a name="ln2186">    /// &lt;/summary&gt;</a>
+<a name="ln2187">    /// &lt;param name=&quot;fileSource&quot;&gt;The filename of the source.&lt;/param&gt;</a>
+<a name="ln2188">    /// &lt;returns&gt;The DPI.&lt;/returns&gt;</a>
+<a name="ln2189">    public static double ScaleOf(this string fileSource)</a>
+<a name="ln2190">    {</a>
+<a name="ln2191">        using (var stream = new FileStream(fileSource, FileMode.Open, FileAccess.Read))</a>
+<a name="ln2192">        {</a>
+<a name="ln2193">            var bitmapImage = new BitmapImage();</a>
+<a name="ln2194">            bitmapImage.BeginInit();</a>
+<a name="ln2195">            bitmapImage.CacheOption = BitmapCacheOption.OnDemand;</a>
+<a name="ln2196"> </a>
+<a name="ln2197">            bitmapImage.StreamSource = stream;</a>
+<a name="ln2198">            bitmapImage.EndInit();</a>
+<a name="ln2199">            return Math.Round(bitmapImage.DpiX / 96d, 2);</a>
+<a name="ln2200">        }</a>
+<a name="ln2201">    }</a>
+<a name="ln2202"> </a>
+<a name="ln2203">    /// &lt;summary&gt;</a>
+<a name="ln2204">    /// Gets the size * scale of given image.</a>
+<a name="ln2205">    /// &lt;/summary&gt;</a>
+<a name="ln2206">    /// &lt;param name=&quot;fileSource&quot;&gt;The filename of the source.&lt;/param&gt;</a>
+<a name="ln2207">    /// &lt;returns&gt;The size of the image.&lt;/returns&gt;</a>
+<a name="ln2208">    public static System.Windows.Size ScaledSize(this string fileSource)</a>
+<a name="ln2209">    {</a>
+<a name="ln2210">        using (var stream = new FileStream(fileSource, FileMode.Open, FileAccess.Read))</a>
+<a name="ln2211">        {</a>
+<a name="ln2212">            var bitmapImage = new BitmapImage();</a>
+<a name="ln2213">            bitmapImage.BeginInit();</a>
+<a name="ln2214">            bitmapImage.CacheOption = BitmapCacheOption.OnDemand;</a>
+<a name="ln2215"> </a>
+<a name="ln2216">            bitmapImage.StreamSource = stream;</a>
+<a name="ln2217">            bitmapImage.EndInit();</a>
+<a name="ln2218">            return new System.Windows.Size(bitmapImage.PixelWidth, bitmapImage.PixelHeight);</a>
+<a name="ln2219">        }</a>
+<a name="ln2220">    }</a>
+<a name="ln2221"> </a>
+<a name="ln2222">    /// &lt;summary&gt;</a>
+<a name="ln2223">    /// Gets the size of given image.</a>
+<a name="ln2224">    /// &lt;/summary&gt;</a>
+<a name="ln2225">    /// &lt;param name=&quot;fileSource&quot;&gt;The filename of the source.&lt;/param&gt;</a>
+<a name="ln2226">    /// &lt;returns&gt;The size of the image.&lt;/returns&gt;</a>
+<a name="ln2227">    public static System.Windows.Size NonScaledSize(this string fileSource)</a>
+<a name="ln2228">    {</a>
+<a name="ln2229">        using (var stream = new FileStream(fileSource, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))</a>
+<a name="ln2230">        {</a>
+<a name="ln2231">            var bitmapImage = new BitmapImage();</a>
+<a name="ln2232">            bitmapImage.BeginInit();</a>
+<a name="ln2233">            bitmapImage.CacheOption = BitmapCacheOption.None;</a>
+<a name="ln2234"> </a>
+<a name="ln2235">            bitmapImage.StreamSource = stream;</a>
+<a name="ln2236">            bitmapImage.EndInit();</a>
+<a name="ln2237">            return new System.Windows.Size(bitmapImage.Width, bitmapImage.Height);</a>
+<a name="ln2238">        }</a>
+<a name="ln2239">    }</a>
+<a name="ln2240"> </a>
+<a name="ln2241">    /// &lt;summary&gt;</a>
+<a name="ln2242">    /// Gets the BitmapSource from the source and closes the file usage.</a>
+<a name="ln2243">    /// &lt;/summary&gt;</a>
+<a name="ln2244">    /// &lt;param name=&quot;fileSource&quot;&gt;The file to open.&lt;/param&gt;</a>
+<a name="ln2245">    /// &lt;returns&gt;The open BitmapSource.&lt;/returns&gt;</a>
+<a name="ln2246">    public static Size SizeOf(this string fileSource)</a>
+<a name="ln2247">    {</a>
+<a name="ln2248">        var bitmapAux = new Bitmap(fileSource);</a>
+<a name="ln2249">        var size = new Size(bitmapAux.Width, bitmapAux.Height);</a>
+<a name="ln2250">        bitmapAux.Dispose();</a>
+<a name="ln2251"> </a>
+<a name="ln2252">        return size;</a>
+<a name="ln2253">    }</a>
+<a name="ln2254"> </a>
+<a name="ln2255">    /// &lt;summary&gt;</a>
+<a name="ln2256">    /// Reads a given image resource into a WinForms icon.</a>
+<a name="ln2257">    /// &lt;/summary&gt;</a>
+<a name="ln2258">    /// &lt;param name=&quot;imageSource&quot;&gt;Image source pointing to an icon file (*.ico).&lt;/param&gt;</a>
+<a name="ln2259">    /// &lt;returns&gt;An icon object that can be used with the taskbar area.&lt;/returns&gt;</a>
+<a name="ln2260">    public static Icon ToIcon(this ImageSource imageSource)</a>
+<a name="ln2261">    {</a>
+<a name="ln2262">        if (imageSource == null)</a>
+<a name="ln2263">            return null;</a>
+<a name="ln2264"> </a>
+<a name="ln2265">        StreamResourceInfo streamInfo = null;</a>
+<a name="ln2266"> </a>
+<a name="ln2267">        try</a>
+<a name="ln2268">        {</a>
+<a name="ln2269">            var uri = new Uri(imageSource.ToString());</a>
+<a name="ln2270">            streamInfo = Application.GetResourceStream(uri);</a>
+<a name="ln2271"> </a>
+<a name="ln2272">            if (streamInfo == null)</a>
+<a name="ln2273">                throw new ArgumentException($&quot;It was not possible to load the image source: '{imageSource}'.&quot;);</a>
+<a name="ln2274"> </a>
+<a name="ln2275">            return new Icon(streamInfo.Stream);</a>
+<a name="ln2276">        }</a>
+<a name="ln2277">        catch (Win32Exception e)</a>
+<a name="ln2278">        {</a>
+<a name="ln2279">            LogWriter.Log(e, &quot;It was not possible to load the notification area icon.&quot;, $&quot;StreamInfo is null? {streamInfo == null}, Native error code: {e.NativeErrorCode}&quot;);</a>
+<a name="ln2280">            return null;</a>
+<a name="ln2281">        }</a>
+<a name="ln2282">        catch (Exception e)</a>
+<a name="ln2283">        {</a>
+<a name="ln2284">            LogWriter.Log(e, &quot;It was not possible to load the notification area icon.&quot;, $&quot;StreamInfo is null? {streamInfo == null}&quot;);</a>
+<a name="ln2285">            return null;</a>
+<a name="ln2286">        }</a>
+<a name="ln2287">        finally</a>
+<a name="ln2288">        {</a>
+<a name="ln2289">            streamInfo?.Stream?.Dispose();</a>
+<a name="ln2290">        }</a>
+<a name="ln2291">    }</a>
+<a name="ln2292"> </a>
+<a name="ln2293">    #endregion</a>
+<a name="ln2294">}</a>
+</code></pre>
+<div class="balloon" rel="252"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3106/" target="_blank">V3106</a> Possible negative index value. The value of 'index - 1' index could reach -1.</p></div>
+<div class="balloon" rel="1175"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v5609/" target="_blank">V5609</a> Possible path traversal vulnerability. Potentially tainted data from the 'fileName' variable is used as path.</p></div>
+<div class="balloon" rel="1519"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v5609/" target="_blank">V5609</a> Possible path traversal vulnerability. Potentially tainted data from the 'filePath' variable is used as path.</p></div>
+<div class="balloon" rel="2172"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v5609/" target="_blank">V5609</a> Possible path traversal vulnerability. Potentially tainted data from the 'fileSource' variable is used as path.</p></div>
+<div class="balloon" rel="2191"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v5609/" target="_blank">V5609</a> Possible path traversal vulnerability. Potentially tainted data from the 'fileSource' variable is used as path.</p></div>
+<div class="balloon" rel="2210"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v5609/" target="_blank">V5609</a> Possible path traversal vulnerability. Potentially tainted data from the 'fileSource' variable is used as path.</p></div>
+<div class="balloon" rel="2229"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v5609/" target="_blank">V5609</a> Possible path traversal vulnerability. Potentially tainted data from the 'fileSource' variable is used as path.</p></div>
+<link rel="stylesheet" href="highlight.css">
+<script src="highlight.pack.js"></script>
+<script src="highlightjs-line-numbers.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script>hljs.initLineNumbersOnLoad();</script>
+<script>
+  $(document).ready(function() {
+      $('.balloon').each(function () {
+          var bl = $(this);
+          var line = bl.attr('rel');
+          var text = $('a[name="ln'+line+'"]').text();
+
+          var space_count = 0;
+          for(var i = 0; i<text.length; i++){
+              var char = text[i];
+              if((char !== ' ')&&(char !== '\t'))break;
+              if(char === '\t')space_count++;
+              space_count++;
+          }
+
+          bl.css('margin-left', space_count*8);
+          $('a[name="ln'+line+'"]').after(bl);
+      });
+
+      window.location = window.location;
+  });
+</script>
+</body>
+</html>

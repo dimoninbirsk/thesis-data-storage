@@ -1,0 +1,237 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>PVS-Studio HTML Report</title>
+<style type="text/css">
+   TABLE {
+    width: 100%;
+   }
+   #col_group, #col_level, #col_code, #col_cwe, #col_sast {
+    text-align: center;
+    white-space: nowrap;
+    width: 0;
+   }
+   #col_file, #col_info, #col_projects {
+    white-space: nowrap;
+    text-align: left;
+    width: 0;
+   }
+   #col_info {
+    width: 120px;
+   }
+   #col_message {
+    text-align: left;
+   }
+  </style>
+<link rel="stylesheet" href="style.css" />
+<script type="text/javascript" src="script.js"></script>
+<script type="text/javascript" src="toggle-cell.js"></script>
+</head>
+<body>
+  <div class="header">
+    <img src="images/logo.png" alt=""/>
+    <h1>PVS-Studio Analysis Results</h1>
+    <br class="clear">
+  </div>
+  <table cellpadding="0" cellspacing="0" border="0" class="infotopic">
+     <tr><th id="col_info">Date:</th><td>04/16/25 21:22:56</td></tr>
+     <tr><th id="col_info">PVS-Studio Version:</th><td>7.36.91321.1771</td></tr>
+     <tr><th id="col_info">Total Warnings (GA):</th><td>11</td></tr>
+     <tr><th id="col_info">Total Warnings (OWASP):</th><td>7</td></tr>
+     <tr><th id="col_info">Fails/Info:</th><td>1</td></tr>
+  </table>
+  <div class="toggle-box">
+    <label>
+      Show full paths
+    <input class="path-toggle toggle-button" type="checkbox" name="toggle-path" onclick="togglePathView()" />
+    </label>
+  </div>
+  <table cellpadding="0" cellspacing="0" border="0" class="sortable" id="sorter">
+    <tr>
+      <th class="gsort">Group</th>
+      <th class="psort">Projects</th>
+      <th>Location</th>
+      <th class="lsort">Level</th>
+      <th class="vsort">Code</th>
+      <th class="rsort">SAST</th>
+      <th>Message</th>
+    </tr>
+    <tr>
+      <td id="col_group"></td>
+      <td id="col_projects"><p></p></td>
+      <td id="col_file"></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/renewal/">Renew</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Your license will expire in 29 days. Click 'Renew' to learn more or contact us via Feedback form on our website. This is an information message. You can continue using the analyzer with your current license. To hide this message, use the '--disableLicenseExpirationCheck' flag.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>SoundFlow.Samples.SimplePlayer</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/ComponentTests.cs_0.html#ln158">ComponentTests.cs:158</a><a target="_blank" class="file-link display-none" href="sources/ComponentTests.cs_0.html#ln158">C:\Users\dimoninbirsk\source\thesis\SoundFlow\Samples\SoundFlow.Samples.SimplePlayer\ComponentTests.cs:158</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3114/">V3114</td>
+      <td id="col_sast"></td>
+      <td id="col_message">IDisposable object 'recorder' is not disposed before method returns.</td>
+    </tr>
+    <tr>
+      <td id="col_group">OWASP</td>
+      <td id="col_projects"><p>SoundFlow.Samples.SimplePlayer</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/ComponentTests.cs_0.html#ln186">ComponentTests.cs:186</a><a target="_blank" class="file-link display-none" href="sources/ComponentTests.cs_0.html#ln186">C:\Users\dimoninbirsk\source\thesis\SoundFlow\Samples\SoundFlow.Samples.SimplePlayer\ComponentTests.cs:186</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v5606/">V5606</td>
+      <td id="col_sast">OWASP-7.4.2</td>
+      <td id="col_message">An empty exception handler. Silent suppression of exceptions may hide the presence of bugs or vulnerabilities.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>SoundFlow.Samples.SimplePlayer</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/DataProviderTests.cs_1.html#ln68">DataProviderTests.cs:68</a><a target="_blank" class="file-link display-none" href="sources/DataProviderTests.cs_1.html#ln68">C:\Users\dimoninbirsk\source\thesis\SoundFlow\Samples\SoundFlow.Samples.SimplePlayer\DataProviderTests.cs:68</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3032/">V3032</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Waiting on this expression is unreliable, as compiler may optimize some of the variables. Use volatile variable(s) or synchronization primitives to avoid this.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>SoundFlow.Samples.SimplePlayer</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/DataProviderTests.cs_1.html#ln31">DataProviderTests.cs:31</a><a target="_blank" class="file-link display-none" href="sources/DataProviderTests.cs_1.html#ln31">C:\Users\dimoninbirsk\source\thesis\SoundFlow\Samples\SoundFlow.Samples.SimplePlayer\DataProviderTests.cs:31</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3203/">V3203</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Method parameter is not used: capability.</td>
+    </tr>
+    <tr>
+      <td id="col_group">OWASP</td>
+      <td id="col_projects"><p>SoundFlow.Samples.SimplePlayer</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/DataProviderTests.cs_1.html#ln115">DataProviderTests.cs:115</a><a target="_blank" class="file-link display-none" href="sources/DataProviderTests.cs_1.html#ln115">C:\Users\dimoninbirsk\source\thesis\SoundFlow\Samples\SoundFlow.Samples.SimplePlayer\DataProviderTests.cs:115</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v5621/">V5621</td>
+      <td id="col_sast">OWASP-8.3.5</td>
+      <td id="col_message">Error message contains potentially sensitive data, in 'ex.Message', that may be exposed.</td>
+    </tr>
+    <tr>
+      <td id="col_group">OWASP</td>
+      <td id="col_projects"><p>SoundFlow.Samples.SimplePlayer</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/DataProviderTests.cs_1.html#ln146">DataProviderTests.cs:146</a><a target="_blank" class="file-link display-none" href="sources/DataProviderTests.cs_1.html#ln146">C:\Users\dimoninbirsk\source\thesis\SoundFlow\Samples\SoundFlow.Samples.SimplePlayer\DataProviderTests.cs:146</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v5621/">V5621</td>
+      <td id="col_sast">OWASP-8.3.5</td>
+      <td id="col_message">Error message contains potentially sensitive data, in 'ex.Message', that may be exposed.</td>
+    </tr>
+    <tr>
+      <td id="col_group">OWASP</td>
+      <td id="col_projects"><p>SoundFlow.Samples.SimplePlayer</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Program.cs_2.html#ln238">Program.cs:238</a><a target="_blank" class="file-link display-none" href="sources/Program.cs_2.html#ln238">C:\Users\dimoninbirsk\source\thesis\SoundFlow\Samples\SoundFlow.Samples.SimplePlayer\Program.cs:238</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v5621/">V5621</td>
+      <td id="col_sast">OWASP-8.3.5</td>
+      <td id="col_message">Error message contains potentially sensitive data, in 'e.Message', that may be exposed.</td>
+    </tr>
+    <tr>
+      <td id="col_group">OWASP</td>
+      <td id="col_projects"><p>SoundFlow.Samples.SimplePlayer</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Program.cs_2.html#ln242">Program.cs:242</a><a target="_blank" class="file-link display-none" href="sources/Program.cs_2.html#ln242">C:\Users\dimoninbirsk\source\thesis\SoundFlow\Samples\SoundFlow.Samples.SimplePlayer\Program.cs:242</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v5621/">V5621</td>
+      <td id="col_sast">OWASP-8.3.5</td>
+      <td id="col_message">Error message contains potentially sensitive data, in 'e.Message', that may be exposed.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>SoundFlow</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/LowFrequencyOscillator.cs_3.html#ln159">LowFrequencyOscillator.cs:159</a><a target="_blank" class="file-link display-none" href="sources/LowFrequencyOscillator.cs_3.html#ln159">C:\Users\dimoninbirsk\source\thesis\SoundFlow\Src\Components\LowFrequencyOscillator.cs:159</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3109/">V3109</td>
+      <td id="col_sast"></td>
+      <td id="col_message">The 'Math.PI' sub-expression is present on both sides of the operator. The expression is incorrect or it can be simplified.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>SoundFlow</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/AlgorithmicReverbModifier.cs_4.html#ln305">AlgorithmicReverbModifier.cs:305</a><a target="_blank" class="file-link display-none" href="sources/AlgorithmicReverbModifier.cs_4.html#ln305">C:\Users\dimoninbirsk\source\thesis\SoundFlow\Src\Modifiers\AlgorithmicReverbModifier.cs:305</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3064/">V3064</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Potential division by zero. Consider inspecting denominator '(AudioEngine.Channels - 1)'.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>SoundFlow</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/CompressorModifier.cs_5.html#ln89">CompressorModifier.cs:89</a><a target="_blank" class="file-link display-none" href="sources/CompressorModifier.cs_5.html#ln89">C:\Users\dimoninbirsk\source\thesis\SoundFlow\Src\Modifiers\CompressorModifier.cs:89</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3024/">V3024</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An odd precise comparison: reductionDb == 0. Consider using a comparison with defined precision: Math.Abs(A - B) &lt; Epsilon.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>SoundFlow</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/ParametricEqualizer.cs_6.html#ln304">ParametricEqualizer.cs:304</a><a target="_blank" class="file-link display-none" href="sources/ParametricEqualizer.cs_6.html#ln304">C:\Users\dimoninbirsk\source\thesis\SoundFlow\Src\Modifiers\ParametricEqualizer.cs:304</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3056/">V3056</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Consider reviewing the correctness of '_a0' item's usage.</td>
+    </tr>
+    <tr>
+      <td id="col_group">OWASP</td>
+      <td id="col_projects"><p>SoundFlow</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/NetworkDataProvider.cs_7.html#ln170">NetworkDataProvider.cs:170</a><a target="_blank" class="file-link display-none" href="sources/NetworkDataProvider.cs_7.html#ln170">C:\Users\dimoninbirsk\source\thesis\SoundFlow\Src\Providers\NetworkDataProvider.cs:170</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v5606/">V5606</td>
+      <td id="col_sast">OWASP-7.4.2</td>
+      <td id="col_message">An empty exception handler. Silent suppression of exceptions may hide the presence of bugs or vulnerabilities.</td>
+    </tr>
+    <tr>
+      <td id="col_group">OWASP</td>
+      <td id="col_projects"><p>SoundFlow</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/NetworkDataProvider.cs_7.html#ln532">NetworkDataProvider.cs:532</a><a target="_blank" class="file-link display-none" href="sources/NetworkDataProvider.cs_7.html#ln532">C:\Users\dimoninbirsk\source\thesis\SoundFlow\Src\Providers\NetworkDataProvider.cs:532</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v5606/">V5606</td>
+      <td id="col_sast">OWASP-7.4.2</td>
+      <td id="col_message">An empty exception handler. Silent suppression of exceptions may hide the presence of bugs or vulnerabilities.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>SoundFlow</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/RawDataProvider.cs_8.html#ln139">RawDataProvider.cs:139</a><a target="_blank" class="file-link display-none" href="sources/RawDataProvider.cs_8.html#ln139">C:\Users\dimoninbirsk\source\thesis\SoundFlow\Src\Providers\RawDataProvider.cs:139</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3155/">V3155</td>
+      <td id="col_sast"></td>
+      <td id="col_message">The expression is incorrect or it can be simplified. Consider inspecting the '0' literal.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>SoundFlow</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/StreamDataProvider.cs_9.html#ln11">StreamDataProvider.cs:11</a><a target="_blank" class="file-link display-none" href="sources/StreamDataProvider.cs_9.html#ln11">C:\Users\dimoninbirsk\source\thesis\SoundFlow\Src\Providers\StreamDataProvider.cs:11</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3072/">V3072</td>
+      <td id="col_sast"></td>
+      <td id="col_message">The 'StreamDataProvider' class containing IDisposable members does not itself implement IDisposable. Inspect: _decoder.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>SoundFlow</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/MathHelper.cs_10.html#ln298">MathHelper.cs:298</a><a target="_blank" class="file-link display-none" href="sources/MathHelper.cs_10.html#ln298">C:\Users\dimoninbirsk\source\thesis\SoundFlow\Src\Utils\MathHelper.cs:298</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3064/">V3064</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Potential division by zero. Consider inspecting denominator '(size - 1)'.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>SoundFlow</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/MathHelper.cs_10.html#ln424">MathHelper.cs:424</a><a target="_blank" class="file-link display-none" href="sources/MathHelper.cs_10.html#ln424">C:\Users\dimoninbirsk\source\thesis\SoundFlow\Src\Utils\MathHelper.cs:424</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3064/">V3064</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Potential division by zero. Consider inspecting denominator '(size - 1)'.</td>
+    </tr>
+  </table>
+<script type="text/javascript">
+var sorter=new table.sorter("sorter");
+sorter.init("sorter",0);
+</script>
+</body>
+</html>

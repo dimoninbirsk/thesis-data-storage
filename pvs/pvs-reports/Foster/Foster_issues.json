@@ -1,0 +1,82 @@
+[
+  {
+    "code": "V3024",
+    "count": 30,
+    "cwe": [
+      "682"
+    ],
+    "description": "An odd precise comparison: [variable part]"
+  },
+  {
+    "code": "V5609",
+    "count": 5,
+    "cwe": [
+      "22"
+    ],
+    "description": "Possible path traversal vulnerability. Potentially tainted data from the 'path' variable is used as path. (+ 2 variants)"
+  },
+  {
+    "code": "V3100",
+    "count": 3,
+    "cwe": [
+      "476"
+    ],
+    "description": "NullReferenceException is possible. Unhandled exceptions in destructor lead to termination of runtime. (+ 1 variants)"
+  },
+  {
+    "code": "V3041",
+    "count": 2,
+    "cwe": [
+      "682"
+    ],
+    "description": "The expression was implicitly cast from 'int' type to 'float' type. Consider utilizing an explicit type cast to avoid the loss of a fractional part. An example: double A = (double)(X) / Y;."
+  },
+  {
+    "code": "V3010",
+    "count": 1,
+    "cwe": [
+      "252"
+    ],
+    "description": "The return value of function 'Advance' is required to be utilized."
+  },
+  {
+    "code": "V3063",
+    "count": 1,
+    "cwe": [
+      "570"
+    ],
+    "description": "A part of conditional expression is always false if it is evaluated: other.Controllers[i].Connected."
+  },
+  {
+    "code": "V5606",
+    "count": 1,
+    "cwe": [
+      "1069"
+    ],
+    "description": "An empty exception handler. Silent suppression of exceptions may hide the presence of bugs or vulnerabilities."
+  },
+  {
+    "code": "V3072",
+    "count": 1,
+    "cwe": [],
+    "description": "The 'Page' class containing IDisposable members does not itself implement IDisposable. Inspect: image, atlas."
+  },
+  {
+    "code": "V3073",
+    "count": 1,
+    "cwe": [],
+    "description": "Not all IDisposable members are properly disposed. Call 'Dispose' when disposing 'Batcher' class. Inspect: mesh."
+  },
+  {
+    "code": "V3139",
+    "count": 1,
+    "cwe": [],
+    "description": "Two or more case-branches perform the same actions."
+  },
+  {
+    "code": "V3109",
+    "count": 1,
+    "cwe": [],
+    "description": "The 'interval' sub-expression is present on both sides of the operator. The expression is incorrect or it can be simplified."
+  }
+]

@@ -1,0 +1,58 @@
+{
+  "Renew": {
+    "code": "Renew",
+    "cwe": 0,
+    "sastId": null,
+    "level": 1,
+    "count": 1,
+    "example": "Your license will expire in 29 days. Click 'Renew' to learn more or contact us via Feedback form on our website. This is an information message. You can continue using the analyzer with your current license. To hide this message, use the '--disableLicenseExpirationCheck' flag."
+  },
+  "V3125": {
+    "code": "V3125",
+    "cwe": 476,
+    "sastId": null,
+    "level": 2,
+    "count": 1,
+    "example": "The 'Application.Current' object was used after it was verified against null. Check lines: 18, 13."
+  },
+  "V3012": {
+    "code": "V3012",
+    "cwe": 783,
+    "sastId": null,
+    "level": 1,
+    "count": 1,
+    "example": "The '?:' operator, regardless of its conditional expression, always returns one and the same value."
+  },
+  "V3146": {
+    "code": "V3146",
+    "cwe": 476,
+    "sastId": null,
+    "level": 1,
+    "count": 3,
+    "example": "Possible null dereference. The 'FirstOrDefault' can return default null value."
+  },
+  "V5606": {
+    "code": "V5606",
+    "cwe": 1069,
+    "sastId": "OWASP-7.4.2",
+    "level": 3,
+    "count": 1,
+    "example": "An empty exception handler. Silent suppression of exceptions may hide the presence of bugs or vulnerabilities."
+  },
+  "V3080": {
+    "code": "V3080",
+    "cwe": 476,
+    "sastId": null,
+    "level": 2,
+    "count": 1,
+    "example": "Possible null dereference. Consider inspecting 'lastItem'."
+  },
+  "V3008": {
+    "code": "V3008",
+    "cwe": 563,
+    "sastId": null,
+    "level": 3,
+    "count": 1,
+    "example": "The '_isSettingPanelOpened' variable is assigned values twice successively. Perhaps this is a mistake. Check lines: 22, 20."
+  }
+}

@@ -1,0 +1,65 @@
+﻿[
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Microsoft.Extensions.Http.Polly",
+        "CurrentVersion":  "9.0.2",
+        "LatestVersion":  "9.0.4",
+        "Reason":  "New version available",
+        "Solution":  "Lynx",
+        "Timestamp":  "20250416_175718"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Microsoft.Extensions.ObjectPool",
+        "CurrentVersion":  "9.0.2",
+        "LatestVersion":  "9.0.4",
+        "Reason":  "New version available",
+        "Solution":  "Lynx",
+        "Timestamp":  "20250416_175718"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Microsoft.Extensions.StaticAnalysis",
+        "CurrentVersion":  "9.2.0",
+        "LatestVersion":  "9.4.0",
+        "Reason":  "New version available",
+        "Solution":  "Lynx",
+        "Timestamp":  "20250416_175718"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Microsoft.Extensions.Configuration.Binder",
+        "CurrentVersion":  "9.0.2",
+        "LatestVersion":  "9.0.4",
+        "Reason":  "New version available",
+        "Solution":  "Lynx",
+        "Timestamp":  "20250416_175718"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Microsoft.Extensions.Configuration.EnvironmentVariables",
+        "CurrentVersion":  "9.0.2",
+        "LatestVersion":  "9.0.4",
+        "Reason":  "New version available",
+        "Solution":  "Lynx",
+        "Timestamp":  "20250416_175718"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Microsoft.Extensions.Configuration.Json",
+        "CurrentVersion":  "9.0.2",
+        "LatestVersion":  "9.0.4",
+        "Reason":  "New version available",
+        "Solution":  "Lynx",
+        "Timestamp":  "20250416_175718"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Moq",
+        "CurrentVersion":  "4.18.4",
+        "LatestVersion":  "4.20.72",
+        "Reason":  "New version available",
+        "Solution":  "Lynx",
+        "Timestamp":  "20250416_175718"
+    }
+]

@@ -1,0 +1,8 @@
+﻿"Status","PackageID","CurrentVersion","LatestVersion","Reason","Solution","Timestamp"
+"Outdated","Microsoft.Extensions.Http.Polly","9.0.2","9.0.4","New version available","Lynx","20250416_175718"
+"Outdated","Microsoft.Extensions.ObjectPool","9.0.2","9.0.4","New version available","Lynx","20250416_175718"
+"Outdated","Microsoft.Extensions.StaticAnalysis","9.2.0","9.4.0","New version available","Lynx","20250416_175718"
+"Outdated","Microsoft.Extensions.Configuration.Binder","9.0.2","9.0.4","New version available","Lynx","20250416_175718"
+"Outdated","Microsoft.Extensions.Configuration.EnvironmentVariables","9.0.2","9.0.4","New version available","Lynx","20250416_175718"
+"Outdated","Microsoft.Extensions.Configuration.Json","9.0.2","9.0.4","New version available","Lynx","20250416_175718"
+"Outdated","Moq","4.18.4","4.20.72","New version available","Lynx","20250416_175718"

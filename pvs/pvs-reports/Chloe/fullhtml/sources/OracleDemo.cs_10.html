@@ -1,0 +1,177 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>OracleDemo.cs</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <script src="../jquery-3.5.1.min.js"></script>
+</head>
+<body>
+<pre><code class = "cs">
+<a name="ln1">﻿using Chloe;</a>
+<a name="ln2">using Chloe.RDBMS.DDL;</a>
+<a name="ln3">using Chloe.Descriptors;</a>
+<a name="ln4">using Chloe.Infrastructure;</a>
+<a name="ln5">using Chloe.Oracle;</a>
+<a name="ln6">using Chloe.Oracle.DDL;</a>
+<a name="ln7">using Chloe.Reflection;</a>
+<a name="ln8">using System;</a>
+<a name="ln9">using System.Collections.Generic;</a>
+<a name="ln10">using System.IO;</a>
+<a name="ln11">using System.Linq;</a>
+<a name="ln12">using System.Text;</a>
+<a name="ln13">using System.Threading.Tasks;</a>
+<a name="ln14"> </a>
+<a name="ln15">namespace ChloeDemo</a>
+<a name="ln16">{</a>
+<a name="ln17">    class OracleDemo : DemoBase</a>
+<a name="ln18">    {</a>
+<a name="ln19">        public OracleDemo()</a>
+<a name="ln20">        {</a>
+<a name="ln21">            DbConfiguration.UseTypeBuilders(typeof(OracleTestEntityMap));</a>
+<a name="ln22">        }</a>
+<a name="ln23"> </a>
+<a name="ln24">        protected override IDbContext CreateDbContext()</a>
+<a name="ln25">        {</a>
+<a name="ln26">            OracleContext dbContext = new OracleContext(new OracleConnectionFactory(&quot;Data Source=localhost/FREE;User ID=system;Password=sasa;&quot;));</a>
+<a name="ln27">            dbContext.Options.DefaultBatchSizeForInsertRange = 200; //设置一下oracle插入时每批实体个数，不然一次插入太多会报错</a>
+<a name="ln28"> </a>
+<a name="ln29">            return dbContext;</a>
+<a name="ln30">        }</a>
+<a name="ln31"> </a>
+<a name="ln32">        public override void InitDatabase()</a>
+<a name="ln33">        {</a>
+<a name="ln34">            new OracleTableGenerator(this.DbContext).CreateTables(TableCreateMode.CreateNew);</a>
+<a name="ln35">        }</a>
+<a name="ln36"> </a>
+<a name="ln37">        public override void Method()</a>
+<a name="ln38">        {</a>
+<a name="ln39">            IQuery&lt;Person&gt; q = this.DbContext.Query&lt;Person&gt;();</a>
+<a name="ln40"> </a>
+<a name="ln41">            var space = new char[] { ' ' };</a>
+<a name="ln42"> </a>
+<a name="ln43">            DateTime startTime = DateTime.Now;</a>
+<a name="ln44">            DateTime endTime = startTime.AddDays(1);</a>
+<a name="ln45">            var ret = q.Select(a =&gt; new</a>
+<a name="ln46">            {</a>
+<a name="ln47">                Id = a.Id,</a>
+<a name="ln48"> </a>
+<a name="ln49">                //CustomFunction = DbFunctions.MyFunction(a.Id), //自定义函数</a>
+<a name="ln50"> </a>
+<a name="ln51">                String_Length = (int?)a.Name.Length,//LENGTH(&quot;PERSON&quot;.&quot;NAME&quot;)</a>
+<a name="ln52">                Substring = a.Name.Substring(0),//SUBSTR(&quot;PERSON&quot;.&quot;NAME&quot;,0 + 1,LENGTH(&quot;PERSON&quot;.&quot;NAME&quot;))</a>
+<a name="ln53">                Substring1 = a.Name.Substring(1),//SUBSTR(&quot;PERSON&quot;.&quot;NAME&quot;,1 + 1,LENGTH(&quot;PERSON&quot;.&quot;NAME&quot;))</a>
+<a name="ln54">                Substring1_2 = a.Name.Substring(1, 2),//SUBSTR(&quot;PERSON&quot;.&quot;NAME&quot;,1 + 1,2)</a>
+<a name="ln55">                ToLower = a.Name.ToLower(),//LOWER(&quot;PERSON&quot;.&quot;NAME&quot;)</a>
+<a name="ln56">                ToUpper = a.Name.ToUpper(),//UPPER(&quot;PERSON&quot;.&quot;NAME&quot;)</a>
+<a name="ln57">                IsNullOrEmpty = string.IsNullOrEmpty(a.Name),//too long</a>
+<a name="ln58">                Contains = (bool?)a.Name.Contains(&quot;s&quot;),//</a>
+<a name="ln59">                Trim = a.Name.Trim(),//TRIM(&quot;PERSON&quot;.&quot;NAME&quot;)</a>
+<a name="ln60">                TrimStart = a.Name.TrimStart(space),//LTRIM(&quot;PERSON&quot;.&quot;NAME&quot;)</a>
+<a name="ln61">                TrimEnd = a.Name.TrimEnd(space),//RTRIM(&quot;PERSON&quot;.&quot;NAME&quot;)</a>
+<a name="ln62">                StartsWith = (bool?)a.Name.StartsWith(&quot;s&quot;),//</a>
+<a name="ln63">                EndsWith = (bool?)a.Name.EndsWith(&quot;s&quot;),//</a>
+<a name="ln64">                Replace = a.Name.Replace(&quot;l&quot;, &quot;L&quot;),</a>
+<a name="ln65"> </a>
+<a name="ln66">                /* oracle is not supported DbFunctions.Diffxx. */</a>
+<a name="ln67">                //DiffYears = DbFunctions.DiffYears(startTime, endTime),//</a>
+<a name="ln68">                //DiffMonths = DbFunctions.DiffMonths(startTime, endTime),//</a>
+<a name="ln69">                //DiffDays = DbFunctions.DiffDays(startTime, endTime),//</a>
+<a name="ln70">                //DiffHours = DbFunctions.DiffHours(startTime, endTime),//</a>
+<a name="ln71">                //DiffMinutes = DbFunctions.DiffMinutes(startTime, endTime),//</a>
+<a name="ln72">                //DiffSeconds = DbFunctions.DiffSeconds(startTime, endTime),//</a>
+<a name="ln73">                //DiffMilliseconds = DbFunctions.DiffMilliseconds(startTime, endTime),//</a>
+<a name="ln74">                //DiffMicroseconds = DbFunctions.DiffMicroseconds(startTime, endTime),//</a>
+<a name="ln75"> </a>
+<a name="ln76">                /* ((CAST(:P_0 AS DATE)-CAST(:P_1 AS DATE)) * 86400000 + CAST(TO_CHAR(CAST(:P_0 AS TIMESTAMP),'ff3') AS NUMBER) - CAST(TO_CHAR(CAST(:P_1 AS TIMESTAMP),'ff3') AS NUMBER)) / 86400000 */</a>
+<a name="ln77">                SubtractTotalDays = endTime.Subtract(startTime).TotalDays,//</a>
+<a name="ln78">                SubtractTotalHours = endTime.Subtract(startTime).TotalHours,//...</a>
+<a name="ln79">                SubtractTotalMinutes = endTime.Subtract(startTime).TotalMinutes,//...</a>
+<a name="ln80">                SubtractTotalSeconds = endTime.Subtract(startTime).TotalSeconds,//...</a>
+<a name="ln81">                SubtractTotalMilliseconds = endTime.Subtract(startTime).TotalMilliseconds,//...</a>
+<a name="ln82"> </a>
+<a name="ln83">                AddYears = startTime.AddYears(1),//ADD_MONTHS(:P_0,12 * 1)</a>
+<a name="ln84">                AddMonths = startTime.AddMonths(1),//ADD_MONTHS(:P_0,1)</a>
+<a name="ln85">                AddDays = startTime.AddDays(1),//(:P_0 + 1)</a>
+<a name="ln86">                AddHours = startTime.AddHours(1),//(:P_0 + NUMTODSINTERVAL(1,'HOUR'))</a>
+<a name="ln87">                AddMinutes = startTime.AddMinutes(2),//(:P_0 + NUMTODSINTERVAL(2,'MINUTE'))</a>
+<a name="ln88">                AddSeconds = startTime.AddSeconds(120),//(:P_0 + NUMTODSINTERVAL(120,'SECOND'))</a>
+<a name="ln89">                                                       //AddMilliseconds = startTime.AddMilliseconds(20000),//不支持</a>
+<a name="ln90"> </a>
+<a name="ln91">                Now = DateTime.Now,//SYSTIMESTAMP</a>
+<a name="ln92">                UtcNow = DateTime.UtcNow,//SYS_EXTRACT_UTC(SYSTIMESTAMP)</a>
+<a name="ln93">                Today = DateTime.Today,//TRUNC(SYSDATE,'DD')</a>
+<a name="ln94">                Date = DateTime.Now.Date,//TRUNC(SYSTIMESTAMP,'DD')</a>
+<a name="ln95">                Year = DateTime.Now.Year,//CAST(TO_CHAR(SYSTIMESTAMP,'yyyy') AS NUMBER)</a>
+<a name="ln96">                Month = DateTime.Now.Month,//CAST(TO_CHAR(SYSTIMESTAMP,'mm') AS NUMBER)</a>
+<a name="ln97">                Day = DateTime.Now.Day,//CAST(TO_CHAR(SYSTIMESTAMP,'dd') AS NUMBER)</a>
+<a name="ln98">                Hour = DateTime.Now.Hour,//CAST(TO_CHAR(SYSTIMESTAMP,'hh24') AS NUMBER)</a>
+<a name="ln99">                Minute = DateTime.Now.Minute,//CAST(TO_CHAR(SYSTIMESTAMP,'mi') AS NUMBER)</a>
+<a name="ln100">                Second = DateTime.Now.Second,//CAST(TO_CHAR(SYSTIMESTAMP,'ss') AS NUMBER)</a>
+<a name="ln101">                Millisecond = DateTime.Now.Millisecond,//CAST(TO_CHAR(SYSTIMESTAMP,'ff3') AS NUMBER)</a>
+<a name="ln102">                DayOfWeek = DateTime.Now.DayOfWeek,//(CAST(TO_CHAR(SYSTIMESTAMP,'D') AS NUMBER) - 1)</a>
+<a name="ln103"> </a>
+<a name="ln104">                Int_Parse = int.Parse(&quot;1&quot;),//CAST(N'1' AS NUMBER)</a>
+<a name="ln105">                Int16_Parse = Int16.Parse(&quot;11&quot;),//CAST(N'11' AS NUMBER)</a>
+<a name="ln106">                Long_Parse = long.Parse(&quot;2&quot;),//CAST(N'2' AS NUMBER)</a>
+<a name="ln107">                Double_Parse = double.Parse(&quot;3&quot;),//CAST(N'3' AS BINARY_DOUBLE)</a>
+<a name="ln108">                Float_Parse = float.Parse(&quot;4&quot;),//CAST(N'4' AS BINARY_FLOAT)</a>
+<a name="ln109">                Decimal_Parse = decimal.Parse(&quot;5&quot;),//CAST(N'5' AS NUMBER)</a>
+<a name="ln110">                                                   //Guid_Parse = Guid.Parse(&quot;D544BC4C-739E-4CD3-A3D3-7BF803FCE179&quot;),//不支持</a>
+<a name="ln111"> </a>
+<a name="ln112">                Bool_Parse = bool.Parse(&quot;1&quot;),//</a>
+<a name="ln113">                DateTime_Parse = DateTime.Parse(&quot;1992-1-16&quot;),//TO_TIMESTAMP(N'1992-1-16','yyyy-mm-dd hh24:mi:ssxff')</a>
+<a name="ln114"> </a>
+<a name="ln115">                B = a.Age == null ? false : a.Age &gt; 1, //三元表达式</a>
+<a name="ln116">                CaseWhen = Case.When(a.Id &gt; 100).Then(1).Else(0) //case when</a>
+<a name="ln117">            }).ToList();</a>
+<a name="ln118"> </a>
+<a name="ln119">            ConsoleHelper.WriteLineAndReadKey(&quot;OracleDemo.Method over...&quot;);</a>
+<a name="ln120">        }</a>
+<a name="ln121"> </a>
+<a name="ln122">        public override void ExecuteCommandText()</a>
+<a name="ln123">        {</a>
+<a name="ln124">            List&lt;Person&gt; persons = this.DbContext.SqlQuery&lt;Person&gt;(&quot;select * from Person where Age &gt; :age&quot;, DbParam.Create(&quot;:age&quot;, 12)).ToList();</a>
+<a name="ln125"> </a>
+<a name="ln126">            int rowsAffected = this.DbContext.Session.ExecuteNonQuery(&quot;update Person set name=:name where Id = 1&quot;, DbParam.Create(&quot;:name&quot;, &quot;Chloe&quot;));</a>
+<a name="ln127"> </a>
+<a name="ln128">            /* </a>
+<a name="ln129">             * 执行存储过程:</a>
+<a name="ln130">             * Person person = context.SqlQuery&lt;Person&gt;(&quot;Proc_GetPerson&quot;, CommandType.StoredProcedure, DbParam.Create(&quot;:id&quot;, 1)).FirstOrDefault();</a>
+<a name="ln131">             * rowsAffected = context.Session.ExecuteNonQuery(&quot;Proc_UpdatePersonName&quot;, CommandType.StoredProcedure, DbParam.Create(&quot;:name&quot;, &quot;Chloe&quot;));</a>
+<a name="ln132">             */</a>
+<a name="ln133"> </a>
+<a name="ln134">            ConsoleHelper.WriteLineAndReadKey(&quot;OracleDemo.ExecuteCommandText over...&quot;);</a>
+<a name="ln135">        }</a>
+<a name="ln136">    }</a>
+<a name="ln137">}</a>
+</code></pre>
+<div class="balloon" rel="56"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3095/" target="_blank">V3095</a> The 'a.Name' object was used before it was verified against null. Check lines: 56, 57.</p></div>
+<link rel="stylesheet" href="highlight.css">
+<script src="highlight.pack.js"></script>
+<script src="highlightjs-line-numbers.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script>hljs.initLineNumbersOnLoad();</script>
+<script>
+  $(document).ready(function() {
+      $('.balloon').each(function () {
+          var bl = $(this);
+          var line = bl.attr('rel');
+          var text = $('a[name="ln'+line+'"]').text();
+
+          var space_count = 0;
+          for(var i = 0; i<text.length; i++){
+              var char = text[i];
+              if((char !== ' ')&&(char !== '\t'))break;
+              if(char === '\t')space_count++;
+              space_count++;
+          }
+
+          bl.css('margin-left', space_count*8);
+          $('a[name="ln'+line+'"]').after(bl);
+      });
+
+      window.location = window.location;
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,443 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>OrderShardingRoute.cs</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <script src="../jquery-3.5.1.min.js"></script>
+</head>
+<body>
+<pre><code class = "cs">
+<a name="ln1">﻿using Chloe;</a>
+<a name="ln2">using Chloe.MySql;</a>
+<a name="ln3">using Chloe.Sharding;</a>
+<a name="ln4">using Chloe.Sharding.Routing;</a>
+<a name="ln5">using System;</a>
+<a name="ln6">using System.Collections.Generic;</a>
+<a name="ln7">using System.Linq;</a>
+<a name="ln8">using System.Reflection;</a>
+<a name="ln9">using System.Text;</a>
+<a name="ln10">using System.Threading.Tasks;</a>
+<a name="ln11"> </a>
+<a name="ln12">namespace ChloeDemo.Sharding</a>
+<a name="ln13">{</a>
+<a name="ln14">    public class OrderRouteTable : RouteTable</a>
+<a name="ln15">    {</a>
+<a name="ln16">        public OrderRouteTable(int month)</a>
+<a name="ln17">        {</a>
+<a name="ln18">            this.Month = month;</a>
+<a name="ln19"> </a>
+<a name="ln20">            //根据月份构造表名</a>
+<a name="ln21">            this.Name = ShardingTest.BuildTableName(month);</a>
+<a name="ln22">        }</a>
+<a name="ln23"> </a>
+<a name="ln24">        public int Month { get; set; }</a>
+<a name="ln25">    }</a>
+<a name="ln26"> </a>
+<a name="ln27">    public class OrderRouteDataSource : RouteDataSource</a>
+<a name="ln28">    {</a>
+<a name="ln29">        public OrderRouteDataSource(int year)</a>
+<a name="ln30">        {</a>
+<a name="ln31">            this.Year = year;</a>
+<a name="ln32"> </a>
+<a name="ln33">            //设置数据源唯一标识</a>
+<a name="ln34">            this.Name = year.ToString();</a>
+<a name="ln35">        }</a>
+<a name="ln36"> </a>
+<a name="ln37">        public int Year { get; set; }</a>
+<a name="ln38">    }</a>
+<a name="ln39"> </a>
+<a name="ln40">    /*</a>
+<a name="ln41">     关于路由的一些说明：</a>
+<a name="ln42">       1. Chloe 不负责创建数据库或数据表，你需要根据自己的分片情况维护所有分表集合。</a>
+<a name="ln43">          框架不知道有哪些分表，因此你要实现 IShardingRoute.GetTables() 方法返回所有的分表信息（分表信息包括表名，表所在的库信息【IDbContextProviderFactory 对象】）。</a>
+<a name="ln44"> </a>
+<a name="ln45">       2. 框架将路由策略做了抽象，所以路由到哪些表需要自己实现(按时序，取模还是其他算法自行实现)，目前支持（==，&lt;=,&gt;=,!=,&lt;,&gt;）等操作符路由。</a>
+<a name="ln46">          比如假设根据 CreateTime 字段分表，如果类似 query.Where(a =&gt; a.CreateTime == 2020-10-10 ) 查询，要定位到哪些表呢？框架是不知道的，需要你告诉框架！</a>
+<a name="ln47">          这时你要从你维护的所有分表集合中筛选出符合条件的分表来，所以你需要实现 IShardingRoute.GetStrategy(MemberInfo member) 接口，根据分片字段获取路由策略接口 IRoutingStrategy。</a>
+<a name="ln48">          IRoutingStrategy 负责通过分片值【即 2020-10-10】筛选符合条件的分表，目前支持（==，&lt;=,&gt;=,!=,&lt;,&gt;）等操作符筛选。</a>
+<a name="ln49"> </a>
+<a name="ln50">       3. 假设根据时间分表（CreateTime），查询时又根据 CreateTime 排序（如 query.OrderBy(a =&gt; a.CreateTime)）,因为数据储存是按时间段有序存储的，所以针对这种情况下的查询可以优化一下避免无谓的查询，</a>
+<a name="ln51">          因此你需要实现 IShardingRoute.SortTables() 方法，对定位到的表进行一次重排，以提升查询效率（可以看看这篇文章，说得很好 https://www.cnblogs.com/xuejiaming/p/15237878.html） 。</a>
+<a name="ln52">          ps：如果不需要重排，IShardingRoute.SortTables() 实现里直接返回传入的参数即可。</a>
+<a name="ln53"> </a>
+<a name="ln54">       4. 只要实现了 IShardingRoute 接口，把 IShardingRoute 对象注册进框架，然后就可以像常规使用方式愉快的做增删查改了。</a>
+<a name="ln55">     */</a>
+<a name="ln56"> </a>
+<a name="ln57">    /// &lt;summary&gt;</a>
+<a name="ln58">    /// Order 表路由。有关路由的一些说明请参考：https://github.com/shuxinqin/Chloe/issues/330</a>
+<a name="ln59">    /// &lt;/summary&gt;</a>
+<a name="ln60">    public class OrderShardingRoute : IShardingRoute</a>
+<a name="ln61">    {</a>
+<a name="ln62">        ShardingTest _shardingTest;</a>
+<a name="ln63">        Dictionary&lt;string, IRoutingStrategy&gt; _routingStrategies = new Dictionary&lt;string, IRoutingStrategy&gt;();</a>
+<a name="ln64"> </a>
+<a name="ln65">        public OrderShardingRoute(ShardingTest shardingTest, List&lt;int&gt; years)</a>
+<a name="ln66">        {</a>
+<a name="ln67">            this._shardingTest = shardingTest;</a>
+<a name="ln68"> </a>
+<a name="ln69">            //添加路由规则(支持一个或多个字段联合分片)。ps：分片字段的路由规则必须要添加以外，也可以添加非分片字段路由规则作为辅助，以便缩小表范围，提高查询效率。</a>
+<a name="ln70"> </a>
+<a name="ln71">            //CreateTime 是分片字段，分片字段的路由规则必须要添加</a>
+<a name="ln72">            this._routingStrategies.Add(nameof(Order.CreateTime), new OrderCreateTimeRoutingStrategy(this));</a>
+<a name="ln73"> </a>
+<a name="ln74">            //非分片字段路由规则，根据实际情况可选择性添加</a>
+<a name="ln75">            this._routingStrategies.Add(nameof(Order.CreateDate), new OrderCreateDateRoutingStrategy(this));</a>
+<a name="ln76">            this._routingStrategies.Add(nameof(Order.CreateYear), new OrderCreateYearRoutingStrategy(this));</a>
+<a name="ln77">            this._routingStrategies.Add(nameof(Order.CreateMonth), new OrderCreateMonthRoutingStrategy(this));</a>
+<a name="ln78"> </a>
+<a name="ln79">            //所有分表</a>
+<a name="ln80">            this.AllTables = years.SelectMany(a =&gt; GetTablesByYear(a)).Reverse().ToList();</a>
+<a name="ln81"> </a>
+<a name="ln82">            //this.AllTables = GetRouteTablesByYear(2020).ToList();</a>
+<a name="ln83">            //this.AllTables = GetRouteTablesByYear(2020).Concat(GetRouteTablesByYear(2021)).Take(23).Reverse().ToList();</a>
+<a name="ln84">            //this.AllTables = GetTablesByYear(2020).Concat(GetTablesByYear(2021)).Reverse().ToList();</a>
+<a name="ln85">            //this.AllTables = this.AllTables.Take(2).ToList();</a>
+<a name="ln86">        }</a>
+<a name="ln87"> </a>
+<a name="ln88">        /// &lt;summary&gt;</a>
+<a name="ln89">        /// 所有分片表</a>
+<a name="ln90">        /// &lt;/summary&gt;</a>
+<a name="ln91">        List&lt;RouteTable&gt; AllTables { get; set; }</a>
+<a name="ln92"> </a>
+<a name="ln93">        /// &lt;summary&gt;</a>
+<a name="ln94">        /// 创建所有分表对象，并设置数据源</a>
+<a name="ln95">        /// &lt;/summary&gt;</a>
+<a name="ln96">        /// &lt;param name=&quot;year&quot;&gt;&lt;/param&gt;</a>
+<a name="ln97">        /// &lt;returns&gt;&lt;/returns&gt;</a>
+<a name="ln98">        IEnumerable&lt;RouteTable&gt; GetTablesByYear(int year)</a>
+<a name="ln99">        {</a>
+<a name="ln100">            /*</a>
+<a name="ln101">             * 根据年分库</a>
+<a name="ln102">             * 根据月份分表</a>
+<a name="ln103">             */</a>
+<a name="ln104"> </a>
+<a name="ln105">            for (int month = 1; month &lt;= 12; month++)</a>
+<a name="ln106">            {</a>
+<a name="ln107">                /*</a>
+<a name="ln108">                 * 根据年份创建连接数据库对象。</a>
+<a name="ln109">                 * 注：最终创建分表数据库连接以及分表操作（增删查改）调用的是 OrderDbContextProviderFactory 这个工厂创建出来的 IDbContextProvider 对象方法。</a>
+<a name="ln110">                 */</a>
+<a name="ln111">                var dbContextProviderFactory = new OrderDbContextProviderFactory(this._shardingTest, year);</a>
+<a name="ln112">                RouteTable table = new OrderRouteTable(month)</a>
+<a name="ln113">                {</a>
+<a name="ln114">                    /* </a>
+<a name="ln115">                     * 设置 RouteTable 所在的数据库。即绑定分表所在的数据库。</a>
+<a name="ln116">                     */</a>
+<a name="ln117">                    DataSource = new OrderRouteDataSource(year)</a>
+<a name="ln118">                    {</a>
+<a name="ln119">                        DbContextProviderFactory = dbContextProviderFactory</a>
+<a name="ln120">                    }</a>
+<a name="ln121">                };</a>
+<a name="ln122"> </a>
+<a name="ln123">                yield return table;</a>
+<a name="ln124">            }</a>
+<a name="ln125">        }</a>
+<a name="ln126"> </a>
+<a name="ln127">        static IEnumerable&lt;DateTime&gt; GetDates(int year)</a>
+<a name="ln128">        {</a>
+<a name="ln129">            DateTime date = new DateTime(year, 1, 1).AddDays(-1);</a>
+<a name="ln130">            DateTime lastDate = new DateTime(year, 12, 31);</a>
+<a name="ln131"> </a>
+<a name="ln132">            while (true)</a>
+<a name="ln133">            {</a>
+<a name="ln134">                date = date.AddDays(1);</a>
+<a name="ln135">                if (date &gt; lastDate)</a>
+<a name="ln136">                    break;</a>
+<a name="ln137"> </a>
+<a name="ln138">                yield return date;</a>
+<a name="ln139">            }</a>
+<a name="ln140">        }</a>
+<a name="ln141"> </a>
+<a name="ln142">        /// &lt;summary&gt;</a>
+<a name="ln143">        /// 获取所有的分片表</a>
+<a name="ln144">        /// &lt;/summary&gt;</a>
+<a name="ln145">        /// &lt;returns&gt;&lt;/returns&gt;</a>
+<a name="ln146">        public IEnumerable&lt;RouteTable&gt; GetTables()</a>
+<a name="ln147">        {</a>
+<a name="ln148">            return this.AllTables;</a>
+<a name="ln149">        }</a>
+<a name="ln150"> </a>
+<a name="ln151">        /// &lt;summary&gt;</a>
+<a name="ln152">        /// 根据实体属性获取相应的路由规则，如果传入的 member 没有路由规则，返回 null 即可。</a>
+<a name="ln153">        /// &lt;/summary&gt;</a>
+<a name="ln154">        /// &lt;param name=&quot;member&quot;&gt;&lt;/param&gt;</a>
+<a name="ln155">        /// &lt;returns&gt;&lt;/returns&gt;</a>
+<a name="ln156">        public IRoutingStrategy GetStrategy(MemberInfo member)</a>
+<a name="ln157">        {</a>
+<a name="ln158">            this._routingStrategies.TryGetValue(member.Name, out var routingStrategy);</a>
+<a name="ln159">            return routingStrategy;</a>
+<a name="ln160">        }</a>
+<a name="ln161"> </a>
+<a name="ln162">        /// &lt;summary&gt;</a>
+<a name="ln163">        /// 根据排序字段对路由表重排。</a>
+<a name="ln164">        /// &lt;/summary&gt;</a>
+<a name="ln165">        /// &lt;param name=&quot;tables&quot;&gt;&lt;/param&gt;</a>
+<a name="ln166">        /// &lt;param name=&quot;orderings&quot;&gt;&lt;/param&gt;</a>
+<a name="ln167">        /// &lt;returns&gt;&lt;/returns&gt;</a>
+<a name="ln168">        public SortResult SortTables(List&lt;RouteTable&gt; tables, List&lt;Ordering&gt; orderings)</a>
+<a name="ln169">        {</a>
+<a name="ln170">            var firstOrdering = orderings.FirstOrDefault();</a>
+<a name="ln171"> </a>
+<a name="ln172">            MemberInfo member = null;</a>
+<a name="ln173">            if (firstOrdering.KeySelector.Body is System.Linq.Expressions.MemberExpression memberExp)</a>
+<a name="ln174">            {</a>
+<a name="ln175">                member = memberExp.Member;</a>
+<a name="ln176">            }</a>
+<a name="ln177"> </a>
+<a name="ln178">            if (member != null)</a>
+<a name="ln179">            {</a>
+<a name="ln180">                if (member == typeof(Order).GetProperty(nameof(Order.CreateTime)))</a>
+<a name="ln181">                {</a>
+<a name="ln182">                    //因为按照日期分表，在根据日期排序的情况下，我们对路由到的表进行一个排序，对分页有查询优化。</a>
+<a name="ln183">                    if (firstOrdering.Ascending)</a>
+<a name="ln184">                    {</a>
+<a name="ln185">                        //query.OrderBy(a =&gt; a.CreateTime)</a>
+<a name="ln186">                        return new SortResult() { IsOrdered = true, Tables = tables.OrderBy(a =&gt; (a.DataSource as OrderRouteDataSource).Year).ThenBy(a =&gt; (a as OrderRouteTable).Month).ToList() };</a>
+<a name="ln187">                    }</a>
+<a name="ln188"> </a>
+<a name="ln189">                    //query.OrderByDescending(a =&gt; a.CreateTime)</a>
+<a name="ln190">                    return new SortResult() { IsOrdered = true, Tables = tables.OrderByDescending(a =&gt; (a.DataSource as OrderRouteDataSource).Year).ThenByDescending(a =&gt; (a as OrderRouteTable).Month).ToList() };</a>
+<a name="ln191">                }</a>
+<a name="ln192">            }</a>
+<a name="ln193"> </a>
+<a name="ln194">            //其他情况不做重排</a>
+<a name="ln195">            return new SortResult() { IsOrdered = false, Tables = tables };</a>
+<a name="ln196">        }</a>
+<a name="ln197">    }</a>
+<a name="ln198"> </a>
+<a name="ln199">    /// &lt;summary&gt;</a>
+<a name="ln200">    /// CreateTime 字段路由规则</a>
+<a name="ln201">    /// &lt;/summary&gt;</a>
+<a name="ln202">    public class OrderCreateTimeRoutingStrategy : RoutingStrategy&lt;DateTime&gt;</a>
+<a name="ln203">    {</a>
+<a name="ln204">        public OrderCreateTimeRoutingStrategy(OrderShardingRoute route) : base(route)</a>
+<a name="ln205">        {</a>
+<a name="ln206"> </a>
+<a name="ln207">        }</a>
+<a name="ln208"> </a>
+<a name="ln209">        /// &lt;summary&gt;</a>
+<a name="ln210">        /// 当查询如 query.Where(a =&gt; a.CreateTime == createTime) 时，从所有分表中筛选出满足条件的分表</a>
+<a name="ln211">        /// &lt;/summary&gt;</a>
+<a name="ln212">        /// &lt;param name=&quot;createTime&quot;&gt;&lt;/param&gt;</a>
+<a name="ln213">        /// &lt;returns&gt;&lt;/returns&gt;</a>
+<a name="ln214">        public override IEnumerable&lt;RouteTable&gt; ForEqual(DateTime createTime)</a>
+<a name="ln215">        {</a>
+<a name="ln216">            return this.Route.GetTables().Where(a =&gt; (a.DataSource as OrderRouteDataSource).Year == createTime.Year &amp;&amp; (a as OrderRouteTable).Month == createTime.Month);</a>
+<a name="ln217">        }</a>
+<a name="ln218"> </a>
+<a name="ln219">        /// &lt;summary&gt;</a>
+<a name="ln220">        /// 当查询如 query.Where(a =&gt; a.CreateTime != createTime) 时，从所有分表中筛选出满足条件的分表</a>
+<a name="ln221">        /// &lt;/summary&gt;</a>
+<a name="ln222">        /// &lt;param name=&quot;createTime&quot;&gt;&lt;/param&gt;</a>
+<a name="ln223">        /// &lt;returns&gt;&lt;/returns&gt;</a>
+<a name="ln224">        public override IEnumerable&lt;RouteTable&gt; ForNotEqual(DateTime createTime)</a>
+<a name="ln225">        {</a>
+<a name="ln226">            return this.Route.GetTables();</a>
+<a name="ln227">        }</a>
+<a name="ln228"> </a>
+<a name="ln229">        /// &lt;summary&gt;</a>
+<a name="ln230">        /// 当查询如 query.Where(a =&gt; a.CreateTime &gt; createTime) 时，从所有分表中筛选出满足条件的分表</a>
+<a name="ln231">        /// &lt;/summary&gt;</a>
+<a name="ln232">        /// &lt;param name=&quot;createTime&quot;&gt;&lt;/param&gt;</a>
+<a name="ln233">        /// &lt;returns&gt;&lt;/returns&gt;</a>
+<a name="ln234">        public override IEnumerable&lt;RouteTable&gt; ForGreaterThan(DateTime createTime)</a>
+<a name="ln235">        {</a>
+<a name="ln236">            return this.Route.GetTables().Where(a =&gt; (a.DataSource as OrderRouteDataSource).Year &gt; createTime.Year || ((a.DataSource as OrderRouteDataSource).Year == createTime.Year &amp;&amp; (a as OrderRouteTable).Month &gt;= createTime.Month));</a>
+<a name="ln237">        }</a>
+<a name="ln238"> </a>
+<a name="ln239">        /// &lt;summary&gt;</a>
+<a name="ln240">        /// 当查询如 query.Where(a =&gt; a.CreateTime &gt;= createTime) 时，从所有分表中筛选出满足条件的分表</a>
+<a name="ln241">        /// &lt;/summary&gt;</a>
+<a name="ln242">        /// &lt;param name=&quot;createTime&quot;&gt;&lt;/param&gt;</a>
+<a name="ln243">        /// &lt;returns&gt;&lt;/returns&gt;</a>
+<a name="ln244">        public override IEnumerable&lt;RouteTable&gt; ForGreaterThanOrEqual(DateTime createTime)</a>
+<a name="ln245">        {</a>
+<a name="ln246">            return this.Route.GetTables().Where(a =&gt; (a.DataSource as OrderRouteDataSource).Year &gt; createTime.Year || ((a.DataSource as OrderRouteDataSource).Year == createTime.Year &amp;&amp; (a as OrderRouteTable).Month &gt;= createTime.Month));</a>
+<a name="ln247">        }</a>
+<a name="ln248"> </a>
+<a name="ln249">        /// &lt;summary&gt;</a>
+<a name="ln250">        /// 当查询如 query.Where(a =&gt; a.CreateTime &amp;lt; createTime) 时，从所有分表中筛选出满足条件的分表</a>
+<a name="ln251">        /// &lt;/summary&gt;</a>
+<a name="ln252">        /// &lt;param name=&quot;createTime&quot;&gt;&lt;/param&gt;</a>
+<a name="ln253">        /// &lt;returns&gt;&lt;/returns&gt;</a>
+<a name="ln254">        public override IEnumerable&lt;RouteTable&gt; ForLessThan(DateTime createTime)</a>
+<a name="ln255">        {</a>
+<a name="ln256">            return this.Route.GetTables().Where(a =&gt; (a.DataSource as OrderRouteDataSource).Year &lt; createTime.Year || ((a.DataSource as OrderRouteDataSource).Year == createTime.Year &amp;&amp; (a as OrderRouteTable).Month &lt;= createTime.Month));</a>
+<a name="ln257">        }</a>
+<a name="ln258"> </a>
+<a name="ln259">        /// &lt;summary&gt;</a>
+<a name="ln260">        /// 当查询如 query.Where(a =&gt; a.CreateTime &amp;lt;= createTime) 时，从所有分表中筛选出满足条件的分表</a>
+<a name="ln261">        /// &lt;/summary&gt;</a>
+<a name="ln262">        /// &lt;param name=&quot;createTime&quot;&gt;&lt;/param&gt;</a>
+<a name="ln263">        /// &lt;returns&gt;&lt;/returns&gt;</a>
+<a name="ln264">        public override IEnumerable&lt;RouteTable&gt; ForLessThanOrEqual(DateTime createTime)</a>
+<a name="ln265">        {</a>
+<a name="ln266">            return this.Route.GetTables().Where(a =&gt; (a.DataSource as OrderRouteDataSource).Year &lt; createTime.Year || ((a.DataSource as OrderRouteDataSource).Year == createTime.Year &amp;&amp; (a as OrderRouteTable).Month &lt;= createTime.Month));</a>
+<a name="ln267">        }</a>
+<a name="ln268">    }</a>
+<a name="ln269">    /// &lt;summary&gt;</a>
+<a name="ln270">    /// CreateDate 字段路由规则</a>
+<a name="ln271">    /// &lt;/summary&gt;</a>
+<a name="ln272">    public class OrderCreateDateRoutingStrategy : RoutingStrategy&lt;int&gt;</a>
+<a name="ln273">    {</a>
+<a name="ln274">        public OrderCreateDateRoutingStrategy(OrderShardingRoute route) : base(route)</a>
+<a name="ln275">        {</a>
+<a name="ln276"> </a>
+<a name="ln277">        }</a>
+<a name="ln278"> </a>
+<a name="ln279">        int ParseCreateMonth(int createDate)</a>
+<a name="ln280">        {</a>
+<a name="ln281">            int month = int.Parse(createDate.ToString().Substring(4, 2));</a>
+<a name="ln282">            return month;</a>
+<a name="ln283">        }</a>
+<a name="ln284">        int GetCreateYear(int createDate)</a>
+<a name="ln285">        {</a>
+<a name="ln286">            int year = int.Parse(createDate.ToString().Substring(0, 4));</a>
+<a name="ln287">            return year;</a>
+<a name="ln288">        }</a>
+<a name="ln289"> </a>
+<a name="ln290">        public override IEnumerable&lt;RouteTable&gt; ForEqual(int createDate)</a>
+<a name="ln291">        {</a>
+<a name="ln292">            return this.Route.GetTables().Where(a =&gt; (a.DataSource as OrderRouteDataSource).Year == this.GetCreateYear(createDate) &amp;&amp; (a as OrderRouteTable).Month == this.ParseCreateMonth(createDate));</a>
+<a name="ln293">        }</a>
+<a name="ln294"> </a>
+<a name="ln295">        public override IEnumerable&lt;RouteTable&gt; ForNotEqual(int createDate)</a>
+<a name="ln296">        {</a>
+<a name="ln297">            return base.ForNotEqual(createDate);</a>
+<a name="ln298">        }</a>
+<a name="ln299"> </a>
+<a name="ln300">        public override IEnumerable&lt;RouteTable&gt; ForGreaterThan(int createDate)</a>
+<a name="ln301">        {</a>
+<a name="ln302">            return this.Route.GetTables().Where(a =&gt; (a.DataSource as OrderRouteDataSource).Year &gt;= this.GetCreateYear(createDate) &amp;&amp; (a as OrderRouteTable).Month &gt;= this.ParseCreateMonth(createDate));</a>
+<a name="ln303">        }</a>
+<a name="ln304"> </a>
+<a name="ln305">        public override IEnumerable&lt;RouteTable&gt; ForGreaterThanOrEqual(int createDate)</a>
+<a name="ln306">        {</a>
+<a name="ln307">            return this.Route.GetTables().Where(a =&gt; (a.DataSource as OrderRouteDataSource).Year &gt;= this.GetCreateYear(createDate) &amp;&amp; (a as OrderRouteTable).Month &gt;= this.ParseCreateMonth(createDate));</a>
+<a name="ln308">        }</a>
+<a name="ln309"> </a>
+<a name="ln310">        public override IEnumerable&lt;RouteTable&gt; ForLessThan(int createDate)</a>
+<a name="ln311">        {</a>
+<a name="ln312">            return this.Route.GetTables().Where(a =&gt; (a.DataSource as OrderRouteDataSource).Year &lt;= this.GetCreateYear(createDate) &amp;&amp; (a as OrderRouteTable).Month &lt;= this.ParseCreateMonth(createDate));</a>
+<a name="ln313">        }</a>
+<a name="ln314"> </a>
+<a name="ln315">        public override IEnumerable&lt;RouteTable&gt; ForLessThanOrEqual(int createDate)</a>
+<a name="ln316">        {</a>
+<a name="ln317">            return this.Route.GetTables().Where(a =&gt; (a.DataSource as OrderRouteDataSource).Year &lt;= this.GetCreateYear(createDate) &amp;&amp; (a as OrderRouteTable).Month &lt;= this.ParseCreateMonth(createDate));</a>
+<a name="ln318">        }</a>
+<a name="ln319">    }</a>
+<a name="ln320">    /// &lt;summary&gt;</a>
+<a name="ln321">    /// CreateYear 字段路由规则</a>
+<a name="ln322">    /// &lt;/summary&gt;</a>
+<a name="ln323">    public class OrderCreateYearRoutingStrategy : RoutingStrategy&lt;int&gt;</a>
+<a name="ln324">    {</a>
+<a name="ln325">        public OrderCreateYearRoutingStrategy(OrderShardingRoute route) : base(route)</a>
+<a name="ln326">        {</a>
+<a name="ln327"> </a>
+<a name="ln328">        }</a>
+<a name="ln329"> </a>
+<a name="ln330">        public override IEnumerable&lt;RouteTable&gt; ForEqual(int createYear)</a>
+<a name="ln331">        {</a>
+<a name="ln332">            return this.Route.GetTables().Where(a =&gt; (a.DataSource as OrderRouteDataSource).Year == createYear);</a>
+<a name="ln333">        }</a>
+<a name="ln334"> </a>
+<a name="ln335">        public override IEnumerable&lt;RouteTable&gt; ForNotEqual(int createYear)</a>
+<a name="ln336">        {</a>
+<a name="ln337">            return this.Route.GetTables().Where(a =&gt; (a.DataSource as OrderRouteDataSource).Year != createYear);</a>
+<a name="ln338">        }</a>
+<a name="ln339"> </a>
+<a name="ln340">        public override IEnumerable&lt;RouteTable&gt; ForGreaterThan(int createYear)</a>
+<a name="ln341">        {</a>
+<a name="ln342">            return this.Route.GetTables().Where(a =&gt; (a.DataSource as OrderRouteDataSource).Year &gt; createYear);</a>
+<a name="ln343">        }</a>
+<a name="ln344"> </a>
+<a name="ln345">        public override IEnumerable&lt;RouteTable&gt; ForGreaterThanOrEqual(int createYear)</a>
+<a name="ln346">        {</a>
+<a name="ln347">            return this.Route.GetTables().Where(a =&gt; (a.DataSource as OrderRouteDataSource).Year &gt;= createYear);</a>
+<a name="ln348">        }</a>
+<a name="ln349"> </a>
+<a name="ln350">        public override IEnumerable&lt;RouteTable&gt; ForLessThan(int createYear)</a>
+<a name="ln351">        {</a>
+<a name="ln352">            return this.Route.GetTables().Where(a =&gt; (a.DataSource as OrderRouteDataSource).Year &lt; createYear);</a>
+<a name="ln353">        }</a>
+<a name="ln354"> </a>
+<a name="ln355">        public override IEnumerable&lt;RouteTable&gt; ForLessThanOrEqual(int createYear)</a>
+<a name="ln356">        {</a>
+<a name="ln357">            return this.Route.GetTables().Where(a =&gt; (a.DataSource as OrderRouteDataSource).Year &lt;= createYear);</a>
+<a name="ln358">        }</a>
+<a name="ln359">    }</a>
+<a name="ln360">    /// &lt;summary&gt;</a>
+<a name="ln361">    /// CreateMonth 字段路由规则</a>
+<a name="ln362">    /// &lt;/summary&gt;</a>
+<a name="ln363">    public class OrderCreateMonthRoutingStrategy : RoutingStrategy&lt;int&gt;</a>
+<a name="ln364">    {</a>
+<a name="ln365">        public OrderCreateMonthRoutingStrategy(OrderShardingRoute route) : base(route)</a>
+<a name="ln366">        {</a>
+<a name="ln367"> </a>
+<a name="ln368">        }</a>
+<a name="ln369"> </a>
+<a name="ln370">        public override IEnumerable&lt;RouteTable&gt; ForEqual(int createMonth)</a>
+<a name="ln371">        {</a>
+<a name="ln372">            return this.Route.GetTables().Where(a =&gt; (a as OrderRouteTable).Month == createMonth);</a>
+<a name="ln373">        }</a>
+<a name="ln374"> </a>
+<a name="ln375">        public override IEnumerable&lt;RouteTable&gt; ForNotEqual(int createMonth)</a>
+<a name="ln376">        {</a>
+<a name="ln377">            return this.Route.GetTables().Where(a =&gt; (a as OrderRouteTable).Month != createMonth);</a>
+<a name="ln378">        }</a>
+<a name="ln379"> </a>
+<a name="ln380">        public override IEnumerable&lt;RouteTable&gt; ForGreaterThan(int createMonth)</a>
+<a name="ln381">        {</a>
+<a name="ln382">            return this.Route.GetTables().Where(a =&gt; (a as OrderRouteTable).Month &gt; createMonth);</a>
+<a name="ln383">        }</a>
+<a name="ln384"> </a>
+<a name="ln385">        public override IEnumerable&lt;RouteTable&gt; ForGreaterThanOrEqual(int createMonth)</a>
+<a name="ln386">        {</a>
+<a name="ln387">            return this.Route.GetTables().Where(a =&gt; (a as OrderRouteTable).Month &gt;= createMonth);</a>
+<a name="ln388">        }</a>
+<a name="ln389"> </a>
+<a name="ln390">        public override IEnumerable&lt;RouteTable&gt; ForLessThan(int createMonth)</a>
+<a name="ln391">        {</a>
+<a name="ln392">            return this.Route.GetTables().Where(a =&gt; (a as OrderRouteTable).Month &lt; createMonth);</a>
+<a name="ln393">        }</a>
+<a name="ln394"> </a>
+<a name="ln395">        public override IEnumerable&lt;RouteTable&gt; ForLessThanOrEqual(int createMonth)</a>
+<a name="ln396">        {</a>
+<a name="ln397">            return this.Route.GetTables().Where(a =&gt; (a as OrderRouteTable).Month &lt;= createMonth);</a>
+<a name="ln398">        }</a>
+<a name="ln399">    }</a>
+<a name="ln400">}</a>
+</code></pre>
+<div class="balloon" rel="234"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3013/" target="_blank">V3013</a> It is odd that the body of 'ForGreaterThan' function is fully equivalent to the body of 'ForGreaterThanOrEqual' function (234, line 244).</p></div>
+<div class="balloon" rel="254"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3013/" target="_blank">V3013</a> It is odd that the body of 'ForLessThan' function is fully equivalent to the body of 'ForLessThanOrEqual' function (254, line 264).</p></div>
+<div class="balloon" rel="300"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3013/" target="_blank">V3013</a> It is odd that the body of 'ForGreaterThan' function is fully equivalent to the body of 'ForGreaterThanOrEqual' function (300, line 305).</p></div>
+<div class="balloon" rel="310"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3013/" target="_blank">V3013</a> It is odd that the body of 'ForLessThan' function is fully equivalent to the body of 'ForLessThanOrEqual' function (310, line 315).</p></div>
+<link rel="stylesheet" href="highlight.css">
+<script src="highlight.pack.js"></script>
+<script src="highlightjs-line-numbers.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script>hljs.initLineNumbersOnLoad();</script>
+<script>
+  $(document).ready(function() {
+      $('.balloon').each(function () {
+          var bl = $(this);
+          var line = bl.attr('rel');
+          var text = $('a[name="ln'+line+'"]').text();
+
+          var space_count = 0;
+          for(var i = 0; i<text.length; i++){
+              var char = text[i];
+              if((char !== ' ')&&(char !== '\t'))break;
+              if(char === '\t')space_count++;
+              space_count++;
+          }
+
+          bl.css('margin-left', space_count*8);
+          $('a[name="ln'+line+'"]').after(bl);
+      });
+
+      window.location = window.location;
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,330 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>Game.cs</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <script src="../jquery-3.5.1.min.js"></script>
+</head>
+<body>
+<pre><code class = "cs">
+<a name="ln1">﻿using NLog;</a>
+<a name="ln2">using System.Buffers;</a>
+<a name="ln3">using System.Runtime.CompilerServices;</a>
+<a name="ln4"> </a>
+<a name="ln5">namespace Lynx.Model;</a>
+<a name="ln6"> </a>
+<a name="ln7">public sealed class Game : IDisposable</a>
+<a name="ln8">{</a>
+<a name="ln9">    private static readonly Logger _logger = LogManager.GetCurrentClassLogger();</a>
+<a name="ln10"> </a>
+<a name="ln11">#if DEBUG</a>
+<a name="ln12">#pragma warning disable CA1002 // Do not expose generic lists</a>
+<a name="ln13">    public List&lt;Move&gt; MoveHistory { get; }</a>
+<a name="ln14">#pragma warning restore CA1002 // Do not expose generic lists</a>
+<a name="ln15">#endif</a>
+<a name="ln16"> </a>
+<a name="ln17">    //private int _positionHashHistoryPointerBeforeLastSearch;</a>
+<a name="ln18">    private int _positionHashHistoryPointer;</a>
+<a name="ln19">    private readonly ulong[] _positionHashHistory;</a>
+<a name="ln20"> </a>
+<a name="ln21">    /// &lt;summary&gt;</a>
+<a name="ln22">    /// Indexed by ply</a>
+<a name="ln23">    /// &lt;/summary&gt;</a>
+<a name="ln24">    private readonly PlyStackEntry[] _gameStack;</a>
+<a name="ln25"> </a>
+<a name="ln26">    private bool _disposedValue;</a>
+<a name="ln27"> </a>
+<a name="ln28">    public int HalfMovesWithoutCaptureOrPawnMove { get; set; }</a>
+<a name="ln29"> </a>
+<a name="ln30">    public Position CurrentPosition { get; private set; }</a>
+<a name="ln31"> </a>
+<a name="ln32">    public Position PositionBeforeLastSearch { get; private set; }</a>
+<a name="ln33"> </a>
+<a name="ln34">    public string FEN =&gt; CurrentPosition.FEN(HalfMovesWithoutCaptureOrPawnMove);</a>
+<a name="ln35"> </a>
+<a name="ln36">    public Game(ReadOnlySpan&lt;char&gt; fen) : this(fen, [], [], [])</a>
+<a name="ln37">    {</a>
+<a name="ln38">    }</a>
+<a name="ln39"> </a>
+<a name="ln40">    public Game(ReadOnlySpan&lt;char&gt; fen, ReadOnlySpan&lt;char&gt; rawMoves, Span&lt;Range&gt; rangeSpan, Span&lt;Move&gt; movePool)</a>
+<a name="ln41">    {</a>
+<a name="ln42">        _positionHashHistory = ArrayPool&lt;ulong&gt;.Shared.Rent(Constants.MaxNumberMovesInAGame);</a>
+<a name="ln43">        _gameStack = ArrayPool&lt;PlyStackEntry&gt;.Shared.Rent(Constants.MaxNumberMovesInAGame);</a>
+<a name="ln44"> </a>
+<a name="ln45">        var parsedFen = FENParser.ParseFEN(fen);</a>
+<a name="ln46">        CurrentPosition = new Position(parsedFen);</a>
+<a name="ln47"> </a>
+<a name="ln48">        if (!CurrentPosition.IsValid())</a>
+<a name="ln49">        {</a>
+<a name="ln50">            _logger.Warn($&quot;Invalid position detected: {fen.ToString()}&quot;);</a>
+<a name="ln51">        }</a>
+<a name="ln52"> </a>
+<a name="ln53">        AddToPositionHashHistory(CurrentPosition.UniqueIdentifier);</a>
+<a name="ln54">        HalfMovesWithoutCaptureOrPawnMove = parsedFen.HalfMoveClock;</a>
+<a name="ln55"> </a>
+<a name="ln56">#if DEBUG</a>
+<a name="ln57">        MoveHistory = new(Constants.MaxNumberMovesInAGame);</a>
+<a name="ln58">#endif</a>
+<a name="ln59"> </a>
+<a name="ln60">        for (int i = 0; i &lt; rangeSpan.Length; ++i)</a>
+<a name="ln61">        {</a>
+<a name="ln62">            if (rangeSpan[i].Start.Equals(rangeSpan[i].End))</a>
+<a name="ln63">            {</a>
+<a name="ln64">                break;</a>
+<a name="ln65">            }</a>
+<a name="ln66">            var moveString = rawMoves[rangeSpan[i]];</a>
+<a name="ln67">            var moveList = MoveGenerator.GenerateAllMoves(CurrentPosition, movePool);</a>
+<a name="ln68"> </a>
+<a name="ln69">            // TODO: consider creating moves on the fly</a>
+<a name="ln70">            if (!MoveExtensions.TryParseFromUCIString(moveString, moveList, out var parsedMove))</a>
+<a name="ln71">            {</a>
+<a name="ln72">                _logger.Error(&quot;Error parsing game with fen {0} and moves {1}: error detected in {2}&quot;, fen.ToString(), rawMoves.ToString(), moveString.ToString());</a>
+<a name="ln73">                break;</a>
+<a name="ln74">            }</a>
+<a name="ln75"> </a>
+<a name="ln76">            MakeMove(parsedMove.Value);</a>
+<a name="ln77">        }</a>
+<a name="ln78"> </a>
+<a name="ln79">        PositionBeforeLastSearch = new Position(CurrentPosition);</a>
+<a name="ln80">        //_positionHashHistoryPointerBeforeLastSearch = _positionHashHistoryPointer;</a>
+<a name="ln81">    }</a>
+<a name="ln82"> </a>
+<a name="ln83">    /// &lt;summary&gt;</a>
+<a name="ln84">    /// Updates &lt;paramref name=&quot;halfMovesWithoutCaptureOrPawnMove&quot;/&gt;.</a>
+<a name="ln85">    /// See also &lt;see cref=&quot;Utils.Update50movesRule(int, int)&quot;/&gt;</a>
+<a name="ln86">    /// &lt;/summary&gt;</a>
+<a name="ln87">    /// &lt;remarks&gt;</a>
+<a name="ln88">    /// Checking halfMovesWithoutCaptureOrPawnMove &gt;= 100 since a capture/pawn move doesn't necessarily 'clear' the variable.</a>
+<a name="ln89">    /// i.e. while the engine is searching:</a>
+<a name="ln90">    ///     At depth 2, 50 rules move applied and eval is 0</a>
+<a name="ln91">    ///     At depth 3, there's a capture, but the eval should still be 0</a>
+<a name="ln92">    ///     At depth 4 there's no capture, but the eval should still be 0</a>
+<a name="ln93">    /// &lt;/remarks&gt;</a>
+<a name="ln94">    /// &lt;returns&gt;true if threefol/50 moves repetition is possible (since both captures and pawn moves are irreversible)&lt;/returns&gt;</a>
+<a name="ln95">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln96">    public bool Update50movesRule(Move moveToPlay, bool isCapture)</a>
+<a name="ln97">    {</a>
+<a name="ln98">        if (isCapture)</a>
+<a name="ln99">        {</a>
+<a name="ln100">            if (HalfMovesWithoutCaptureOrPawnMove &lt; 100)</a>
+<a name="ln101">            {</a>
+<a name="ln102">                HalfMovesWithoutCaptureOrPawnMove = 0;</a>
+<a name="ln103">            }</a>
+<a name="ln104">            else</a>
+<a name="ln105">            {</a>
+<a name="ln106">                ++HalfMovesWithoutCaptureOrPawnMove;</a>
+<a name="ln107">            }</a>
+<a name="ln108"> </a>
+<a name="ln109">            return false;</a>
+<a name="ln110">        }</a>
+<a name="ln111">        else</a>
+<a name="ln112">        {</a>
+<a name="ln113">            var pieceToMove = moveToPlay.Piece();</a>
+<a name="ln114"> </a>
+<a name="ln115">            if (pieceToMove == (int)Piece.P || pieceToMove == (int)Piece.p)</a>
+<a name="ln116">            {</a>
+<a name="ln117">                if (HalfMovesWithoutCaptureOrPawnMove &lt; 100)</a>
+<a name="ln118">                {</a>
+<a name="ln119">                    HalfMovesWithoutCaptureOrPawnMove = 0;</a>
+<a name="ln120">                }</a>
+<a name="ln121"> </a>
+<a name="ln122">                return false;</a>
+<a name="ln123">            }</a>
+<a name="ln124"> </a>
+<a name="ln125">            ++HalfMovesWithoutCaptureOrPawnMove;</a>
+<a name="ln126"> </a>
+<a name="ln127">            return true;</a>
+<a name="ln128">        }</a>
+<a name="ln129">    }</a>
+<a name="ln130"> </a>
+<a name="ln131">    /// &lt;summary&gt;</a>
+<a name="ln132">    /// Basic algorithm described in https://web.archive.org/web/20201107002606/https://marcelk.net/2013-04-06/paper/upcoming-rep-v2.pdf</a>
+<a name="ln133">    /// &lt;/summary&gt;</a>
+<a name="ln134">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln135">    public bool IsThreefoldRepetition()</a>
+<a name="ln136">    {</a>
+<a name="ln137">        var currentHash = CurrentPosition.UniqueIdentifier;</a>
+<a name="ln138"> </a>
+<a name="ln139">        // [_positionHashHistoryPointer - 1] would be the last one, we want to start searching 2 ealier and finish HalfMovesWithoutCaptureOrPawnMove earlier</a>
+<a name="ln140">        var limit = Math.Max(0, _positionHashHistoryPointer - 1 - HalfMovesWithoutCaptureOrPawnMove);</a>
+<a name="ln141">        for (int i = _positionHashHistoryPointer - 3; i &gt;= limit; i -= 2)</a>
+<a name="ln142">        {</a>
+<a name="ln143">            if (currentHash == _positionHashHistory[i])</a>
+<a name="ln144">            {</a>
+<a name="ln145">                return true;</a>
+<a name="ln146">            }</a>
+<a name="ln147">        }</a>
+<a name="ln148"> </a>
+<a name="ln149">        return false;</a>
+<a name="ln150">    }</a>
+<a name="ln151"> </a>
+<a name="ln152">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln153">    public bool Is50MovesRepetition()</a>
+<a name="ln154">    {</a>
+<a name="ln155">        if (HalfMovesWithoutCaptureOrPawnMove &lt; 100)</a>
+<a name="ln156">        {</a>
+<a name="ln157">            return false;</a>
+<a name="ln158">        }</a>
+<a name="ln159"> </a>
+<a name="ln160">        return !CurrentPosition.IsInCheck() || MoveGenerator.CanGenerateAtLeastAValidMove(CurrentPosition);</a>
+<a name="ln161">    }</a>
+<a name="ln162"> </a>
+<a name="ln163">    /// &lt;summary&gt;</a>
+<a name="ln164">    /// To be used in online tb proving only, in combination with the result of &lt;see cref=&quot;CopyPositionHashHistory&quot;/&gt;</a>
+<a name="ln165">    /// &lt;/summary&gt;</a>
+<a name="ln166">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln167">    public static bool IsThreefoldRepetition(ReadOnlySpan&lt;ulong&gt; positionHashHistory, Position position, int halfMovesWithoutCaptureOrPawnMove = Constants.MaxNumberMovesInAGame)</a>
+<a name="ln168">    {</a>
+<a name="ln169">        var currentHash = position.UniqueIdentifier;</a>
+<a name="ln170"> </a>
+<a name="ln171">        // Since positionHashHistory hasn't been updated with position, [Count] would be the last one, so we want to start searching 2 ealier</a>
+<a name="ln172">        var limit = Math.Max(0, positionHashHistory.Length - halfMovesWithoutCaptureOrPawnMove);</a>
+<a name="ln173">        for (int i = positionHashHistory.Length - 2; i &gt;= limit; i -= 2)</a>
+<a name="ln174">        {</a>
+<a name="ln175">            if (currentHash == positionHashHistory[i])</a>
+<a name="ln176">            {</a>
+<a name="ln177">                return true;</a>
+<a name="ln178">            }</a>
+<a name="ln179">        }</a>
+<a name="ln180"> </a>
+<a name="ln181">        return false;</a>
+<a name="ln182">    }</a>
+<a name="ln183"> </a>
+<a name="ln184">    /// &lt;summary&gt;</a>
+<a name="ln185">    /// To be used in online tb proving only, with a copy of &lt;see cref=&quot;HalfMovesWithoutCaptureOrPawnMove&quot;/&gt;</a>
+<a name="ln186">    /// &lt;/summary&gt;</a>
+<a name="ln187">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln188">    public static bool Is50MovesRepetition(int halfMovesWithoutCaptureOrPawnMove) =&gt; halfMovesWithoutCaptureOrPawnMove &gt;= 100;</a>
+<a name="ln189"> </a>
+<a name="ln190">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln191">    public GameState MakeMove(Move moveToPlay)</a>
+<a name="ln192">    {</a>
+<a name="ln193">        var gameState = CurrentPosition.MakeMove(moveToPlay);</a>
+<a name="ln194"> </a>
+<a name="ln195">        if (CurrentPosition.WasProduceByAValidMove())</a>
+<a name="ln196">        {</a>
+<a name="ln197">#if DEBUG</a>
+<a name="ln198">            MoveHistory.Add(moveToPlay);</a>
+<a name="ln199">#endif</a>
+<a name="ln200">            AddToPositionHashHistory(CurrentPosition.UniqueIdentifier);</a>
+<a name="ln201">            Update50movesRule(moveToPlay, moveToPlay.IsCapture());</a>
+<a name="ln202">        }</a>
+<a name="ln203">        else</a>
+<a name="ln204">        {</a>
+<a name="ln205">            CurrentPosition.UnmakeMove(moveToPlay, gameState);</a>
+<a name="ln206">            _logger.Warn(&quot;Error trying to play move {0} in {1}&quot;, moveToPlay.UCIString(), CurrentPosition.FEN(HalfMovesWithoutCaptureOrPawnMove));</a>
+<a name="ln207">        }</a>
+<a name="ln208"> </a>
+<a name="ln209">        return gameState;</a>
+<a name="ln210">    }</a>
+<a name="ln211"> </a>
+<a name="ln212">    /// &lt;summary&gt;</a>
+<a name="ln213">    /// Cleans &lt;see cref=&quot;CurrentPosition&quot;/&gt; value, since in case of search cancellation</a>
+<a name="ln214">    /// (either by the engine time management logic or by external stop command)</a>
+<a name="ln215">    /// currentPosition won't be the initial one</a>
+<a name="ln216">    /// &lt;/summary&gt;</a>
+<a name="ln217">    public void ResetCurrentPositionToBeforeSearchState()</a>
+<a name="ln218">    {</a>
+<a name="ln219">        CurrentPosition.FreeResources();</a>
+<a name="ln220">        CurrentPosition = new(PositionBeforeLastSearch);</a>
+<a name="ln221">        //_positionHashHistoryPointer = _positionHashHistoryPointerBeforeLastSearch;    // TODO</a>
+<a name="ln222">    }</a>
+<a name="ln223"> </a>
+<a name="ln224">    public void UpdateInitialPosition()</a>
+<a name="ln225">    {</a>
+<a name="ln226">        PositionBeforeLastSearch.FreeResources();</a>
+<a name="ln227">        PositionBeforeLastSearch = new(CurrentPosition);</a>
+<a name="ln228">    }</a>
+<a name="ln229"> </a>
+<a name="ln230">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln231">    public void UpdateMoveinStack(int n, Move move) =&gt; _gameStack[n + EvaluationConstants.ContinuationHistoryPlyCount].Move = move;</a>
+<a name="ln232"> </a>
+<a name="ln233">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln234">    public Move ReadMoveFromStack(int n) =&gt; _gameStack[n + EvaluationConstants.ContinuationHistoryPlyCount].Move;</a>
+<a name="ln235"> </a>
+<a name="ln236">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln237">    public int ReadStaticEvalFromStack(int n) =&gt; _gameStack[n].StaticEval;</a>
+<a name="ln238"> </a>
+<a name="ln239">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln240">    public int UpdateStaticEvalInStack(int n, int value) =&gt; _gameStack[n].StaticEval = value;</a>
+<a name="ln241"> </a>
+<a name="ln242">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln243">    public ref PlyStackEntry GameStack(int n) =&gt; ref _gameStack[n];</a>
+<a name="ln244"> </a>
+<a name="ln245">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln246">    public int PositionHashHistoryLength() =&gt; _positionHashHistoryPointer;</a>
+<a name="ln247"> </a>
+<a name="ln248">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln249">    public void AddToPositionHashHistory(ulong hash) =&gt; _positionHashHistory[_positionHashHistoryPointer++] = hash;</a>
+<a name="ln250"> </a>
+<a name="ln251">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln252">    public void RemoveFromPositionHashHistory() =&gt; --_positionHashHistoryPointer;</a>
+<a name="ln253"> </a>
+<a name="ln254">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln255">    public ulong[] CopyPositionHashHistory() =&gt; _positionHashHistory[.._positionHashHistoryPointer];</a>
+<a name="ln256"> </a>
+<a name="ln257">    internal void ClearPositionHashHistory() =&gt; _positionHashHistoryPointer = 0;</a>
+<a name="ln258"> </a>
+<a name="ln259">    public void FreeResources()</a>
+<a name="ln260">    {</a>
+<a name="ln261">        ArrayPool&lt;PlyStackEntry&gt;.Shared.Return(_gameStack, clearArray: true);</a>
+<a name="ln262">        ArrayPool&lt;ulong&gt;.Shared.Return(_positionHashHistory);</a>
+<a name="ln263"> </a>
+<a name="ln264">        CurrentPosition.FreeResources();</a>
+<a name="ln265">        PositionBeforeLastSearch.FreeResources();</a>
+<a name="ln266"> </a>
+<a name="ln267">        _disposedValue = true;</a>
+<a name="ln268">    }</a>
+<a name="ln269"> </a>
+<a name="ln270">    private void Dispose(bool disposing)</a>
+<a name="ln271">    {</a>
+<a name="ln272">        if (!_disposedValue)</a>
+<a name="ln273">        {</a>
+<a name="ln274">            if (disposing)</a>
+<a name="ln275">            {</a>
+<a name="ln276">                FreeResources();</a>
+<a name="ln277">            }</a>
+<a name="ln278">            _disposedValue = true;</a>
+<a name="ln279">        }</a>
+<a name="ln280">    }</a>
+<a name="ln281"> </a>
+<a name="ln282">    public void Dispose()</a>
+<a name="ln283">    {</a>
+<a name="ln284">        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method</a>
+<a name="ln285">        Dispose(disposing: true);</a>
+<a name="ln286">#pragma warning disable S3234 // &quot;GC.SuppressFinalize&quot; should not be invoked for types without destructors - https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/implementing-dispose</a>
+<a name="ln287">        GC.SuppressFinalize(this);</a>
+<a name="ln288">#pragma warning restore S3234 // &quot;GC.SuppressFinalize&quot; should not be invoked for types without destructors</a>
+<a name="ln289">    }</a>
+<a name="ln290">}</a>
+</code></pre>
+<div class="balloon" rel="7"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3073/" target="_blank">V3073</a> Not all IDisposable members are properly disposed. Call 'Dispose' when disposing 'Game' class. Inspect: CurrentPosition, PositionBeforeLastSearch.</p></div>
+<link rel="stylesheet" href="highlight.css">
+<script src="highlight.pack.js"></script>
+<script src="highlightjs-line-numbers.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script>hljs.initLineNumbersOnLoad();</script>
+<script>
+  $(document).ready(function() {
+      $('.balloon').each(function () {
+          var bl = $(this);
+          var line = bl.attr('rel');
+          var text = $('a[name="ln'+line+'"]').text();
+
+          var space_count = 0;
+          for(var i = 0; i<text.length; i++){
+              var char = text[i];
+              if((char !== ' ')&&(char !== '\t'))break;
+              if(char === '\t')space_count++;
+              space_count++;
+          }
+
+          bl.css('margin-left', space_count*8);
+          $('a[name="ln'+line+'"]').after(bl);
+      });
+
+      window.location = window.location;
+  });
+</script>
+</body>
+</html>

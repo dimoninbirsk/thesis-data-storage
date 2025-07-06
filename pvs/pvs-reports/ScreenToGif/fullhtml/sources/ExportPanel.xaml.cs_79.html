@@ -1,0 +1,1839 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII" />
+  <title>ExportPanel.xaml.cs</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <script src="../jquery-3.5.1.min.js"></script>
+</head>
+<body>
+<pre><code class = "cs">
+<a name="ln1">using Microsoft.Win32;</a>
+<a name="ln2">using ScreenToGif.Controls;</a>
+<a name="ln3">using ScreenToGif.Controls.Items;</a>
+<a name="ln4">using ScreenToGif.Domain.Enums;</a>
+<a name="ln5">using ScreenToGif.Domain.Events;</a>
+<a name="ln6">using ScreenToGif.Domain.Interfaces;</a>
+<a name="ln7">using ScreenToGif.Util;</a>
+<a name="ln8">using ScreenToGif.Util.Extensions;</a>
+<a name="ln9">using ScreenToGif.Util.Settings;</a>
+<a name="ln10">using ScreenToGif.ViewModel;</a>
+<a name="ln11">using ScreenToGif.ViewModel.ExportPresets;</a>
+<a name="ln12">using ScreenToGif.ViewModel.ExportPresets.AnimatedImage.Apng;</a>
+<a name="ln13">using ScreenToGif.ViewModel.ExportPresets.AnimatedImage.Avif;</a>
+<a name="ln14">using ScreenToGif.ViewModel.ExportPresets.AnimatedImage.Gif;</a>
+<a name="ln15">using ScreenToGif.ViewModel.ExportPresets.AnimatedImage.Webp;</a>
+<a name="ln16">using ScreenToGif.ViewModel.ExportPresets.Image;</a>
+<a name="ln17">using ScreenToGif.ViewModel.ExportPresets.Other;</a>
+<a name="ln18">using ScreenToGif.ViewModel.ExportPresets.Video;</a>
+<a name="ln19">using ScreenToGif.ViewModel.ExportPresets.Video.Avi;</a>
+<a name="ln20">using ScreenToGif.ViewModel.ExportPresets.Video.Codecs;</a>
+<a name="ln21">using ScreenToGif.ViewModel.ExportPresets.Video.Mkv;</a>
+<a name="ln22">using ScreenToGif.ViewModel.ExportPresets.Video.Mov;</a>
+<a name="ln23">using ScreenToGif.ViewModel.ExportPresets.Video.Mp4;</a>
+<a name="ln24">using ScreenToGif.ViewModel.ExportPresets.Video.Webm;</a>
+<a name="ln25">using ScreenToGif.ViewModel.UploadPresets;</a>
+<a name="ln26">using ScreenToGif.Windows;</a>
+<a name="ln27">using ScreenToGif.Windows.Other;</a>
+<a name="ln28">using System;</a>
+<a name="ln29">using System.Collections;</a>
+<a name="ln30">using System.Collections.Generic;</a>
+<a name="ln31">using System.IO;</a>
+<a name="ln32">using System.Linq;</a>
+<a name="ln33">using System.Threading.Tasks;</a>
+<a name="ln34">using System.Windows;</a>
+<a name="ln35">using System.Windows.Controls;</a>
+<a name="ln36">using System.Windows.Data;</a>
+<a name="ln37">using System.Windows.Input;</a>
+<a name="ln38">using System.Windows.Threading;</a>
+<a name="ln39"> </a>
+<a name="ln40">namespace ScreenToGif.UserControls;</a>
+<a name="ln41"> </a>
+<a name="ln42">public partial class ExportPanel : UserControl, IPanel</a>
+<a name="ln43">{</a>
+<a name="ln44">    private readonly DispatcherTimer _searchTimer;</a>
+<a name="ln45"> </a>
+<a name="ln46">    #region Dependency Properties</a>
+<a name="ln47"> </a>
+<a name="ln48">    public static readonly DependencyProperty CurrentPresetProperty = DependencyProperty.Register(nameof(CurrentPreset), typeof(ExportPreset), typeof(ExportPanel), new PropertyMetadata(default(ExportPreset)));</a>
+<a name="ln49"> </a>
+<a name="ln50">    public static readonly DependencyProperty FrameCountProperty = DependencyProperty.Register(nameof(FrameCount), typeof(int), typeof(ExportPanel), new PropertyMetadata(default(int)));</a>
+<a name="ln51"> </a>
+<a name="ln52">    public static readonly DependencyProperty SelectionCountProperty = DependencyProperty.Register(nameof(SelectionCount), typeof(int), typeof(ExportPanel), new PropertyMetadata(default(int)));</a>
+<a name="ln53"> </a>
+<a name="ln54">    public static readonly DependencyProperty TotalTimeProperty = DependencyProperty.Register(nameof(TotalTime), typeof(TimeSpan), typeof(ExportPanel), new PropertyMetadata(default(TimeSpan)));</a>
+<a name="ln55"> </a>
+<a name="ln56">    public static readonly DependencyProperty CurrentFrameProperty = DependencyProperty.Register(nameof(CurrentFrame), typeof(FrameViewModel), typeof(ExportPanel), new PropertyMetadata(default(FrameViewModel)));</a>
+<a name="ln57"> </a>
+<a name="ln58">    public ExportPreset CurrentPreset</a>
+<a name="ln59">    {</a>
+<a name="ln60">        get =&gt; (ExportPreset)GetValue(CurrentPresetProperty);</a>
+<a name="ln61">        set =&gt; SetValue(CurrentPresetProperty, value);</a>
+<a name="ln62">    }</a>
+<a name="ln63"> </a>
+<a name="ln64">    public int FrameCount</a>
+<a name="ln65">    {</a>
+<a name="ln66">        get =&gt; (int)GetValue(FrameCountProperty);</a>
+<a name="ln67">        set =&gt; SetValue(FrameCountProperty, value);</a>
+<a name="ln68">    }</a>
+<a name="ln69"> </a>
+<a name="ln70">    public int SelectionCount</a>
+<a name="ln71">    {</a>
+<a name="ln72">        get =&gt; (int)GetValue(SelectionCountProperty);</a>
+<a name="ln73">        set =&gt; SetValue(SelectionCountProperty, value);</a>
+<a name="ln74">    }</a>
+<a name="ln75"> </a>
+<a name="ln76">    public TimeSpan TotalTime</a>
+<a name="ln77">    {</a>
+<a name="ln78">        get =&gt; (TimeSpan)GetValue(TotalTimeProperty);</a>
+<a name="ln79">        set =&gt; SetValue(TotalTimeProperty, value);</a>
+<a name="ln80">    }</a>
+<a name="ln81"> </a>
+<a name="ln82">    public FrameViewModel CurrentFrame</a>
+<a name="ln83">    {</a>
+<a name="ln84">        get =&gt; (FrameViewModel)GetValue(CurrentFrameProperty);</a>
+<a name="ln85">        set =&gt; SetValue(CurrentFrameProperty, value);</a>
+<a name="ln86">    }</a>
+<a name="ln87"> </a>
+<a name="ln88">    #endregion</a>
+<a name="ln89"> </a>
+<a name="ln90">    #region Custom Events</a>
+<a name="ln91"> </a>
+<a name="ln92">    public static readonly RoutedEvent SaveEvent = EventManager.RegisterRoutedEvent(nameof(Save), RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(ExportPanel));</a>
+<a name="ln93"> </a>
+<a name="ln94">    public static readonly RoutedEvent ValidatedEvent = EventManager.RegisterRoutedEvent(nameof(Validated), RoutingStrategy.Bubble, typeof(ValidatedEventHandler), typeof(ExportPanel));</a>
+<a name="ln95"> </a>
+<a name="ln96">    public static readonly RoutedEvent ValidationRemovedEvent = EventManager.RegisterRoutedEvent(nameof(ValidationRemoved), RoutingStrategy.Bubble, typeof(ValidatedEventHandler), typeof(ExportPanel));</a>
+<a name="ln97"> </a>
+<a name="ln98">    /// &lt;summary&gt;</a>
+<a name="ln99">    /// Event raised when the save is triggered within this user control.</a>
+<a name="ln100">    /// &lt;/summary&gt;</a>
+<a name="ln101">    public event RoutedEventHandler Save</a>
+<a name="ln102">    {</a>
+<a name="ln103">        add =&gt; AddHandler(SaveEvent, value);</a>
+<a name="ln104">        remove =&gt; RemoveHandler(SaveEvent, value);</a>
+<a name="ln105">    }</a>
+<a name="ln106"> </a>
+<a name="ln107">    /// &lt;summary&gt;</a>
+<a name="ln108">    /// Event raised when a warning is triggered within this user control.</a>
+<a name="ln109">    /// &lt;/summary&gt;</a>
+<a name="ln110">    public event ValidatedEventHandler Validated</a>
+<a name="ln111">    {</a>
+<a name="ln112">        add =&gt; AddHandler(ValidatedEvent, value);</a>
+<a name="ln113">        remove =&gt; RemoveHandler(ValidatedEvent, value);</a>
+<a name="ln114">    }</a>
+<a name="ln115"> </a>
+<a name="ln116">    /// &lt;summary&gt;</a>
+<a name="ln117">    /// Event raised when a request for removal of warning is triggered within this user control.</a>
+<a name="ln118">    /// &lt;/summary&gt;</a>
+<a name="ln119">    public event ValidatedEventHandler ValidationRemoved</a>
+<a name="ln120">    {</a>
+<a name="ln121">        add =&gt; AddHandler(ValidationRemovedEvent, value);</a>
+<a name="ln122">        remove =&gt; RemoveHandler(ValidationRemovedEvent, value);</a>
+<a name="ln123">    }</a>
+<a name="ln124"> </a>
+<a name="ln125"> </a>
+<a name="ln126">    public void RaiseSaveEvent()</a>
+<a name="ln127">    {</a>
+<a name="ln128">        if (SaveEvent == null)</a>
+<a name="ln129">            return;</a>
+<a name="ln130"> </a>
+<a name="ln131">        RaiseEvent(new RoutedEventArgs(SaveEvent));</a>
+<a name="ln132">    }</a>
+<a name="ln133"> </a>
+<a name="ln134">    public void RaiseValidatedEvent(ValidatedEventArgs args)</a>
+<a name="ln135">    {</a>
+<a name="ln136">        if (ValidatedEvent == null)</a>
+<a name="ln137">            return;</a>
+<a name="ln138"> </a>
+<a name="ln139">        args.RoutedEvent = ValidatedEvent;</a>
+<a name="ln140"> </a>
+<a name="ln141">        RaiseEvent(args);</a>
+<a name="ln142">    }</a>
+<a name="ln143"> </a>
+<a name="ln144">    public void RaiseValidatedEvent(string message, StatusReasons reason, Action action = null)</a>
+<a name="ln145">    {</a>
+<a name="ln146">        if (ValidatedEvent == null)</a>
+<a name="ln147">            return;</a>
+<a name="ln148"> </a>
+<a name="ln149">        RaiseEvent(new ValidatedEventArgs(ValidatedEvent, message, reason, action));</a>
+<a name="ln150">    }</a>
+<a name="ln151"> </a>
+<a name="ln152">    public void RaiseValidationRemovedEvent(StatusReasons reason)</a>
+<a name="ln153">    {</a>
+<a name="ln154">        if (ValidatedEvent == null)</a>
+<a name="ln155">            return;</a>
+<a name="ln156"> </a>
+<a name="ln157">        RaiseEvent(new ValidatedEventArgs(ValidationRemovedEvent, null, reason));</a>
+<a name="ln158">    }</a>
+<a name="ln159"> </a>
+<a name="ln160">    #endregion</a>
+<a name="ln161"> </a>
+<a name="ln162"> </a>
+<a name="ln163">    public ExportPanel()</a>
+<a name="ln164">    {</a>
+<a name="ln165">        InitializeComponent();</a>
+<a name="ln166"> </a>
+<a name="ln167">        #region Initialize timers</a>
+<a name="ln168"> </a>
+<a name="ln169">        _searchTimer = new DispatcherTimer(DispatcherPriority.Background);</a>
+<a name="ln170">        _searchTimer.Interval = TimeSpan.FromMilliseconds(500);</a>
+<a name="ln171">        _searchTimer.Tick += SearchTimer_Tick;</a>
+<a name="ln172"> </a>
+<a name="ln173">        #endregion</a>
+<a name="ln174"> </a>
+<a name="ln175">        #region Store restrictions</a>
+<a name="ln176"> </a>
+<a name="ln177">#if FULL_MULTI_MSIX_STORE</a>
+<a name="ln178"> </a>
+<a name="ln179">            CustomCommandsCheckBox.IsEnabled = false;</a>
+<a name="ln180">            CustomCommandsTextBox.IsEnabled = false;</a>
+<a name="ln181"> </a>
+<a name="ln182">#endif</a>
+<a name="ln183"> </a>
+<a name="ln184">        #endregion</a>
+<a name="ln185">    }</a>
+<a name="ln186"> </a>
+<a name="ln187"> </a>
+<a name="ln188">    #region Methods</a>
+<a name="ln189"> </a>
+<a name="ln190">    /// &lt;summary&gt;</a>
+<a name="ln191">    /// Adjusts the UI for the different types of file types, encoders and quantizers.</a>
+<a name="ln192">    /// &lt;/summary&gt;</a>
+<a name="ln193">    /// &lt;param name=&quot;type&quot;&gt;&lt;/param&gt;</a>
+<a name="ln194">    private void AdjustPresentation(ExportFormats type)</a>
+<a name="ln195">    {</a>
+<a name="ln196">        foreach (var item in EncoderComboBox.Items.OfType&lt;GenericItem&gt;())</a>
+<a name="ln197">            item.IsEnabled = false;</a>
+<a name="ln198"> </a>
+<a name="ln199">        //File types can have different properties that need to be displayed.</a>
+<a name="ln200">        switch (type)</a>
+<a name="ln201">        {</a>
+<a name="ln202">            case ExportFormats.Apng:</a>
+<a name="ln203">                EncoderScreenToGifItem.IsEnabled = true;</a>
+<a name="ln204">                EncoderKGySoftItem.IsEnabled = false;</a>
+<a name="ln205">                EncoderFfmpegItem.IsEnabled = true;</a>
+<a name="ln206">                EncoderGifskiItem.IsEnabled = false;</a>
+<a name="ln207">                EncoderSystemItem.IsEnabled = false;</a>
+<a name="ln208">                ExtensionComboBox.ItemsSource = new List&lt;string&gt; { &quot;.apng&quot;, &quot;.png&quot; };</a>
+<a name="ln209">                break;</a>
+<a name="ln210">            case ExportFormats.Gif:</a>
+<a name="ln211">                EncoderScreenToGifItem.IsEnabled = true;</a>
+<a name="ln212">                EncoderKGySoftItem.IsEnabled = true;</a>
+<a name="ln213">                EncoderFfmpegItem.IsEnabled = true;</a>
+<a name="ln214">                EncoderGifskiItem.IsEnabled = Environment.Is64BitProcess;</a>
+<a name="ln215">                EncoderSystemItem.IsEnabled = true;</a>
+<a name="ln216">                ExtensionComboBox.ItemsSource = new List&lt;string&gt; { &quot;.gif&quot; };</a>
+<a name="ln217">                break;</a>
+<a name="ln218">            case ExportFormats.Webp:</a>
+<a name="ln219">                EncoderScreenToGifItem.IsEnabled = false;</a>
+<a name="ln220">                EncoderKGySoftItem.IsEnabled = false;</a>
+<a name="ln221">                EncoderFfmpegItem.IsEnabled = true;</a>
+<a name="ln222">                EncoderGifskiItem.IsEnabled = false;</a>
+<a name="ln223">                EncoderSystemItem.IsEnabled = false;</a>
+<a name="ln224">                ExtensionComboBox.ItemsSource = new List&lt;string&gt; { &quot;.webp&quot; };</a>
+<a name="ln225">                break;</a>
+<a name="ln226">            case ExportFormats.Avif:</a>
+<a name="ln227">                EncoderScreenToGifItem.IsEnabled = false;</a>
+<a name="ln228">                EncoderKGySoftItem.IsEnabled = false;</a>
+<a name="ln229">                EncoderFfmpegItem.IsEnabled = true;</a>
+<a name="ln230">                EncoderGifskiItem.IsEnabled = false;</a>
+<a name="ln231">                EncoderSystemItem.IsEnabled = false;</a>
+<a name="ln232">                ExtensionComboBox.ItemsSource = new List&lt;string&gt; { &quot;.avif&quot; };</a>
+<a name="ln233">                break;</a>
+<a name="ln234"> </a>
+<a name="ln235"> </a>
+<a name="ln236">            case ExportFormats.Avi:</a>
+<a name="ln237">                EncoderScreenToGifItem.IsEnabled = false;</a>
+<a name="ln238">                EncoderKGySoftItem.IsEnabled = false;</a>
+<a name="ln239">                EncoderFfmpegItem.IsEnabled = true;</a>
+<a name="ln240">                EncoderGifskiItem.IsEnabled = false;</a>
+<a name="ln241">                EncoderSystemItem.IsEnabled = false;</a>
+<a name="ln242">                ExtensionComboBox.ItemsSource = new List&lt;string&gt; { &quot;.avi&quot; };</a>
+<a name="ln243">                break;</a>
+<a name="ln244">            case ExportFormats.Mkv:</a>
+<a name="ln245">                EncoderScreenToGifItem.IsEnabled = false;</a>
+<a name="ln246">                EncoderKGySoftItem.IsEnabled = false;</a>
+<a name="ln247">                EncoderFfmpegItem.IsEnabled = true;</a>
+<a name="ln248">                EncoderGifskiItem.IsEnabled = false;</a>
+<a name="ln249">                EncoderSystemItem.IsEnabled = false;</a>
+<a name="ln250">                ExtensionComboBox.ItemsSource = new List&lt;string&gt; { &quot;.mkv&quot; };</a>
+<a name="ln251">                break;</a>
+<a name="ln252">            case ExportFormats.Mov:</a>
+<a name="ln253">                EncoderScreenToGifItem.IsEnabled = false;</a>
+<a name="ln254">                EncoderKGySoftItem.IsEnabled = false;</a>
+<a name="ln255">                EncoderFfmpegItem.IsEnabled = true;</a>
+<a name="ln256">                EncoderGifskiItem.IsEnabled = false;</a>
+<a name="ln257">                EncoderSystemItem.IsEnabled = false;</a>
+<a name="ln258">                ExtensionComboBox.ItemsSource = new List&lt;string&gt; { &quot;.mov&quot; };</a>
+<a name="ln259">                break;</a>
+<a name="ln260">            case ExportFormats.Mp4:</a>
+<a name="ln261">                EncoderScreenToGifItem.IsEnabled = false;</a>
+<a name="ln262">                EncoderKGySoftItem.IsEnabled = false;</a>
+<a name="ln263">                EncoderFfmpegItem.IsEnabled = true;</a>
+<a name="ln264">                EncoderGifskiItem.IsEnabled = false;</a>
+<a name="ln265">                EncoderSystemItem.IsEnabled = false;</a>
+<a name="ln266">                ExtensionComboBox.ItemsSource = new List&lt;string&gt; { &quot;.mp4&quot; };</a>
+<a name="ln267">                break;</a>
+<a name="ln268">            case ExportFormats.Webm:</a>
+<a name="ln269">                EncoderScreenToGifItem.IsEnabled = false;</a>
+<a name="ln270">                EncoderKGySoftItem.IsEnabled = false;</a>
+<a name="ln271">                EncoderFfmpegItem.IsEnabled = true;</a>
+<a name="ln272">                EncoderGifskiItem.IsEnabled = false;</a>
+<a name="ln273">                EncoderSystemItem.IsEnabled = false;</a>
+<a name="ln274">                ExtensionComboBox.ItemsSource = new List&lt;string&gt; { &quot;.webm&quot; };</a>
+<a name="ln275">                break;</a>
+<a name="ln276"> </a>
+<a name="ln277"> </a>
+<a name="ln278">            case ExportFormats.Jpeg:</a>
+<a name="ln279">                EncoderScreenToGifItem.IsEnabled = true;</a>
+<a name="ln280">                EncoderKGySoftItem.IsEnabled = false;</a>
+<a name="ln281">                EncoderFfmpegItem.IsEnabled = false;</a>
+<a name="ln282">                EncoderGifskiItem.IsEnabled = false;</a>
+<a name="ln283">                EncoderSystemItem.IsEnabled = false;</a>
+<a name="ln284">                ExtensionComboBox.ItemsSource = new List&lt;string&gt; { &quot;.jpg&quot;, &quot;.jpeg&quot;, &quot;.zip&quot; };</a>
+<a name="ln285">                break;</a>
+<a name="ln286">            case ExportFormats.Png:</a>
+<a name="ln287">                EncoderScreenToGifItem.IsEnabled = true;</a>
+<a name="ln288">                EncoderKGySoftItem.IsEnabled = false;</a>
+<a name="ln289">                EncoderFfmpegItem.IsEnabled = false;</a>
+<a name="ln290">                EncoderGifskiItem.IsEnabled = false;</a>
+<a name="ln291">                EncoderSystemItem.IsEnabled = false;</a>
+<a name="ln292">                ExtensionComboBox.ItemsSource = new List&lt;string&gt; { &quot;.png&quot;, &quot;.zip&quot; };</a>
+<a name="ln293">                break;</a>
+<a name="ln294">            case ExportFormats.Bmp:</a>
+<a name="ln295">                EncoderScreenToGifItem.IsEnabled = true;</a>
+<a name="ln296">                EncoderKGySoftItem.IsEnabled = false;</a>
+<a name="ln297">                EncoderFfmpegItem.IsEnabled = false;</a>
+<a name="ln298">                EncoderGifskiItem.IsEnabled = false;</a>
+<a name="ln299">                EncoderSystemItem.IsEnabled = false;</a>
+<a name="ln300">                ExtensionComboBox.ItemsSource = new List&lt;string&gt; { &quot;.bmp&quot;, &quot;.zip&quot; };</a>
+<a name="ln301">                break;</a>
+<a name="ln302"> </a>
+<a name="ln303"> </a>
+<a name="ln304">            case ExportFormats.Stg:</a>
+<a name="ln305">                EncoderScreenToGifItem.IsEnabled = true;</a>
+<a name="ln306">                EncoderKGySoftItem.IsEnabled = false;</a>
+<a name="ln307">                EncoderFfmpegItem.IsEnabled = false;</a>
+<a name="ln308">                EncoderGifskiItem.IsEnabled = false;</a>
+<a name="ln309">                EncoderSystemItem.IsEnabled = false;</a>
+<a name="ln310">                ExtensionComboBox.ItemsSource = new List&lt;string&gt; { &quot;.stg&quot;, &quot;.zip&quot; };</a>
+<a name="ln311">                break;</a>
+<a name="ln312">            case ExportFormats.Psd:</a>
+<a name="ln313">                EncoderScreenToGifItem.IsEnabled = true;</a>
+<a name="ln314">                EncoderKGySoftItem.IsEnabled = false;</a>
+<a name="ln315">                EncoderFfmpegItem.IsEnabled = false;</a>
+<a name="ln316">                EncoderGifskiItem.IsEnabled = false;</a>
+<a name="ln317">                EncoderSystemItem.IsEnabled = false;</a>
+<a name="ln318">                ExtensionComboBox.ItemsSource = new List&lt;string&gt; { &quot;.psd&quot; };</a>
+<a name="ln319">                break;</a>
+<a name="ln320">        }</a>
+<a name="ln321"> </a>
+<a name="ln322">        SaveAsProjectTooCheckBox.Visibility = type != ExportFormats.Stg ? Visibility.Visible : Visibility.Collapsed;</a>
+<a name="ln323">        UploadFileCheckBox.Visibility = type != ExportFormats.Bmp &amp;&amp; type != ExportFormats.Jpeg &amp;&amp; type != ExportFormats.Png ? Visibility.Visible : Visibility.Collapsed;</a>
+<a name="ln324">        CopyFileCheckBox.Visibility = type != ExportFormats.Bmp &amp;&amp; type != ExportFormats.Jpeg &amp;&amp; type != ExportFormats.Png ? Visibility.Visible : Visibility.Collapsed;</a>
+<a name="ln325">        CustomCommandsCheckBox.Visibility = type != ExportFormats.Bmp &amp;&amp; type != ExportFormats.Jpeg &amp;&amp; type != ExportFormats.Png ? Visibility.Visible : Visibility.Collapsed;</a>
+<a name="ln326">        SaveFileCheckBox.IsEnabled = UploadFileCheckBox.Visibility == Visibility.Visible || CopyFileCheckBox.Visibility == Visibility.Visible;</a>
+<a name="ln327">    }</a>
+<a name="ln328"> </a>
+<a name="ln329">    private void LoadPresets(ExportFormats type, ExportPreset toLoad = null, bool firstLoad = false)</a>
+<a name="ln330">    {</a>
+<a name="ln331">        //Get all presets of given type. It's possible that there's none available.</a>
+<a name="ln332">        var search = UserSettings.All.ExportPresets?.OfType&lt;ExportPreset&gt;().Where(w =&gt; w.Type == type) ?? new List&lt;ExportPreset&gt;();</a>
+<a name="ln333"> </a>
+<a name="ln334">        //Ignore unsupported profiles.</a>
+<a name="ln335">        if (!Environment.Is64BitProcess)</a>
+<a name="ln336">            search = search.Where(tp =&gt; tp is not GifskiGifPreset);</a>
+<a name="ln337"> </a>
+<a name="ln338">        var list = search.ToList();</a>
+<a name="ln339"> </a>
+<a name="ln340">        //Get the missing default presets.</a>
+<a name="ln341">        GeneratePresets(type, list);</a>
+<a name="ln342"> </a>
+<a name="ln343">        //TODO: Check if default presets were recently updated and display an info about it.</a>
+<a name="ln344"> </a>
+<a name="ln345">        //Localize the default presets.</a>
+<a name="ln346">        foreach (var preset in list.Where(w =&gt; w.IsDefault))</a>
+<a name="ln347">        {</a>
+<a name="ln348">            preset.Title = LocalizationHelper.Get(preset.TitleKey).Replace(&quot;{0}&quot;, preset.DefaultExtension);</a>
+<a name="ln349">            preset.Description = LocalizationHelper.Get(preset.DescriptionKey);</a>
+<a name="ln350">            preset.OutputFolder = preset.OutputFolder ?? Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);</a>
+<a name="ln351">            preset.OutputFilename = (preset.OutputFilenameKey ?? &quot;&quot;).Length &lt;= 0 || !string.IsNullOrWhiteSpace(preset.OutputFilename) ? preset.OutputFilename : LocalizationHelper.Get(preset.OutputFilenameKey);</a>
+<a name="ln352">        }</a>
+<a name="ln353"> </a>
+<a name="ln354">        //Persist the changes to the settings.</a>
+<a name="ln355">        PersistPresets(list, type);</a>
+<a name="ln356"> </a>
+<a name="ln357">        //Display the presets and select the default one, based on the selected file type.</a>
+<a name="ln358">        PresetComboBox.ItemsSource = null;</a>
+<a name="ln359">        PresetComboBox.ItemsSource = list.OrderBy(o =&gt; o.Encoder).ThenBy(t =&gt; t.Title).ToList();</a>
+<a name="ln360">        PresetComboBox.SelectedItem = null;</a>
+<a name="ln361">        PresetComboBox.SelectedItem = toLoad ?? list.FirstOrDefault(f =&gt; f.IsSelected) ?? list.FirstOrDefault();</a>
+<a name="ln362"> </a>
+<a name="ln363">        if (PresetComboBox.SelectedItem == null) //Why?</a>
+<a name="ln364">            PresetComboBox.SelectedItem = toLoad ?? list.FirstOrDefault(f =&gt; f.IsSelected) ?? list.FirstOrDefault();</a>
+<a name="ln365">    }</a>
+<a name="ln366"> </a>
+<a name="ln367">    private void LoadUploadPresets(ExportPreset preset, UploadPreset uploadPreset = null)</a>
+<a name="ln368">    {</a>
+<a name="ln369">        var type = (preset.Extension ?? preset.DefaultExtension) == &quot;.zip&quot; ? ExportFormats.Zip : preset.Type;</a>
+<a name="ln370">        var list = UserSettings.All.UploadPresets?.OfType&lt;UploadPreset&gt;().Where(w =&gt; w.AllowedTypes.Count == 0 || w.AllowedTypes.Contains(type)).ToList() ?? new List&lt;UploadPreset&gt;();</a>
+<a name="ln371"> </a>
+<a name="ln372">        //No need to adding grouping when there's no item to be displayed.</a>
+<a name="ln373">        if (list.Count == 0)</a>
+<a name="ln374">        {</a>
+<a name="ln375">            UploadPresetComboBox.ItemsSource = null;</a>
+<a name="ln376">            UploadPresetComboBox.ItemsSource = list;</a>
+<a name="ln377">            return;</a>
+<a name="ln378">        }</a>
+<a name="ln379"> </a>
+<a name="ln380">        //Groups by authentication mode.</a>
+<a name="ln381">        var lcv = new ListCollectionView(list.OrderBy(o =&gt; o.IsAnonymous).ThenBy(t =&gt; t.Title).ToList());</a>
+<a name="ln382">        lcv.GroupDescriptions?.Add(new PropertyGroupDescription(&quot;Mode&quot;));</a>
+<a name="ln383"> </a>
+<a name="ln384">        var previous = preset.UploadService;</a>
+<a name="ln385"> </a>
+<a name="ln386">        UploadPresetComboBox.IsEnabled = true;</a>
+<a name="ln387">        UploadPresetComboBox.ItemsSource = lcv;</a>
+<a name="ln388"> </a>
+<a name="ln389">        if (uploadPreset != null &amp;&amp; list.Contains(uploadPreset))</a>
+<a name="ln390">            preset.UploadService = uploadPreset.Title;</a>
+<a name="ln391">        else</a>
+<a name="ln392">            preset.UploadService = previous;</a>
+<a name="ln393">    }</a>
+<a name="ln394"> </a>
+<a name="ln395">    private IEnumerable&lt;ExportPreset&gt; GeneratePresets(ExportFormats type, ICollection&lt;ExportPreset&gt; presets)</a>
+<a name="ln396">    {</a>
+<a name="ln397">        switch (type)</a>
+<a name="ln398">        {</a>
+<a name="ln399">            //Animated images.</a>
+<a name="ln400">            case ExportFormats.Gif:</a>
+<a name="ln401">            {</a>
+<a name="ln402">                AddDistinct(presets, EmbeddedGifPreset.Defaults);</a>
+<a name="ln403">                AddDistinct(presets, KGySoftGifPreset.Defaults);</a>
+<a name="ln404">                AddDistinct(presets, FfmpegGifPreset.Defaults);</a>
+<a name="ln405"> </a>
+<a name="ln406">                //Gifski only runs on x64.</a>
+<a name="ln407">                if (Environment.Is64BitProcess)</a>
+<a name="ln408">                    AddDistinct(presets, GifskiGifPreset.Defaults);</a>
+<a name="ln409"> </a>
+<a name="ln410">                AddDistinct(presets, SystemGifPreset.Default);</a>
+<a name="ln411">                break;</a>
+<a name="ln412">            }</a>
+<a name="ln413">            case ExportFormats.Apng:</a>
+<a name="ln414">            {</a>
+<a name="ln415">                AddDistinct(presets, EmbeddedApngPreset.Default);</a>
+<a name="ln416">                AddDistinct(presets, FfmpegApngPreset.Defaults);</a>
+<a name="ln417">                break;</a>
+<a name="ln418">            }</a>
+<a name="ln419">            case ExportFormats.Webp:</a>
+<a name="ln420">            {</a>
+<a name="ln421">                AddDistinct(presets, FfmpegWebpPreset.Defaults);</a>
+<a name="ln422">                break;</a>
+<a name="ln423">            }</a>
+<a name="ln424">            case ExportFormats.Avif:</a>
+<a name="ln425">            {</a>
+<a name="ln426">                AddDistinct(presets, FfmpegAvifPreset.Defaults);</a>
+<a name="ln427">                break;</a>
+<a name="ln428">            }</a>
+<a name="ln429"> </a>
+<a name="ln430">            //Videos.</a>
+<a name="ln431">            case ExportFormats.Avi:</a>
+<a name="ln432">            {</a>
+<a name="ln433">                AddDistinct(presets, FfmpegAviPreset.Default);</a>
+<a name="ln434">                break;</a>
+<a name="ln435">            }</a>
+<a name="ln436">            case ExportFormats.Mkv:</a>
+<a name="ln437">            {</a>
+<a name="ln438">                AddDistinct(presets, FfmpegMkvPreset.Defaults);</a>
+<a name="ln439">                break;</a>
+<a name="ln440">            }</a>
+<a name="ln441">            case ExportFormats.Mov:</a>
+<a name="ln442">            {</a>
+<a name="ln443">                AddDistinct(presets, FfmpegMovPreset.Defaults);</a>
+<a name="ln444">                break;</a>
+<a name="ln445">            }</a>
+<a name="ln446">            case ExportFormats.Mp4:</a>
+<a name="ln447">            {</a>
+<a name="ln448">                AddDistinct(presets, FfmpegMp4Preset.Defaults);</a>
+<a name="ln449">                break;</a>
+<a name="ln450">            }</a>
+<a name="ln451">            case ExportFormats.Webm:</a>
+<a name="ln452">            {</a>
+<a name="ln453">                AddDistinct(presets, FfmpegWebmPreset.Defaults);</a>
+<a name="ln454">                break;</a>
+<a name="ln455">            }</a>
+<a name="ln456"> </a>
+<a name="ln457">            //Images.</a>
+<a name="ln458">            case ExportFormats.Jpeg:</a>
+<a name="ln459">            {</a>
+<a name="ln460">                AddDistinct(presets, JpegPreset.Default);</a>
+<a name="ln461">                break;</a>
+<a name="ln462">            }</a>
+<a name="ln463">            case ExportFormats.Png:</a>
+<a name="ln464">            {</a>
+<a name="ln465">                AddDistinct(presets, PngPreset.Default);</a>
+<a name="ln466">                break;</a>
+<a name="ln467">            }</a>
+<a name="ln468">            case ExportFormats.Bmp:</a>
+<a name="ln469">            {</a>
+<a name="ln470">                AddDistinct(presets, BmpPreset.Default);</a>
+<a name="ln471">                break;</a>
+<a name="ln472">            }</a>
+<a name="ln473"> </a>
+<a name="ln474">            //Other.</a>
+<a name="ln475">            case ExportFormats.Stg:</a>
+<a name="ln476">            {</a>
+<a name="ln477">                AddDistinct(presets, StgPreset.Default);</a>
+<a name="ln478">                break;</a>
+<a name="ln479">            }</a>
+<a name="ln480">            case ExportFormats.Psd:</a>
+<a name="ln481">            {</a>
+<a name="ln482">                AddDistinct(presets, PsdPreset.Default);</a>
+<a name="ln483">                break;</a>
+<a name="ln484">            }</a>
+<a name="ln485">        }</a>
+<a name="ln486"> </a>
+<a name="ln487">        return presets;</a>
+<a name="ln488">    }</a>
+<a name="ln489"> </a>
+<a name="ln490">    private void AddDistinct(ICollection&lt;ExportPreset&gt; current, IEnumerable&lt;IExportPreset&gt; newList)</a>
+<a name="ln491">    {</a>
+<a name="ln492">        foreach (var preset in newList.Where(preset =&gt; current.Where(w =&gt; w.Type == preset.Type).All(a =&gt; a.TitleKey != preset.TitleKey)))</a>
+<a name="ln493">            current.Add((ExportPreset)preset);</a>
+<a name="ln494">    }</a>
+<a name="ln495"> </a>
+<a name="ln496">    private void AddDistinct(ICollection&lt;ExportPreset&gt; current, IExportPreset newPreset)</a>
+<a name="ln497">    {</a>
+<a name="ln498">        if (current.Where(w =&gt; w.Type == newPreset.Type).All(a =&gt; a.TitleKey != newPreset.TitleKey))</a>
+<a name="ln499">            current.Add((ExportPreset)newPreset);</a>
+<a name="ln500">    }</a>
+<a name="ln501"> </a>
+<a name="ln502">    private void SetPresetAsLastSelected(ExportPreset preset)</a>
+<a name="ln503">    {</a>
+<a name="ln504">        if (preset == null)</a>
+<a name="ln505">            return;</a>
+<a name="ln506"> </a>
+<a name="ln507">        //Get all presets of given type. It's possible that there's none available.</a>
+<a name="ln508">        var list = UserSettings.All.ExportPresets?.OfType&lt;ExportPreset&gt;().Where(w =&gt; w.Type == preset.Type).ToList() ?? new List&lt;ExportPreset&gt;();</a>
+<a name="ln509"> </a>
+<a name="ln510">        //Set the selected preset as the last selected one.</a>
+<a name="ln511">        foreach (var pre in list)</a>
+<a name="ln512">        {</a>
+<a name="ln513">            pre.IsSelected = (pre.Title ?? &quot;&quot;).Equals(preset.Title ?? &quot;&quot;);</a>
+<a name="ln514"> </a>
+<a name="ln515">            if (pre.Encoder == preset.Encoder)</a>
+<a name="ln516">                pre.IsSelectedForEncoder = pre.IsSelected;</a>
+<a name="ln517">        }</a>
+<a name="ln518"> </a>
+<a name="ln519">        foreach (var pre in PresetComboBox.ItemsSource.OfType&lt;ExportPreset&gt;())</a>
+<a name="ln520">        {</a>
+<a name="ln521">            pre.IsSelected = (pre.Title ?? &quot;&quot;).Equals(preset.Title ?? &quot;&quot;);</a>
+<a name="ln522"> </a>
+<a name="ln523">            if (pre.Encoder == preset.Encoder)</a>
+<a name="ln524">                pre.IsSelectedForEncoder = pre.IsSelected;</a>
+<a name="ln525">        }</a>
+<a name="ln526"> </a>
+<a name="ln527">        PersistPresets(list, preset.Type);</a>
+<a name="ln528">    }</a>
+<a name="ln529"> </a>
+<a name="ln530">    private static void PersistPresets(IEnumerable&lt;ExportPreset&gt; typeList, ExportFormats type)</a>
+<a name="ln531">    {</a>
+<a name="ln532">        var list = UserSettings.All.ExportPresets?.OfType&lt;ExportPreset&gt;().Where(w =&gt; w.Type != type).ToList() ?? [];</a>
+<a name="ln533"> </a>
+<a name="ln534">        list.AddRange(typeList);</a>
+<a name="ln535"> </a>
+<a name="ln536">        UserSettings.All.ExportPresets = new ArrayList(list.ToArray());</a>
+<a name="ln537">    }</a>
+<a name="ln538"> </a>
+<a name="ln539">    private void AdjustCodecs(ExportPreset preset)</a>
+<a name="ln540">    {</a>
+<a name="ln541">        if (preset is not VideoPreset videoPreset)</a>
+<a name="ln542">            return;</a>
+<a name="ln543"> </a>
+<a name="ln544">        FfmpegCodecComboBox.SelectionChanged -= FfmpegCodecComboBox_SelectionChanged;</a>
+<a name="ln545">        var codec = videoPreset.VideoCodec;</a>
+<a name="ln546"> </a>
+<a name="ln547">        switch (videoPreset.Type)</a>
+<a name="ln548">        {</a>
+<a name="ln549">            case ExportFormats.Avi:</a>
+<a name="ln550">            {</a>
+<a name="ln551">                FfmpegCodecComboBox.ItemsSource = new List&lt;VideoCodec&gt;</a>
+<a name="ln552">                {</a>
+<a name="ln553">                    new Mpeg2(),</a>
+<a name="ln554">                    new Mpeg4()</a>
+<a name="ln555">                };</a>
+<a name="ln556"> </a>
+<a name="ln557">                break;</a>
+<a name="ln558">            }</a>
+<a name="ln559"> </a>
+<a name="ln560">            case ExportFormats.Mkv:</a>
+<a name="ln561">            {</a>
+<a name="ln562">                if (videoPreset.HardwareAcceleration == HardwareAccelerationModes.On)</a>
+<a name="ln563">                {</a>
+<a name="ln564">                    FfmpegCodecComboBox.ItemsSource = new List&lt;VideoCodec&gt;</a>
+<a name="ln565">                    {</a>
+<a name="ln566">                        new X264(),</a>
+<a name="ln567">                        new H264Amf(),</a>
+<a name="ln568">                        new H264Nvenc(),</a>
+<a name="ln569">                        new H264Qsv(),</a>
+<a name="ln570">                        new X265(),</a>
+<a name="ln571">                        new HevcAmf(),</a>
+<a name="ln572">                        new HevcNvenc(),</a>
+<a name="ln573">                        new HevcQsv(),</a>
+<a name="ln574">                        new Vp8(),</a>
+<a name="ln575">                        new Vp9(),</a>
+<a name="ln576">                        new LibAom(),</a>
+<a name="ln577">                        new SvtAv1(),</a>
+<a name="ln578">                        new Rav1E()</a>
+<a name="ln579">                    };</a>
+<a name="ln580">                }</a>
+<a name="ln581">                else</a>
+<a name="ln582">                {</a>
+<a name="ln583">                    FfmpegCodecComboBox.ItemsSource = new List&lt;VideoCodec&gt;</a>
+<a name="ln584">                    {</a>
+<a name="ln585">                        new X264(),</a>
+<a name="ln586">                        new X265(),</a>
+<a name="ln587">                        new Vp8(),</a>
+<a name="ln588">                        new Vp9(),</a>
+<a name="ln589">                        new LibAom(),</a>
+<a name="ln590">                        new SvtAv1(),</a>
+<a name="ln591">                        new Rav1E()</a>
+<a name="ln592">                    };</a>
+<a name="ln593">                }</a>
+<a name="ln594"> </a>
+<a name="ln595">                break;</a>
+<a name="ln596">            }</a>
+<a name="ln597">            case ExportFormats.Mov:</a>
+<a name="ln598">            {</a>
+<a name="ln599">                if (videoPreset.HardwareAcceleration == HardwareAccelerationModes.On)</a>
+<a name="ln600">                {</a>
+<a name="ln601">                    FfmpegCodecComboBox.ItemsSource = new List&lt;VideoCodec&gt;</a>
+<a name="ln602">                    {</a>
+<a name="ln603">                        new X264(),</a>
+<a name="ln604">                        new H264Amf(),</a>
+<a name="ln605">                        new H264Nvenc(),</a>
+<a name="ln606">                        new H264Qsv(),</a>
+<a name="ln607">                        new X265(),</a>
+<a name="ln608">                        new HevcAmf(),</a>
+<a name="ln609">                        new HevcNvenc(),</a>
+<a name="ln610">                        new HevcQsv()</a>
+<a name="ln611">                    };</a>
+<a name="ln612">                }</a>
+<a name="ln613">                else</a>
+<a name="ln614">                {</a>
+<a name="ln615">                    FfmpegCodecComboBox.ItemsSource = new List&lt;VideoCodec&gt;</a>
+<a name="ln616">                    {</a>
+<a name="ln617">                        new X264(),</a>
+<a name="ln618">                        new X265()</a>
+<a name="ln619">                    };</a>
+<a name="ln620">                }</a>
+<a name="ln621"> </a>
+<a name="ln622">                break;</a>
+<a name="ln623">            }</a>
+<a name="ln624">            case ExportFormats.Mp4:</a>
+<a name="ln625">            {</a>
+<a name="ln626">                if (videoPreset.HardwareAcceleration == HardwareAccelerationModes.On)</a>
+<a name="ln627">                {</a>
+<a name="ln628">                    FfmpegCodecComboBox.ItemsSource = new List&lt;VideoCodec&gt;</a>
+<a name="ln629">                    {</a>
+<a name="ln630">                        new X264(),</a>
+<a name="ln631">                        new H264Amf(),</a>
+<a name="ln632">                        new H264Nvenc(),</a>
+<a name="ln633">                        new H264Qsv(),</a>
+<a name="ln634">                        new X265(),</a>
+<a name="ln635">                        new HevcAmf(),</a>
+<a name="ln636">                        new HevcNvenc(),</a>
+<a name="ln637">                        new HevcQsv(),</a>
+<a name="ln638">                        new LibAom(),</a>
+<a name="ln639">                        new SvtAv1(),</a>
+<a name="ln640">                        new Rav1E()</a>
+<a name="ln641">                    };</a>
+<a name="ln642">                }</a>
+<a name="ln643">                else</a>
+<a name="ln644">                {</a>
+<a name="ln645">                    FfmpegCodecComboBox.ItemsSource = new List&lt;VideoCodec&gt;</a>
+<a name="ln646">                    {</a>
+<a name="ln647">                        new X264(),</a>
+<a name="ln648">                        new X265(),</a>
+<a name="ln649">                        new LibAom(),</a>
+<a name="ln650">                        new SvtAv1(),</a>
+<a name="ln651">                        new Rav1E()</a>
+<a name="ln652">                    };</a>
+<a name="ln653">                }</a>
+<a name="ln654"> </a>
+<a name="ln655">                break;</a>
+<a name="ln656">            }</a>
+<a name="ln657">            case ExportFormats.Webm:</a>
+<a name="ln658">            {</a>
+<a name="ln659">                FfmpegCodecComboBox.ItemsSource = new List&lt;VideoCodec&gt;</a>
+<a name="ln660">                {</a>
+<a name="ln661">                    new Vp8(),</a>
+<a name="ln662">                    new Vp9(),</a>
+<a name="ln663">                    new LibAom(),</a>
+<a name="ln664">                    new SvtAv1(),</a>
+<a name="ln665">                    new Rav1E()</a>
+<a name="ln666">                };</a>
+<a name="ln667"> </a>
+<a name="ln668">                break;</a>
+<a name="ln669">            }</a>
+<a name="ln670">        }</a>
+<a name="ln671"> </a>
+<a name="ln672">        videoPreset.VideoCodec = VideoCodecs.NotSelected;</a>
+<a name="ln673">        FfmpegCodecComboBox.SelectionChanged += FfmpegCodecComboBox_SelectionChanged;</a>
+<a name="ln674">        videoPreset.VideoCodec = codec;</a>
+<a name="ln675">    }</a>
+<a name="ln676"> </a>
+<a name="ln677">    private void AdjustAvifCodecs(ExportPreset preset)</a>
+<a name="ln678">    {</a>
+<a name="ln679">        if (preset is not FfmpegAvifPreset avifPreset)</a>
+<a name="ln680">            return;</a>
+<a name="ln681"> </a>
+<a name="ln682">        FfmpegAvifCodecComboBox.SelectionChanged -= FfmpegAvifCodecComboBox_SelectionChanged;</a>
+<a name="ln683">        var codec = avifPreset.VideoCodec;</a>
+<a name="ln684"> </a>
+<a name="ln685">        // We have not implemented av1_qsv/nvenc/amf yet</a>
+<a name="ln686"> </a>
+<a name="ln687">        FfmpegAvifCodecComboBox.ItemsSource = new List&lt;VideoCodec&gt;</a>
+<a name="ln688">        {</a>
+<a name="ln689">            new LibAom(),</a>
+<a name="ln690">            new Rav1E(),</a>
+<a name="ln691">            new SvtAv1(),</a>
+<a name="ln692">        };</a>
+<a name="ln693"> </a>
+<a name="ln694">        avifPreset.VideoCodec = VideoCodecs.NotSelected;</a>
+<a name="ln695">        FfmpegAvifCodecComboBox.SelectionChanged += FfmpegAvifCodecComboBox_SelectionChanged;</a>
+<a name="ln696">        avifPreset.VideoCodec = codec;</a>
+<a name="ln697">    }</a>
+<a name="ln698"> </a>
+<a name="ln699">    private void ChangeFileNumber(int change)</a>
+<a name="ln700">    {</a>
+<a name="ln701">        //If there's no filename declared, show the default one.</a>
+<a name="ln702">        if (string.IsNullOrWhiteSpace(CurrentPreset.OutputFilename))</a>
+<a name="ln703">        {</a>
+<a name="ln704">            CurrentPreset.OutputFilename = LocalizationHelper.Get(CurrentPreset.OutputFilenameKey);</a>
+<a name="ln705">            return;</a>
+<a name="ln706">        }</a>
+<a name="ln707"> </a>
+<a name="ln708">        var index = CurrentPreset.OutputFilename.Length;</a>
+<a name="ln709">        int start = -1, end = -1;</a>
+<a name="ln710"> </a>
+<a name="ln711">        //Detects the last number in a string.</a>
+<a name="ln712">        foreach (var c in CurrentPreset.OutputFilename.Reverse())</a>
+<a name="ln713">        {</a>
+<a name="ln714">            if (char.IsNumber(c))</a>
+<a name="ln715">            {</a>
+<a name="ln716">                if (end == -1)</a>
+<a name="ln717">                    end = index;</a>
+<a name="ln718"> </a>
+<a name="ln719">                start = index - 1;</a>
+<a name="ln720">            }</a>
+<a name="ln721">            else if (start == index)</a>
+<a name="ln722">                break;</a>
+<a name="ln723"> </a>
+<a name="ln724">            index--;</a>
+<a name="ln725">        }</a>
+<a name="ln726"> </a>
+<a name="ln727">        //If there's no number.</a>
+<a name="ln728">        if (end == -1)</a>
+<a name="ln729">        {</a>
+<a name="ln730">            CurrentPreset.OutputFilename += $&quot; ({change})&quot;;</a>
+<a name="ln731">            return;</a>
+<a name="ln732">        }</a>
+<a name="ln733"> </a>
+<a name="ln734">        //If it's a negative number, include the signal.</a>
+<a name="ln735">        if (start &gt; 0 &amp;&amp; CurrentPreset.OutputFilename.Substring(start - 1, 1).Equals(&quot;-&quot;))</a>
+<a name="ln736">            start--;</a>
+<a name="ln737"> </a>
+<a name="ln738">        //Cut, convert, merge.</a>
+<a name="ln739">        if (int.TryParse(CurrentPreset.OutputFilename.Substring(start, end - start), out var number))</a>
+<a name="ln740">        {</a>
+<a name="ln741">            var offset = start + number.ToString().Length;</a>
+<a name="ln742"> </a>
+<a name="ln743">            CurrentPreset.OutputFilename = CurrentPreset.OutputFilename.Substring(0, start) + (number + change) + CurrentPreset.OutputFilename.Substring(offset, CurrentPreset.OutputFilename.Length - end);</a>
+<a name="ln744">        }</a>
+<a name="ln745">    }</a>
+<a name="ln746"> </a>
+<a name="ln747">    private bool IsExpressionValid(string expression)</a>
+<a name="ln748">    {</a>
+<a name="ln749">        if (string.IsNullOrWhiteSpace(expression))</a>
+<a name="ln750">            return false;</a>
+<a name="ln751"> </a>
+<a name="ln752">        //Divide by commas</a>
+<a name="ln753">        var blocks = expression.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);</a>
+<a name="ln754"> </a>
+<a name="ln755">        foreach (var block in blocks)</a>
+<a name="ln756">        {</a>
+<a name="ln757">            var subs = block.Split(new[] { '-' }, StringSplitOptions.RemoveEmptyEntries);</a>
+<a name="ln758"> </a>
+<a name="ln759">            //Only one X - Y range per block.</a>
+<a name="ln760">            if (subs.Length &gt; 2)</a>
+<a name="ln761">                return false;</a>
+<a name="ln762"> </a>
+<a name="ln763">            //Only valid, within-range numerical values accepted.</a>
+<a name="ln764">            foreach (var sub in subs)</a>
+<a name="ln765">            {</a>
+<a name="ln766">                if (!int.TryParse(sub, out var number))</a>
+<a name="ln767">                    return false;</a>
+<a name="ln768"> </a>
+<a name="ln769">                if (number &lt; 0 || number &gt; FrameCount - 1)</a>
+<a name="ln770">                    return false;</a>
+<a name="ln771">            }</a>
+<a name="ln772">        }</a>
+<a name="ln773"> </a>
+<a name="ln774">        return true;</a>
+<a name="ln775">    }</a>
+<a name="ln776"> </a>
+<a name="ln777">    private void SyncPath()</a>
+<a name="ln778">    {</a>
+<a name="ln779">        if (CurrentPreset == null || !UserSettings.All.SyncPathFolder)</a>
+<a name="ln780">            return;</a>
+<a name="ln781"> </a>
+<a name="ln782">        foreach (var preset in UserSettings.All.ExportPresets?.OfType&lt;ExportPreset&gt;() ?? new List&lt;ExportPreset&gt;())</a>
+<a name="ln783">        {</a>
+<a name="ln784">            if (UserSettings.All.SyncPathForSameType &amp;&amp; preset.Type != CurrentPreset.Type)</a>
+<a name="ln785">                continue;</a>
+<a name="ln786"> </a>
+<a name="ln787">            preset.OutputFolder = CurrentPreset.OutputFolder;</a>
+<a name="ln788"> </a>
+<a name="ln789">            if (!UserSettings.All.SyncPathFilename)</a>
+<a name="ln790">                continue;</a>
+<a name="ln791"> </a>
+<a name="ln792">            preset.OutputFilename = CurrentPreset.OutputFilename;</a>
+<a name="ln793">        }</a>
+<a name="ln794">    }</a>
+<a name="ln795"> </a>
+<a name="ln796">    public async Task&lt;bool&gt; IsValid()</a>
+<a name="ln797">    {</a>
+<a name="ln798">        #region Validate preset specific properties</a>
+<a name="ln799"> </a>
+<a name="ln800">        var args = await CurrentPreset.IsValid();</a>
+<a name="ln801"> </a>
+<a name="ln802">        if (args != null)</a>
+<a name="ln803">        {</a>
+<a name="ln804">            if (args.Reason == StatusReasons.FileAlreadyExists)</a>
+<a name="ln805">                FileExistsGrid.Visibility = Visibility.Visible;</a>
+<a name="ln806"> </a>
+<a name="ln807">            RaiseValidatedEvent(args);</a>
+<a name="ln808">            return false;</a>
+<a name="ln809">        }</a>
+<a name="ln810"> </a>
+<a name="ln811">        #endregion</a>
+<a name="ln812"> </a>
+<a name="ln813">        if (CurrentPreset.PickLocation)</a>
+<a name="ln814">        {</a>
+<a name="ln815">            if (CurrentPreset.OverwriteMode != OverwriteModes.Allow &amp;&amp; File.Exists(Path.Combine(CurrentPreset.OutputFolder, CurrentPreset.ResolvedFilename + CurrentPreset.Extension)))</a>
+<a name="ln816">            {</a>
+<a name="ln817">                if (CurrentPreset.OverwriteMode == OverwriteModes.Prompt)</a>
+<a name="ln818">                {</a>
+<a name="ln819">                    if (!Dialog.Ask(LocalizationHelper.Get(&quot;S.SaveAs.Dialogs.Overwrite.Title&quot;), LocalizationHelper.Get(&quot;S.SaveAs.Dialogs.Overwrite.Instruction&quot;),</a>
+<a name="ln820">                        LocalizationHelper.GetWithFormat(&quot;S.SaveAs.Dialogs.Overwrite.Message&quot;, &quot;A file with the name '{0}' already exists in that folder.\r\nWould you like to overwrite it?&quot;, CurrentPreset.ResolvedFilename + CurrentPreset.Extension)))</a>
+<a name="ln821">                    {</a>
+<a name="ln822">                        RaiseValidatedEvent(&quot;S.SaveAs.Warning.Overwrite&quot;, StatusReasons.FileAlreadyExists);</a>
+<a name="ln823">                        return false;</a>
+<a name="ln824">                    }</a>
+<a name="ln825">                }</a>
+<a name="ln826">                else</a>
+<a name="ln827">                {</a>
+<a name="ln828">                    RaiseValidatedEvent(&quot;S.SaveAs.Warning.Overwrite&quot;, StatusReasons.FileAlreadyExists);</a>
+<a name="ln829">                    return false;</a>
+<a name="ln830">                }</a>
+<a name="ln831">            }</a>
+<a name="ln832"> </a>
+<a name="ln833">            if (CurrentPreset.ExportAsProjectToo)</a>
+<a name="ln834">            {</a>
+<a name="ln835">                if (CurrentPreset.OverwriteMode != OverwriteModes.Allow)</a>
+<a name="ln836">                {</a>
+<a name="ln837">                    //Get the project extension in use.</a>
+<a name="ln838">                    var extension = UserSettings.All.ExportPresets.OfType&lt;StgPreset&gt;().OrderBy(o =&gt; o.IsSelectedForEncoder).Select(s =&gt; s.Extension ?? s.DefaultExtension).FirstOrDefault() ?? &quot;.stg&quot;;</a>
+<a name="ln839"> </a>
+<a name="ln840">                    if (File.Exists(Path.Combine(CurrentPreset.OutputFolder, CurrentPreset.OutputFilename + extension)))</a>
+<a name="ln841">                    {</a>
+<a name="ln842">                        RaiseValidatedEvent(&quot;S.SaveAs.Warning.Overwrite.Project&quot;, StatusReasons.FileAlreadyExists);</a>
+<a name="ln843">                        return false;</a>
+<a name="ln844">                    }</a>
+<a name="ln845">                }</a>
+<a name="ln846">            }</a>
+<a name="ln847">        }</a>
+<a name="ln848"> </a>
+<a name="ln849">        if (CurrentPreset.UploadFile)</a>
+<a name="ln850">        {</a>
+<a name="ln851">            var presetType = CurrentPreset.Extension == &quot;.zip&quot; ? ExportFormats.Zip : CurrentPreset.Type;</a>
+<a name="ln852">            var upload = UserSettings.All.UploadPresets.OfType&lt;UploadPreset&gt;().FirstOrDefault(f =&gt; (f.AllowedTypes.Count == 0 || f.AllowedTypes.Contains(presetType)) &amp;&amp; f.Title == CurrentPreset.UploadService);</a>
+<a name="ln853"> </a>
+<a name="ln854">            args = await PresetExtensions.IsValid(upload);</a>
+<a name="ln855"> </a>
+<a name="ln856">            if (args != null)</a>
+<a name="ln857">            {</a>
+<a name="ln858">                RaiseValidatedEvent(args);</a>
+<a name="ln859">                return false;</a>
+<a name="ln860">            }</a>
+<a name="ln861">        }</a>
+<a name="ln862"> </a>
+<a name="ln863">        if (CurrentPreset.ExportPartially)</a>
+<a name="ln864">        {</a>
+<a name="ln865">            if (CurrentPreset.PartialExport == PartialExportModes.Selection &amp;&amp; SelectionCount &lt; 1)</a>
+<a name="ln866">            {</a>
+<a name="ln867">                RaiseValidatedEvent(&quot;S.SaveAs.Warning.Partial.NoSelection&quot;, StatusReasons.InvalidState);</a>
+<a name="ln868">                return false;</a>
+<a name="ln869">            }</a>
+<a name="ln870"> </a>
+<a name="ln871">            if (CurrentPreset.PartialExport == PartialExportModes.FrameExpression &amp;&amp; !IsExpressionValid(CurrentPreset.PartialExportFrameExpression))</a>
+<a name="ln872">            {</a>
+<a name="ln873">                RaiseValidatedEvent(&quot;S.SaveAs.Warning.Partial.InvalidExpression&quot;, StatusReasons.InvalidState);</a>
+<a name="ln874">                return false;</a>
+<a name="ln875">            }</a>
+<a name="ln876">        }</a>
+<a name="ln877"> </a>
+<a name="ln878">        #region FFmpeg</a>
+<a name="ln879"> </a>
+<a name="ln880">        if (CurrentPreset.RequiresFfmpeg)</a>
+<a name="ln881">        {</a>
+<a name="ln882">            if (!Other.IsFfmpegPresent())</a>
+<a name="ln883">            {</a>
+<a name="ln884">                RaiseValidatedEvent(&quot;S.Editor.Warning.Ffmpeg&quot;, StatusReasons.MissingFfmpeg, () =&gt; App.MainViewModel.OpenOptions.Execute(Options.ExtrasIndex));</a>
+<a name="ln885">                return false;</a>
+<a name="ln886">            }</a>
+<a name="ln887"> </a>
+<a name="ln888">            if (!string.IsNullOrWhiteSpace(UserSettings.All.FfmpegLocation) &amp;&amp; UserSettings.All.FfmpegLocation.ToCharArray().Any(x =&gt; Path.GetInvalidPathChars().Contains(x)))</a>
+<a name="ln889">            {</a>
+<a name="ln890">                RaiseValidatedEvent(&quot;S.Options.Extras.FfmpegLocation.Invalid&quot;, StatusReasons.MissingFfmpeg, () =&gt; App.MainViewModel.OpenOptions.Execute(Options.ExtrasIndex));</a>
+<a name="ln891">                return false;</a>
+<a name="ln892">            }</a>
+<a name="ln893"> </a>
+<a name="ln894">            if (CurrentPreset is not IFfmpegPreset ffmpegPreset)</a>
+<a name="ln895">                return false;</a>
+<a name="ln896"> </a>
+<a name="ln897">            if (ffmpegPreset.SettingsMode == VideoSettingsModes.Advanced)</a>
+<a name="ln898">            {</a>
+<a name="ln899">                //Empty.</a>
+<a name="ln900">                if (string.IsNullOrWhiteSpace(ffmpegPreset.Parameters))</a>
+<a name="ln901">                {</a>
+<a name="ln902">                    RaiseValidatedEvent(&quot;S.SaveAs.Warning.Ffmpeg.Empty&quot;, StatusReasons.EmptyProperty);</a>
+<a name="ln903">                    return false;</a>
+<a name="ln904">                }</a>
+<a name="ln905"> </a>
+<a name="ln906">                //Missing special parameters.</a>
+<a name="ln907">                if (!ffmpegPreset.Parameters.Contains(&quot;{I}&quot;) || !ffmpegPreset.Parameters.Contains(&quot;{O}&quot;))</a>
+<a name="ln908">                {</a>
+<a name="ln909">                    RaiseValidatedEvent(&quot;S.SaveAs.Warning.Ffmpeg.MissingPath&quot;, StatusReasons.InvalidState);</a>
+<a name="ln910">                    return false;</a>
+<a name="ln911">                }</a>
+<a name="ln912">            }</a>
+<a name="ln913">        }</a>
+<a name="ln914"> </a>
+<a name="ln915">        #endregion</a>
+<a name="ln916"> </a>
+<a name="ln917">        #region Gifski</a>
+<a name="ln918"> </a>
+<a name="ln919">        if (CurrentPreset.RequiresGifski)</a>
+<a name="ln920">        {</a>
+<a name="ln921">            if (!Other.IsGifskiPresent())</a>
+<a name="ln922">            {</a>
+<a name="ln923">                RaiseValidatedEvent(&quot;S.Editor.Warning.Gifski&quot;, StatusReasons.MissingGifski, () =&gt; App.MainViewModel.OpenOptions.Execute(Options.ExtrasIndex));</a>
+<a name="ln924">                return false;</a>
+<a name="ln925">            }</a>
+<a name="ln926"> </a>
+<a name="ln927">            if (!string.IsNullOrWhiteSpace(UserSettings.All.GifskiLocation) &amp;&amp; UserSettings.All.GifskiLocation.ToCharArray().Any(x =&gt; Path.GetInvalidPathChars().Contains(x)))</a>
+<a name="ln928">            {</a>
+<a name="ln929">                RaiseValidatedEvent(&quot;S.Options.Extras.GifskiLocation.Invalid&quot;, StatusReasons.MissingGifski, () =&gt; App.MainViewModel.OpenOptions.Execute(Options.ExtrasIndex));</a>
+<a name="ln930">                return false;</a>
+<a name="ln931">            }</a>
+<a name="ln932">        }</a>
+<a name="ln933"> </a>
+<a name="ln934">        #endregion</a>
+<a name="ln935"> </a>
+<a name="ln936">        return true;</a>
+<a name="ln937">    }</a>
+<a name="ln938"> </a>
+<a name="ln939">    public ExportPreset GetPreset()</a>
+<a name="ln940">    {</a>
+<a name="ln941">        return (CurrentPreset ?? PresetComboBox.SelectedItem as ExportPreset)?.ShallowCopy();</a>
+<a name="ln942">    }</a>
+<a name="ln943"> </a>
+<a name="ln944">    #endregion</a>
+<a name="ln945"> </a>
+<a name="ln946">    #region Events</a>
+<a name="ln947"> </a>
+<a name="ln948">    private void Panel_Loaded(object sender, RoutedEventArgs e)</a>
+<a name="ln949">    {</a>
+<a name="ln950">        PresetComboBox.Focus();</a>
+<a name="ln951"> </a>
+<a name="ln952">        //If a default file type was not selected, it picks 'Gif' as default.</a>
+<a name="ln953">        if (TypeComboBox.SelectedValue is not ExportFormats type)</a>
+<a name="ln954">            TypeComboBox.SelectedValue = type = ExportFormats.Gif;</a>
+<a name="ln955"> </a>
+<a name="ln956">        //Gifski is only supported in x64.</a>
+<a name="ln957">        EncoderGifskiItem.IsEnabled = Environment.Is64BitProcess;</a>
+<a name="ln958"> </a>
+<a name="ln959">        AdjustPresentation(type);</a>
+<a name="ln960">        LoadPresets(type, null, true);</a>
+<a name="ln961">    }</a>
+<a name="ln962"> </a>
+<a name="ln963">    private void TypeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)</a>
+<a name="ln964">    {</a>
+<a name="ln965">        if (!IsLoaded)</a>
+<a name="ln966">            return;</a>
+<a name="ln967"> </a>
+<a name="ln968">        if (TypeComboBox.SelectedValue is not ExportFormats type)</a>
+<a name="ln969">            return;</a>
+<a name="ln970"> </a>
+<a name="ln971">        AdjustPresentation(type);</a>
+<a name="ln972">        LoadPresets(type);</a>
+<a name="ln973">    }</a>
+<a name="ln974"> </a>
+<a name="ln975"> </a>
+<a name="ln976">    private void PresetComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)</a>
+<a name="ln977">    {</a>
+<a name="ln978">        if (PresetComboBox.SelectedItem is not ExportPreset selected)</a>
+<a name="ln979">            return;</a>
+<a name="ln980"> </a>
+<a name="ln981">        var firstLoad = CurrentPreset == null;</a>
+<a name="ln982"> </a>
+<a name="ln983">        //Hide all other grids.</a>
+<a name="ln984">        foreach (var grid in EncoderGrid.Children.Cast&lt;UIElement&gt;())</a>
+<a name="ln985">            grid.Visibility = Visibility.Collapsed;</a>
+<a name="ln986"> </a>
+<a name="ln987">        SetPresetAsLastSelected(selected);</a>
+<a name="ln988">        SyncPath();</a>
+<a name="ln989"> </a>
+<a name="ln990">        //Set encoder.</a>
+<a name="ln991">        EncoderComboBox.SelectedValue = selected.Encoder;</a>
+<a name="ln992">        QuantizerComboBox.Visibility = UserSettings.All.SaveType == ExportFormats.Gif &amp;&amp; selected.Encoder == EncoderTypes.ScreenToGif ? Visibility.Visible : Visibility.Collapsed;</a>
+<a name="ln993">        EncoderExpander.SetResourceReference(HeaderedContentControl.HeaderProperty, QuantizerComboBox.Visibility == Visibility.Visible ? &quot;S.SaveAs.Encoder.Quantizer&quot; : &quot;S.SaveAs.Encoder&quot;);</a>
+<a name="ln994"> </a>
+<a name="ln995">        //Remove events prior to changing preset.</a>
+<a name="ln996">        FfmpegAccelerationComboBox.SelectionChanged -= FfmpegAccelerationComboBox_SelectionChanged;</a>
+<a name="ln997"> </a>
+<a name="ln998">        //Load video codecs.</a>
+<a name="ln999">        AdjustCodecs(selected);</a>
+<a name="ln1000">        AdjustAvifCodecs(selected);</a>
+<a name="ln1001"> </a>
+<a name="ln1002">        //Set the preset to the UI.</a>
+<a name="ln1003">        CurrentPreset = selected.HasAutoSave ? selected : selected.ShallowCopy();</a>
+<a name="ln1004"> </a>
+<a name="ln1005">        //Adjust values for non-persistent properties.</a>
+<a name="ln1006">        selected.PartialExportFrameStart = 0;</a>
+<a name="ln1007">        selected.PartialExportFrameEnd = FrameCount;</a>
+<a name="ln1008">        selected.PartialExportTimeStart = TimeSpan.Zero;</a>
+<a name="ln1009">        selected.PartialExportTimeEnd = TotalTime;</a>
+<a name="ln1010">        selected.PartialExportFrameExpression = $&quot;0 - {FrameCount - 1}&quot;;</a>
+<a name="ln1011"> </a>
+<a name="ln1012">        //Select the upload preset.</a>
+<a name="ln1013">        LoadUploadPresets(selected);</a>
+<a name="ln1014"> </a>
+<a name="ln1015">        if (string.IsNullOrWhiteSpace(selected.Extension))</a>
+<a name="ln1016">            selected.Extension = selected.DefaultExtension;</a>
+<a name="ln1017"> </a>
+<a name="ln1018">        //Get the selected preset and display its settings in the next expanders.</a>
+<a name="ln1019">        switch (selected.Type)</a>
+<a name="ln1020">        {</a>
+<a name="ln1021">            //Animated images.</a>
+<a name="ln1022">            case ExportFormats.Apng:</a>
+<a name="ln1023">            {</a>
+<a name="ln1024">                if (selected is not ApngPreset apngPreset)</a>
+<a name="ln1025">                    break;</a>
+<a name="ln1026"> </a>
+<a name="ln1027">                switch (apngPreset.Encoder)</a>
+<a name="ln1028">                {</a>
+<a name="ln1029">                    case EncoderTypes.ScreenToGif:</a>
+<a name="ln1030">                        EmbeddedApngOptionsGrid.Visibility = Visibility.Visible;</a>
+<a name="ln1031">                        break;</a>
+<a name="ln1032">                    case EncoderTypes.FFmpeg:</a>
+<a name="ln1033">                        FfmpegApngOptionsGrid.Visibility = Visibility.Visible;</a>
+<a name="ln1034">                        break;</a>
+<a name="ln1035">                }</a>
+<a name="ln1036"> </a>
+<a name="ln1037">                break;</a>
+<a name="ln1038">            }</a>
+<a name="ln1039">            case ExportFormats.Gif:</a>
+<a name="ln1040">            {</a>
+<a name="ln1041">                if (selected is not GifPreset gifPreset)</a>
+<a name="ln1042">                    break;</a>
+<a name="ln1043"> </a>
+<a name="ln1044">                switch (gifPreset.Encoder)</a>
+<a name="ln1045">                {</a>
+<a name="ln1046">                    case EncoderTypes.ScreenToGif:</a>
+<a name="ln1047">                        EmbeddedGifOptionsGrid.Visibility = Visibility.Visible;</a>
+<a name="ln1048">                        break;</a>
+<a name="ln1049">                    case EncoderTypes.KGySoft:</a>
+<a name="ln1050">                        KGySoftGifOptionsPanel.Visibility = Visibility.Visible;</a>
+<a name="ln1051">                        break;</a>
+<a name="ln1052">                    case EncoderTypes.System:</a>
+<a name="ln1053">                        SystemGifOptionsGrid.Visibility = Visibility.Visible;</a>
+<a name="ln1054">                        break;</a>
+<a name="ln1055">                    case EncoderTypes.FFmpeg:</a>
+<a name="ln1056">                        FfmpegGifOptionsGrid.Visibility = Visibility.Visible;</a>
+<a name="ln1057">                        break;</a>
+<a name="ln1058">                    case EncoderTypes.Gifski:</a>
+<a name="ln1059">                        GifskiGifOptionsGrid.Visibility = Visibility.Visible;</a>
+<a name="ln1060">                        break;</a>
+<a name="ln1061">                }</a>
+<a name="ln1062"> </a>
+<a name="ln1063">                break;</a>
+<a name="ln1064">            }</a>
+<a name="ln1065">            case ExportFormats.Webp:</a>
+<a name="ln1066">                FfmpegWebpOptionsGrid.Visibility = Visibility.Visible;</a>
+<a name="ln1067">                break;</a>
+<a name="ln1068">            case ExportFormats.Avif:</a>
+<a name="ln1069">                FfmpegAvifOptionsGrid.Visibility = Visibility.Visible;</a>
+<a name="ln1070">                FfmpegAvifAccelerationComboBox.SelectionChanged += FfmpegAvifAccelerationComboBox_SelectionChanged;</a>
+<a name="ln1071">                break;</a>
+<a name="ln1072"> </a>
+<a name="ln1073">            //Videos.</a>
+<a name="ln1074">            case ExportFormats.Avi:</a>
+<a name="ln1075">            case ExportFormats.Mkv:</a>
+<a name="ln1076">            case ExportFormats.Mov:</a>
+<a name="ln1077">            case ExportFormats.Mp4:</a>
+<a name="ln1078">            case ExportFormats.Webm:</a>
+<a name="ln1079">                FfmpegVideoOptionsGrid.Visibility = Visibility.Visible;</a>
+<a name="ln1080">                FfmpegAccelerationComboBox.SelectionChanged += FfmpegAccelerationComboBox_SelectionChanged;</a>
+<a name="ln1081">                break;</a>
+<a name="ln1082"> </a>
+<a name="ln1083">            //Images.</a>
+<a name="ln1084">            case ExportFormats.Jpeg:</a>
+<a name="ln1085">            case ExportFormats.Png:</a>
+<a name="ln1086">            case ExportFormats.Bmp:</a>
+<a name="ln1087">                EmbeddedImageOptionsGrid.Visibility = Visibility.Visible;</a>
+<a name="ln1088">                break;</a>
+<a name="ln1089"> </a>
+<a name="ln1090">            //Others.</a>
+<a name="ln1091">            case ExportFormats.Stg:</a>
+<a name="ln1092">                EmbeddedStgOptionsGrid.Visibility = Visibility.Visible;</a>
+<a name="ln1093">                break;</a>
+<a name="ln1094">            case ExportFormats.Psd:</a>
+<a name="ln1095">                EmbeddedPsdOptionsGrid.Visibility = Visibility.Visible;</a>
+<a name="ln1096">                break;</a>
+<a name="ln1097">        }</a>
+<a name="ln1098"> </a>
+<a name="ln1099">        if (firstLoad)</a>
+<a name="ln1100">        {</a>
+<a name="ln1101">            Dispatcher.InvokeAsync(() =&gt;</a>
+<a name="ln1102">            {</a>
+<a name="ln1103">                if (CurrentPreset.PickLocation)</a>
+<a name="ln1104">                    FilenameTextBox.Focus();</a>
+<a name="ln1105">                else if (CurrentPreset.UploadFile)</a>
+<a name="ln1106">                    UploadPresetComboBox.Focus();</a>
+<a name="ln1107">            }, DispatcherPriority.Loaded);</a>
+<a name="ln1108">        }</a>
+<a name="ln1109">    }</a>
+<a name="ln1110"> </a>
+<a name="ln1111">    private void AddPreset_Click(object sender, RoutedEventArgs e)</a>
+<a name="ln1112">    {</a>
+<a name="ln1113">        var add = new Preset</a>
+<a name="ln1114">        {</a>
+<a name="ln1115">            Current = PresetComboBox.SelectedItem as ExportPreset,</a>
+<a name="ln1116">            IsNew = true</a>
+<a name="ln1117">        };</a>
+<a name="ln1118"> </a>
+<a name="ln1119">        var result = add.ShowDialog();</a>
+<a name="ln1120"> </a>
+<a name="ln1121">        if (result != true)</a>
+<a name="ln1122">            return;</a>
+<a name="ln1123"> </a>
+<a name="ln1124">        //Select the created preset.</a>
+<a name="ln1125">        LoadPresets(add.Current.Type, add.Current);</a>
+<a name="ln1126">    }</a>
+<a name="ln1127"> </a>
+<a name="ln1128">    private void SavePreset_Click(object sender, RoutedEventArgs e)</a>
+<a name="ln1129">    {</a>
+<a name="ln1130">        if (CurrentPreset == null)</a>
+<a name="ln1131">            return;</a>
+<a name="ln1132"> </a>
+<a name="ln1133">        var list = UserSettings.All.ExportPresets.OfType&lt;ExportPreset&gt;().ToList();</a>
+<a name="ln1134">        var oldPreset = list.FirstOrDefault(f =&gt; f.Type == CurrentPreset.Type &amp;&amp; f.Title == CurrentPreset.Title);</a>
+<a name="ln1135"> </a>
+<a name="ln1136">        if (oldPreset != null)</a>
+<a name="ln1137">            list.Remove(oldPreset);</a>
+<a name="ln1138"> </a>
+<a name="ln1139">        list.Add(CurrentPreset);</a>
+<a name="ln1140"> </a>
+<a name="ln1141">        UserSettings.All.ExportPresets = new ArrayList(list);</a>
+<a name="ln1142">    }</a>
+<a name="ln1143"> </a>
+<a name="ln1144">    private void EditPreset_Click(object sender, RoutedEventArgs e)</a>
+<a name="ln1145">    {</a>
+<a name="ln1146">        var edit = new Preset</a>
+<a name="ln1147">        {</a>
+<a name="ln1148">            Current = PresetComboBox.SelectedItem as ExportPreset</a>
+<a name="ln1149">        };</a>
+<a name="ln1150"> </a>
+<a name="ln1151">        var result = edit.ShowDialog();</a>
+<a name="ln1152"> </a>
+<a name="ln1153">        if (result != true)</a>
+<a name="ln1154">            return;</a>
+<a name="ln1155"> </a>
+<a name="ln1156">        //Select the edited preset.</a>
+<a name="ln1157">        LoadPresets(edit.Current.Type, edit.Current);</a>
+<a name="ln1158">    }</a>
+<a name="ln1159"> </a>
+<a name="ln1160">    private void RemovePreset_Click(object sender, RoutedEventArgs e)</a>
+<a name="ln1161">    {</a>
+<a name="ln1162">        //TODO: Let the user remove default presets (just not the main default for the type). Add a way to restore removed presets.</a>
+<a name="ln1163"> </a>
+<a name="ln1164">        //Ask if the user really wants to remove the preset.</a>
+<a name="ln1165">        if (PresetComboBox.SelectedItem is not ExportPreset preset || !Dialog.Ask(LocalizationHelper.Get(&quot;S.SaveAs.Presets.Ask.Delete.Title&quot;), LocalizationHelper.Get(&quot;S.SaveAs.Presets.Ask.Delete.Instruction&quot;),</a>
+<a name="ln1166">                LocalizationHelper.Get(&quot;S.SaveAs.Presets.Ask.Delete.Message&quot;)))</a>
+<a name="ln1167">            return;</a>
+<a name="ln1168"> </a>
+<a name="ln1169">        //Remove the preset directly from the settings and reload all presets.</a>
+<a name="ln1170">        UserSettings.All.ExportPresets.Remove(preset);</a>
+<a name="ln1171">        LoadPresets(preset.Type);</a>
+<a name="ln1172">    }</a>
+<a name="ln1173"> </a>
+<a name="ln1174">    private void ResetPreset_Click(object sender, RoutedEventArgs e)</a>
+<a name="ln1175">    {</a>
+<a name="ln1176">        //Ask if the user really wants to reset the preset to its default settings.</a>
+<a name="ln1177">        if (PresetComboBox.SelectedItem is not ExportPreset preset || !Dialog.Ask(LocalizationHelper.Get(&quot;S.SaveAs.Presets.Ask.Reset.Title&quot;), LocalizationHelper.Get(&quot;S.SaveAs.Presets.Ask.Reset.Instruction&quot;),</a>
+<a name="ln1178">                LocalizationHelper.Get(&quot;S.SaveAs.Presets.Ask.Reset.Message&quot;)))</a>
+<a name="ln1179">            return;</a>
+<a name="ln1180"> </a>
+<a name="ln1181">        var hasReset = GeneratePresets(preset.Type, new List&lt;ExportPreset&gt;()).FirstOrDefault(f =&gt; f.TitleKey == preset.TitleKey);</a>
+<a name="ln1182"> </a>
+<a name="ln1183">        if (hasReset == null)</a>
+<a name="ln1184">            return; //TODO: What to do? Tell the user that this is an old preset, which is not being used anymore.</a>
+<a name="ln1185"> </a>
+<a name="ln1186">        UserSettings.All.ExportPresets.Remove(preset);</a>
+<a name="ln1187">        UserSettings.All.ExportPresets.Add(hasReset);</a>
+<a name="ln1188">        LoadPresets(hasReset.Type, hasReset);</a>
+<a name="ln1189">    }</a>
+<a name="ln1190"> </a>
+<a name="ln1191"> </a>
+<a name="ln1192">    private void EncoderComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)</a>
+<a name="ln1193">    {</a>
+<a name="ln1194">        if (!IsLoaded || EncoderGrid.Children.Cast&lt;UIElement&gt;().All(a =&gt; a.Visibility == Visibility.Collapsed))</a>
+<a name="ln1195">            return;</a>
+<a name="ln1196"> </a>
+<a name="ln1197">        if (EncoderComboBox.SelectedValue is not EncoderTypes encoder || encoder == CurrentPreset?.Encoder)</a>
+<a name="ln1198">            return;</a>
+<a name="ln1199"> </a>
+<a name="ln1200">        PresetComboBox.SelectedItem = PresetComboBox.ItemsSource.OfType&lt;ExportPreset&gt;().FirstOrDefault(f =&gt; f.Type == UserSettings.All.SaveType &amp;&amp; f.Encoder == encoder &amp;&amp; f.IsSelectedForEncoder) ??</a>
+<a name="ln1201">                                      PresetComboBox.ItemsSource.OfType&lt;ExportPreset&gt;().FirstOrDefault(f =&gt; f.Type == UserSettings.All.SaveType &amp;&amp; f.Encoder == encoder);</a>
+<a name="ln1202">        QuantizerComboBox.Visibility = UserSettings.All.SaveType == ExportFormats.Gif &amp;&amp; encoder == EncoderTypes.ScreenToGif ? Visibility.Visible : Visibility.Collapsed;</a>
+<a name="ln1203">    }</a>
+<a name="ln1204"> </a>
+<a name="ln1205">    private void QuantizerComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)</a>
+<a name="ln1206">    {</a>
+<a name="ln1207">        if (!IsLoaded)</a>
+<a name="ln1208">            return;</a>
+<a name="ln1209"> </a>
+<a name="ln1210">        switch (QuantizerComboBox.SelectedValue as ColorQuantizationTypes?)</a>
+<a name="ln1211">        {</a>
+<a name="ln1212">            case ColorQuantizationTypes.Neural:</a>
+<a name="ln1213">                SamplingTextBlock.Visibility = Visibility.Visible;</a>
+<a name="ln1214">                SamplingFactorSlider.Visibility = Visibility.Visible;</a>
+<a name="ln1215">                SamplingFactorGrid.Visibility = Visibility.Visible;</a>
+<a name="ln1216">                GlobalColorTableCheckBox.Visibility = Visibility.Visible;</a>
+<a name="ln1217">                break;</a>
+<a name="ln1218">            case ColorQuantizationTypes.Octree:</a>
+<a name="ln1219">                SamplingTextBlock.Visibility = Visibility.Collapsed;</a>
+<a name="ln1220">                SamplingFactorSlider.Visibility = Visibility.Collapsed;</a>
+<a name="ln1221">                SamplingFactorGrid.Visibility = Visibility.Collapsed;</a>
+<a name="ln1222">                GlobalColorTableCheckBox.Visibility = Visibility.Collapsed;</a>
+<a name="ln1223">                break;</a>
+<a name="ln1224">            case ColorQuantizationTypes.MedianCut:</a>
+<a name="ln1225">                SamplingTextBlock.Visibility = Visibility.Collapsed;</a>
+<a name="ln1226">                SamplingFactorSlider.Visibility = Visibility.Collapsed;</a>
+<a name="ln1227">                SamplingFactorGrid.Visibility = Visibility.Collapsed;</a>
+<a name="ln1228">                GlobalColorTableCheckBox.Visibility = Visibility.Visible;</a>
+<a name="ln1229">                break;</a>
+<a name="ln1230">            case ColorQuantizationTypes.Grayscale:</a>
+<a name="ln1231">                SamplingTextBlock.Visibility = Visibility.Collapsed;</a>
+<a name="ln1232">                SamplingFactorSlider.Visibility = Visibility.Collapsed;</a>
+<a name="ln1233">                SamplingFactorGrid.Visibility = Visibility.Collapsed;</a>
+<a name="ln1234">                GlobalColorTableCheckBox.Visibility = Visibility.Collapsed;</a>
+<a name="ln1235">                break;</a>
+<a name="ln1236">            case ColorQuantizationTypes.MostUsed:</a>
+<a name="ln1237">                SamplingTextBlock.Visibility = Visibility.Collapsed;</a>
+<a name="ln1238">                SamplingFactorSlider.Visibility = Visibility.Collapsed;</a>
+<a name="ln1239">                SamplingFactorGrid.Visibility = Visibility.Collapsed;</a>
+<a name="ln1240">                GlobalColorTableCheckBox.Visibility = Visibility.Visible;</a>
+<a name="ln1241">                break;</a>
+<a name="ln1242">        }</a>
+<a name="ln1243">    }</a>
+<a name="ln1244"> </a>
+<a name="ln1245">    private void EnableTransparencyCheckBox_CheckedChanged(object sender, RoutedEventArgs e)</a>
+<a name="ln1246">    {</a>
+<a name="ln1247">        if (!IsLoaded || CurrentPreset is not EmbeddedGifPreset preset)</a>
+<a name="ln1248">            return;</a>
+<a name="ln1249"> </a>
+<a name="ln1250">        if (!DetectCheckBox.IsEnabled)</a>
+<a name="ln1251">            preset.DetectUnchanged = false;</a>
+<a name="ln1252">    }</a>
+<a name="ln1253"> </a>
+<a name="ln1254">    private void PredictionHelpButton_Click(object sender, RoutedEventArgs e)</a>
+<a name="ln1255">    {</a>
+<a name="ln1256">        try</a>
+<a name="ln1257">        {</a>
+<a name="ln1258">            ProcessHelper.StartWithShell(&quot;https://www.w3.org/TR/PNG-Filters.html&quot;);</a>
+<a name="ln1259">        }</a>
+<a name="ln1260">        catch (Exception ex)</a>
+<a name="ln1261">        {</a>
+<a name="ln1262">            LogWriter.Log(ex, &quot;Impossible to navigate to the PNG prediction method documentation.&quot;);</a>
+<a name="ln1263">        }</a>
+<a name="ln1264">    }</a>
+<a name="ln1265"> </a>
+<a name="ln1266">    private void PreviewCommand_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)</a>
+<a name="ln1267">    {</a>
+<a name="ln1268">        if (CurrentPreset is not IFfmpegPreset ffmpegPreset)</a>
+<a name="ln1269">            return;</a>
+<a name="ln1270"> </a>
+<a name="ln1271">        var previewer = new CommandPreviewer</a>
+<a name="ln1272">        {</a>
+<a name="ln1273">            Parameters = ffmpegPreset.Parameters,</a>
+<a name="ln1274">            Extension = CurrentPreset.Extension ?? CurrentPreset.DefaultExtension</a>
+<a name="ln1275">        };</a>
+<a name="ln1276">        previewer.ShowDialog();</a>
+<a name="ln1277">    }</a>
+<a name="ln1278"> </a>
+<a name="ln1279">    private void FfmpegCodecComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)</a>
+<a name="ln1280">    {</a>
+<a name="ln1281">        if (!IsLoaded)</a>
+<a name="ln1282">            return;</a>
+<a name="ln1283"> </a>
+<a name="ln1284">        if (FfmpegCodecComboBox.SelectedItem is not VideoCodec selected || CurrentPreset is not VideoPreset videoPreset)</a>
+<a name="ln1285">            return;</a>
+<a name="ln1286"> </a>
+<a name="ln1287">        //That's a lot of work just to maintain the binding. Sure there must be an easy way, right?</a>
+<a name="ln1288">        var containsPreset = selected.CodecPresets.Any(a =&gt; a.Type == videoPreset.CodecPreset);</a>
+<a name="ln1289">        var containsFormat = selected.PixelFormats.Any(a =&gt; a.Type == videoPreset.PixelFormat);</a>
+<a name="ln1290">        var codecPreset = videoPreset.CodecPreset;</a>
+<a name="ln1291">        var pixelFormat = videoPreset.PixelFormat;</a>
+<a name="ln1292"> </a>
+<a name="ln1293">        //For some reason, if the same enum is being set, the combo does not display the selection.</a>
+<a name="ln1294">        videoPreset.CodecPreset = VideoCodecPresets.NotSelected;</a>
+<a name="ln1295">        videoPreset.PixelFormat = VideoPixelFormats.NotSelected;</a>
+<a name="ln1296"> </a>
+<a name="ln1297">        switch (selected.Type)</a>
+<a name="ln1298">        {</a>
+<a name="ln1299">            case VideoCodecs.Mpeg2:</a>
+<a name="ln1300">                videoPreset.CodecPreset = containsPreset ? codecPreset : VideoCodecPresets.None;</a>
+<a name="ln1301">                videoPreset.PixelFormat = containsFormat ? pixelFormat : VideoPixelFormats.Yuv420p;</a>
+<a name="ln1302">                break;</a>
+<a name="ln1303">            case VideoCodecs.Mpeg4:</a>
+<a name="ln1304">                videoPreset.CodecPreset = containsPreset ? codecPreset : VideoCodecPresets.None;</a>
+<a name="ln1305">                videoPreset.PixelFormat = containsFormat ? pixelFormat : VideoPixelFormats.Yuv420p;</a>
+<a name="ln1306">                break;</a>
+<a name="ln1307">            case VideoCodecs.X264:</a>
+<a name="ln1308">                videoPreset.CodecPreset = containsPreset ? codecPreset : VideoCodecPresets.Medium;</a>
+<a name="ln1309">                videoPreset.PixelFormat = containsFormat ? pixelFormat : VideoPixelFormats.Yuv420p;</a>
+<a name="ln1310">                break;</a>
+<a name="ln1311">            case VideoCodecs.H264Amf:</a>
+<a name="ln1312">                videoPreset.CodecPreset = containsPreset ? codecPreset : VideoCodecPresets.Balanced;</a>
+<a name="ln1313">                videoPreset.PixelFormat = containsFormat ? pixelFormat : VideoPixelFormats.Yuv420p;</a>
+<a name="ln1314">                break;</a>
+<a name="ln1315">            case VideoCodecs.H264Nvenc:</a>
+<a name="ln1316">                videoPreset.CodecPreset = containsPreset ? codecPreset : VideoCodecPresets.Medium;</a>
+<a name="ln1317">                videoPreset.PixelFormat = containsFormat ? pixelFormat : VideoPixelFormats.Yuv420p;</a>
+<a name="ln1318">                break;</a>
+<a name="ln1319">            case VideoCodecs.H264Qsv:</a>
+<a name="ln1320">                videoPreset.CodecPreset = containsPreset ? codecPreset : VideoCodecPresets.Medium;</a>
+<a name="ln1321">                videoPreset.PixelFormat = containsFormat ? pixelFormat : VideoPixelFormats.Auto;</a>
+<a name="ln1322">                break;</a>
+<a name="ln1323">            case VideoCodecs.X265:</a>
+<a name="ln1324">                videoPreset.CodecPreset = containsPreset ? codecPreset : VideoCodecPresets.Medium;</a>
+<a name="ln1325">                videoPreset.PixelFormat = containsFormat ? pixelFormat : VideoPixelFormats.Yuv420p;</a>
+<a name="ln1326">                break;</a>
+<a name="ln1327">            case VideoCodecs.HevcAmf:</a>
+<a name="ln1328">                videoPreset.CodecPreset = containsPreset ? codecPreset : VideoCodecPresets.Balanced;</a>
+<a name="ln1329">                videoPreset.PixelFormat = containsFormat ? pixelFormat : VideoPixelFormats.Yuv420p;</a>
+<a name="ln1330">                break;</a>
+<a name="ln1331">            case VideoCodecs.HevcNvenc:</a>
+<a name="ln1332">                videoPreset.CodecPreset = containsPreset ? codecPreset : VideoCodecPresets.Medium;</a>
+<a name="ln1333">                videoPreset.PixelFormat = containsFormat ? pixelFormat : VideoPixelFormats.P010Le;</a>
+<a name="ln1334">                break;</a>
+<a name="ln1335">            case VideoCodecs.HevcQsv:</a>
+<a name="ln1336">                videoPreset.CodecPreset = containsPreset ? codecPreset : VideoCodecPresets.Medium;</a>
+<a name="ln1337">                videoPreset.PixelFormat = containsFormat ? pixelFormat : VideoPixelFormats.Auto;</a>
+<a name="ln1338">                break;</a>
+<a name="ln1339">            case VideoCodecs.Vp8:</a>
+<a name="ln1340">                videoPreset.CodecPreset = containsPreset ? codecPreset : VideoCodecPresets.Medium;</a>
+<a name="ln1341">                videoPreset.PixelFormat = containsFormat ? pixelFormat : VideoPixelFormats.Yuv420p;</a>
+<a name="ln1342">                break;</a>
+<a name="ln1343">            case VideoCodecs.Vp9:</a>
+<a name="ln1344">                videoPreset.CodecPreset = containsPreset ? codecPreset : VideoCodecPresets.Medium;</a>
+<a name="ln1345">                videoPreset.PixelFormat = containsFormat ? pixelFormat : VideoPixelFormats.Yuv420p;</a>
+<a name="ln1346">                break;</a>
+<a name="ln1347">            case VideoCodecs.LibAom:</a>
+<a name="ln1348">                videoPreset.CodecPreset = containsPreset ? codecPreset : VideoCodecPresets.None;</a>
+<a name="ln1349">                videoPreset.PixelFormat = containsFormat ? pixelFormat : VideoPixelFormats.Yuv420p;</a>
+<a name="ln1350">                break;</a>
+<a name="ln1351">            case VideoCodecs.SvtAv1:</a>
+<a name="ln1352">                videoPreset.CodecPreset = containsPreset ? codecPreset : VideoCodecPresets.Medium;</a>
+<a name="ln1353">                videoPreset.PixelFormat = containsFormat ? pixelFormat : VideoPixelFormats.Yuv420p;</a>
+<a name="ln1354">                break;</a>
+<a name="ln1355">            case VideoCodecs.Rav1E:</a>
+<a name="ln1356">                videoPreset.CodecPreset = containsPreset ? codecPreset : VideoCodecPresets.Medium;</a>
+<a name="ln1357">                videoPreset.PixelFormat = containsFormat ? pixelFormat : VideoPixelFormats.Yuv420p;</a>
+<a name="ln1358">                break;</a>
+<a name="ln1359">        }</a>
+<a name="ln1360">    }</a>
+<a name="ln1361"> </a>
+<a name="ln1362">    private void FfmpegAvifCodecComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)</a>
+<a name="ln1363">    {</a>
+<a name="ln1364">        if (!IsLoaded)</a>
+<a name="ln1365">            return;</a>
+<a name="ln1366"> </a>
+<a name="ln1367">        if (FfmpegAvifCodecComboBox.SelectedItem is not VideoCodec selected || CurrentPreset is not FfmpegAvifPreset avifPreset)</a>
+<a name="ln1368">            return;</a>
+<a name="ln1369"> </a>
+<a name="ln1370">        //That's a lot of work just to maintain the binding. Sure there must be an easy way, right?</a>
+<a name="ln1371">        var containsPreset = selected.CodecPresets.Any(a =&gt; a.Type == avifPreset.CodecPreset);</a>
+<a name="ln1372">        var containsFormat = selected.PixelFormats.Any(a =&gt; a.Type == avifPreset.PixelFormat);</a>
+<a name="ln1373">        var codecPreset = avifPreset.CodecPreset;</a>
+<a name="ln1374">        var pixelFormat = avifPreset.PixelFormat;</a>
+<a name="ln1375"> </a>
+<a name="ln1376">        //For some reason, if the same enum is being set, the combo does not display the selection.</a>
+<a name="ln1377">        avifPreset.CodecPreset = VideoCodecPresets.NotSelected;</a>
+<a name="ln1378">        avifPreset.PixelFormat = VideoPixelFormats.NotSelected;</a>
+<a name="ln1379"> </a>
+<a name="ln1380">        switch(selected.Type)</a>
+<a name="ln1381">        {</a>
+<a name="ln1382">            case VideoCodecs.LibAom:</a>
+<a name="ln1383">                avifPreset.CodecPreset = containsPreset ? codecPreset : VideoCodecPresets.None;</a>
+<a name="ln1384">                avifPreset.PixelFormat = containsFormat ? pixelFormat : VideoPixelFormats.Yuv420p;</a>
+<a name="ln1385">                break;</a>
+<a name="ln1386">            case VideoCodecs.SvtAv1:</a>
+<a name="ln1387">                avifPreset.CodecPreset = containsPreset ? codecPreset : VideoCodecPresets.Medium;</a>
+<a name="ln1388">                avifPreset.PixelFormat = containsFormat ? pixelFormat : VideoPixelFormats.Yuv420p;</a>
+<a name="ln1389">                break;</a>
+<a name="ln1390">            case VideoCodecs.Rav1E:</a>
+<a name="ln1391">                avifPreset.CodecPreset = containsPreset ? codecPreset : VideoCodecPresets.Medium;</a>
+<a name="ln1392">                avifPreset.PixelFormat = containsFormat ? pixelFormat : VideoPixelFormats.Yuv420p;</a>
+<a name="ln1393">                break;</a>
+<a name="ln1394">        }</a>
+<a name="ln1395">    }</a>
+<a name="ln1396"> </a>
+<a name="ln1397">    private void FfmpegAccelerationComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)</a>
+<a name="ln1398">    {</a>
+<a name="ln1399">        if (!IsLoaded)</a>
+<a name="ln1400">            return;</a>
+<a name="ln1401"> </a>
+<a name="ln1402">        AdjustCodecs(CurrentPreset);</a>
+<a name="ln1403"> </a>
+<a name="ln1404">        if (FfmpegCodecComboBox.SelectedIndex == -1)</a>
+<a name="ln1405">            FfmpegCodecComboBox.SelectedIndex = 0;</a>
+<a name="ln1406">    }</a>
+<a name="ln1407"> </a>
+<a name="ln1408">    private void FfmpegAvifAccelerationComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)</a>
+<a name="ln1409">    {</a>
+<a name="ln1410">        if (!IsLoaded)</a>
+<a name="ln1411">            return;</a>
+<a name="ln1412"> </a>
+<a name="ln1413">        AdjustAvifCodecs(CurrentPreset);</a>
+<a name="ln1414"> </a>
+<a name="ln1415">        if (FfmpegAvifCodecComboBox.SelectedIndex == -1)</a>
+<a name="ln1416">            FfmpegAvifCodecComboBox.SelectedIndex = 0;</a>
+<a name="ln1417">    }</a>
+<a name="ln1418"> </a>
+<a name="ln1419">    private void ImagesZipCheckBox_CheckedChanged(object sender, RoutedEventArgs e)</a>
+<a name="ln1420">    {</a>
+<a name="ln1421">        if (!IsLoaded)</a>
+<a name="ln1422">            return;</a>
+<a name="ln1423"> </a>
+<a name="ln1424">        if (PresetComboBox.SelectedItem is not ExportPreset preset)</a>
+<a name="ln1425">            return;</a>
+<a name="ln1426"> </a>
+<a name="ln1427">        LoadUploadPresets(preset);</a>
+<a name="ln1428">    }</a>
+<a name="ln1429"> </a>
+<a name="ln1430">    private void ChooseLocation_Click(object sender, RoutedEventArgs e)</a>
+<a name="ln1431">    {</a>
+<a name="ln1432">        if (PresetComboBox.SelectedItem is not ExportPreset preset)</a>
+<a name="ln1433">            return;</a>
+<a name="ln1434"> </a>
+<a name="ln1435">        try</a>
+<a name="ln1436">        {</a>
+<a name="ln1437">            var output = preset.OutputFolder ?? &quot;&quot;;</a>
+<a name="ln1438"> </a>
+<a name="ln1439">            if (output.ToCharArray().Any(x =&gt; Path.GetInvalidPathChars().Contains(x)))</a>
+<a name="ln1440">                output = &quot;&quot;;</a>
+<a name="ln1441"> </a>
+<a name="ln1442">            //It's only a relative path if not null/empty and there's no root folder declared.</a>
+<a name="ln1443">            var isRelative = !string.IsNullOrWhiteSpace(output) &amp;&amp; !Path.IsPathRooted(output);</a>
+<a name="ln1444">            var notAlt = !string.IsNullOrWhiteSpace(output) &amp;&amp; preset.OutputFolder.Contains(Path.DirectorySeparatorChar);</a>
+<a name="ln1445"> </a>
+<a name="ln1446">            var initial = Directory.Exists(output) ? output : Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);</a>
+<a name="ln1447"> </a>
+<a name="ln1448">            if ((Keyboard.Modifiers &amp; ModifierKeys.Shift) == 0)</a>
+<a name="ln1449">            {</a>
+<a name="ln1450">                #region Select folder</a>
+<a name="ln1451"> </a>
+<a name="ln1452">                var fs = new FolderSelector</a>
+<a name="ln1453">                {</a>
+<a name="ln1454">                    Description = LocalizationHelper.Get(&quot;S.SaveAs.File.SelectFolder&quot;),</a>
+<a name="ln1455">                    DefaultFolder = isRelative ? Path.GetFullPath(initial) : initial,</a>
+<a name="ln1456">                    SelectedPath = isRelative ? Path.GetFullPath(initial) : initial</a>
+<a name="ln1457">                };</a>
+<a name="ln1458"> </a>
+<a name="ln1459">                if (!fs.ShowDialog())</a>
+<a name="ln1460">                    return;</a>
+<a name="ln1461"> </a>
+<a name="ln1462">                preset.OutputFolder = fs.SelectedPath;</a>
+<a name="ln1463">                ChooseLocatioButton.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));</a>
+<a name="ln1464"> </a>
+<a name="ln1465">                #endregion</a>
+<a name="ln1466">            }</a>
+<a name="ln1467">            else</a>
+<a name="ln1468">            {</a>
+<a name="ln1469">                #region Save folder and file</a>
+<a name="ln1470"> </a>
+<a name="ln1471">                var sfd = new SaveFileDialog</a>
+<a name="ln1472">                {</a>
+<a name="ln1473">                    FileName = preset.OutputFilename,</a>
+<a name="ln1474">                    InitialDirectory = isRelative ? Path.GetFullPath(initial) : initial</a>
+<a name="ln1475">                };</a>
+<a name="ln1476"> </a>
+<a name="ln1477">                #region Extensions</a>
+<a name="ln1478"> </a>
+<a name="ln1479">                switch (preset.Type)</a>
+<a name="ln1480">                {</a>
+<a name="ln1481">                    //Animated image.</a>
+<a name="ln1482">                    case ExportFormats.Apng:</a>
+<a name="ln1483">                        sfd.Filter = string.Format(&quot;{0}|*.png|{0}|*.apng&quot;, LocalizationHelper.Get(&quot;S.Editor.File.Apng&quot;));</a>
+<a name="ln1484">                        sfd.DefaultExt = preset.Extension ?? &quot;.png&quot;;</a>
+<a name="ln1485">                        break;</a>
+<a name="ln1486">                    case ExportFormats.Gif:</a>
+<a name="ln1487">                        sfd.Filter = $&quot;{LocalizationHelper.Get(&quot;S.Editor.File.Gif&quot;)} (.gif)|*.gif&quot;;</a>
+<a name="ln1488">                        sfd.DefaultExt = &quot;.gif&quot;;</a>
+<a name="ln1489">                        break;</a>
+<a name="ln1490">                    case ExportFormats.Webp:</a>
+<a name="ln1491">                        sfd.Filter = $&quot;{LocalizationHelper.Get(&quot;S.Editor.File.Webp&quot;)} (.webp)|*.webp&quot;;</a>
+<a name="ln1492">                        sfd.DefaultExt = &quot;.webp&quot;;</a>
+<a name="ln1493">                        break;</a>
+<a name="ln1494">                    case ExportFormats.Avif:</a>
+<a name="ln1495">                        sfd.Filter = $&quot;{LocalizationHelper.Get(&quot;S.Editor.File.Avif&quot;)} (.avif)|*.avif&quot;;</a>
+<a name="ln1496">                        sfd.DefaultExt = &quot;.avif&quot;;</a>
+<a name="ln1497">                        break;</a>
+<a name="ln1498"> </a>
+<a name="ln1499">                    //Video.</a>
+<a name="ln1500">                    case ExportFormats.Avi:</a>
+<a name="ln1501">                        sfd.Filter = $&quot;{LocalizationHelper.Get(&quot;S.Editor.File.Avi&quot;)} (.avi)|*.avi&quot;;</a>
+<a name="ln1502">                        sfd.DefaultExt = &quot;.avi&quot;;</a>
+<a name="ln1503">                        break;</a>
+<a name="ln1504">                    case ExportFormats.Mkv:</a>
+<a name="ln1505">                        sfd.Filter = $&quot;{LocalizationHelper.Get(&quot;S.Editor.File.Mkv&quot;)} (.mkv)|*.mkv&quot;;</a>
+<a name="ln1506">                        sfd.DefaultExt = &quot;.mkv&quot;;</a>
+<a name="ln1507">                        break;</a>
+<a name="ln1508">                    case ExportFormats.Mov:</a>
+<a name="ln1509">                        sfd.Filter = $&quot;{LocalizationHelper.Get(&quot;S.Editor.File.Mov&quot;)} (.mov)|*.mov&quot;;</a>
+<a name="ln1510">                        sfd.DefaultExt = &quot;.mov&quot;;</a>
+<a name="ln1511">                        break;</a>
+<a name="ln1512">                    case ExportFormats.Mp4:</a>
+<a name="ln1513">                        sfd.Filter = $&quot;{LocalizationHelper.Get(&quot;S.Editor.File.Mp4&quot;)} (.mp4)|*.mp4&quot;;</a>
+<a name="ln1514">                        sfd.DefaultExt = &quot;.mp4&quot;;</a>
+<a name="ln1515">                        break;</a>
+<a name="ln1516">                    case ExportFormats.Webm:</a>
+<a name="ln1517">                        sfd.Filter = $&quot;{LocalizationHelper.Get(&quot;S.Editor.File.Webm&quot;)} (.webm)|*.webm&quot;;</a>
+<a name="ln1518">                        sfd.DefaultExt = &quot;.webm&quot;;</a>
+<a name="ln1519">                        break;</a>
+<a name="ln1520"> </a>
+<a name="ln1521">                    //Images.</a>
+<a name="ln1522">                    case ExportFormats.Bmp:</a>
+<a name="ln1523">                        sfd.Filter = $&quot;{LocalizationHelper.Get(&quot;S.Editor.File.Image.Bmp&quot;)} (.bmp)|*.bmp|{LocalizationHelper.Get(&quot;S.Editor.File.Project.Image.Zip&quot;)} (.zip)|*.zip&quot;;</a>
+<a name="ln1524">                        sfd.DefaultExt = preset.Extension ?? preset.DefaultExtension ?? &quot;.bmp&quot;;</a>
+<a name="ln1525">                        break;</a>
+<a name="ln1526">                    case ExportFormats.Jpeg:</a>
+<a name="ln1527">                        sfd.Filter = string.Format(&quot;{0}|*.jpg|{0}|*.jpeg|{1} (.zip)|*.zip&quot;, LocalizationHelper.Get(&quot;S.Editor.File.Image.Jpeg&quot;), LocalizationHelper.Get(&quot;S.Editor.File.Project.Image.Zip&quot;));</a>
+<a name="ln1528">                        sfd.DefaultExt = preset.Extension ?? preset.DefaultExtension ?? &quot;.jpg&quot;;</a>
+<a name="ln1529">                        break;</a>
+<a name="ln1530">                    case ExportFormats.Png:</a>
+<a name="ln1531">                        sfd.Filter = $&quot;{LocalizationHelper.Get(&quot;S.Editor.File.Image.Png&quot;)} (.png)|*.png|{LocalizationHelper.Get(&quot;S.Editor.File.Project.Image.Zip&quot;)} (.zip)|*.zip&quot;;</a>
+<a name="ln1532">                        sfd.DefaultExt = preset.Extension ?? preset.DefaultExtension ?? &quot;.png&quot;;</a>
+<a name="ln1533">                        break;</a>
+<a name="ln1534"> </a>
+<a name="ln1535">                    //Other.</a>
+<a name="ln1536">                    case ExportFormats.Stg:</a>
+<a name="ln1537">                        sfd.Filter = $&quot;{LocalizationHelper.Get(&quot;S.Editor.File.Project&quot;)} (.stg)|*.stg|{LocalizationHelper.Get(&quot;S.Editor.File.Project.Zip&quot;)} (.zip)|*.zip&quot;;</a>
+<a name="ln1538">                        sfd.DefaultExt = preset.Extension ?? &quot;.stg&quot;;</a>
+<a name="ln1539">                        break;</a>
+<a name="ln1540">                    case ExportFormats.Psd:</a>
+<a name="ln1541">                        sfd.Filter = $&quot;{LocalizationHelper.Get(&quot;S.Editor.File.Psd&quot;)} (.psd)|*.psd&quot;;</a>
+<a name="ln1542">                        sfd.DefaultExt = &quot;.psd&quot;;</a>
+<a name="ln1543">                        break;</a>
+<a name="ln1544">                }</a>
+<a name="ln1545"> </a>
+<a name="ln1546">                #endregion</a>
+<a name="ln1547"> </a>
+<a name="ln1548">                var result = sfd.ShowDialog();</a>
+<a name="ln1549"> </a>
+<a name="ln1550">                if (!result.HasValue || !result.Value)</a>
+<a name="ln1551">                    return;</a>
+<a name="ln1552"> </a>
+<a name="ln1553">                //TODO: process output before setting to property?</a>
+<a name="ln1554"> </a>
+<a name="ln1555">                preset.OutputFolder = Path.GetDirectoryName(sfd.FileName);</a>
+<a name="ln1556">                preset.OutputFilename = Path.GetFileNameWithoutExtension(sfd.FileName);</a>
+<a name="ln1557">                preset.OverwriteMode = File.Exists(sfd.FileName) ? OverwriteModes.Prompt : OverwriteModes.Warn;</a>
+<a name="ln1558">                preset.Extension = Path.GetExtension(sfd.FileName);</a>
+<a name="ln1559"> </a>
+<a name="ln1560">                RaiseSaveEvent();</a>
+<a name="ln1561"> </a>
+<a name="ln1562">                #endregion</a>
+<a name="ln1563">            }</a>
+<a name="ln1564"> </a>
+<a name="ln1565">            //Converts to a relative path again.</a>
+<a name="ln1566">            if (isRelative &amp;&amp; !string.IsNullOrWhiteSpace(preset.OutputFolder))</a>
+<a name="ln1567">            {</a>
+<a name="ln1568">                var selected = new Uri(preset.OutputFolder);</a>
+<a name="ln1569">                var baseFolder = new Uri(AppDomain.CurrentDomain.BaseDirectory);</a>
+<a name="ln1570">                var relativeFolder = selected.AbsolutePath.TrimEnd(Path.DirectorySeparatorChar).TrimEnd(Path.AltDirectorySeparatorChar) == baseFolder.AbsolutePath.TrimEnd(Path.DirectorySeparatorChar).TrimEnd(Path.AltDirectorySeparatorChar) ?</a>
+<a name="ln1571">                    &quot;.&quot; : Uri.UnescapeDataString(baseFolder.MakeRelativeUri(selected).ToString());</a>
+<a name="ln1572"> </a>
+<a name="ln1573">                //This app even returns you the correct slashes/backslashes.</a>
+<a name="ln1574">                preset.OutputFolder = notAlt ? relativeFolder.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar) : relativeFolder.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);</a>
+<a name="ln1575">            }</a>
+<a name="ln1576">        }</a>
+<a name="ln1577">        catch (ArgumentException sx)</a>
+<a name="ln1578">        {</a>
+<a name="ln1579">            LogWriter.Log(sx, &quot;Error while trying to choose the output path and filename.&quot;, preset.OutputFolder + preset.OutputFilename);</a>
+<a name="ln1580"> </a>
+<a name="ln1581">            preset.OutputFolder = &quot;&quot;;</a>
+<a name="ln1582">            preset.OutputFilename = &quot;&quot;;</a>
+<a name="ln1583">            throw;</a>
+<a name="ln1584">        }</a>
+<a name="ln1585">        catch (Exception ex)</a>
+<a name="ln1586">        {</a>
+<a name="ln1587">            LogWriter.Log(ex, &quot;Error while trying to choose the output path and filename.&quot;, preset.OutputFolder + preset.OutputFilename);</a>
+<a name="ln1588">            throw;</a>
+<a name="ln1589">        }</a>
+<a name="ln1590">    }</a>
+<a name="ln1591"> </a>
+<a name="ln1592">    private void FilenameTextBox_TextChanged(object sender, TextChangedEventArgs e)</a>
+<a name="ln1593">    {</a>
+<a name="ln1594">        if (!IsLoaded || !(PresetComboBox.SelectedItem is ExportPreset preset))</a>
+<a name="ln1595">            return;</a>
+<a name="ln1596"> </a>
+<a name="ln1597">        _searchTimer?.Stop();</a>
+<a name="ln1598"> </a>
+<a name="ln1599">        //If no file will be saved, there's no need to verify.</a>
+<a name="ln1600">        if (!preset.PickLocation || preset.CanExportMultipleFiles)</a>
+<a name="ln1601">        {</a>
+<a name="ln1602">            FileExistsGrid.Visibility = Visibility.Collapsed;</a>
+<a name="ln1603">            RaiseValidationRemovedEvent(StatusReasons.FileAlreadyExists);</a>
+<a name="ln1604">            return;</a>
+<a name="ln1605">        }</a>
+<a name="ln1606"> </a>
+<a name="ln1607">        _searchTimer?.Start();</a>
+<a name="ln1608">    }</a>
+<a name="ln1609"> </a>
+<a name="ln1610">    private void SearchTimer_Tick(object sender, EventArgs e)</a>
+<a name="ln1611">    {</a>
+<a name="ln1612">        if (!IsLoaded)</a>
+<a name="ln1613">            return;</a>
+<a name="ln1614"> </a>
+<a name="ln1615">        _searchTimer.Stop();</a>
+<a name="ln1616"> </a>
+<a name="ln1617">        var preset = CurrentPreset;</a>
+<a name="ln1618"> </a>
+<a name="ln1619">        if (preset == null)</a>
+<a name="ln1620">            return;</a>
+<a name="ln1621"> </a>
+<a name="ln1622">        try</a>
+<a name="ln1623">        {</a>
+<a name="ln1624">            //Check if there's a file with the same path.</a>
+<a name="ln1625">            var exists = File.Exists(Path.Combine(preset.OutputFolder, PathHelper.ReplaceRegexInName(preset.OutputFilename) + preset.Extension));</a>
+<a name="ln1626"> </a>
+<a name="ln1627">            FileExistsGrid.Visibility = exists ? Visibility.Visible : Visibility.Collapsed;</a>
+<a name="ln1628">            RaiseValidationRemovedEvent(StatusReasons.FileAlreadyExists);</a>
+<a name="ln1629">        }</a>
+<a name="ln1630">        catch (Exception ex)</a>
+<a name="ln1631">        {</a>
+<a name="ln1632">            LogWriter.Log(ex, &quot;Check if exists&quot;);</a>
+<a name="ln1633"> </a>
+<a name="ln1634">            RaiseValidatedEvent(&quot;S.SaveAs.Warning.Filename.Invalid&quot;, StatusReasons.InvalidState, () =&gt; new ExceptionViewer(ex).Show());</a>
+<a name="ln1635">            FileExistsGrid.Visibility = Visibility.Collapsed;</a>
+<a name="ln1636">        }</a>
+<a name="ln1637">    }</a>
+<a name="ln1638"> </a>
+<a name="ln1639">    private void SaveType_Checked(object sender, RoutedEventArgs e)</a>
+<a name="ln1640">    {</a>
+<a name="ln1641">        if (!IsLoaded)</a>
+<a name="ln1642">            return;</a>
+<a name="ln1643"> </a>
+<a name="ln1644">        FilenameTextBox_TextChanged(null, null);</a>
+<a name="ln1645">    }</a>
+<a name="ln1646"> </a>
+<a name="ln1647">    private void Extension_SelectionChanged(object sender, SelectionChangedEventArgs e)</a>
+<a name="ln1648">    {</a>
+<a name="ln1649">        if (PresetComboBox.SelectedItem is not ExportPreset preset)</a>
+<a name="ln1650">            return;</a>
+<a name="ln1651"> </a>
+<a name="ln1652">        if (preset is ImagePreset imagePreset)</a>
+<a name="ln1653">            imagePreset.ZipFilesInternal = (string)ExtensionComboBox.SelectedValue == &quot;.zip&quot;;</a>
+<a name="ln1654"> </a>
+<a name="ln1655">        FilenameTextBox_TextChanged(null, null);</a>
+<a name="ln1656">    }</a>
+<a name="ln1657"> </a>
+<a name="ln1658">    private void IncreaseNumber_Click(object sender, RoutedEventArgs e)</a>
+<a name="ln1659">    {</a>
+<a name="ln1660">        ChangeFileNumber(1);</a>
+<a name="ln1661">    }</a>
+<a name="ln1662"> </a>
+<a name="ln1663">    private void DecreaseNumber_Click(object sender, RoutedEventArgs e)</a>
+<a name="ln1664">    {</a>
+<a name="ln1665">        ChangeFileNumber(-1);</a>
+<a name="ln1666">    }</a>
+<a name="ln1667"> </a>
+<a name="ln1668">    private void FileHyperlink_RequestNavigate(object sender, RoutedEventArgs e)</a>
+<a name="ln1669">    {</a>
+<a name="ln1670">        if (PresetComboBox.SelectedItem is not ExportPreset preset)</a>
+<a name="ln1671">            return;</a>
+<a name="ln1672"> </a>
+<a name="ln1673">        try</a>
+<a name="ln1674">        {</a>
+<a name="ln1675">            //If the file name template result changed, it will be impossible to open the previous file. The user should simple try to save it again.</a>
+<a name="ln1676">            ProcessHelper.StartWithShell(Path.Combine(preset.OutputFolder, PathHelper.ReplaceRegexInName(preset.OutputFilename) + preset.Extension));</a>
+<a name="ln1677">        }</a>
+<a name="ln1678">        catch (Exception ex)</a>
+<a name="ln1679">        {</a>
+<a name="ln1680">            LogWriter.Log(ex, &quot;Open file that already exists using the hyperlink&quot;);</a>
+<a name="ln1681">        }</a>
+<a name="ln1682">    }</a>
+<a name="ln1683"> </a>
+<a name="ln1684">    private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)</a>
+<a name="ln1685">    {</a>
+<a name="ln1686">        try</a>
+<a name="ln1687">        {</a>
+<a name="ln1688">            ProcessHelper.StartWithShell(e.Uri.AbsoluteUri);</a>
+<a name="ln1689">        }</a>
+<a name="ln1690">        catch (Exception ex)</a>
+<a name="ln1691">        {</a>
+<a name="ln1692">            LogWriter.Log(ex, $&quot;Error while trying to navigate to a given URI: '{e?.Uri?.AbsoluteUri}'.&quot;);</a>
+<a name="ln1693">        }</a>
+<a name="ln1694">    }</a>
+<a name="ln1695"> </a>
+<a name="ln1696">    private void UploadFileCheckBox_Unchecked(object sender, RoutedEventArgs e)</a>
+<a name="ln1697">    {</a>
+<a name="ln1698">        if (CurrentPreset.CopyType == CopyModes.Link)</a>
+<a name="ln1699">            CurrentPreset.CopyType = CopyModes.File;</a>
+<a name="ln1700">    }</a>
+<a name="ln1701"> </a>
+<a name="ln1702">    private void AddUploadPreset_Click(object sender, RoutedEventArgs e)</a>
+<a name="ln1703">    {</a>
+<a name="ln1704">        if (PresetComboBox.SelectedItem is not ExportPreset preset)</a>
+<a name="ln1705">            return;</a>
+<a name="ln1706"> </a>
+<a name="ln1707">        var upload = new Upload { Type = preset.Extension == &quot;.zip&quot; ? ExportFormats.Zip : preset.Type };</a>
+<a name="ln1708">        var result = upload.ShowDialog();</a>
+<a name="ln1709"> </a>
+<a name="ln1710">        if (result != true)</a>
+<a name="ln1711">            return;</a>
+<a name="ln1712"> </a>
+<a name="ln1713">        UserSettings.All.UploadPresets.Add(upload.CurrentPreset);</a>
+<a name="ln1714">        UserSettings.Save();</a>
+<a name="ln1715"> </a>
+<a name="ln1716">        LoadUploadPresets(preset, upload.CurrentPreset);</a>
+<a name="ln1717">    }</a>
+<a name="ln1718"> </a>
+<a name="ln1719">    private void EditUploadPreset_Click(object sender, RoutedEventArgs e)</a>
+<a name="ln1720">    {</a>
+<a name="ln1721">        if (PresetComboBox.SelectedItem is not ExportPreset preset)</a>
+<a name="ln1722">            return;</a>
+<a name="ln1723"> </a>
+<a name="ln1724">        if (UploadPresetComboBox.SelectedItem is not UploadPreset selected)</a>
+<a name="ln1725">            return;</a>
+<a name="ln1726"> </a>
+<a name="ln1727">        var upload = new Upload { CurrentPreset = selected.ShallowCopy(), IsEditing = true };</a>
+<a name="ln1728">        var result = upload.ShowDialog();</a>
+<a name="ln1729"> </a>
+<a name="ln1730">        if (result != true)</a>
+<a name="ln1731">            return;</a>
+<a name="ln1732"> </a>
+<a name="ln1733">        UserSettings.All.UploadPresets.Remove(selected);</a>
+<a name="ln1734">        UserSettings.All.UploadPresets.Add(upload.CurrentPreset);</a>
+<a name="ln1735">        UserSettings.Save();</a>
+<a name="ln1736"> </a>
+<a name="ln1737">        //Update the upload preset in all export presets.</a>
+<a name="ln1738">        if (selected.Title != upload.CurrentPreset.Title)</a>
+<a name="ln1739">        {</a>
+<a name="ln1740">            foreach (var exportPreset in UserSettings.All.ExportPresets.OfType&lt;ExportPreset&gt;().Where(w =&gt; w.UploadService == selected.Title))</a>
+<a name="ln1741">                exportPreset.UploadService = upload.CurrentPreset.Title;</a>
+<a name="ln1742">        }</a>
+<a name="ln1743"> </a>
+<a name="ln1744">        LoadUploadPresets(preset, upload.CurrentPreset);</a>
+<a name="ln1745">    }</a>
+<a name="ln1746"> </a>
+<a name="ln1747">    private void HistoryUploadPreset_Click(object sender, RoutedEventArgs e)</a>
+<a name="ln1748">    {</a>
+<a name="ln1749">        if (UploadPresetComboBox.SelectedItem is not UploadPreset selected)</a>
+<a name="ln1750">            return;</a>
+<a name="ln1751"> </a>
+<a name="ln1752">        var history = new UploadHistory</a>
+<a name="ln1753">        {</a>
+<a name="ln1754">            CurrentPreset = selected</a>
+<a name="ln1755">        };</a>
+<a name="ln1756">        history.ShowDialog();</a>
+<a name="ln1757">    }</a>
+<a name="ln1758"> </a>
+<a name="ln1759">    private void RemoveUploadPreset_Click(object sender, RoutedEventArgs e)</a>
+<a name="ln1760">    {</a>
+<a name="ln1761">        if (PresetComboBox.SelectedItem is not ExportPreset preset)</a>
+<a name="ln1762">            return;</a>
+<a name="ln1763"> </a>
+<a name="ln1764">        //Ask if the user really wants to remove the preset.</a>
+<a name="ln1765">        if (UploadPresetComboBox.SelectedItem is not UploadPreset selected || !Dialog.Ask(LocalizationHelper.Get(&quot;S.SaveAs.Upload.Ask.Delete.Title&quot;), LocalizationHelper.Get(&quot;S.SaveAs.Upload.Ask.Delete.Instruction&quot;),</a>
+<a name="ln1766">                LocalizationHelper.Get(&quot;S.SaveAs.Upload.Ask.Delete.Message&quot;)))</a>
+<a name="ln1767">            return;</a>
+<a name="ln1768"> </a>
+<a name="ln1769">        UserSettings.All.UploadPresets.Remove(selected);</a>
+<a name="ln1770">        UserSettings.Save();</a>
+<a name="ln1771"> </a>
+<a name="ln1772">        //Remove the upload preset from all export presets.</a>
+<a name="ln1773">        foreach (var exportPreset in UserSettings.All.ExportPresets.OfType&lt;ExportPreset&gt;().Where(w =&gt; w.UploadService == selected.Title))</a>
+<a name="ln1774">            exportPreset.UploadService = null;</a>
+<a name="ln1775"> </a>
+<a name="ln1776">        LoadUploadPresets(preset);</a>
+<a name="ln1777">    }</a>
+<a name="ln1778"> </a>
+<a name="ln1779">    private void ExportPanel_Unloaded(object sender, RoutedEventArgs e)</a>
+<a name="ln1780">    {</a>
+<a name="ln1781">        SyncPath();</a>
+<a name="ln1782"> </a>
+<a name="ln1783">        UserSettings.Save();</a>
+<a name="ln1784">    }</a>
+<a name="ln1785"> </a>
+<a name="ln1786">    #endregion</a>
+<a name="ln1787">}</a>
+</code></pre>
+<div class="balloon" rel="1183"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3022/" target="_blank">V3022</a> Expression 'hasReset == null' is always true.</p></div>
+<div class="balloon" rel="1688"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3095/" target="_blank">V3095</a> The 'e' object was used before it was verified against null. Check lines: 1688, 1692.</p></div>
+<div class="balloon" rel="1688"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3095/" target="_blank">V3095</a> The 'e.Uri' object was used before it was verified against null. Check lines: 1688, 1692.</p></div>
+<div class="balloon" rel="1297"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3002/" target="_blank">V3002</a> The switch statement does not cover all values of the 'VideoCodecs' enum: NotSelected.</p></div>
+<div class="balloon" rel="1444"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3125/" target="_blank">V3125</a> The 'preset.OutputFolder' object was used after it was verified against null. Check lines: 1444, 1437.</p></div>
+<div class="balloon" rel="1219"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3139/" target="_blank">V3139</a> Two or more case-branches perform the same actions.</p></div>
+<div class="balloon" rel="1387"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3139/" target="_blank">V3139</a> Two or more case-branches perform the same actions.</p></div>
+<div class="balloon" rel="1186"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3142/" target="_blank">V3142</a> Unreachable code detected. It is possible that an error is present.</p></div>
+<div class="balloon" rel="854"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3146/" target="_blank">V3146</a> Possible null dereference of the 1st argument 'upload' inside method. The 'FirstOrDefault' can return default null value.</p></div>
+<div class="balloon" rel="200"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3002/" target="_blank">V3002</a> The switch statement does not cover all values of the 'ExportFormats' enum: Bpg, Zip.</p></div>
+<div class="balloon" rel="397"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3002/" target="_blank">V3002</a> The switch statement does not cover all values of the 'ExportFormats' enum: Bpg, Zip.</p></div>
+<div class="balloon" rel="1019"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3002/" target="_blank">V3002</a> The switch statement does not cover all values of the 'ExportFormats' enum: Bpg, Zip.</p></div>
+<div class="balloon" rel="1479"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3002/" target="_blank">V3002</a> The switch statement does not cover all values of the 'ExportFormats' enum: Bpg, Zip.</p></div>
+<link rel="stylesheet" href="highlight.css">
+<script src="highlight.pack.js"></script>
+<script src="highlightjs-line-numbers.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script>hljs.initLineNumbersOnLoad();</script>
+<script>
+  $(document).ready(function() {
+      $('.balloon').each(function () {
+          var bl = $(this);
+          var line = bl.attr('rel');
+          var text = $('a[name="ln'+line+'"]').text();
+
+          var space_count = 0;
+          for(var i = 0; i<text.length; i++){
+              var char = text[i];
+              if((char !== ' ')&&(char !== '\t'))break;
+              if(char === '\t')space_count++;
+              space_count++;
+          }
+
+          bl.css('margin-left', space_count*8);
+          $('a[name="ln'+line+'"]').after(bl);
+      });
+
+      window.location = window.location;
+  });
+</script>
+</body>
+</html>

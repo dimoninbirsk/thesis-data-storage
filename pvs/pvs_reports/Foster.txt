@@ -1,0 +1,175 @@
+PVS-Studio Report: Foster
+================================================================================
+
+┌─[ID: V3024]
+├─ CWE: 682
+├─ SAST: None
+├─ Level: 3
+└─ Occurrences: 30
+
+Common pattern:
+An odd precise comparison:  . Consider using a comparison with defined precision: Math.Abs(A - B)   Epsilon.
+
+Examples:
+• An odd precise comparison: a.Height == b.Height. Consider using a comparison with defined precision: Math.Abs(A - B) < Epsilon.
+• An odd precise comparison: a.Radius == b.Radius. Consider using a comparison with defined precision: Math.Abs(A - B) < Epsilon.
+• An odd precise comparison: a.Width == b.Width. Consider using a comparison with defined precision: Math.Abs(A - B) < Epsilon.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V5609]
+├─ CWE: 22
+├─ SAST: OWASP-12.3.1
+├─ Level: 3
+└─ Occurrences: 5
+
+Common pattern:
+Possible path traversal vulnerability. Potentially tainted data from the ' ' variable is used as path.
+
+Examples:
+• Possible path traversal vulnerability. Potentially tainted data from the 'file' variable is used as path.
+• Possible path traversal vulnerability. Potentially tainted data from the 'filePath' variable is used as path.
+• Possible path traversal vulnerability. Potentially tainted data from the 'path' variable is used as path.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3100]
+├─ CWE: 476
+├─ SAST: None
+├─ Level: 3
+└─ Occurrences: 3
+
+Common pattern:
+NullReferenceException is possi ble. Unhandled exceptions in destructor lead to termination of runtime.
+
+Examples:
+• NullReferenceException is possible when dereferencing 'GraphicsDevice' variable. Unhandled exceptions in destructor lead to termination of runtime.
+• NullReferenceException is possible. Unhandled exceptions in destructor lead to termination of runtime.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3041]
+├─ CWE: 682
+├─ SAST: None
+├─ Level: 1
+└─ Occurrences: 2
+
+Common pattern:
+The expression was implicitly cast from 'int' type to 'float' type. Consider utilizing an explicit type cast to avoid the loss of a fractional part. An example: double A = (double)(X) / Y;.
+
+Message:
+• The expression was implicitly cast from 'int' type to 'float' type. Consider utilizing an explicit type cast to avoid the loss of a fractional part. An example: double A = (double)(X) / Y;.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: Renew]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 1
+└─ Occurrences: 1
+
+Common pattern:
+Your license will expire in 29 days. Click 'Renew' to learn more or contact us via Feedback form on our website. This is an information message. You can continue using the analyzer with your current license. To hide this message, use the '--disableLicenseExpirationCheck' flag.
+
+Message:
+• Your license will expire in 29 days. Click 'Renew' to learn more or contact us via Feedback form on our website. This is an information message. You can continue using the analyzer with your current license. To hide this message, use the '--disableLicenseExpirationCheck' flag.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3010]
+├─ CWE: 252
+├─ SAST: None
+├─ Level: 2
+└─ Occurrences: 1
+
+Common pattern:
+The return value of function 'Advance' is required to be utilized.
+
+Message:
+• The return value of function 'Advance' is required to be utilized.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3063]
+├─ CWE: 570
+├─ SAST: None
+├─ Level: 2
+└─ Occurrences: 1
+
+Common pattern:
+A part of conditional expression is always false if it is evaluated: other.Controllers[i].Connected.
+
+Message:
+• A part of conditional expression is always false if it is evaluated: other.Controllers[i].Connected.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V5606]
+├─ CWE: 1069
+├─ SAST: OWASP-7.4.2
+├─ Level: 3
+└─ Occurrences: 1
+
+Common pattern:
+An empty exception handler. Silent suppression of exceptions may hide the presence of bugs or vulnerabilities.
+
+Message:
+• An empty exception handler. Silent suppression of exceptions may hide the presence of bugs or vulnerabilities.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3072]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 2
+└─ Occurrences: 1
+
+Common pattern:
+The 'Page' class containing IDisposable members does not itself implement IDisposable. Inspect: image, atlas.
+
+Message:
+• The 'Page' class containing IDisposable members does not itself implement IDisposable. Inspect: image, atlas.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3073]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 2
+└─ Occurrences: 1
+
+Common pattern:
+Not all IDisposable members are properly disposed. Call 'Dispose' when disposing 'Batcher' class. Inspect: mesh.
+
+Message:
+• Not all IDisposable members are properly disposed. Call 'Dispose' when disposing 'Batcher' class. Inspect: mesh.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3139]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 2
+└─ Occurrences: 1
+
+Common pattern:
+Two or more case-branches perform the same actions.
+
+Message:
+• Two or more case-branches perform the same actions.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3109]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 2
+└─ Occurrences: 1
+
+Common pattern:
+The 'interval' sub-expression is present on both sides of the operator. The expression is incorrect or it can be simplified.
+
+Message:
+• The 'interval' sub-expression is present on both sides of the operator. The expression is incorrect or it can be simplified.
+
+────────────────────────────────────────────────────────────────────────────────

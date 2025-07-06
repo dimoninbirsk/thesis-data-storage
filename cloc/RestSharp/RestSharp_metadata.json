@@ -1,0 +1,89 @@
+{"header" : {
+  "cloc_url"           : "github.com/AlDanial/cloc",
+  "cloc_version"       : "2.04",
+  "elapsed_seconds"    : 5.04998707771301,
+  "n_files"            : 717,
+  "n_lines"            : 294279,
+  "files_per_second"   : 141.980561329418,
+  "lines_per_second"   : 58273.218420446,
+  "report_file"        : "C:\\Users\\dimoninbirsk\\source\\thesis\\cloc\\RestSharp\\metadata.json"},
+"JSON" :{
+  "nFiles": 107,
+  "blank": 3,
+  "comment": 0,
+  "code": 242997},
+"XML" :{
+  "nFiles": 143,
+  "blank": 9,
+  "comment": 0,
+  "code": 16280},
+"C#" :{
+  "nFiles": 244,
+  "blank": 3864,
+  "comment": 4835,
+  "code": 13439},
+"Text" :{
+  "nFiles": 105,
+  "blank": 31,
+  "comment": 0,
+  "code": 5217},
+"Markdown" :{
+  "nFiles": 36,
+  "blank": 1261,
+  "comment": 2,
+  "code": 3248},
+"Properties" :{
+  "nFiles": 1,
+  "blank": 29,
+  "comment": 0,
+  "code": 692},
+"INI" :{
+  "nFiles": 36,
+  "blank": 5,
+  "comment": 0,
+  "code": 648},
+"Visual Studio Solution" :{
+  "nFiles": 1,
+  "blank": 1,
+  "comment": 1,
+  "code": 468},
+"MSBuild script" :{
+  "nFiles": 13,
+  "blank": 3,
+  "comment": 0,
+  "code": 321},
+"TypeScript" :{
+  "nFiles": 4,
+  "blank": 14,
+  "comment": 17,
+  "code": 237},
+"YAML" :{
+  "nFiles": 9,
+  "blank": 23,
+  "comment": 10,
+  "code": 236},
+"C# Generated" :{
+  "nFiles": 13,
+  "blank": 52,
+  "comment": 126,
+  "code": 125},
+"CSS" :{
+  "nFiles": 3,
+  "blank": 6,
+  "comment": 11,
+  "code": 47},
+"Dockerfile" :{
+  "nFiles": 1,
+  "blank": 2,
+  "comment": 3,
+  "code": 13},
+"JavaScript" :{
+  "nFiles": 1,
+  "blank": 0,
+  "comment": 0,
+  "code": 3},
+"SUM": {
+  "blank": 5303,
+  "comment": 5005,
+  "code": 283971,
+  "nFiles": 717} }

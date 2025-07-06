@@ -1,0 +1,802 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>AttackGenerator.cs</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <script src="../jquery-3.5.1.min.js"></script>
+</head>
+<body>
+<pre><code class = "cs">
+<a name="ln1">﻿using Lynx.Model;</a>
+<a name="ln2"> </a>
+<a name="ln3">namespace Lynx;</a>
+<a name="ln4"> </a>
+<a name="ln5">public static class AttackGenerator</a>
+<a name="ln6">{</a>
+<a name="ln7">    /// &lt;summary&gt;</a>
+<a name="ln8">    /// 2x64</a>
+<a name="ln9">    /// BitBoard[isWhite, square]</a>
+<a name="ln10">    /// &lt;/summary&gt;</a>
+<a name="ln11">    public static BitBoard[][] InitializePawnAttacks()</a>
+<a name="ln12">    {</a>
+<a name="ln13">        BitBoard[][] pawnAttacks = [new BitBoard[64], new BitBoard[64]];</a>
+<a name="ln14"> </a>
+<a name="ln15">        for (int square = 0; square &lt; 64; ++square)</a>
+<a name="ln16">        {</a>
+<a name="ln17">            pawnAttacks[0][square] = MaskPawnAttacks(square, isWhite: false);</a>
+<a name="ln18">            pawnAttacks[1][square] = MaskPawnAttacks(square, isWhite: true);</a>
+<a name="ln19">        }</a>
+<a name="ln20"> </a>
+<a name="ln21">        return pawnAttacks;</a>
+<a name="ln22">    }</a>
+<a name="ln23"> </a>
+<a name="ln24">    public static BitBoard[] InitializeKnightAttacks()</a>
+<a name="ln25">    {</a>
+<a name="ln26">        BitBoard[] knightAttacks = GC.AllocateArray&lt;BitBoard&gt;(64, pinned: true);</a>
+<a name="ln27"> </a>
+<a name="ln28">        for (int square = 0; square &lt; 64; ++square)</a>
+<a name="ln29">        {</a>
+<a name="ln30">            knightAttacks[square] = MaskKnightAttacks(square);</a>
+<a name="ln31">        }</a>
+<a name="ln32"> </a>
+<a name="ln33">        return knightAttacks;</a>
+<a name="ln34">    }</a>
+<a name="ln35"> </a>
+<a name="ln36">    public static BitBoard[] InitializeKingAttacks()</a>
+<a name="ln37">    {</a>
+<a name="ln38">        BitBoard[] kingAttacks = GC.AllocateArray&lt;BitBoard&gt;(64, pinned: true);</a>
+<a name="ln39"> </a>
+<a name="ln40">        for (int square = 0; square &lt; 64; ++square)</a>
+<a name="ln41">        {</a>
+<a name="ln42">            kingAttacks[square] = MaskKingAttacks(square);</a>
+<a name="ln43">        }</a>
+<a name="ln44"> </a>
+<a name="ln45">        return kingAttacks;</a>
+<a name="ln46">    }</a>
+<a name="ln47"> </a>
+<a name="ln48">    public static BitBoard[] InitializeBishopOccupancy()</a>
+<a name="ln49">    {</a>
+<a name="ln50">        BitBoard[] bishopAttacks = new BitBoard[64];</a>
+<a name="ln51"> </a>
+<a name="ln52">        for (int square = 0; square &lt; 64; ++square)</a>
+<a name="ln53">        {</a>
+<a name="ln54">            bishopAttacks[square] = MaskBishopOccupancy(square);</a>
+<a name="ln55">        }</a>
+<a name="ln56"> </a>
+<a name="ln57">        return bishopAttacks;</a>
+<a name="ln58">    }</a>
+<a name="ln59"> </a>
+<a name="ln60">    public static BitBoard[] InitializeRookOccupancy()</a>
+<a name="ln61">    {</a>
+<a name="ln62">        BitBoard[] rookAttacks = new BitBoard[64];</a>
+<a name="ln63"> </a>
+<a name="ln64">        for (int square = 0; square &lt; 64; ++square)</a>
+<a name="ln65">        {</a>
+<a name="ln66">            rookAttacks[square] = MaskRookOccupancy(square);</a>
+<a name="ln67">        }</a>
+<a name="ln68"> </a>
+<a name="ln69">        return rookAttacks;</a>
+<a name="ln70">    }</a>
+<a name="ln71"> </a>
+<a name="ln72">    /// &lt;summary&gt;</a>
+<a name="ln73">    /// Returns bishop occupancy masks and attacks</a>
+<a name="ln74">    /// &lt;/summary&gt;</a>
+<a name="ln75">    /// &lt;returns&gt;(BitBoard[64], BitBoard[64, 512])&lt;/returns&gt;</a>
+<a name="ln76">    public static (BitBoard[] BishopOccupancyMasks, BitBoard[][] BishopAttacks) InitializeBishopMagicAttacks()</a>
+<a name="ln77">    {</a>
+<a name="ln78">        BitBoard[] occupancyMasks = GC.AllocateArray&lt;BitBoard&gt;(64, pinned: true);</a>
+<a name="ln79">        BitBoard[][] attacks = new BitBoard[64][];  // 64x512</a>
+<a name="ln80"> </a>
+<a name="ln81">        for (int square = 0; square &lt; 64; ++square)</a>
+<a name="ln82">        {</a>
+<a name="ln83">            attacks[square] = new BitBoard[512];</a>
+<a name="ln84"> </a>
+<a name="ln85">            occupancyMasks[square] = MaskBishopOccupancy(square);</a>
+<a name="ln86"> </a>
+<a name="ln87">            var relevantBitsCount = Constants.BishopRelevantOccupancyBits[square];</a>
+<a name="ln88"> </a>
+<a name="ln89">            int occupancyIndexes = (1 &lt;&lt; relevantBitsCount);</a>
+<a name="ln90"> </a>
+<a name="ln91">            for (int index = 0; index &lt; occupancyIndexes; ++index)</a>
+<a name="ln92">            {</a>
+<a name="ln93">                var occupancy = SetBishopOrRookOccupancy(index, occupancyMasks[square]);</a>
+<a name="ln94"> </a>
+<a name="ln95">                var magicIndex = (occupancy * Constants.BishopMagicNumbers[square]) &gt;&gt; (64 - relevantBitsCount);</a>
+<a name="ln96"> </a>
+<a name="ln97">                attacks[square][magicIndex] = GenerateBishopAttacksOnTheFly(square, occupancy);</a>
+<a name="ln98">            }</a>
+<a name="ln99">        }</a>
+<a name="ln100"> </a>
+<a name="ln101">        return (occupancyMasks, attacks);</a>
+<a name="ln102">    }</a>
+<a name="ln103"> </a>
+<a name="ln104">    /// &lt;summary&gt;</a>
+<a name="ln105">    /// Returns rook occupancy masks and attacks</a>
+<a name="ln106">    /// &lt;/summary&gt;</a>
+<a name="ln107">    /// &lt;returns&gt;(BitBoard[64], BitBoard[64, 512])&lt;/returns&gt;</a>
+<a name="ln108">    public static (BitBoard[] RookOccupancyMasks, BitBoard[][] RookAttacks) InitializeRookMagicAttacks()</a>
+<a name="ln109">    {</a>
+<a name="ln110">        BitBoard[] occupancyMasks = GC.AllocateArray&lt;BitBoard&gt;(64, pinned: true);</a>
+<a name="ln111">        BitBoard[][] attacks = new BitBoard[64][];   // 64x4096</a>
+<a name="ln112"> </a>
+<a name="ln113">        for (int square = 0; square &lt; 64; ++square)</a>
+<a name="ln114">        {</a>
+<a name="ln115">            attacks[square] = new BitBoard[4096];</a>
+<a name="ln116"> </a>
+<a name="ln117">            occupancyMasks[square] = MaskRookOccupancy(square);</a>
+<a name="ln118"> </a>
+<a name="ln119">            var relevantBitsCount = Constants.RookRelevantOccupancyBits[square];</a>
+<a name="ln120"> </a>
+<a name="ln121">            int occupancyIndexes = (1 &lt;&lt; relevantBitsCount);</a>
+<a name="ln122"> </a>
+<a name="ln123">            for (int index = 0; index &lt; occupancyIndexes; ++index)</a>
+<a name="ln124">            {</a>
+<a name="ln125">                var occupancy = SetBishopOrRookOccupancy(index, occupancyMasks[square]);</a>
+<a name="ln126"> </a>
+<a name="ln127">                var magicIndex = (occupancy * Constants.RookMagicNumbers[square]) &gt;&gt; (64 - relevantBitsCount);</a>
+<a name="ln128"> </a>
+<a name="ln129">                attacks[square][magicIndex] = GenerateRookAttacksOnTheFly(square, occupancy);</a>
+<a name="ln130">            }</a>
+<a name="ln131">        }</a>
+<a name="ln132"> </a>
+<a name="ln133">        return (occupancyMasks, attacks);</a>
+<a name="ln134">    }</a>
+<a name="ln135"> </a>
+<a name="ln136">    public static BitBoard MaskPawnAttacks(int squareIndex, bool isWhite)</a>
+<a name="ln137">    {</a>
+<a name="ln138">        // Results attack bitboard</a>
+<a name="ln139">        BitBoard attacks = default;</a>
+<a name="ln140"> </a>
+<a name="ln141">        // Piece bitboard</a>
+<a name="ln142">#pragma warning disable S3353 // Unchanged local variables should be &quot;const&quot; - FP https://community.sonarsource.com/t/fp-s3353-value-modified-in-ref-extension-method/132389</a>
+<a name="ln143">        BitBoard bitBoard = default;</a>
+<a name="ln144">#pragma warning restore S3353 // Unchanged local variables should be &quot;const&quot;</a>
+<a name="ln145"> </a>
+<a name="ln146">        // Set piece on board</a>
+<a name="ln147">        bitBoard.SetBit(squareIndex);</a>
+<a name="ln148"> </a>
+<a name="ln149">        if (isWhite)</a>
+<a name="ln150">        {</a>
+<a name="ln151">            /*</a>
+<a name="ln152">             * 0 0 0 X 0</a>
+<a name="ln153">             * 0 0 1 0 0</a>
+<a name="ln154">             * 0 0 0 0 0</a>
+<a name="ln155">             */</a>
+<a name="ln156">            var right = bitBoard &gt;&gt; 7;</a>
+<a name="ln157">            if ((right &amp; Constants.NotAFile) != default)</a>
+<a name="ln158">            {</a>
+<a name="ln159">                attacks |= right;</a>
+<a name="ln160">            }</a>
+<a name="ln161"> </a>
+<a name="ln162">            /*</a>
+<a name="ln163">             * 0 X 0 0 0</a>
+<a name="ln164">             * 0 0 1 0 0</a>
+<a name="ln165">             * 0 0 0 0 0</a>
+<a name="ln166">             */</a>
+<a name="ln167">            var left = bitBoard &gt;&gt; 9;</a>
+<a name="ln168">            if ((left &amp; Constants.NotHFile) != default)</a>
+<a name="ln169">            {</a>
+<a name="ln170">                attacks |= left;</a>
+<a name="ln171">            }</a>
+<a name="ln172">        }</a>
+<a name="ln173">        else</a>
+<a name="ln174">        {</a>
+<a name="ln175">            /*</a>
+<a name="ln176">             * 0 0 0 0 0</a>
+<a name="ln177">             * 0 0 1 0 0</a>
+<a name="ln178">             * 0 X 0 0 0</a>
+<a name="ln179">             */</a>
+<a name="ln180">            var left = bitBoard &lt;&lt; 7;</a>
+<a name="ln181">            if ((left &amp; Constants.NotHFile) != default)</a>
+<a name="ln182">            {</a>
+<a name="ln183">                attacks |= left;</a>
+<a name="ln184">            }</a>
+<a name="ln185"> </a>
+<a name="ln186">            /*</a>
+<a name="ln187">             * 0 0 0 0 0</a>
+<a name="ln188">             * 0 0 1 0 0</a>
+<a name="ln189">             * 0 0 0 X 0</a>
+<a name="ln190">             */</a>
+<a name="ln191">            var right = bitBoard &lt;&lt; 9;</a>
+<a name="ln192">            if ((right &amp; Constants.NotAFile) != default)</a>
+<a name="ln193">            {</a>
+<a name="ln194">                attacks |= right;</a>
+<a name="ln195">            }</a>
+<a name="ln196">        }</a>
+<a name="ln197"> </a>
+<a name="ln198">        return attacks;</a>
+<a name="ln199">    }</a>
+<a name="ln200"> </a>
+<a name="ln201">    public static BitBoard MaskKnightAttacks(int squareIndex)</a>
+<a name="ln202">    {</a>
+<a name="ln203">        // Results attack bitboard</a>
+<a name="ln204">        BitBoard attacks = default;</a>
+<a name="ln205"> </a>
+<a name="ln206">        // Piece bitboard</a>
+<a name="ln207">#pragma warning disable S3353 // Unchanged local variables should be &quot;const&quot; - FP https://community.sonarsource.com/t/fp-s3353-value-modified-in-ref-extension-method/132389</a>
+<a name="ln208">        BitBoard bitBoard = default;</a>
+<a name="ln209">#pragma warning restore S3353 // Unchanged local variables should be &quot;const&quot;</a>
+<a name="ln210"> </a>
+<a name="ln211">        // Set piece on board</a>
+<a name="ln212">        bitBoard.SetBit(squareIndex);</a>
+<a name="ln213"> </a>
+<a name="ln214">        /*</a>
+<a name="ln215">         * 0 X 0 0 0</a>
+<a name="ln216">         * 0 0 0 0 0</a>
+<a name="ln217">         * 0 0 1 0 0</a>
+<a name="ln218">         * 0 0 0 0 0</a>
+<a name="ln219">         * 0 0 0 0 0</a>
+<a name="ln220">         */</a>
+<a name="ln221">        var attack = bitBoard &gt;&gt; 17;</a>
+<a name="ln222">        if ((attack &amp; Constants.NotHFile) != default)</a>
+<a name="ln223">        {</a>
+<a name="ln224">            attacks |= attack;</a>
+<a name="ln225">        }</a>
+<a name="ln226"> </a>
+<a name="ln227">        /*</a>
+<a name="ln228">         * 0 0 0 X 0</a>
+<a name="ln229">         * 0 0 0 0 0</a>
+<a name="ln230">         * 0 0 1 0 0</a>
+<a name="ln231">         * 0 0 0 0 0</a>
+<a name="ln232">         * 0 0 0 0 0</a>
+<a name="ln233">         */</a>
+<a name="ln234">        attack = bitBoard &gt;&gt; 15;</a>
+<a name="ln235">        if ((attack &amp; Constants.NotAFile) != default)</a>
+<a name="ln236">        {</a>
+<a name="ln237">            attacks |= attack;</a>
+<a name="ln238">        }</a>
+<a name="ln239"> </a>
+<a name="ln240">        /*</a>
+<a name="ln241">         * 0 0 0 0 0</a>
+<a name="ln242">         * 0 0 0 0 0</a>
+<a name="ln243">         * 0 0 1 0 0</a>
+<a name="ln244">         * 0 0 0 0 0</a>
+<a name="ln245">         * 0 X 0 0 0</a>
+<a name="ln246">         */</a>
+<a name="ln247">        attack = bitBoard &lt;&lt; 15;</a>
+<a name="ln248">        if ((attack &amp; Constants.NotHFile) != default)</a>
+<a name="ln249">        {</a>
+<a name="ln250">            attacks |= attack;</a>
+<a name="ln251">        }</a>
+<a name="ln252"> </a>
+<a name="ln253">        /*</a>
+<a name="ln254">         * 0 0 0 0 0</a>
+<a name="ln255">         * 0 0 0 0 0</a>
+<a name="ln256">         * 0 0 1 0 0</a>
+<a name="ln257">         * 0 0 0 0 0</a>
+<a name="ln258">         * 0 0 0 X 0</a>
+<a name="ln259">         */</a>
+<a name="ln260">        attack = bitBoard &lt;&lt; 17;</a>
+<a name="ln261">        if ((attack &amp; Constants.NotAFile) != default)</a>
+<a name="ln262">        {</a>
+<a name="ln263">            attacks |= attack;</a>
+<a name="ln264">        }</a>
+<a name="ln265"> </a>
+<a name="ln266">        /*</a>
+<a name="ln267">         * 0 0 0 0 0</a>
+<a name="ln268">         * X 0 0 0 0</a>
+<a name="ln269">         * 0 0 1 0 0</a>
+<a name="ln270">         * 0 0 0 0 0</a>
+<a name="ln271">         * 0 0 0 0 0</a>
+<a name="ln272">         */</a>
+<a name="ln273">        attack = bitBoard &gt;&gt; 10;</a>
+<a name="ln274">        if ((attack &amp; Constants.NotHGFiles) != default)</a>
+<a name="ln275">        {</a>
+<a name="ln276">            attacks |= attack;</a>
+<a name="ln277">        }</a>
+<a name="ln278"> </a>
+<a name="ln279">        /*</a>
+<a name="ln280">         * 0 0 0 0 0</a>
+<a name="ln281">         * 0 0 0 0 X</a>
+<a name="ln282">         * 0 0 1 0 0</a>
+<a name="ln283">         * 0 0 0 0 0</a>
+<a name="ln284">         * 0 0 0 0 0</a>
+<a name="ln285">         */</a>
+<a name="ln286">        attack = bitBoard &gt;&gt; 6;</a>
+<a name="ln287">        if ((attack &amp; Constants.NotABFiles) != default)</a>
+<a name="ln288">        {</a>
+<a name="ln289">            attacks |= attack;</a>
+<a name="ln290">        }</a>
+<a name="ln291"> </a>
+<a name="ln292">        /*</a>
+<a name="ln293">         * 0 0 0 0 0</a>
+<a name="ln294">         * 0 0 0 0 0</a>
+<a name="ln295">         * 0 0 1 0 0</a>
+<a name="ln296">         * X 0 0 0 0</a>
+<a name="ln297">         * 0 0 0 0 0</a>
+<a name="ln298">         */</a>
+<a name="ln299">        attack = bitBoard &lt;&lt; 6;</a>
+<a name="ln300">        if ((attack &amp; Constants.NotHGFiles) != default)</a>
+<a name="ln301">        {</a>
+<a name="ln302">            attacks |= attack;</a>
+<a name="ln303">        }</a>
+<a name="ln304"> </a>
+<a name="ln305">        /*</a>
+<a name="ln306">         * 0 0 0 0 0</a>
+<a name="ln307">         * 0 0 0 0 0</a>
+<a name="ln308">         * 0 0 1 0 0</a>
+<a name="ln309">         * 0 0 0 0 X</a>
+<a name="ln310">         * 0 0 0 0 0</a>
+<a name="ln311">         */</a>
+<a name="ln312">        attack = bitBoard &lt;&lt; 10;</a>
+<a name="ln313">        if ((attack &amp; Constants.NotABFiles) != default)</a>
+<a name="ln314">        {</a>
+<a name="ln315">            attacks |= attack;</a>
+<a name="ln316">        }</a>
+<a name="ln317"> </a>
+<a name="ln318">        return attacks;</a>
+<a name="ln319">    }</a>
+<a name="ln320"> </a>
+<a name="ln321">    public static BitBoard MaskKingAttacks(int squareIndex)</a>
+<a name="ln322">    {</a>
+<a name="ln323">        // Results attack bitboard</a>
+<a name="ln324">        BitBoard attacks = default;</a>
+<a name="ln325"> </a>
+<a name="ln326">        // Piece bitboard</a>
+<a name="ln327">#pragma warning disable S3353 // Unchanged local variables should be &quot;const&quot; - FP https://community.sonarsource.com/t/fp-s3353-value-modified-in-ref-extension-method/132389</a>
+<a name="ln328">        BitBoard bitBoard = default;</a>
+<a name="ln329">#pragma warning restore S3353 // Unchanged local variables should be &quot;const&quot;</a>
+<a name="ln330"> </a>
+<a name="ln331">        // Set piece on board</a>
+<a name="ln332">        bitBoard.SetBit(squareIndex);</a>
+<a name="ln333"> </a>
+<a name="ln334">        /*</a>
+<a name="ln335">         * X 0 0</a>
+<a name="ln336">         * 0 1 0</a>
+<a name="ln337">         * 0 0 0</a>
+<a name="ln338">         */</a>
+<a name="ln339">        var attack = bitBoard &gt;&gt; 9;</a>
+<a name="ln340">        if ((attack &amp; Constants.NotHFile) != default)</a>
+<a name="ln341">        {</a>
+<a name="ln342">            attacks |= attack;</a>
+<a name="ln343">        }</a>
+<a name="ln344"> </a>
+<a name="ln345">        /*</a>
+<a name="ln346">         * 0 X 0</a>
+<a name="ln347">         * 0 1 0</a>
+<a name="ln348">         * 0 0 0</a>
+<a name="ln349">         */</a>
+<a name="ln350">        attacks |= bitBoard &gt;&gt; 8;</a>
+<a name="ln351"> </a>
+<a name="ln352">        /*</a>
+<a name="ln353">         * 0 0 X</a>
+<a name="ln354">         * 0 1 0</a>
+<a name="ln355">         * 0 0 0</a>
+<a name="ln356">         */</a>
+<a name="ln357">        attack = bitBoard &gt;&gt; 7;</a>
+<a name="ln358">        if ((attack &amp; Constants.NotAFile) != default)</a>
+<a name="ln359">        {</a>
+<a name="ln360">            attacks |= attack;</a>
+<a name="ln361">        }</a>
+<a name="ln362"> </a>
+<a name="ln363">        /*</a>
+<a name="ln364">         * 0 0 0</a>
+<a name="ln365">         * X 1 0</a>
+<a name="ln366">         * 0 0 0</a>
+<a name="ln367">         */</a>
+<a name="ln368">        attack = bitBoard &gt;&gt; 1;</a>
+<a name="ln369">        if ((attack &amp; Constants.NotHFile) != default)</a>
+<a name="ln370">        {</a>
+<a name="ln371">            attacks |= attack;</a>
+<a name="ln372">        }</a>
+<a name="ln373"> </a>
+<a name="ln374">        /*</a>
+<a name="ln375">         * 0 0 0</a>
+<a name="ln376">         * 0 1 X</a>
+<a name="ln377">         * 0 0 0</a>
+<a name="ln378">         */</a>
+<a name="ln379">        attack = bitBoard &lt;&lt; 1;</a>
+<a name="ln380">        if ((attack &amp; Constants.NotAFile) != default)</a>
+<a name="ln381">        {</a>
+<a name="ln382">            attacks |= attack;</a>
+<a name="ln383">        }</a>
+<a name="ln384"> </a>
+<a name="ln385">        /*</a>
+<a name="ln386">         * 0 0 0</a>
+<a name="ln387">         * 0 1 0</a>
+<a name="ln388">         * X 0 0</a>
+<a name="ln389">         */</a>
+<a name="ln390">        attack = bitBoard &lt;&lt; 7;</a>
+<a name="ln391">        if ((attack &amp; Constants.NotHFile) != default)</a>
+<a name="ln392">        {</a>
+<a name="ln393">            attacks |= attack;</a>
+<a name="ln394">        }</a>
+<a name="ln395"> </a>
+<a name="ln396">        /*</a>
+<a name="ln397">         * 0 0 0</a>
+<a name="ln398">         * 0 1 0</a>
+<a name="ln399">         * 0 X 0</a>
+<a name="ln400">         */</a>
+<a name="ln401">        attacks |= bitBoard &lt;&lt; 8;</a>
+<a name="ln402"> </a>
+<a name="ln403">        /*</a>
+<a name="ln404">         * 0 0 0</a>
+<a name="ln405">         * 0 1 0</a>
+<a name="ln406">         * X 0 0</a>
+<a name="ln407">         */</a>
+<a name="ln408">        attack = bitBoard &lt;&lt; 9;</a>
+<a name="ln409">        if ((attack &amp; Constants.NotAFile) != default)</a>
+<a name="ln410">        {</a>
+<a name="ln411">            attacks |= attack;</a>
+<a name="ln412">        }</a>
+<a name="ln413"> </a>
+<a name="ln414">        return attacks;</a>
+<a name="ln415">    }</a>
+<a name="ln416"> </a>
+<a name="ln417">    /// &lt;summary&gt;</a>
+<a name="ln418">    /// Returns relevant 'bishop occupancy squares' (attacks)</a>
+<a name="ln419">    /// Outer squares don't matter in terms of occupancy (see https://www.chessprogramming.org/First_Rank_Attacks#TheOuterSquares)</a>
+<a name="ln420">    /// Therefore, there are max 6 occupancy squares per direction (if a bishop is placed on a corner)</a>
+<a name="ln421">    /// &lt;/summary&gt;</a>
+<a name="ln422">    public static BitBoard MaskBishopOccupancy(int squareIndex)</a>
+<a name="ln423">    {</a>
+<a name="ln424">        // Results attack bitboard</a>
+<a name="ln425">        BitBoard attacks = default;</a>
+<a name="ln426"> </a>
+<a name="ln427">        int rank, file;</a>
+<a name="ln428"> </a>
+<a name="ln429">        // Next target square within the attack ray of a sliding piece</a>
+<a name="ln430">        int targetRank = Math.DivRem(squareIndex, 8, out int targetFile);</a>
+<a name="ln431"> </a>
+<a name="ln432">        // Mask relevant bishop occupancy bits (squares)</a>
+<a name="ln433"> </a>
+<a name="ln434">        /*</a>
+<a name="ln435">         * 0 0 0 0 0</a>
+<a name="ln436">         * 0 1 0 0 0</a>
+<a name="ln437">         * 0 0 X 0 0        ↘️</a>
+<a name="ln438">         * 0 0 0 X 0</a>
+<a name="ln439">         * 0 0 0 0 0</a>
+<a name="ln440">         */</a>
+<a name="ln441">        for (rank = targetRank + 1, file = targetFile + 1; rank &lt;= 6 &amp;&amp; file &lt;= 6; ++rank, ++file)</a>
+<a name="ln442">        {</a>
+<a name="ln443">            attacks |= 1UL &lt;&lt; BitBoardExtensions.SquareIndex(rank, file);</a>
+<a name="ln444">        }</a>
+<a name="ln445"> </a>
+<a name="ln446">        /*</a>
+<a name="ln447">         * 0 0 0 0 0</a>
+<a name="ln448">         * 0 X 0 0 0</a>
+<a name="ln449">         * 0 0 X 0 0        ↖️</a>
+<a name="ln450">         * 0 0 0 1 0</a>
+<a name="ln451">         * 0 0 0 0 0</a>
+<a name="ln452">         */</a>
+<a name="ln453">        for (rank = targetRank - 1, file = targetFile - 1; rank &gt;= 1 &amp;&amp; file &gt;= 1; --rank, --file)</a>
+<a name="ln454">        {</a>
+<a name="ln455">            attacks |= 1UL &lt;&lt; BitBoardExtensions.SquareIndex(rank, file);</a>
+<a name="ln456">        }</a>
+<a name="ln457"> </a>
+<a name="ln458">        /*</a>
+<a name="ln459">         * 0 0 0 0 0</a>
+<a name="ln460">         * 0 0 0 X 0</a>
+<a name="ln461">         * 0 0 X 0 0        ↗️</a>
+<a name="ln462">         * 0 1 0 0 0</a>
+<a name="ln463">         * 0 0 0 0 0</a>
+<a name="ln464">         */</a>
+<a name="ln465">        for (rank = targetRank - 1, file = targetFile + 1; rank &gt;= 1 &amp;&amp; file &lt;= 6; --rank, ++file)</a>
+<a name="ln466">        {</a>
+<a name="ln467">            attacks |= 1UL &lt;&lt; BitBoardExtensions.SquareIndex(rank, file);</a>
+<a name="ln468">        }</a>
+<a name="ln469"> </a>
+<a name="ln470">        /*</a>
+<a name="ln471">         * 0 0 0 0 0</a>
+<a name="ln472">         * 0 0 0 1 0</a>
+<a name="ln473">         * 0 0 X 0 0        ↙️</a>
+<a name="ln474">         * 0 X 0 0 0</a>
+<a name="ln475">         * 0 0 0 0 0</a>
+<a name="ln476">         */</a>
+<a name="ln477">        for (rank = targetRank + 1, file = targetFile - 1; rank &lt;= 6 &amp;&amp; file &gt;= 1; ++rank, --file)</a>
+<a name="ln478">        {</a>
+<a name="ln479">            attacks |= 1UL &lt;&lt; BitBoardExtensions.SquareIndex(rank, file);</a>
+<a name="ln480">        }</a>
+<a name="ln481"> </a>
+<a name="ln482">        return attacks;</a>
+<a name="ln483">    }</a>
+<a name="ln484"> </a>
+<a name="ln485">    /// &lt;summary&gt;</a>
+<a name="ln486">    /// Returns relevant 'rook occupancy squares' (attacks)</a>
+<a name="ln487">    /// Outer squares don't matter in terms of occupancy (see https://www.chessprogramming.org/First_Rank_Attacks#TheOuterSquares)</a>
+<a name="ln488">    /// Therefore, there are max 6 occupancy squares per direction (if a rook is placed on a corner)</a>
+<a name="ln489">    /// &lt;/summary&gt;</a>
+<a name="ln490">    public static BitBoard MaskRookOccupancy(int squareIndex)</a>
+<a name="ln491">    {</a>
+<a name="ln492">        // Results attack bitboard</a>
+<a name="ln493">        BitBoard attacks = default;</a>
+<a name="ln494"> </a>
+<a name="ln495">        int rank, file;</a>
+<a name="ln496"> </a>
+<a name="ln497">        // Next target square within the attack ray of a sliding piece</a>
+<a name="ln498">        int targetRank = Math.DivRem(squareIndex, 8, out int targetFile);</a>
+<a name="ln499"> </a>
+<a name="ln500">        // Mask relevant rook occupancy bits (squares)</a>
+<a name="ln501"> </a>
+<a name="ln502">        /*</a>
+<a name="ln503">         * 0 0 0 0 0</a>
+<a name="ln504">         * 0 0 0 0 0</a>
+<a name="ln505">         * 1 X X X 0      →</a>
+<a name="ln506">         * 0 0 0 0 0</a>
+<a name="ln507">         * 0 0 0 0 0</a>
+<a name="ln508">         */</a>
+<a name="ln509">        for (file = targetFile + 1; file &lt;= 6; ++file)</a>
+<a name="ln510">        {</a>
+<a name="ln511">            attacks |= 1UL &lt;&lt; BitBoardExtensions.SquareIndex(targetRank, file);</a>
+<a name="ln512">        }</a>
+<a name="ln513"> </a>
+<a name="ln514">        /*</a>
+<a name="ln515">         * 0 0 0 0 0</a>
+<a name="ln516">         * 0 0 0 0 0</a>
+<a name="ln517">         * 0 X X X 1        ←</a>
+<a name="ln518">         * 0 0 0 0 0</a>
+<a name="ln519">         * 0 0 0 0 0</a>
+<a name="ln520">         */</a>
+<a name="ln521">        for (file = targetFile - 1; file &gt;= 1; --file)</a>
+<a name="ln522">        {</a>
+<a name="ln523">            attacks |= 1UL &lt;&lt; BitBoardExtensions.SquareIndex(targetRank, file);</a>
+<a name="ln524">        }</a>
+<a name="ln525"> </a>
+<a name="ln526">        /*</a>
+<a name="ln527">         * 0 0 1 0 0</a>
+<a name="ln528">         * 0 0 X 0 0</a>
+<a name="ln529">         * 0 0 X 0 0        ↓</a>
+<a name="ln530">         * 0 0 X 0 0</a>
+<a name="ln531">         * 0 0 0 0 0</a>
+<a name="ln532">         */</a>
+<a name="ln533">        for (rank = targetRank + 1; rank &lt;= 6; ++rank)</a>
+<a name="ln534">        {</a>
+<a name="ln535">            attacks |= 1UL &lt;&lt; BitBoardExtensions.SquareIndex(rank, targetFile);</a>
+<a name="ln536">        }</a>
+<a name="ln537"> </a>
+<a name="ln538">        /*</a>
+<a name="ln539">         * 0 0 0 0 0</a>
+<a name="ln540">         * 0 0 X 0 0</a>
+<a name="ln541">         * 0 0 X 0 0        ↑</a>
+<a name="ln542">         * 0 0 X 0 0</a>
+<a name="ln543">         * 0 0 1 0 0</a>
+<a name="ln544">         */</a>
+<a name="ln545">        for (rank = targetRank - 1; rank &gt;= 1; --rank)</a>
+<a name="ln546">        {</a>
+<a name="ln547">            attacks |= 1UL &lt;&lt; BitBoardExtensions.SquareIndex(rank, targetFile);</a>
+<a name="ln548">        }</a>
+<a name="ln549"> </a>
+<a name="ln550">        return attacks;</a>
+<a name="ln551">    }</a>
+<a name="ln552"> </a>
+<a name="ln553">    /// &lt;summary&gt;</a>
+<a name="ln554">    /// Populate occupancy sets from Bishop or Rook attack masks depending on &lt;paramref name=&quot;index&quot;/&gt;</a>
+<a name="ln555">    /// &lt;/summary&gt;</a>
+<a name="ln556">    /// &lt;param name=&quot;index&quot;&gt;</a>
+<a name="ln557">    /// Index within the range of possible occupancies within the bitboard.</a>
+<a name="ln558">    /// Between 0 and &lt;paramref name=&quot;occupancyMask&quot;/&gt;.CountBits() - 1</a>
+<a name="ln559">    /// &lt;/param&gt;</a>
+<a name="ln560">    /// &lt;param name=&quot;occupancyMask&quot;&gt;Bishop or rook occupancy (&lt;see cref=&quot;AttackGenerator.MaskBishopOccupancy(int)&quot;/&gt; and &lt;see cref=&quot;AttackGenerator.MaskRookOccupancy(int)&quot;/&gt;)&lt;/param&gt;</a>
+<a name="ln561">    /// &lt;returns&gt;An occupancy set for the given index&lt;/returns&gt;</a>
+<a name="ln562">    public static BitBoard SetBishopOrRookOccupancy(int index, BitBoard occupancyMask)</a>
+<a name="ln563">    {</a>
+<a name="ln564">        var bitsInMask = occupancyMask.CountBits();</a>
+<a name="ln565"> </a>
+<a name="ln566">#pragma warning disable S3353 // Unchanged local variables should be &quot;const&quot; - FP https://community.sonarsource.com/t/fp-s3353-value-modified-in-ref-extension-method/132389</a>
+<a name="ln567">        BitBoard occupancy = default;</a>
+<a name="ln568">#pragma warning restore S3353 // Unchanged local variables should be &quot;const&quot;</a>
+<a name="ln569"> </a>
+<a name="ln570">        // Loop over the range of bits within attack mask</a>
+<a name="ln571">        for (int count = 0; count &lt; bitsInMask; ++count)</a>
+<a name="ln572">        {</a>
+<a name="ln573">            // Extract LS1B and reset it</a>
+<a name="ln574">            int squareIndex = occupancyMask.GetLS1BIndex();</a>
+<a name="ln575">            occupancyMask.PopBit(squareIndex);</a>
+<a name="ln576"> </a>
+<a name="ln577">            // Make sure occupancy is on board</a>
+<a name="ln578">            if ((index &amp; (1 &lt;&lt; count)) != default)</a>
+<a name="ln579">            {</a>
+<a name="ln580">                // Update occupancy</a>
+<a name="ln581">                occupancy.SetBit(squareIndex);</a>
+<a name="ln582">            }</a>
+<a name="ln583">        }</a>
+<a name="ln584"> </a>
+<a name="ln585">        return occupancy;</a>
+<a name="ln586">    }</a>
+<a name="ln587"> </a>
+<a name="ln588">    public static BitBoard GenerateBishopAttacksOnTheFly(int squareIndex, BitBoard occupiedSquares)</a>
+<a name="ln589">    {</a>
+<a name="ln590">        // Results attack bitboard</a>
+<a name="ln591">        BitBoard attacks = default;</a>
+<a name="ln592"> </a>
+<a name="ln593">        int rank, file;</a>
+<a name="ln594"> </a>
+<a name="ln595">        // Next target square within the attack ray of a sliding piece</a>
+<a name="ln596">        int targetRank = Math.DivRem(squareIndex, 8, out int targetFile);</a>
+<a name="ln597"> </a>
+<a name="ln598">        // Generate bishop attacks</a>
+<a name="ln599"> </a>
+<a name="ln600">        /*</a>
+<a name="ln601">         * 0 0 0 0 0</a>
+<a name="ln602">         * 0 1 0 0 0</a>
+<a name="ln603">         * 0 0 X 0 0        ↘️</a>
+<a name="ln604">         * 0 0 0 X 0</a>
+<a name="ln605">         * 0 0 0 0 0</a>
+<a name="ln606">         */</a>
+<a name="ln607">        for (rank = targetRank + 1, file = targetFile + 1; rank &lt;= 7 &amp;&amp; file &lt;= 7; ++rank, ++file)</a>
+<a name="ln608">        {</a>
+<a name="ln609">            ulong square = 1UL &lt;&lt; BitBoardExtensions.SquareIndex(rank, file);</a>
+<a name="ln610">            attacks |= square;</a>
+<a name="ln611"> </a>
+<a name="ln612">            if ((square &amp; occupiedSquares) != default)</a>
+<a name="ln613">            {</a>
+<a name="ln614">                break;</a>
+<a name="ln615">            }</a>
+<a name="ln616">        }</a>
+<a name="ln617"> </a>
+<a name="ln618">        /*</a>
+<a name="ln619">         * 0 0 0 0 0</a>
+<a name="ln620">         * 0 X 0 0 0</a>
+<a name="ln621">         * 0 0 X 0 0        ↖️</a>
+<a name="ln622">         * 0 0 0 1 0</a>
+<a name="ln623">         * 0 0 0 0 0</a>
+<a name="ln624">         */</a>
+<a name="ln625">        for (rank = targetRank - 1, file = targetFile - 1; rank &gt;= 0 &amp;&amp; file &gt;= 0; --rank, --file)</a>
+<a name="ln626">        {</a>
+<a name="ln627">            ulong square = 1UL &lt;&lt; BitBoardExtensions.SquareIndex(rank, file);</a>
+<a name="ln628">            attacks |= square;</a>
+<a name="ln629"> </a>
+<a name="ln630">            if ((square &amp; occupiedSquares) != default)</a>
+<a name="ln631">            {</a>
+<a name="ln632">                break;</a>
+<a name="ln633">            }</a>
+<a name="ln634">        }</a>
+<a name="ln635"> </a>
+<a name="ln636">        /*</a>
+<a name="ln637">         * 0 0 0 0 0</a>
+<a name="ln638">         * 0 0 0 X 0</a>
+<a name="ln639">         * 0 0 X 0 0        ↗️</a>
+<a name="ln640">         * 0 1 0 0 0</a>
+<a name="ln641">         * 0 0 0 0 0</a>
+<a name="ln642">         */</a>
+<a name="ln643">        for (rank = targetRank - 1, file = targetFile + 1; rank &gt;= 0 &amp;&amp; file &lt;= 7; --rank, ++file)</a>
+<a name="ln644">        {</a>
+<a name="ln645">            ulong square = 1UL &lt;&lt; BitBoardExtensions.SquareIndex(rank, file);</a>
+<a name="ln646">            attacks |= square;</a>
+<a name="ln647"> </a>
+<a name="ln648">            if ((square &amp; occupiedSquares) != default)</a>
+<a name="ln649">            {</a>
+<a name="ln650">                break;</a>
+<a name="ln651">            }</a>
+<a name="ln652">        }</a>
+<a name="ln653"> </a>
+<a name="ln654">        /*</a>
+<a name="ln655">         * 0 0 0 0 0</a>
+<a name="ln656">         * 0 0 0 1 0</a>
+<a name="ln657">         * 0 0 X 0 0        ↙️</a>
+<a name="ln658">         * 0 X 0 0 0</a>
+<a name="ln659">         * 0 0 0 0 0</a>
+<a name="ln660">         */</a>
+<a name="ln661">        for (rank = targetRank + 1, file = targetFile - 1; rank &lt;= 7 &amp;&amp; file &gt;= 0; ++rank, --file)</a>
+<a name="ln662">        {</a>
+<a name="ln663">            ulong square = 1UL &lt;&lt; BitBoardExtensions.SquareIndex(rank, file);</a>
+<a name="ln664">            attacks |= square;</a>
+<a name="ln665"> </a>
+<a name="ln666">            if ((square &amp; occupiedSquares) != default)</a>
+<a name="ln667">            {</a>
+<a name="ln668">                break;</a>
+<a name="ln669">            }</a>
+<a name="ln670">        }</a>
+<a name="ln671"> </a>
+<a name="ln672">        return attacks;</a>
+<a name="ln673">    }</a>
+<a name="ln674"> </a>
+<a name="ln675">    public static BitBoard GenerateRookAttacksOnTheFly(int squareIndex, BitBoard occupiedSquares)</a>
+<a name="ln676">    {</a>
+<a name="ln677">        // Results attack bitboard</a>
+<a name="ln678">        BitBoard attacks = default;</a>
+<a name="ln679"> </a>
+<a name="ln680">        int rank, file;</a>
+<a name="ln681"> </a>
+<a name="ln682">        // Next target square within the attack ray of a sliding piece</a>
+<a name="ln683">        int targetRank = Math.DivRem(squareIndex, 8, out int targetFile);</a>
+<a name="ln684"> </a>
+<a name="ln685">        // Generate rook attacks</a>
+<a name="ln686"> </a>
+<a name="ln687">        /*</a>
+<a name="ln688">         * 0 0 0 0 0</a>
+<a name="ln689">         * 0 0 0 0 0</a>
+<a name="ln690">         * 1 X X X 0      →</a>
+<a name="ln691">         * 0 0 0 0 0</a>
+<a name="ln692">         * 0 0 0 0 0</a>
+<a name="ln693">         */</a>
+<a name="ln694">        for (file = targetFile + 1; file &lt;= 7; ++file)</a>
+<a name="ln695">        {</a>
+<a name="ln696">            ulong square = 1UL &lt;&lt; BitBoardExtensions.SquareIndex(targetRank, file);</a>
+<a name="ln697">            attacks |= square;</a>
+<a name="ln698"> </a>
+<a name="ln699">            if ((square &amp; occupiedSquares) != default)</a>
+<a name="ln700">            {</a>
+<a name="ln701">                break;</a>
+<a name="ln702">            }</a>
+<a name="ln703">        }</a>
+<a name="ln704"> </a>
+<a name="ln705">        /*</a>
+<a name="ln706">         * 0 0 0 0 0</a>
+<a name="ln707">         * 0 0 0 0 0</a>
+<a name="ln708">         * 0 X X X 1        ←</a>
+<a name="ln709">         * 0 0 0 0 0</a>
+<a name="ln710">         * 0 0 0 0 0</a>
+<a name="ln711">         */</a>
+<a name="ln712">        for (file = targetFile - 1; file &gt;= 0; --file)</a>
+<a name="ln713">        {</a>
+<a name="ln714">            ulong square = 1UL &lt;&lt; BitBoardExtensions.SquareIndex(targetRank, file);</a>
+<a name="ln715">            attacks |= square;</a>
+<a name="ln716"> </a>
+<a name="ln717">            if ((square &amp; occupiedSquares) != default)</a>
+<a name="ln718">            {</a>
+<a name="ln719">                break;</a>
+<a name="ln720">            }</a>
+<a name="ln721">        }</a>
+<a name="ln722"> </a>
+<a name="ln723">        /*</a>
+<a name="ln724">         * 0 0 1 0 0</a>
+<a name="ln725">         * 0 0 X 0 0</a>
+<a name="ln726">         * 0 0 X 0 0        ↓</a>
+<a name="ln727">         * 0 0 X 0 0</a>
+<a name="ln728">         * 0 0 0 0 0</a>
+<a name="ln729">         */</a>
+<a name="ln730">        for (rank = targetRank + 1; rank &lt;= 7; ++rank)</a>
+<a name="ln731">        {</a>
+<a name="ln732">            ulong square = 1UL &lt;&lt; BitBoardExtensions.SquareIndex(rank, targetFile);</a>
+<a name="ln733">            attacks |= square;</a>
+<a name="ln734"> </a>
+<a name="ln735">            if ((square &amp; occupiedSquares) != default)</a>
+<a name="ln736">            {</a>
+<a name="ln737">                break;</a>
+<a name="ln738">            }</a>
+<a name="ln739">        }</a>
+<a name="ln740"> </a>
+<a name="ln741">        /*</a>
+<a name="ln742">         * 0 0 0 0 0</a>
+<a name="ln743">         * 0 0 X 0 0</a>
+<a name="ln744">         * 0 0 X 0 0        ↑</a>
+<a name="ln745">         * 0 0 X 0 0</a>
+<a name="ln746">         * 0 0 1 0 0</a>
+<a name="ln747">         */</a>
+<a name="ln748">        for (rank = targetRank - 1; rank &gt;= 0; --rank)</a>
+<a name="ln749">        {</a>
+<a name="ln750">            ulong square = 1UL &lt;&lt; BitBoardExtensions.SquareIndex(rank, targetFile);</a>
+<a name="ln751">            attacks |= square;</a>
+<a name="ln752"> </a>
+<a name="ln753">            if ((square &amp; occupiedSquares) != default)</a>
+<a name="ln754">            {</a>
+<a name="ln755">                break;</a>
+<a name="ln756">            }</a>
+<a name="ln757">        }</a>
+<a name="ln758"> </a>
+<a name="ln759">        return attacks;</a>
+<a name="ln760">    }</a>
+<a name="ln761">}</a>
+</code></pre>
+<div class="balloon" rel="350"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3060/" target="_blank">V3060</a> A value of variable is not modified. Consider inspecting the expression. It is possible that other value should be present instead of '0'.</p></div>
+<div class="balloon" rel="401"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3060/" target="_blank">V3060</a> A value of variable is not modified. Consider inspecting the expression. It is possible that other value should be present instead of '0'.</p></div>
+<link rel="stylesheet" href="highlight.css">
+<script src="highlight.pack.js"></script>
+<script src="highlightjs-line-numbers.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script>hljs.initLineNumbersOnLoad();</script>
+<script>
+  $(document).ready(function() {
+      $('.balloon').each(function () {
+          var bl = $(this);
+          var line = bl.attr('rel');
+          var text = $('a[name="ln'+line+'"]').text();
+
+          var space_count = 0;
+          for(var i = 0; i<text.length; i++){
+              var char = text[i];
+              if((char !== ' ')&&(char !== '\t'))break;
+              if(char === '\t')space_count++;
+              space_count++;
+          }
+
+          bl.css('margin-left', space_count*8);
+          $('a[name="ln'+line+'"]').after(bl);
+      });
+
+      window.location = window.location;
+  });
+</script>
+</body>
+</html>

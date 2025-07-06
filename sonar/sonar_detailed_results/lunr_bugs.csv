@@ -1,0 +1,7 @@
+Key,Type,Severity,File,Line,Message,Effort,Debt,Rule,Tags
+f7862b39-31ee-4496-b05a-88296bd4834f,BUG,MAJOR,lunr:LunrCore/Vector.cs,48,"Do not check floating point equality with exact values, use a range instead.",5min,5min,csharpsquid:S1244,
+73cdc407-1b0d-496b-b06d-6079f367058a,BUG,MAJOR,lunr:LunrCoreLmdb/LmdbBuilder.cs,305,Verify this is the index/key that was intended; a value has already been set for it.,5min,5min,csharpsquid:S4143,suspicious
+1f12ddfe-7ff0-4a52-8761-2445f9b61a23,BUG,MAJOR,lunr:LunrCore/Clause.cs,169,"Do not check floating point equality with exact values, use a range instead.",5min,5min,csharpsquid:S1244,
+2ebe4c85-1ecc-40c6-b0b6-3bbb42df8ab3,BUG,MAJOR,lunr:LunrCore/Field.cs,34,"Do not check floating point inequality with exact values, use a range instead.",5min,5min,csharpsquid:S1244,
+7dc6f023-b1aa-4454-a8ba-ae63549160b8,BUG,MAJOR,lunr:LunrCore/Builder.cs,306,Verify this is the index/key that was intended; a value has already been set for it.,5min,5min,csharpsquid:S4143,suspicious
+bab9a770-3a81-43e8-9c58-99149f80cd2f,BUG,MAJOR,lunr:LunrCore/Vector.cs,87,"Do not check floating point equality with exact values, use a range instead.",5min,5min,csharpsquid:S1244,

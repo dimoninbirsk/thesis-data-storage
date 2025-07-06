@@ -1,0 +1,172 @@
+PVS-Studio Report: SoundFlow
+================================================================================
+
+┌─[ID: V5621]
+├─ CWE: 535
+├─ SAST: OWASP-8.3.5
+├─ Level: 3
+└─ Occurrences: 4
+
+Common pattern:
+Error message contains potentially sensitive data, in 'e .Message', that may be exposed.
+
+Examples:
+• Error message contains potentially sensitive data, in 'e.Message', that may be exposed.
+• Error message contains potentially sensitive data, in 'ex.Message', that may be exposed.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3064]
+├─ CWE: 369
+├─ SAST: None
+├─ Level: 2
+└─ Occurrences: 3
+
+Common pattern:
+Potential division by zero. Consider inspecting denominator '(  - 1)'.
+
+Examples:
+• Potential division by zero. Consider inspecting denominator '(AudioEngine.Channels - 1)'.
+• Potential division by zero. Consider inspecting denominator '(size - 1)'.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V5606]
+├─ CWE: 1069
+├─ SAST: OWASP-7.4.2
+├─ Level: 3
+└─ Occurrences: 3
+
+Common pattern:
+An empty exception handler. Silent suppression of exceptions may hide the presence of bugs or vulnerabilities.
+
+Message:
+• An empty exception handler. Silent suppression of exceptions may hide the presence of bugs or vulnerabilities.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: Renew]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 1
+└─ Occurrences: 1
+
+Common pattern:
+Your license will expire in 29 days. Click 'Renew' to learn more or contact us via Feedback form on our website. This is an information message. You can continue using the analyzer with your current license. To hide this message, use the '--disableLicenseExpirationCheck' flag.
+
+Message:
+• Your license will expire in 29 days. Click 'Renew' to learn more or contact us via Feedback form on our website. This is an information message. You can continue using the analyzer with your current license. To hide this message, use the '--disableLicenseExpirationCheck' flag.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3109]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 2
+└─ Occurrences: 1
+
+Common pattern:
+The 'Math.PI' sub-expression is present on both sides of the operator. The expression is incorrect or it can be simplified.
+
+Message:
+• The 'Math.PI' sub-expression is present on both sides of the operator. The expression is incorrect or it can be simplified.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3024]
+├─ CWE: 682
+├─ SAST: None
+├─ Level: 3
+└─ Occurrences: 1
+
+Common pattern:
+An odd precise comparison: reductionDb == 0. Consider using a comparison with defined precision: Math.Abs(A - B) < Epsilon.
+
+Message:
+• An odd precise comparison: reductionDb == 0. Consider using a comparison with defined precision: Math.Abs(A - B) < Epsilon.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3056]
+├─ CWE: 682
+├─ SAST: None
+├─ Level: 3
+└─ Occurrences: 1
+
+Common pattern:
+Consider reviewing the correctness of '_a0' item's usage.
+
+Message:
+• Consider reviewing the correctness of '_a0' item's usage.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3072]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 2
+└─ Occurrences: 1
+
+Common pattern:
+The 'StreamDataProvider' class containing IDisposable members does not itself implement IDisposable. Inspect: _decoder.
+
+Message:
+• The 'StreamDataProvider' class containing IDisposable members does not itself implement IDisposable. Inspect: _decoder.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3155]
+├─ CWE: 682
+├─ SAST: None
+├─ Level: 3
+└─ Occurrences: 1
+
+Common pattern:
+The expression is incorrect or it can be simplified. Consider inspecting the '0' literal.
+
+Message:
+• The expression is incorrect or it can be simplified. Consider inspecting the '0' literal.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3203]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 3
+└─ Occurrences: 1
+
+Common pattern:
+Method parameter is not used: capability.
+
+Message:
+• Method parameter is not used: capability.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3032]
+├─ CWE: 835
+├─ SAST: None
+├─ Level: 1
+└─ Occurrences: 1
+
+Common pattern:
+Waiting on this expression is unreliable, as compiler may optimize some of the variables. Use volatile variable(s) or synchronization primitives to avoid this.
+
+Message:
+• Waiting on this expression is unreliable, as compiler may optimize some of the variables. Use volatile variable(s) or synchronization primitives to avoid this.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3114]
+├─ CWE: 404
+├─ SAST: None
+├─ Level: 2
+└─ Occurrences: 1
+
+Common pattern:
+IDisposable object 'recorder' is not disposed before method returns.
+
+Message:
+• IDisposable object 'recorder' is not disposed before method returns.
+
+────────────────────────────────────────────────────────────────────────────────

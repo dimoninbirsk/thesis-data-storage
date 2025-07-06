@@ -1,0 +1,155 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII" />
+  <title>ImageExtensions.cs</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <script src="../jquery-3.5.1.min.js"></script>
+</head>
+<body>
+<pre><code class = "cs">
+<a name="ln1">using System.IO;</a>
+<a name="ln2">using System.Windows;</a>
+<a name="ln3">using System.Windows.Media.Imaging;</a>
+<a name="ln4"> </a>
+<a name="ln5">namespace ScreenToGif.Util.Extensions;</a>
+<a name="ln6"> </a>
+<a name="ln7">public static class ImageExtensions</a>
+<a name="ln8">{</a>
+<a name="ln9">    /// &lt;summary&gt;</a>
+<a name="ln10">    /// Gets the BitmapSource from the source and closes the file usage.</a>
+<a name="ln11">    /// &lt;/summary&gt;</a>
+<a name="ln12">    /// &lt;param name=&quot;fileSource&quot;&gt;The file to open.&lt;/param&gt;</a>
+<a name="ln13">    /// &lt;param name=&quot;size&quot;&gt;The maximum height of the image.&lt;/param&gt;</a>
+<a name="ln14">    /// &lt;returns&gt;The open BitmapSource.&lt;/returns&gt;</a>
+<a name="ln15">    public static BitmapSource SourceFrom(this string fileSource, int? size = null)</a>
+<a name="ln16">    {</a>
+<a name="ln17">        using (var stream = new FileStream(fileSource, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))</a>
+<a name="ln18">        {</a>
+<a name="ln19">            var bitmapImage = new BitmapImage();</a>
+<a name="ln20">            bitmapImage.BeginInit();</a>
+<a name="ln21">            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;</a>
+<a name="ln22"> </a>
+<a name="ln23">            if (size.HasValue)</a>
+<a name="ln24">                bitmapImage.DecodePixelHeight = size.Value;</a>
+<a name="ln25"> </a>
+<a name="ln26">            bitmapImage.StreamSource = stream;</a>
+<a name="ln27">            bitmapImage.EndInit();</a>
+<a name="ln28">            bitmapImage.Freeze(); //Just in case you want to load the image in another thread</a>
+<a name="ln29">            return bitmapImage;</a>
+<a name="ln30">        }</a>
+<a name="ln31">    }</a>
+<a name="ln32"> </a>
+<a name="ln33">    /// &lt;summary&gt;</a>
+<a name="ln34">    /// Gets the BitmapSource from the source and closes the file usage.</a>
+<a name="ln35">    /// &lt;/summary&gt;</a>
+<a name="ln36">    /// &lt;param name=&quot;array&quot;&gt;The array to open.&lt;/param&gt;</a>
+<a name="ln37">    /// &lt;param name=&quot;size&quot;&gt;The maximum height of the image.&lt;/param&gt;</a>
+<a name="ln38">    /// &lt;returns&gt;The open BitmapSource.&lt;/returns&gt;</a>
+<a name="ln39">    public static BitmapSource SourceFrom(this byte[] array, int? size = null)</a>
+<a name="ln40">    {</a>
+<a name="ln41">        using (var stream = new MemoryStream(array))</a>
+<a name="ln42">        {</a>
+<a name="ln43">            var bitmapImage = new BitmapImage();</a>
+<a name="ln44">            bitmapImage.BeginInit();</a>
+<a name="ln45">            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;</a>
+<a name="ln46"> </a>
+<a name="ln47">            if (size.HasValue)</a>
+<a name="ln48">                bitmapImage.DecodePixelHeight = size.Value;</a>
+<a name="ln49"> </a>
+<a name="ln50">            bitmapImage.StreamSource = stream;</a>
+<a name="ln51">            bitmapImage.EndInit();</a>
+<a name="ln52">            bitmapImage.Freeze(); //Just in case you want to load the image in another thread</a>
+<a name="ln53">            return bitmapImage;</a>
+<a name="ln54">        }</a>
+<a name="ln55">    }</a>
+<a name="ln56"> </a>
+<a name="ln57">    /// &lt;summary&gt;</a>
+<a name="ln58">    /// Gets the BitmapSource from the source and closes the file usage.</a>
+<a name="ln59">    /// &lt;/summary&gt;</a>
+<a name="ln60">    /// &lt;param name=&quot;stream&quot;&gt;The stream to open.&lt;/param&gt;</a>
+<a name="ln61">    /// &lt;param name=&quot;size&quot;&gt;The maximum height of the image.&lt;/param&gt;</a>
+<a name="ln62">    /// &lt;returns&gt;The open BitmapSource.&lt;/returns&gt;</a>
+<a name="ln63">    public static BitmapSource SourceFrom(this Stream stream, int? size = null)</a>
+<a name="ln64">    {</a>
+<a name="ln65">        var bitmapImage = new BitmapImage();</a>
+<a name="ln66">        bitmapImage.BeginInit();</a>
+<a name="ln67">        bitmapImage.CacheOption = BitmapCacheOption.OnLoad;</a>
+<a name="ln68"> </a>
+<a name="ln69">        if (size.HasValue)</a>
+<a name="ln70">            bitmapImage.DecodePixelHeight = size.Value;</a>
+<a name="ln71"> </a>
+<a name="ln72">        bitmapImage.StreamSource = stream;</a>
+<a name="ln73">        bitmapImage.EndInit();</a>
+<a name="ln74">        bitmapImage.Freeze(); //Just in case you want to load the image in another thread</a>
+<a name="ln75">        return bitmapImage;</a>
+<a name="ln76">    }</a>
+<a name="ln77"> </a>
+<a name="ln78">    /// &lt;summary&gt;</a>
+<a name="ln79">    /// Gets the BitmapSource from the source and closes the file usage.</a>
+<a name="ln80">    /// &lt;/summary&gt;</a>
+<a name="ln81">    /// &lt;param name=&quot;fileSource&quot;&gt;The file to open.&lt;/param&gt;</a>
+<a name="ln82">    /// &lt;param name=&quot;rect&quot;&gt;The desired crop area.&lt;/param&gt;</a>
+<a name="ln83">    /// &lt;returns&gt;The open BitmapSource.&lt;/returns&gt;</a>
+<a name="ln84">    public static BitmapSource CropFrom(this string fileSource, Int32Rect rect)</a>
+<a name="ln85">    {</a>
+<a name="ln86">        using (var stream = new FileStream(fileSource, FileMode.Open, FileAccess.Read))</a>
+<a name="ln87">        {</a>
+<a name="ln88">            var bitmapImage = new BitmapImage();</a>
+<a name="ln89">            bitmapImage.BeginInit();</a>
+<a name="ln90">            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;</a>
+<a name="ln91"> </a>
+<a name="ln92">            bitmapImage.StreamSource = stream;</a>
+<a name="ln93">            bitmapImage.EndInit();</a>
+<a name="ln94">            bitmapImage.Freeze(); //Just in case you want to load the image in another thread.</a>
+<a name="ln95"> </a>
+<a name="ln96">            var scale = Math.Round(bitmapImage.DpiX / 96d, 2);</a>
+<a name="ln97"> </a>
+<a name="ln98">            var x = Math.Min(bitmapImage.PixelWidth - 1, Math.Max(0, (int)(rect.X * scale)));</a>
+<a name="ln99">            var y = Math.Min(bitmapImage.PixelHeight - 1, Math.Max(0, (int)(rect.Y * scale)));</a>
+<a name="ln100">            var width = (int)(rect.Width * scale);</a>
+<a name="ln101">            var height = (int)(rect.Height * scale);</a>
+<a name="ln102"> </a>
+<a name="ln103">            width = Math.Min(width, bitmapImage.PixelWidth - x);</a>
+<a name="ln104">            height = Math.Min(height, bitmapImage.PixelHeight - y);</a>
+<a name="ln105"> </a>
+<a name="ln106">            rect = new Int32Rect(x, y, width, height);</a>
+<a name="ln107"> </a>
+<a name="ln108">            if (!new Int32Rect(0, 0, bitmapImage.PixelWidth, bitmapImage.PixelHeight).Contains(rect))</a>
+<a name="ln109">                return null;</a>
+<a name="ln110"> </a>
+<a name="ln111">            return new CroppedBitmap(bitmapImage, rect);</a>
+<a name="ln112">        }</a>
+<a name="ln113">    }</a>
+<a name="ln114">}</a>
+</code></pre>
+<div class="balloon" rel="17"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v5609/" target="_blank">V5609</a> Possible path traversal vulnerability. Potentially tainted data from the 'fileSource' variable is used as path.</p></div>
+<div class="balloon" rel="86"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v5609/" target="_blank">V5609</a> Possible path traversal vulnerability. Potentially tainted data from the 'fileSource' variable is used as path.</p></div>
+<link rel="stylesheet" href="highlight.css">
+<script src="highlight.pack.js"></script>
+<script src="highlightjs-line-numbers.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script>hljs.initLineNumbersOnLoad();</script>
+<script>
+  $(document).ready(function() {
+      $('.balloon').each(function () {
+          var bl = $(this);
+          var line = bl.attr('rel');
+          var text = $('a[name="ln'+line+'"]').text();
+
+          var space_count = 0;
+          for(var i = 0; i<text.length; i++){
+              var char = text[i];
+              if((char !== ' ')&&(char !== '\t'))break;
+              if(char === '\t')space_count++;
+              space_count++;
+          }
+
+          bl.css('margin-left', space_count*8);
+          $('a[name="ln'+line+'"]').after(bl);
+      });
+
+      window.location = window.location;
+  });
+</script>
+</body>
+</html>

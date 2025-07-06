@@ -1,0 +1,498 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>PVS-Studio HTML Report</title>
+<style type="text/css">
+   TABLE {
+    width: 100%;
+   }
+   #col_group, #col_level, #col_code, #col_cwe, #col_sast {
+    text-align: center;
+    white-space: nowrap;
+    width: 0;
+   }
+   #col_file, #col_info, #col_projects {
+    white-space: nowrap;
+    text-align: left;
+    width: 0;
+   }
+   #col_info {
+    width: 120px;
+   }
+   #col_message {
+    text-align: left;
+   }
+  </style>
+<link rel="stylesheet" href="style.css" />
+<script type="text/javascript" src="script.js"></script>
+<script type="text/javascript" src="toggle-cell.js"></script>
+</head>
+<body>
+  <div class="header">
+    <img src="images/logo.png" alt=""/>
+    <h1>PVS-Studio Analysis Results</h1>
+    <br class="clear">
+  </div>
+  <table cellpadding="0" cellspacing="0" border="0" class="infotopic">
+     <tr><th id="col_info">Date:</th><td>04/16/25 21:49:29</td></tr>
+     <tr><th id="col_info">PVS-Studio Version:</th><td>7.36.91321.1771</td></tr>
+     <tr><th id="col_info">Total Warnings (GA):</th><td>41</td></tr>
+     <tr><th id="col_info">Total Warnings (OWASP):</th><td>6</td></tr>
+     <tr><th id="col_info">Fails/Info:</th><td>1</td></tr>
+  </table>
+  <div class="toggle-box">
+    <label>
+      Show full paths
+    <input class="path-toggle toggle-button" type="checkbox" name="toggle-path" onclick="togglePathView()" />
+    </label>
+  </div>
+  <table cellpadding="0" cellspacing="0" border="0" class="sortable" id="sorter">
+    <tr>
+      <th class="gsort">Group</th>
+      <th class="psort">Projects</th>
+      <th>Location</th>
+      <th class="lsort">Level</th>
+      <th class="vsort">Code</th>
+      <th class="rsort">SAST</th>
+      <th>Message</th>
+    </tr>
+    <tr>
+      <td id="col_group"></td>
+      <td id="col_projects"><p></p></td>
+      <td id="col_file"></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/renewal/">Renew</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Your license will expire in 29 days. Click 'Renew' to learn more or contact us via Feedback form on our website. This is an information message. You can continue using the analyzer with your current license. To hide this message, use the '--disableLicenseExpirationCheck' flag.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Foster.Framework</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/App.cs_0.html#ln325">App.cs:325</a><a target="_blank" class="file-link display-none" href="sources/App.cs_0.html#ln325">C:\Users\dimoninbirsk\source\thesis\Foster\Framework\App.cs:325</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3041/">V3041</td>
+      <td id="col_sast"></td>
+      <td id="col_message">The expression was implicitly cast from 'int' type to 'float' type. Consider utilizing an explicit type cast to avoid the loss of a fractional part. An example: double A = (double)(X) / Y;.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Foster.Framework</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/App.cs_0.html#ln365">App.cs:365</a><a target="_blank" class="file-link display-none" href="sources/App.cs_0.html#ln365">C:\Users\dimoninbirsk\source\thesis\Foster\Framework\App.cs:365</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3010/">V3010</td>
+      <td id="col_sast"></td>
+      <td id="col_message">The return value of function 'Advance' is required to be utilized.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Foster.Framework</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/VectorExt.cs_1.html#ln114">VectorExt.cs:114</a><a target="_blank" class="file-link display-none" href="sources/VectorExt.cs_1.html#ln114">C:\Users\dimoninbirsk\source\thesis\Foster\Framework\Extensions\VectorExt.cs:114</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3024/">V3024</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An odd precise comparison: vector.X == 0. Consider using a comparison with defined precision: Math.Abs(A - B) &lt; Epsilon.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Foster.Framework</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/VectorExt.cs_1.html#ln114">VectorExt.cs:114</a><a target="_blank" class="file-link display-none" href="sources/VectorExt.cs_1.html#ln114">C:\Users\dimoninbirsk\source\thesis\Foster\Framework\Extensions\VectorExt.cs:114</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3024/">V3024</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An odd precise comparison: vector.Y == 0. Consider using a comparison with defined precision: Math.Abs(A - B) &lt; Epsilon.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Foster.Framework</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/VectorExt.cs_1.html#ln124">VectorExt.cs:124</a><a target="_blank" class="file-link display-none" href="sources/VectorExt.cs_1.html#ln124">C:\Users\dimoninbirsk\source\thesis\Foster\Framework\Extensions\VectorExt.cs:124</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3024/">V3024</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An odd precise comparison: vector.X == 0. Consider using a comparison with defined precision: Math.Abs(A - B) &lt; Epsilon.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Foster.Framework</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/VectorExt.cs_1.html#ln124">VectorExt.cs:124</a><a target="_blank" class="file-link display-none" href="sources/VectorExt.cs_1.html#ln124">C:\Users\dimoninbirsk\source\thesis\Foster\Framework\Extensions\VectorExt.cs:124</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3024/">V3024</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An odd precise comparison: vector.Y == 0. Consider using a comparison with defined precision: Math.Abs(A - B) &lt; Epsilon.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Foster.Framework</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/VectorExt.cs_1.html#ln124">VectorExt.cs:124</a><a target="_blank" class="file-link display-none" href="sources/VectorExt.cs_1.html#ln124">C:\Users\dimoninbirsk\source\thesis\Foster\Framework\Extensions\VectorExt.cs:124</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3024/">V3024</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An odd precise comparison: vector.Z == 0. Consider using a comparison with defined precision: Math.Abs(A - B) &lt; Epsilon.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Foster.Framework</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Batcher.cs_2.html#ln16">Batcher.cs:16</a><a target="_blank" class="file-link display-none" href="sources/Batcher.cs_2.html#ln16">C:\Users\dimoninbirsk\source\thesis\Foster\Framework\Graphics\Batcher.cs:16</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3073/">V3073</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Not all IDisposable members are properly disposed. Call 'Dispose' when disposing 'Batcher' class. Inspect: mesh.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Foster.Framework</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Batcher.cs_2.html#ln1599">Batcher.cs:1599</a><a target="_blank" class="file-link display-none" href="sources/Batcher.cs_2.html#ln1599">C:\Users\dimoninbirsk\source\thesis\Foster\Framework\Graphics\Batcher.cs:1599</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3024/">V3024</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An odd precise comparison: bounds.Width == 0. Consider using a comparison with defined precision: Math.Abs(A - B) &lt; Epsilon.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Foster.Framework</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Batcher.cs_2.html#ln1601">Batcher.cs:1601</a><a target="_blank" class="file-link display-none" href="sources/Batcher.cs_2.html#ln1601">C:\Users\dimoninbirsk\source\thesis\Foster\Framework\Graphics\Batcher.cs:1601</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3024/">V3024</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An odd precise comparison: bounds.Height == 0. Consider using a comparison with defined precision: Math.Abs(A - B) &lt; Epsilon.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Foster.Framework</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Batcher.cs_2.html#ln1617">Batcher.cs:1617</a><a target="_blank" class="file-link display-none" href="sources/Batcher.cs_2.html#ln1617">C:\Users\dimoninbirsk\source\thesis\Foster\Framework\Graphics\Batcher.cs:1617</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3024/">V3024</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An odd precise comparison: bounds.Width == 0. Consider using a comparison with defined precision: Math.Abs(A - B) &lt; Epsilon.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Foster.Framework</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Batcher.cs_2.html#ln1619">Batcher.cs:1619</a><a target="_blank" class="file-link display-none" href="sources/Batcher.cs_2.html#ln1619">C:\Users\dimoninbirsk\source\thesis\Foster\Framework\Graphics\Batcher.cs:1619</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3024/">V3024</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An odd precise comparison: bounds.Height == 0. Consider using a comparison with defined precision: Math.Abs(A - B) &lt; Epsilon.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Foster.Framework</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Shader.cs_3.html#ln59">Shader.cs:59</a><a target="_blank" class="file-link display-none" href="sources/Shader.cs_3.html#ln59">C:\Users\dimoninbirsk\source\thesis\Foster\Framework\Graphics\Shader.cs:59</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3100/">V3100</td>
+      <td id="col_sast"></td>
+      <td id="col_message">NullReferenceException is possible when dereferencing 'GraphicsDevice' variable. Unhandled exceptions in destructor lead to termination of runtime.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Foster.Framework</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/SpriteFont.cs_4.html#ln680">SpriteFont.cs:680</a><a target="_blank" class="file-link display-none" href="sources/SpriteFont.cs_4.html#ln680">C:\Users\dimoninbirsk\source\thesis\Foster\Framework\Graphics\SpriteFont.cs:680</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3072/">V3072</td>
+      <td id="col_sast"></td>
+      <td id="col_message">The 'Page' class containing IDisposable members does not itself implement IDisposable. Inspect: image, atlas.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Foster.Framework</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/SpriteFont.cs_4.html#ln465">SpriteFont.cs:465</a><a target="_blank" class="file-link display-none" href="sources/SpriteFont.cs_4.html#ln465">C:\Users\dimoninbirsk\source\thesis\Foster\Framework\Graphics\SpriteFont.cs:465</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3024/">V3024</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An odd precise comparison: justify.X != 0. Consider using a comparison with defined precision: Math.Abs(A - B) &gt; Epsilon.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Foster.Framework</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/SpriteFont.cs_4.html#ln468">SpriteFont.cs:468</a><a target="_blank" class="file-link display-none" href="sources/SpriteFont.cs_4.html#ln468">C:\Users\dimoninbirsk\source\thesis\Foster\Framework\Graphics\SpriteFont.cs:468</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3024/">V3024</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An odd precise comparison: justify.Y != 0. Consider using a comparison with defined precision: Math.Abs(A - B) &gt; Epsilon.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Foster.Framework</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/SpriteFont.cs_4.html#ln488">SpriteFont.cs:488</a><a target="_blank" class="file-link display-none" href="sources/SpriteFont.cs_4.html#ln488">C:\Users\dimoninbirsk\source\thesis\Foster\Framework\Graphics\SpriteFont.cs:488</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3024/">V3024</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An odd precise comparison: justify.X != 0. Consider using a comparison with defined precision: Math.Abs(A - B) &gt; Epsilon.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Foster.Framework</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/SpriteFont.cs_4.html#ln517">SpriteFont.cs:517</a><a target="_blank" class="file-link display-none" href="sources/SpriteFont.cs_4.html#ln517">C:\Users\dimoninbirsk\source\thesis\Foster\Framework\Graphics\SpriteFont.cs:517</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3024/">V3024</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An odd precise comparison: justify.Y != 0. Consider using a comparison with defined precision: Math.Abs(A - B) &gt; Epsilon.</td>
+    </tr>
+    <tr>
+      <td id="col_group">OWASP</td>
+      <td id="col_projects"><p>Foster.Framework</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/SpriteFont.cs_4.html#ln590">SpriteFont.cs:590</a><a target="_blank" class="file-link display-none" href="sources/SpriteFont.cs_4.html#ln590">C:\Users\dimoninbirsk\source\thesis\Foster\Framework\Graphics\SpriteFont.cs:590</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v5606/">V5606</td>
+      <td id="col_sast">OWASP-7.4.2</td>
+      <td id="col_message">An empty exception handler. Silent suppression of exceptions may hide the presence of bugs or vulnerabilities.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Foster.Framework</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Target.cs_5.html#ln86">Target.cs:86</a><a target="_blank" class="file-link display-none" href="sources/Target.cs_5.html#ln86">C:\Users\dimoninbirsk\source\thesis\Foster\Framework\Graphics\Target.cs:86</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3100/">V3100</td>
+      <td id="col_sast"></td>
+      <td id="col_message">NullReferenceException is possible when dereferencing 'GraphicsDevice' variable. Unhandled exceptions in destructor lead to termination of runtime.</td>
+    </tr>
+    <tr>
+      <td id="col_group">OWASP</td>
+      <td id="col_projects"><p>Foster.Framework</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Aseprite.cs_6.html#ln203">Aseprite.cs:203</a><a target="_blank" class="file-link display-none" href="sources/Aseprite.cs_6.html#ln203">C:\Users\dimoninbirsk\source\thesis\Foster\Framework\Images\Aseprite.cs:203</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v5609/">V5609</td>
+      <td id="col_sast">OWASP-12.3.1</td>
+      <td id="col_message">Possible path traversal vulnerability. Potentially tainted data from the 'filePath' variable is used as path.</td>
+    </tr>
+    <tr>
+      <td id="col_group">OWASP</td>
+      <td id="col_projects"><p>Foster.Framework</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Font.cs_7.html#ln45">Font.cs:45</a><a target="_blank" class="file-link display-none" href="sources/Font.cs_7.html#ln45">C:\Users\dimoninbirsk\source\thesis\Foster\Framework\Images\Font.cs:45</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v5609/">V5609</td>
+      <td id="col_sast">OWASP-12.3.1</td>
+      <td id="col_message">Possible path traversal vulnerability. Potentially tainted data from the 'path' variable is used as path.</td>
+    </tr>
+    <tr>
+      <td id="col_group">OWASP</td>
+      <td id="col_projects"><p>Foster.Framework</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Image.cs_8.html#ln92">Image.cs:92</a><a target="_blank" class="file-link display-none" href="sources/Image.cs_8.html#ln92">C:\Users\dimoninbirsk\source\thesis\Foster\Framework\Images\Image.cs:92</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v5609/">V5609</td>
+      <td id="col_sast">OWASP-12.3.1</td>
+      <td id="col_message">Possible path traversal vulnerability. Potentially tainted data from the 'file' variable is used as path.</td>
+    </tr>
+    <tr>
+      <td id="col_group">OWASP</td>
+      <td id="col_projects"><p>Foster.Framework</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Image.cs_8.html#ln158">Image.cs:158</a><a target="_blank" class="file-link display-none" href="sources/Image.cs_8.html#ln158">C:\Users\dimoninbirsk\source\thesis\Foster\Framework\Images\Image.cs:158</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v5609/">V5609</td>
+      <td id="col_sast">OWASP-12.3.1</td>
+      <td id="col_message">Possible path traversal vulnerability. Potentially tainted data from the 'path' variable is used as path.</td>
+    </tr>
+    <tr>
+      <td id="col_group">OWASP</td>
+      <td id="col_projects"><p>Foster.Framework</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Image.cs_8.html#ln175">Image.cs:175</a><a target="_blank" class="file-link display-none" href="sources/Image.cs_8.html#ln175">C:\Users\dimoninbirsk\source\thesis\Foster\Framework\Images\Image.cs:175</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v5609/">V5609</td>
+      <td id="col_sast">OWASP-12.3.1</td>
+      <td id="col_message">Possible path traversal vulnerability. Potentially tainted data from the 'path' variable is used as path.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Foster.Framework</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/InputState.cs_9.html#ln83">InputState.cs:83</a><a target="_blank" class="file-link display-none" href="sources/InputState.cs_9.html#ln83">C:\Users\dimoninbirsk\source\thesis\Foster\Framework\Input\InputState.cs:83</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3063/">V3063</td>
+      <td id="col_sast"></td>
+      <td id="col_message">A part of conditional expression is always false if it is evaluated: other.Controllers[i].Connected.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Foster.Framework</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/InputProviderSDL.cs_10.html#ln75">InputProviderSDL.cs:75</a><a target="_blank" class="file-link display-none" href="sources/InputProviderSDL.cs_10.html#ln75">C:\Users\dimoninbirsk\source\thesis\Foster\Framework\Internal\InputProviderSDL.cs:75</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3024/">V3024</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An odd precise comparison: delta.X != 0. Consider using a comparison with defined precision: Math.Abs(A - B) &gt; Epsilon.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Foster.Framework</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/InputProviderSDL.cs_10.html#ln75">InputProviderSDL.cs:75</a><a target="_blank" class="file-link display-none" href="sources/InputProviderSDL.cs_10.html#ln75">C:\Users\dimoninbirsk\source\thesis\Foster\Framework\Internal\InputProviderSDL.cs:75</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3024/">V3024</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An odd precise comparison: delta.Y != 0. Consider using a comparison with defined precision: Math.Abs(A - B) &gt; Epsilon.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Foster.Framework</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/InputProviderSDL.cs_10.html#ln75">InputProviderSDL.cs:75</a><a target="_blank" class="file-link display-none" href="sources/InputProviderSDL.cs_10.html#ln75">C:\Users\dimoninbirsk\source\thesis\Foster\Framework\Internal\InputProviderSDL.cs:75</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3024/">V3024</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An odd precise comparison: lastMouse.X != mouse.X. Consider using a comparison with defined precision: Math.Abs(A - B) &gt; Epsilon.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Foster.Framework</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/InputProviderSDL.cs_10.html#ln75">InputProviderSDL.cs:75</a><a target="_blank" class="file-link display-none" href="sources/InputProviderSDL.cs_10.html#ln75">C:\Users\dimoninbirsk\source\thesis\Foster\Framework\Internal\InputProviderSDL.cs:75</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3024/">V3024</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An odd precise comparison: lastMouse.Y != mouse.Y. Consider using a comparison with defined precision: Math.Abs(A - B) &gt; Epsilon.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Foster.Framework</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/InputProviderSDL.cs_10.html#ln255">InputProviderSDL.cs:255</a><a target="_blank" class="file-link display-none" href="sources/InputProviderSDL.cs_10.html#ln255">C:\Users\dimoninbirsk\source\thesis\Foster\Framework\Internal\InputProviderSDL.cs:255</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3100/">V3100</td>
+      <td id="col_sast"></td>
+      <td id="col_message">NullReferenceException is possible. Unhandled exceptions in destructor lead to termination of runtime.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Foster.Framework</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Circle.cs_11.html#ln130">Circle.cs:130</a><a target="_blank" class="file-link display-none" href="sources/Circle.cs_11.html#ln130">C:\Users\dimoninbirsk\source\thesis\Foster\Framework\Spatial\Circle.cs:130</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3024/">V3024</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An odd precise comparison: a.Radius == b.Radius. Consider using a comparison with defined precision: Math.Abs(A - B) &lt; Epsilon.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Foster.Framework</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Line.cs_12.html#ln52">Line.cs:52</a><a target="_blank" class="file-link display-none" href="sources/Line.cs_12.html#ln52">C:\Users\dimoninbirsk\source\thesis\Foster\Framework\Spatial\Line.cs:52</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3024/">V3024</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An odd precise comparison: diff.X == 0. Consider using a comparison with defined precision: Math.Abs(A - B) &lt; Epsilon.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Foster.Framework</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Line.cs_12.html#ln52">Line.cs:52</a><a target="_blank" class="file-link display-none" href="sources/Line.cs_12.html#ln52">C:\Users\dimoninbirsk\source\thesis\Foster\Framework\Spatial\Line.cs:52</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3024/">V3024</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An odd precise comparison: diff.Y == 0. Consider using a comparison with defined precision: Math.Abs(A - B) &lt; Epsilon.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Foster.Framework</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Line.cs_12.html#ln85">Line.cs:85</a><a target="_blank" class="file-link display-none" href="sources/Line.cs_12.html#ln85">C:\Users\dimoninbirsk\source\thesis\Foster\Framework\Spatial\Line.cs:85</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3024/">V3024</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An odd precise comparison: bDotDPerp == 0. Consider using a comparison with defined precision: Math.Abs(A - B) &lt; Epsilon.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Foster.Framework</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/LineInt.cs_13.html#ln63">LineInt.cs:63</a><a target="_blank" class="file-link display-none" href="sources/LineInt.cs_13.html#ln63">C:\Users\dimoninbirsk\source\thesis\Foster\Framework\Spatial\LineInt.cs:63</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3024/">V3024</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An odd precise comparison: bDotDPerp == 0. Consider using a comparison with defined precision: Math.Abs(A - B) &lt; Epsilon.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Foster.Framework</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Rect.cs_14.html#ln517">Rect.cs:517</a><a target="_blank" class="file-link display-none" href="sources/Rect.cs_14.html#ln517">C:\Users\dimoninbirsk\source\thesis\Foster\Framework\Spatial\Rect.cs:517</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3024/">V3024</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An odd precise comparison: a.Height == b.Height. Consider using a comparison with defined precision: Math.Abs(A - B) &lt; Epsilon.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Foster.Framework</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Rect.cs_14.html#ln517">Rect.cs:517</a><a target="_blank" class="file-link display-none" href="sources/Rect.cs_14.html#ln517">C:\Users\dimoninbirsk\source\thesis\Foster\Framework\Spatial\Rect.cs:517</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3024/">V3024</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An odd precise comparison: a.Width == b.Width. Consider using a comparison with defined precision: Math.Abs(A - B) &lt; Epsilon.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Foster.Framework</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Rect.cs_14.html#ln517">Rect.cs:517</a><a target="_blank" class="file-link display-none" href="sources/Rect.cs_14.html#ln517">C:\Users\dimoninbirsk\source\thesis\Foster\Framework\Spatial\Rect.cs:517</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3024/">V3024</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An odd precise comparison: a.X == b.X. Consider using a comparison with defined precision: Math.Abs(A - B) &lt; Epsilon.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Foster.Framework</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Rect.cs_14.html#ln517">Rect.cs:517</a><a target="_blank" class="file-link display-none" href="sources/Rect.cs_14.html#ln517">C:\Users\dimoninbirsk\source\thesis\Foster\Framework\Spatial\Rect.cs:517</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3024/">V3024</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An odd precise comparison: a.Y == b.Y. Consider using a comparison with defined precision: Math.Abs(A - B) &lt; Epsilon.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Foster.Framework</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Transform.cs_15.html#ln94">Transform.cs:94</a><a target="_blank" class="file-link display-none" href="sources/Transform.cs_15.html#ln94">C:\Users\dimoninbirsk\source\thesis\Foster\Framework\Spatial\Transform.cs:94</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3024/">V3024</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An odd precise comparison: rotation != value. Consider using a comparison with defined precision: Math.Abs(A - B) &gt; Epsilon.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Foster.Framework</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Transform.cs_15.html#ln159">Transform.cs:159</a><a target="_blank" class="file-link display-none" href="sources/Transform.cs_15.html#ln159">C:\Users\dimoninbirsk\source\thesis\Foster\Framework\Spatial\Transform.cs:159</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3024/">V3024</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An odd precise comparison: rotation != 0. Consider using a comparison with defined precision: Math.Abs(A - B) &gt; Epsilon.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Foster.Framework</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Transform.cs_15.html#ln168">Transform.cs:168</a><a target="_blank" class="file-link display-none" href="sources/Transform.cs_15.html#ln168">C:\Users\dimoninbirsk\source\thesis\Foster\Framework\Spatial\Transform.cs:168</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3024/">V3024</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An odd precise comparison: a.rotation == b.rotation. Consider using a comparison with defined precision: Math.Abs(A - B) &lt; Epsilon.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Foster.Framework</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Calc.cs_16.html#ln344">Calc.cs:344</a><a target="_blank" class="file-link display-none" href="sources/Calc.cs_16.html#ln344">C:\Users\dimoninbirsk\source\thesis\Foster\Framework\Utility\Calc.cs:344</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3024/">V3024</td>
+      <td id="col_sast"></td>
+      <td id="col_message">An odd precise comparison: last != next. Consider using a comparison with defined precision: Math.Abs(A - B) &gt; Epsilon.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Foster.Framework</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Converters.cs_17.html#ln31">Converters.cs:31</a><a target="_blank" class="file-link display-none" href="sources/Converters.cs_17.html#ln31">C:\Users\dimoninbirsk\source\thesis\Foster\Framework\Utility\Converters.cs:31</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3139/">V3139</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Two or more case-branches perform the same actions.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Foster.Framework</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Time.cs_18.html#ln87">Time.cs:87</a><a target="_blank" class="file-link display-none" href="sources/Time.cs_18.html#ln87">C:\Users\dimoninbirsk\source\thesis\Foster\Framework\Utility\Time.cs:87</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3109/">V3109</td>
+      <td id="col_sast"></td>
+      <td id="col_message">The 'interval' sub-expression is present on both sides of the operator. The expression is incorrect or it can be simplified.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Foster.Framework</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Window.cs_19.html#ln330">Window.cs:330</a><a target="_blank" class="file-link display-none" href="sources/Window.cs_19.html#ln330">C:\Users\dimoninbirsk\source\thesis\Foster\Framework\Window.cs:330</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3041/">V3041</td>
+      <td id="col_sast"></td>
+      <td id="col_message">The expression was implicitly cast from 'int' type to 'float' type. Consider utilizing an explicit type cast to avoid the loss of a fractional part. An example: double A = (double)(X) / Y;.</td>
+    </tr>
+  </table>
+<script type="text/javascript">
+var sorter=new table.sorter("sorter");
+sorter.init("sorter",0);
+</script>
+</body>
+</html>

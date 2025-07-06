@@ -1,0 +1,538 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>TokenSet.cs</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <script src="../jquery-3.5.1.min.js"></script>
+</head>
+<body>
+<pre><code class = "cs">
+<a name="ln1">﻿using System;</a>
+<a name="ln2">using System.Collections.Generic;</a>
+<a name="ln3">using System.Linq;</a>
+<a name="ln4">using System.Text;</a>
+<a name="ln5"> </a>
+<a name="ln6">namespace Lunr</a>
+<a name="ln7">{</a>
+<a name="ln8">    /// &lt;summary&gt;</a>
+<a name="ln9">    /// A token set is used to store the unique list of all tokens</a>
+<a name="ln10">    /// within an index. Token sets are also used to represent an</a>
+<a name="ln11">    /// incoming query to the index, this query token set and index</a>
+<a name="ln12">    /// token set are then intersected to find which tokens to look</a>
+<a name="ln13">    /// up in the inverted index.</a>
+<a name="ln14">    ///</a>
+<a name="ln15">    /// A token set can hold multiple tokens, as in the case of the</a>
+<a name="ln16">    /// index token set, or it can hold a single token as in the</a>
+<a name="ln17">    /// case of a simple query token set.</a>
+<a name="ln18">    ///</a>
+<a name="ln19">    /// Additionally token sets are used to perform wildcard matching.</a>
+<a name="ln20">    /// Leading, contained and trailing wildcards are supported, and</a>
+<a name="ln21">    /// from this edit distance matching can also be provided.</a>
+<a name="ln22">    ///</a>
+<a name="ln23">    /// Token sets are implemented as a minimal finite state automaton,</a>
+<a name="ln24">    /// where both common prefixes and suffixes are shared between tokens.</a>
+<a name="ln25">    /// This helps to reduce the space used for storing the token set.</a>
+<a name="ln26">    /// &lt;/summary&gt;</a>
+<a name="ln27">    public class TokenSet</a>
+<a name="ln28">    {</a>
+<a name="ln29">        private readonly TokenSetIdProvider _idProvider;</a>
+<a name="ln30">        private string? _str;</a>
+<a name="ln31"> </a>
+<a name="ln32">        public TokenSet() : this(TokenSetIdProvider.Instance) { }</a>
+<a name="ln33"> </a>
+<a name="ln34">        public TokenSet(TokenSetIdProvider idProvider)</a>
+<a name="ln35">        {</a>
+<a name="ln36">            _idProvider = idProvider;</a>
+<a name="ln37">            Id = _idProvider.Next();</a>
+<a name="ln38">        }</a>
+<a name="ln39"> </a>
+<a name="ln40">        public bool IsFinal { get; set; }</a>
+<a name="ln41">        public IDictionary&lt;char, TokenSet&gt; Edges { get; }</a>
+<a name="ln42">            = new Dictionary&lt;char, TokenSet&gt;();</a>
+<a name="ln43">        public int Id { get; }</a>
+<a name="ln44"> </a>
+<a name="ln45">        /// &lt;summary&gt;</a>
+<a name="ln46">        /// Creates a TokenSet instance from the given sorted array of words.</a>
+<a name="ln47">        /// &lt;/summary&gt;</a>
+<a name="ln48">        /// &lt;param name=&quot;arr&quot;&gt;A sorted array of strings to create the set from.&lt;/param&gt;</a>
+<a name="ln49">        /// &lt;param name=&quot;idProvider&quot;&gt;An optional token set id provider.&lt;/param&gt;</a>
+<a name="ln50">        /// &lt;returns&gt;A token set.&lt;/returns&gt;</a>
+<a name="ln51">        public static TokenSet FromArray(</a>
+<a name="ln52">            IEnumerable&lt;string&gt; arr,</a>
+<a name="ln53">            TokenSetIdProvider? idProvider = null)</a>
+<a name="ln54">        {</a>
+<a name="ln55">            var builder = new Builder(idProvider ?? TokenSetIdProvider.Instance);</a>
+<a name="ln56"> </a>
+<a name="ln57">            foreach (string s in arr)</a>
+<a name="ln58">            {</a>
+<a name="ln59">                builder.Insert(s);</a>
+<a name="ln60">            }</a>
+<a name="ln61"> </a>
+<a name="ln62">            builder.Finish();</a>
+<a name="ln63">            return builder.Root;</a>
+<a name="ln64">        }</a>
+<a name="ln65"> </a>
+<a name="ln66">        /// &lt;summary&gt;</a>
+<a name="ln67">        /// Creates a token set from a query clause.</a>
+<a name="ln68">        /// &lt;/summary&gt;</a>
+<a name="ln69">        /// &lt;param name=&quot;clause&quot;&gt;A single clause.&lt;/param&gt;</a>
+<a name="ln70">        /// &lt;param name=&quot;idProvider&quot;&gt;An optional token set id provider.&lt;/param&gt;</a>
+<a name="ln71">        /// &lt;returns&gt;The token set.&lt;/returns&gt;</a>
+<a name="ln72">        public static TokenSet FromClause(</a>
+<a name="ln73">            Clause clause,</a>
+<a name="ln74">            TokenSetIdProvider? idProvider = null)</a>
+<a name="ln75">        {</a>
+<a name="ln76">            idProvider ??= TokenSetIdProvider.Instance;</a>
+<a name="ln77">            return clause.EditDistance &gt; 0</a>
+<a name="ln78">                           ? FromFuzzyString(clause.Term, clause.EditDistance, idProvider)</a>
+<a name="ln79">                           : FromString(clause.Term, idProvider);</a>
+<a name="ln80">        }</a>
+<a name="ln81"> </a>
+<a name="ln82">        /// &lt;summary&gt;</a>
+<a name="ln83">        /// Creates a token set representing a single string with a specified</a>
+<a name="ln84">        /// edit distance.</a>
+<a name="ln85">        /// </a>
+<a name="ln86">        /// Insertions, deletions, substitutions and transpositions are each</a>
+<a name="ln87">        /// treated as an edit distance of 1.</a>
+<a name="ln88">        /// </a>
+<a name="ln89">        /// Increasing the allowed edit distance will have a dramatic impact</a>
+<a name="ln90">        /// on the performance of both creating and intersecting these TokenSets.</a>
+<a name="ln91">        /// It is advised to keep the edit distance less than 3.</a>
+<a name="ln92">        /// &lt;/summary&gt;</a>
+<a name="ln93">        /// &lt;param name=&quot;str&quot;&gt;The string to create the token set from.&lt;/param&gt;</a>
+<a name="ln94">        /// &lt;param name=&quot;editDistance&quot;&gt;The allowed edit distance to match.&lt;/param&gt;</a>
+<a name="ln95">        /// &lt;param name=&quot;idProvider&quot;&gt;An optional token set id provider.&lt;/param&gt;</a>
+<a name="ln96">        public static TokenSet FromFuzzyString(</a>
+<a name="ln97">            string str,</a>
+<a name="ln98">            int editDistance,</a>
+<a name="ln99">            TokenSetIdProvider? idProvider = null)</a>
+<a name="ln100">        {</a>
+<a name="ln101">            idProvider ??= TokenSetIdProvider.Instance;</a>
+<a name="ln102">            var root = new TokenSet(idProvider);</a>
+<a name="ln103"> </a>
+<a name="ln104">            var stack = new Stack&lt;(TokenSet node, int editsRemaining, string str)&gt;();</a>
+<a name="ln105">            stack.Push((</a>
+<a name="ln106">                node: root,</a>
+<a name="ln107">                editsRemaining: editDistance,</a>
+<a name="ln108">                str));</a>
+<a name="ln109"> </a>
+<a name="ln110">            while (stack.Any())</a>
+<a name="ln111">            {</a>
+<a name="ln112">                (TokenSet frameNode, int frameEditsRemaining, string frameStr) = stack.Pop();</a>
+<a name="ln113"> </a>
+<a name="ln114">                // no edit</a>
+<a name="ln115">                if (frameStr.Length &gt; 0)</a>
+<a name="ln116">                {</a>
+<a name="ln117">                    char ch = frameStr[0];</a>
+<a name="ln118"> </a>
+<a name="ln119">                    TokenSet noEditNode;</a>
+<a name="ln120">                    if (frameNode.Edges.TryGetValue(ch, out TokenSet? existingChNode))</a>
+<a name="ln121">                    {</a>
+<a name="ln122">                        noEditNode = existingChNode;</a>
+<a name="ln123">                    }</a>
+<a name="ln124">                    else</a>
+<a name="ln125">                    {</a>
+<a name="ln126">                        noEditNode = new TokenSet(idProvider);</a>
+<a name="ln127">                        frameNode.Edges.Add(ch, noEditNode);</a>
+<a name="ln128">                    }</a>
+<a name="ln129"> </a>
+<a name="ln130">                    if (frameStr.Length == 1)</a>
+<a name="ln131">                    {</a>
+<a name="ln132">                        noEditNode.IsFinal = true;</a>
+<a name="ln133">                    }</a>
+<a name="ln134"> </a>
+<a name="ln135">                    stack.Push((</a>
+<a name="ln136">                        node: noEditNode,</a>
+<a name="ln137">                        editsRemaining: frameEditsRemaining,</a>
+<a name="ln138">                        str: frameStr.Substring(1)));</a>
+<a name="ln139">                }</a>
+<a name="ln140"> </a>
+<a name="ln141">                if (frameEditsRemaining == 0) continue;</a>
+<a name="ln142"> </a>
+<a name="ln143">                // insertion</a>
+<a name="ln144">                TokenSet insertionNode;</a>
+<a name="ln145">                if (frameNode.Edges.TryGetValue(Query.Wildcard, out TokenSet? wildcardNode))</a>
+<a name="ln146">                {</a>
+<a name="ln147">                    insertionNode = wildcardNode;</a>
+<a name="ln148">                }</a>
+<a name="ln149">                else</a>
+<a name="ln150">                {</a>
+<a name="ln151">                    insertionNode = new TokenSet(idProvider);</a>
+<a name="ln152">                    frameNode.Edges.Add(Query.Wildcard, insertionNode);</a>
+<a name="ln153">                }</a>
+<a name="ln154"> </a>
+<a name="ln155">                if (frameStr.Length == 0)</a>
+<a name="ln156">                {</a>
+<a name="ln157">                    insertionNode.IsFinal = true;</a>
+<a name="ln158">                }</a>
+<a name="ln159"> </a>
+<a name="ln160">                stack.Push((</a>
+<a name="ln161">                    node: insertionNode,</a>
+<a name="ln162">                    editsRemaining: frameEditsRemaining - 1,</a>
+<a name="ln163">                    str: frameStr));</a>
+<a name="ln164"> </a>
+<a name="ln165">                // deletion</a>
+<a name="ln166">                // Can only do a deletion if we have enough edits remaining</a>
+<a name="ln167">                // and if there are characters left to delete in the string.</a>
+<a name="ln168">                if (frameStr.Length &gt; 1)</a>
+<a name="ln169">                {</a>
+<a name="ln170">                    stack.Push((</a>
+<a name="ln171">                        node: frameNode,</a>
+<a name="ln172">                        editsRemaining: frameEditsRemaining - 1,</a>
+<a name="ln173">                        str: frameStr.Substring(1)));</a>
+<a name="ln174">                }</a>
+<a name="ln175"> </a>
+<a name="ln176">                // deletion</a>
+<a name="ln177">                // Just removing the last character from the string.</a>
+<a name="ln178">                if (frameStr.Length == 1)</a>
+<a name="ln179">                {</a>
+<a name="ln180">                    frameNode.IsFinal = true;</a>
+<a name="ln181">                }</a>
+<a name="ln182"> </a>
+<a name="ln183">                // substitution</a>
+<a name="ln184">                // Can only do a substitution if we have enough edits remaining</a>
+<a name="ln185">                // and if there are characters left to substitute.</a>
+<a name="ln186">                if (frameStr.Length &gt;= 1)</a>
+<a name="ln187">                {</a>
+<a name="ln188">                    TokenSet substitutionNode;</a>
+<a name="ln189">                    if (frameNode.Edges.TryGetValue(Query.Wildcard, out TokenSet? substitutionWildcardNode))</a>
+<a name="ln190">                    {</a>
+<a name="ln191">                        substitutionNode = substitutionWildcardNode;</a>
+<a name="ln192">                    }</a>
+<a name="ln193">                    else</a>
+<a name="ln194">                    {</a>
+<a name="ln195">                        substitutionNode = new TokenSet(idProvider);</a>
+<a name="ln196">                        frameNode.Edges.Add(Query.Wildcard, substitutionNode);</a>
+<a name="ln197">                    }</a>
+<a name="ln198"> </a>
+<a name="ln199">                    if (frameStr.Length == 1)</a>
+<a name="ln200">                    {</a>
+<a name="ln201">                        substitutionNode.IsFinal = true;</a>
+<a name="ln202">                    }</a>
+<a name="ln203"> </a>
+<a name="ln204">                    stack.Push((</a>
+<a name="ln205">                        node: substitutionNode,</a>
+<a name="ln206">                        editsRemaining: frameEditsRemaining - 1,</a>
+<a name="ln207">                        str: frameStr.Substring(1)));</a>
+<a name="ln208">                }</a>
+<a name="ln209"> </a>
+<a name="ln210">                // transposition</a>
+<a name="ln211">                // Can only do a transposition if there are edits remaining</a>
+<a name="ln212">                // and there are enough characters to transpose.</a>
+<a name="ln213">                if (frameStr.Length &gt; 1)</a>
+<a name="ln214">                {</a>
+<a name="ln215">                    char chA = frameStr[0];</a>
+<a name="ln216">                    char chB = frameStr[1];</a>
+<a name="ln217">                    TokenSet transposeNode;</a>
+<a name="ln218"> </a>
+<a name="ln219">                    if (frameNode.Edges.TryGetValue(chB, out TokenSet? chBNode))</a>
+<a name="ln220">                    {</a>
+<a name="ln221">                        transposeNode = chBNode;</a>
+<a name="ln222">                    }</a>
+<a name="ln223">                    else</a>
+<a name="ln224">                    {</a>
+<a name="ln225">                        transposeNode = new TokenSet(idProvider);</a>
+<a name="ln226">                        frameNode.Edges.Add(chB, transposeNode);</a>
+<a name="ln227">                    }</a>
+<a name="ln228"> </a>
+<a name="ln229">                    if (frameStr.Length == 1) // Note: I'm pretty sure this can't happen, just porting the js version closely.</a>
+<a name="ln230">                    {</a>
+<a name="ln231">                        transposeNode.IsFinal = true;</a>
+<a name="ln232">                    }</a>
+<a name="ln233"> </a>
+<a name="ln234">                    stack.Push((</a>
+<a name="ln235">                        node: transposeNode,</a>
+<a name="ln236">                        editsRemaining: frameEditsRemaining - 1,</a>
+<a name="ln237">                        str: chA + frameStr.Substring(2)));</a>
+<a name="ln238">                }</a>
+<a name="ln239">            }</a>
+<a name="ln240"> </a>
+<a name="ln241">            return root;</a>
+<a name="ln242">        }</a>
+<a name="ln243"> </a>
+<a name="ln244">        /// &lt;summary&gt;</a>
+<a name="ln245">        /// Creates a TokenSet from a string.</a>
+<a name="ln246">        /// </a>
+<a name="ln247">        /// The string may contain one or more wildcard characters(*)</a>
+<a name="ln248">        /// that will allow wildcard matching when intersecting with</a>
+<a name="ln249">        /// another TokenSet.</a>
+<a name="ln250">        /// &lt;/summary&gt;</a>
+<a name="ln251">        /// &lt;param name=&quot;str&quot;&gt;The string to create a TokenSet from.&lt;/param&gt;</a>
+<a name="ln252">        /// &lt;param name=&quot;idProvider&quot;&gt;An optional token set id provider.&lt;/param&gt;</a>
+<a name="ln253">        /// &lt;returns&gt;The token set.&lt;/returns&gt;</a>
+<a name="ln254">        public static TokenSet FromString(</a>
+<a name="ln255">            string str,</a>
+<a name="ln256">            TokenSetIdProvider? idProvider = null)</a>
+<a name="ln257">        {</a>
+<a name="ln258">            idProvider ??= TokenSetIdProvider.Instance;</a>
+<a name="ln259">            var root = new TokenSet(idProvider);</a>
+<a name="ln260">            TokenSet node = root;</a>
+<a name="ln261"> </a>
+<a name="ln262">            // Iterates through all characters within the passed string</a>
+<a name="ln263">            // appending a node for each character.</a>
+<a name="ln264">            //</a>
+<a name="ln265">            // When a wildcard character is found then a self</a>
+<a name="ln266">            // referencing edge is introduced to continually match</a>
+<a name="ln267">            // any number of any characters.</a>
+<a name="ln268">            for (int i = 0; i &lt; str.Length; i++)</a>
+<a name="ln269">            {</a>
+<a name="ln270">                char ch = str[i];</a>
+<a name="ln271">                bool isFinal = i == str.Length - 1;</a>
+<a name="ln272"> </a>
+<a name="ln273">                if (ch == Query.Wildcard)</a>
+<a name="ln274">                {</a>
+<a name="ln275">                    node.Edges.Add(ch, node);</a>
+<a name="ln276">                    node.IsFinal = isFinal;</a>
+<a name="ln277">                }</a>
+<a name="ln278">                else</a>
+<a name="ln279">                {</a>
+<a name="ln280">                    var next = new TokenSet(idProvider) { IsFinal = isFinal };</a>
+<a name="ln281"> </a>
+<a name="ln282">                    node.Edges.Add(ch, next);</a>
+<a name="ln283">                    node = next;</a>
+<a name="ln284">                }</a>
+<a name="ln285">            }</a>
+<a name="ln286"> </a>
+<a name="ln287">            return root;</a>
+<a name="ln288">        }</a>
+<a name="ln289"> </a>
+<a name="ln290">        /// &lt;summary&gt;</a>
+<a name="ln291">        /// Tests if the token set is empty.</a>
+<a name="ln292">        /// &lt;/summary&gt;</a>
+<a name="ln293">        /// &lt;returns&gt;True if not empty.&lt;/returns&gt;</a>
+<a name="ln294">        public bool Any()</a>
+<a name="ln295">        {</a>
+<a name="ln296">            var stack = new Stack&lt;(string, TokenSet)&gt;();</a>
+<a name="ln297">            stack.Push((&quot;&quot;, this));</a>
+<a name="ln298"> </a>
+<a name="ln299">            while (stack.Any())</a>
+<a name="ln300">            {</a>
+<a name="ln301">                (string prefix, TokenSet node) = stack.Pop();</a>
+<a name="ln302"> </a>
+<a name="ln303">                if (node.IsFinal)</a>
+<a name="ln304">                {</a>
+<a name="ln305">                    return true;</a>
+<a name="ln306">                }</a>
+<a name="ln307"> </a>
+<a name="ln308">                foreach ((char edgeKey, TokenSet edge) in node.Edges)</a>
+<a name="ln309">                {</a>
+<a name="ln310">                    stack.Push((prefix + edgeKey, edge));</a>
+<a name="ln311">                }</a>
+<a name="ln312">            }</a>
+<a name="ln313"> </a>
+<a name="ln314">            return false;</a>
+<a name="ln315">        }</a>
+<a name="ln316"> </a>
+<a name="ln317">        /// &lt;summary&gt;</a>
+<a name="ln318">        /// Converts this TokenSet into an enumeration of strings</a>
+<a name="ln319">        /// contained within the TokenSet.</a>
+<a name="ln320">        ///</a>
+<a name="ln321">        /// This is not intended to be used on a TokenSet that</a>
+<a name="ln322">        /// contains wildcards, in these cases the results are</a>
+<a name="ln323">        /// undefined and are likely to cause an infinite loop.</a>
+<a name="ln324">        /// &lt;/summary&gt;</a>
+<a name="ln325">        /// &lt;returns&gt;The list of strings in the token set.&lt;/returns&gt;</a>
+<a name="ln326">        public IEnumerable&lt;string&gt; ToEnumeration()</a>
+<a name="ln327">        {</a>
+<a name="ln328">            var stack = new Stack&lt;(string prefix, TokenSet node)&gt;();</a>
+<a name="ln329">            stack.Push((&quot;&quot;, this));</a>
+<a name="ln330"> </a>
+<a name="ln331">            while (stack.Any())</a>
+<a name="ln332">            {</a>
+<a name="ln333">                (string prefix, TokenSet node) = stack.Pop();</a>
+<a name="ln334"> </a>
+<a name="ln335">                if (node.IsFinal)</a>
+<a name="ln336">                {</a>
+<a name="ln337">                    yield return prefix;</a>
+<a name="ln338">                }</a>
+<a name="ln339"> </a>
+<a name="ln340">                foreach ((char edgeKey, TokenSet edge) in node.Edges)</a>
+<a name="ln341">                {</a>
+<a name="ln342">                    stack.Push((prefix + edgeKey, edge));</a>
+<a name="ln343">                }</a>
+<a name="ln344">            }</a>
+<a name="ln345">        }</a>
+<a name="ln346"> </a>
+<a name="ln347">        /// &lt;summary&gt;</a>
+<a name="ln348">        /// Returns a new TokenSet that is the intersection of</a>
+<a name="ln349">        /// this TokenSet and the passed TokenSet.</a>
+<a name="ln350">        /// </a>
+<a name="ln351">        /// This intersection will take into account any wildcards</a>
+<a name="ln352">        /// contained within the TokenSet.</a>
+<a name="ln353">        /// &lt;/summary&gt;</a>
+<a name="ln354">        /// &lt;param name=&quot;other&quot;&gt;Another TokenSet to intersect with.&lt;/param&gt;</a>
+<a name="ln355">        /// &lt;returns&gt;The intersection of the sets.&lt;/returns&gt;</a>
+<a name="ln356">        public TokenSet Intersect(TokenSet other)</a>
+<a name="ln357">        {</a>
+<a name="ln358">            var output = new TokenSet(_idProvider);</a>
+<a name="ln359"> </a>
+<a name="ln360">            Stack&lt;(TokenSet qNode, TokenSet output, TokenSet node)&gt; stack = new ();</a>
+<a name="ln361">            stack.Push((other, output, this));</a>
+<a name="ln362"> </a>
+<a name="ln363">            while (stack.Any())</a>
+<a name="ln364">            {</a>
+<a name="ln365">                (TokenSet frameQNode, TokenSet frameOutput, TokenSet frameNode) = stack.Pop();</a>
+<a name="ln366"> </a>
+<a name="ln367">                foreach ((char qEdge, TokenSet qNode) in frameQNode.Edges)</a>
+<a name="ln368">                {</a>
+<a name="ln369">                    foreach ((char nEdge, TokenSet node) in frameNode.Edges)</a>
+<a name="ln370">                    {</a>
+<a name="ln371">                        if (nEdge == qEdge || qEdge == '*')</a>
+<a name="ln372">                        {</a>
+<a name="ln373">                            bool isFinal = node.IsFinal &amp;&amp; qNode.IsFinal;</a>
+<a name="ln374"> </a>
+<a name="ln375">                            if (frameOutput.Edges.TryGetValue(nEdge, out TokenSet? next))</a>
+<a name="ln376">                            {</a>
+<a name="ln377">                                // an edge already exists for this character</a>
+<a name="ln378">                                // no need to create a new node, just set the finality</a>
+<a name="ln379">                                // bit unless this node is already final</a>
+<a name="ln380">                                next.IsFinal = next.IsFinal || isFinal;</a>
+<a name="ln381">                            }</a>
+<a name="ln382">                            else</a>
+<a name="ln383">                            {</a>
+<a name="ln384">                                // no edge exists yet, must create one</a>
+<a name="ln385">                                // set the finality bit and insert it</a>
+<a name="ln386">                                // into the output</a>
+<a name="ln387">                                next = new TokenSet(_idProvider) { IsFinal = isFinal };</a>
+<a name="ln388">                                frameOutput.Edges.Add(nEdge, next);</a>
+<a name="ln389">                            }</a>
+<a name="ln390"> </a>
+<a name="ln391">                            stack.Push((qNode, next, node));</a>
+<a name="ln392">                        }</a>
+<a name="ln393">                    }</a>
+<a name="ln394">                }</a>
+<a name="ln395">            }</a>
+<a name="ln396"> </a>
+<a name="ln397">            return output;</a>
+<a name="ln398">        }</a>
+<a name="ln399"> </a>
+<a name="ln400">        /// &lt;summary&gt;</a>
+<a name="ln401">        /// Generates a string representation of a TokenSet.</a>
+<a name="ln402">        ///</a>
+<a name="ln403">        /// This is intended to allow TokenSets to be used as keys</a>
+<a name="ln404">        /// in objects, largely to aid the construction and minimization</a>
+<a name="ln405">        /// of a TokenSet.As such it is not designed to be a human</a>
+<a name="ln406">        /// friendly representation of the TokenSet.</a>
+<a name="ln407">        /// &lt;/summary&gt;</a>
+<a name="ln408">        /// &lt;returns&gt;The string representation of the TokenSet.&lt;/returns&gt;</a>
+<a name="ln409">        public override string ToString()</a>
+<a name="ln410">        {</a>
+<a name="ln411">            if (!string.IsNullOrEmpty(_str)) return _str!;</a>
+<a name="ln412"> </a>
+<a name="ln413">            var str = new StringBuilder(IsFinal ? &quot;1&quot; : &quot;0&quot;);</a>
+<a name="ln414"> </a>
+<a name="ln415">            foreach ((char label, TokenSet node) in Edges.OrderBy(k =&gt; k.Key.ToString(), StringComparer.Ordinal))</a>
+<a name="ln416">            {</a>
+<a name="ln417">                str.Append(label);</a>
+<a name="ln418">                str.Append(node.Id);</a>
+<a name="ln419">            }</a>
+<a name="ln420"> </a>
+<a name="ln421">            return str.ToString();</a>
+<a name="ln422">        }</a>
+<a name="ln423"> </a>
+<a name="ln424">        public sealed class Builder</a>
+<a name="ln425">        {</a>
+<a name="ln426">            private string _previousWord = &quot;&quot;;</a>
+<a name="ln427">            private readonly List&lt;(TokenSet parent, char ch, TokenSet child)&gt; _uncheckedNodes = new ();</a>
+<a name="ln428">            private readonly Dictionary&lt;string, TokenSet&gt; _minimizedNodes = new ();</a>
+<a name="ln429">            private readonly TokenSetIdProvider _idProvider;</a>
+<a name="ln430"> </a>
+<a name="ln431">            public Builder(TokenSetIdProvider? idProvider = null)</a>
+<a name="ln432">            {</a>
+<a name="ln433">                _idProvider = idProvider ?? TokenSetIdProvider.Instance;</a>
+<a name="ln434">                Root = new TokenSet(_idProvider);</a>
+<a name="ln435">            }</a>
+<a name="ln436"> </a>
+<a name="ln437">            public TokenSet Root { get; }</a>
+<a name="ln438"> </a>
+<a name="ln439">            public void Insert(string word)</a>
+<a name="ln440">            {</a>
+<a name="ln441">                int commonPrefix = 0;</a>
+<a name="ln442"> </a>
+<a name="ln443">                if (StringComparer.Ordinal.Compare(word, _previousWord) &lt; 0)</a>
+<a name="ln444">                    throw new InvalidOperationException(&quot;Out of order word insertion.&quot;);</a>
+<a name="ln445"> </a>
+<a name="ln446">                for (int i = 0; i &lt; word.Length &amp;&amp; i &lt; _previousWord.Length; i ++)</a>
+<a name="ln447">                {</a>
+<a name="ln448">                    if (word[i] != _previousWord[i]) break;</a>
+<a name="ln449">                    commonPrefix++;</a>
+<a name="ln450">                }</a>
+<a name="ln451"> </a>
+<a name="ln452">                Minimize(commonPrefix);</a>
+<a name="ln453"> </a>
+<a name="ln454">                TokenSet node = _uncheckedNodes.LastOrDefault().child ?? Root;</a>
+<a name="ln455"> </a>
+<a name="ln456">                for (int i = commonPrefix; i &lt; word.Length; i++)</a>
+<a name="ln457">                {</a>
+<a name="ln458">                    var nextNode = new TokenSet(_idProvider);</a>
+<a name="ln459">                    char ch = word[i];</a>
+<a name="ln460"> </a>
+<a name="ln461">                    node.Edges.Add(ch, nextNode);</a>
+<a name="ln462"> </a>
+<a name="ln463">                    _uncheckedNodes.Add((node, ch, nextNode));</a>
+<a name="ln464"> </a>
+<a name="ln465">                    node = nextNode;</a>
+<a name="ln466">                }</a>
+<a name="ln467"> </a>
+<a name="ln468">                node.IsFinal = true;</a>
+<a name="ln469">                _previousWord = word;</a>
+<a name="ln470">            }</a>
+<a name="ln471"> </a>
+<a name="ln472">            public void Finish() =&gt; Minimize(0);</a>
+<a name="ln473"> </a>
+<a name="ln474">            public void Minimize(int downTo)</a>
+<a name="ln475">            {</a>
+<a name="ln476">                for (int i = _uncheckedNodes.Count - 1; i &gt;= downTo; i--)</a>
+<a name="ln477">                {</a>
+<a name="ln478">                    (TokenSet parent, char ch, TokenSet child) = _uncheckedNodes[i];</a>
+<a name="ln479">                    string childKey = child.ToString();</a>
+<a name="ln480"> </a>
+<a name="ln481">                    if (_minimizedNodes.ContainsKey(childKey))</a>
+<a name="ln482">                    {</a>
+<a name="ln483">                        parent.Edges[ch] = _minimizedNodes[childKey];</a>
+<a name="ln484">                    }</a>
+<a name="ln485">                    else</a>
+<a name="ln486">                    {</a>
+<a name="ln487">                        // Cache the key for this node since we know it can't change anymore.</a>
+<a name="ln488">                        child._str = childKey;</a>
+<a name="ln489"> </a>
+<a name="ln490">                        _minimizedNodes.Add(childKey, child);</a>
+<a name="ln491">                    }</a>
+<a name="ln492"> </a>
+<a name="ln493">                    _uncheckedNodes.RemoveAt(_uncheckedNodes.Count - 1);</a>
+<a name="ln494">                }</a>
+<a name="ln495">            }</a>
+<a name="ln496">        }</a>
+<a name="ln497">    }</a>
+<a name="ln498">}</a>
+</code></pre>
+<div class="balloon" rel="229"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3022/" target="_blank">V3022</a> Expression 'frameStr.Length == 1' is always false.</p></div>
+<link rel="stylesheet" href="highlight.css">
+<script src="highlight.pack.js"></script>
+<script src="highlightjs-line-numbers.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script>hljs.initLineNumbersOnLoad();</script>
+<script>
+  $(document).ready(function() {
+      $('.balloon').each(function () {
+          var bl = $(this);
+          var line = bl.attr('rel');
+          var text = $('a[name="ln'+line+'"]').text();
+
+          var space_count = 0;
+          for(var i = 0; i<text.length; i++){
+              var char = text[i];
+              if((char !== ' ')&&(char !== '\t'))break;
+              if(char === '\t')space_count++;
+              space_count++;
+          }
+
+          bl.css('margin-left', space_count*8);
+          $('a[name="ln'+line+'"]').after(bl);
+      });
+
+      window.location = window.location;
+  });
+</script>
+</body>
+</html>

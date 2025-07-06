@@ -1,0 +1,1019 @@
+﻿[
+    {
+        "Status":  "Outdated",
+        "PackageID":  "System.Text.Json",
+        "CurrentVersion":  "9.0.0",
+        "LatestVersion":  "9.0.4",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "System.Text.Json",
+        "CurrentVersion":  "9.0.0",
+        "LatestVersion":  "9.0.4",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "System.Text.Json",
+        "CurrentVersion":  "9.0.0",
+        "LatestVersion":  "9.0.4",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "coverlet.collector",
+        "CurrentVersion":  "6.0.2",
+        "LatestVersion":  "6.0.4",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "FluentAssertions",
+        "CurrentVersion":  "7.0.0",
+        "LatestVersion":  "8.2.0",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Microsoft.NET.Test.Sdk",
+        "CurrentVersion":  "17.12.0",
+        "LatestVersion":  "17.13.0",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "System.Net.Http.Json",
+        "CurrentVersion":  "9.0.0",
+        "LatestVersion":  "9.0.4",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "xunit",
+        "CurrentVersion":  "2.9.2",
+        "LatestVersion":  "2.9.3",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "xunit.runner.visualstudio",
+        "CurrentVersion":  "2.8.2",
+        "LatestVersion":  "3.0.2",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "coverlet.collector",
+        "CurrentVersion":  "6.0.2",
+        "LatestVersion":  "6.0.4",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "FluentAssertions",
+        "CurrentVersion":  "7.0.0",
+        "LatestVersion":  "8.2.0",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Microsoft.NET.Test.Sdk",
+        "CurrentVersion":  "17.12.0",
+        "LatestVersion":  "17.13.0",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "System.Net.Http.Json",
+        "CurrentVersion":  "9.0.0",
+        "LatestVersion":  "9.0.4",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "xunit",
+        "CurrentVersion":  "2.9.2",
+        "LatestVersion":  "2.9.3",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "xunit.runner.visualstudio",
+        "CurrentVersion":  "2.8.2",
+        "LatestVersion":  "3.0.2",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "coverlet.collector",
+        "CurrentVersion":  "6.0.2",
+        "LatestVersion":  "6.0.4",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "FluentAssertions",
+        "CurrentVersion":  "7.0.0",
+        "LatestVersion":  "8.2.0",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Microsoft.NET.Test.Sdk",
+        "CurrentVersion":  "17.12.0",
+        "LatestVersion":  "17.13.0",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "System.Net.Http.Json",
+        "CurrentVersion":  "9.0.0",
+        "LatestVersion":  "9.0.4",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "xunit",
+        "CurrentVersion":  "2.9.2",
+        "LatestVersion":  "2.9.3",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "xunit.runner.visualstudio",
+        "CurrentVersion":  "2.8.2",
+        "LatestVersion":  "3.0.2",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "coverlet.collector",
+        "CurrentVersion":  "6.0.2",
+        "LatestVersion":  "6.0.4",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "FluentAssertions",
+        "CurrentVersion":  "7.0.0",
+        "LatestVersion":  "8.2.0",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "HttpMultipartParser",
+        "CurrentVersion":  "8.4.0",
+        "LatestVersion":  "9.0.0",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Microsoft.NET.Test.Sdk",
+        "CurrentVersion":  "17.12.0",
+        "LatestVersion":  "17.13.0",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Polly",
+        "CurrentVersion":  "8.5.0",
+        "LatestVersion":  "8.5.2",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "WireMock.Net",
+        "CurrentVersion":  "1.6.10",
+        "LatestVersion":  "1.7.4",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "xunit",
+        "CurrentVersion":  "2.9.2",
+        "LatestVersion":  "2.9.3",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "xunit.runner.visualstudio",
+        "CurrentVersion":  "2.8.2",
+        "LatestVersion":  "3.0.2",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "coverlet.collector",
+        "CurrentVersion":  "6.0.2",
+        "LatestVersion":  "6.0.4",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "FluentAssertions",
+        "CurrentVersion":  "7.0.0",
+        "LatestVersion":  "8.2.0",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "HttpMultipartParser",
+        "CurrentVersion":  "8.4.0",
+        "LatestVersion":  "9.0.0",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Microsoft.NET.Test.Sdk",
+        "CurrentVersion":  "17.12.0",
+        "LatestVersion":  "17.13.0",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Polly",
+        "CurrentVersion":  "8.5.0",
+        "LatestVersion":  "8.5.2",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "WireMock.Net",
+        "CurrentVersion":  "1.6.10",
+        "LatestVersion":  "1.7.4",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "xunit",
+        "CurrentVersion":  "2.9.2",
+        "LatestVersion":  "2.9.3",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "xunit.runner.visualstudio",
+        "CurrentVersion":  "2.8.2",
+        "LatestVersion":  "3.0.2",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "coverlet.collector",
+        "CurrentVersion":  "6.0.2",
+        "LatestVersion":  "6.0.4",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "FluentAssertions",
+        "CurrentVersion":  "7.0.0",
+        "LatestVersion":  "8.2.0",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "HttpMultipartParser",
+        "CurrentVersion":  "8.4.0",
+        "LatestVersion":  "9.0.0",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Microsoft.NET.Test.Sdk",
+        "CurrentVersion":  "17.12.0",
+        "LatestVersion":  "17.13.0",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Polly",
+        "CurrentVersion":  "8.5.0",
+        "LatestVersion":  "8.5.2",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "WireMock.Net",
+        "CurrentVersion":  "1.6.10",
+        "LatestVersion":  "1.7.4",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "xunit",
+        "CurrentVersion":  "2.9.2",
+        "LatestVersion":  "2.9.3",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "xunit.runner.visualstudio",
+        "CurrentVersion":  "2.8.2",
+        "LatestVersion":  "3.0.2",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "FluentAssertions",
+        "CurrentVersion":  "7.0.0",
+        "LatestVersion":  "8.2.0",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "WireMock.Net",
+        "CurrentVersion":  "1.6.10",
+        "LatestVersion":  "1.7.4",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "xunit",
+        "CurrentVersion":  "2.9.2",
+        "LatestVersion":  "2.9.3",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "FluentAssertions",
+        "CurrentVersion":  "7.0.0",
+        "LatestVersion":  "8.2.0",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "WireMock.Net",
+        "CurrentVersion":  "1.6.10",
+        "LatestVersion":  "1.7.4",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "xunit",
+        "CurrentVersion":  "2.9.2",
+        "LatestVersion":  "2.9.3",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "FluentAssertions",
+        "CurrentVersion":  "7.0.0",
+        "LatestVersion":  "8.2.0",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "WireMock.Net",
+        "CurrentVersion":  "1.6.10",
+        "LatestVersion":  "1.7.4",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "xunit",
+        "CurrentVersion":  "2.9.2",
+        "LatestVersion":  "2.9.3",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "coverlet.collector",
+        "CurrentVersion":  "6.0.2",
+        "LatestVersion":  "6.0.4",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "FluentAssertions",
+        "CurrentVersion":  "7.0.0",
+        "LatestVersion":  "8.2.0",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Microsoft.NET.Test.Sdk",
+        "CurrentVersion":  "17.12.0",
+        "LatestVersion":  "17.13.0",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "WireMock.Net",
+        "CurrentVersion":  "1.6.10",
+        "LatestVersion":  "1.7.4",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "xunit",
+        "CurrentVersion":  "2.9.2",
+        "LatestVersion":  "2.9.3",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "xunit.runner.visualstudio",
+        "CurrentVersion":  "2.8.2",
+        "LatestVersion":  "3.0.2",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "coverlet.collector",
+        "CurrentVersion":  "6.0.2",
+        "LatestVersion":  "6.0.4",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "FluentAssertions",
+        "CurrentVersion":  "7.0.0",
+        "LatestVersion":  "8.2.0",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Microsoft.NET.Test.Sdk",
+        "CurrentVersion":  "17.12.0",
+        "LatestVersion":  "17.13.0",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "WireMock.Net",
+        "CurrentVersion":  "1.6.10",
+        "LatestVersion":  "1.7.4",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "xunit",
+        "CurrentVersion":  "2.9.2",
+        "LatestVersion":  "2.9.3",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "xunit.runner.visualstudio",
+        "CurrentVersion":  "2.8.2",
+        "LatestVersion":  "3.0.2",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "coverlet.collector",
+        "CurrentVersion":  "6.0.2",
+        "LatestVersion":  "6.0.4",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "FluentAssertions",
+        "CurrentVersion":  "7.0.0",
+        "LatestVersion":  "8.2.0",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Microsoft.NET.Test.Sdk",
+        "CurrentVersion":  "17.12.0",
+        "LatestVersion":  "17.13.0",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "WireMock.Net",
+        "CurrentVersion":  "1.6.10",
+        "LatestVersion":  "1.7.4",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "xunit",
+        "CurrentVersion":  "2.9.2",
+        "LatestVersion":  "2.9.3",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "xunit.runner.visualstudio",
+        "CurrentVersion":  "2.8.2",
+        "LatestVersion":  "3.0.2",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Microsoft.CodeAnalysis.CSharp",
+        "CurrentVersion":  "4.12.0",
+        "LatestVersion":  "4.13.0",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "FluentAssertions",
+        "CurrentVersion":  "7.0.0",
+        "LatestVersion":  "8.2.0",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "xunit",
+        "CurrentVersion":  "2.9.2",
+        "LatestVersion":  "2.9.3",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "FluentAssertions",
+        "CurrentVersion":  "7.0.0",
+        "LatestVersion":  "8.2.0",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "xunit",
+        "CurrentVersion":  "2.9.2",
+        "LatestVersion":  "2.9.3",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "FluentAssertions",
+        "CurrentVersion":  "7.0.0",
+        "LatestVersion":  "8.2.0",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "xunit",
+        "CurrentVersion":  "2.9.2",
+        "LatestVersion":  "2.9.3",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "coverlet.collector",
+        "CurrentVersion":  "6.0.2",
+        "LatestVersion":  "6.0.4",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "FluentAssertions",
+        "CurrentVersion":  "7.0.0",
+        "LatestVersion":  "8.2.0",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Microsoft.NET.Test.Sdk",
+        "CurrentVersion":  "17.12.0",
+        "LatestVersion":  "17.13.0",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "xunit",
+        "CurrentVersion":  "2.9.2",
+        "LatestVersion":  "2.9.3",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "xunit.runner.visualstudio",
+        "CurrentVersion":  "2.8.2",
+        "LatestVersion":  "3.0.2",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "coverlet.collector",
+        "CurrentVersion":  "6.0.2",
+        "LatestVersion":  "6.0.4",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "FluentAssertions",
+        "CurrentVersion":  "7.0.0",
+        "LatestVersion":  "8.2.0",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Microsoft.NET.Test.Sdk",
+        "CurrentVersion":  "17.12.0",
+        "LatestVersion":  "17.13.0",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "xunit",
+        "CurrentVersion":  "2.9.2",
+        "LatestVersion":  "2.9.3",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "xunit.runner.visualstudio",
+        "CurrentVersion":  "2.8.2",
+        "LatestVersion":  "3.0.2",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "coverlet.collector",
+        "CurrentVersion":  "6.0.2",
+        "LatestVersion":  "6.0.4",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "FluentAssertions",
+        "CurrentVersion":  "7.0.0",
+        "LatestVersion":  "8.2.0",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Microsoft.NET.Test.Sdk",
+        "CurrentVersion":  "17.12.0",
+        "LatestVersion":  "17.13.0",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "xunit",
+        "CurrentVersion":  "2.9.2",
+        "LatestVersion":  "2.9.3",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "xunit.runner.visualstudio",
+        "CurrentVersion":  "2.8.2",
+        "LatestVersion":  "3.0.2",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "coverlet.collector",
+        "CurrentVersion":  "6.0.2",
+        "LatestVersion":  "6.0.4",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "FluentAssertions",
+        "CurrentVersion":  "7.0.0",
+        "LatestVersion":  "8.2.0",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Microsoft.NET.Test.Sdk",
+        "CurrentVersion":  "17.12.0",
+        "LatestVersion":  "17.13.0",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "WireMock.Net",
+        "CurrentVersion":  "1.6.10",
+        "LatestVersion":  "1.7.4",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "xunit",
+        "CurrentVersion":  "2.9.2",
+        "LatestVersion":  "2.9.3",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "xunit.runner.visualstudio",
+        "CurrentVersion":  "2.8.2",
+        "LatestVersion":  "3.0.2",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "coverlet.collector",
+        "CurrentVersion":  "6.0.2",
+        "LatestVersion":  "6.0.4",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "FluentAssertions",
+        "CurrentVersion":  "7.0.0",
+        "LatestVersion":  "8.2.0",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Microsoft.NET.Test.Sdk",
+        "CurrentVersion":  "17.12.0",
+        "LatestVersion":  "17.13.0",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "WireMock.Net",
+        "CurrentVersion":  "1.6.10",
+        "LatestVersion":  "1.7.4",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "xunit",
+        "CurrentVersion":  "2.9.2",
+        "LatestVersion":  "2.9.3",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "xunit.runner.visualstudio",
+        "CurrentVersion":  "2.8.2",
+        "LatestVersion":  "3.0.2",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "coverlet.collector",
+        "CurrentVersion":  "6.0.2",
+        "LatestVersion":  "6.0.4",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "FluentAssertions",
+        "CurrentVersion":  "7.0.0",
+        "LatestVersion":  "8.2.0",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Microsoft.NET.Test.Sdk",
+        "CurrentVersion":  "17.12.0",
+        "LatestVersion":  "17.13.0",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "WireMock.Net",
+        "CurrentVersion":  "1.6.10",
+        "LatestVersion":  "1.7.4",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "xunit",
+        "CurrentVersion":  "2.9.2",
+        "LatestVersion":  "2.9.3",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "xunit.runner.visualstudio",
+        "CurrentVersion":  "2.8.2",
+        "LatestVersion":  "3.0.2",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Microsoft.CodeAnalysis.CSharp",
+        "CurrentVersion":  "4.12.0",
+        "LatestVersion":  "4.13.0",
+        "Reason":  "New version available",
+        "Solution":  "RestSharp",
+        "Timestamp":  "20250416_175734"
+    }
+]

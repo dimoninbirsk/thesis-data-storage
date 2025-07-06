@@ -1,0 +1,394 @@
+{
+  "V5606": {
+    "code": "V5606",
+    "cwe": 1069,
+    "sastId": "OWASP-7.4.2",
+    "level": 3,
+    "count": 33,
+    "example": "An empty exception handler. Silent suppression of exceptions may hide the presence of bugs or vulnerabilities."
+  },
+  "Renew": {
+    "code": "Renew",
+    "cwe": 0,
+    "sastId": null,
+    "level": 1,
+    "count": 1,
+    "example": "Your license will expire in 29 days. Click 'Renew' to learn more or contact us via Feedback form on our website. This is an information message. You can continue using the analyzer with your current license. To hide this message, use the '--disableLicenseExpirationCheck' flag."
+  },
+  "V5609": {
+    "code": "V5609",
+    "cwe": 22,
+    "sastId": "OWASP-12.3.1",
+    "level": 3,
+    "count": 15,
+    "example": "Possible path traversal vulnerability inside method. The second argument 'path' contains potentially tainted data used as path."
+  },
+  "V3149": {
+    "code": "V3149",
+    "cwe": 476,
+    "sastId": null,
+    "level": 3,
+    "count": 6,
+    "example": "Dereferencing the result of 'as' operator inside method can lead to NullReferenceException. Consider inspecting 1st argument: preset as YandexPreset."
+  },
+  "V3125": {
+    "code": "V3125",
+    "cwe": 476,
+    "sastId": null,
+    "level": 2,
+    "count": 16,
+    "example": "The 'stream' object was used after it was verified against null. Check lines: 116, 107."
+  },
+  "V3013": {
+    "code": "V3013",
+    "cwe": 0,
+    "sastId": null,
+    "level": 3,
+    "count": 5,
+    "example": "It is odd that the body of 'IsAdornerVisible_PropertyChanged' function is fully equivalent to the body of 'AdornerContent_PropertyChanged' function."
+  },
+  "V3072": {
+    "code": "V3072",
+    "cwe": 0,
+    "sastId": null,
+    "level": 2,
+    "count": 1,
+    "example": "The 'BaseScreenRecorder' class containing IDisposable members does not itself implement IDisposable. Inspect: GarbageTimer."
+  },
+  "V3032": {
+    "code": "V3032",
+    "cwe": 835,
+    "sastId": null,
+    "level": 2,
+    "count": 3,
+    "example": "Waiting on this expression is unreliable, as compiler may optimize some of the variables. Use volatile variable(s) or synchronization primitives to avoid this."
+  },
+  "V3063": {
+    "code": "V3063",
+    "cwe": 570,
+    "sastId": null,
+    "level": 2,
+    "count": 13,
+    "example": "A part of conditional expression is always false if it is evaluated: e.Key == Key.Return."
+  },
+  "V3054": {
+    "code": "V3054",
+    "cwe": 609,
+    "sastId": null,
+    "level": 2,
+    "count": 1,
+    "example": "Potentially unsafe double-checked locking. Use volatile variable(s) or synchronization primitives to avoid this."
+  },
+  "V5604": {
+    "code": "V5604",
+    "cwe": 609,
+    "sastId": "OWASP-11.1.6, OWASP-1.11.3",
+    "level": 2,
+    "count": 1,
+    "example": "Potentially unsafe double-checked locking. Use volatile variable(s) or synchronization primitives to avoid this."
+  },
+  "V3080": {
+    "code": "V3080",
+    "cwe": 476,
+    "sastId": null,
+    "level": 2,
+    "count": 12,
+    "example": "Possible null dereference. Consider inspecting 'lgBrush'."
+  },
+  "V5612": {
+    "code": "V5612",
+    "cwe": 326,
+    "sastId": null,
+    "level": 2,
+    "count": 1,
+    "example": "Do not use old versions of SSL/TLS protocols as it may cause security issues. Insecure protocols: TLS 1.1."
+  },
+  "V3139": {
+    "code": "V3139",
+    "cwe": 0,
+    "sastId": null,
+    "level": 3,
+    "count": 7,
+    "example": "Two or more case-branches perform the same actions."
+  },
+  "V3002": {
+    "code": "V3002",
+    "cwe": 0,
+    "sastId": null,
+    "level": 2,
+    "count": 19,
+    "example": "The switch statement does not cover all values of the 'Shapes' enum: Line."
+  },
+  "V3095": {
+    "code": "V3095",
+    "cwe": 476,
+    "sastId": null,
+    "level": 1,
+    "count": 18,
+    "example": "The 'Device.ImmediateContext' object was used before it was verified against null. Check lines: 132, 157."
+  },
+  "V3008": {
+    "code": "V3008",
+    "cwe": 563,
+    "sastId": null,
+    "level": 3,
+    "count": 2,
+    "example": "The '_ignore' variable is assigned values twice successively. Perhaps this is a mistake. Check lines: 170, 154."
+  },
+  "V3022": {
+    "code": "V3022",
+    "cwe": 571,
+    "sastId": null,
+    "level": 1,
+    "count": 20,
+    "example": "Expression 'box.MainKey' is always not null. The operator '??' is excessive."
+  },
+  "V3047": {
+    "code": "V3047",
+    "cwe": 0,
+    "sastId": null,
+    "level": 1,
+    "count": 3,
+    "example": "WPF: a class containing registered property does not correspond with a type that is passed as the ownerType."
+  },
+  "V3090": {
+    "code": "V3090",
+    "cwe": 833,
+    "sastId": null,
+    "level": 3,
+    "count": 3,
+    "example": "Unsafe locking on 'this' instance in class 'NotifyIcon'."
+  },
+  "V3073": {
+    "code": "V3073",
+    "cwe": 0,
+    "sastId": null,
+    "level": 2,
+    "count": 1,
+    "example": "Not all IDisposable members are properly disposed. Call 'Dispose' when disposing 'DirectImageCapture' class. Inspect: TransformTexture."
+  },
+  "V3062": {
+    "code": "V3062",
+    "cwe": 0,
+    "sastId": null,
+    "level": 2,
+    "count": 1,
+    "example": "An object 'split' is used as an argument to its own method. Consider checking the first actual argument of the 'PrepareMainAction' method."
+  },
+  "V3130": {
+    "code": "V3130",
+    "cwe": 0,
+    "sastId": null,
+    "level": 3,
+    "count": 5,
+    "example": "Priority of the '&&' operator is higher than that of the '||' operator. Possible missing parentheses."
+  },
+  "V3203": {
+    "code": "V3203",
+    "cwe": 0,
+    "sastId": null,
+    "level": 3,
+    "count": 6,
+    "example": "Method parameter is not used: pasteIndex."
+  },
+  "V3024": {
+    "code": "V3024",
+    "cwe": 682,
+    "sastId": null,
+    "level": 3,
+    "count": 43,
+    "example": "An odd precise comparison: num == num4. Consider using a comparison with defined precision: Math.Abs(A - B) < Epsilon."
+  },
+  "V5621": {
+    "code": "V5621",
+    "cwe": 535,
+    "sastId": "OWASP-8.3.5",
+    "level": 3,
+    "count": 1,
+    "example": "Error message contains potentially sensitive data, in 'e.Message', that may be exposed."
+  },
+  "V3142": {
+    "code": "V3142",
+    "cwe": 561,
+    "sastId": null,
+    "level": 2,
+    "count": 2,
+    "example": "Unreachable code detected. It is possible that an error is present."
+  },
+  "V3144": {
+    "code": "V3144",
+    "cwe": 0,
+    "sastId": null,
+    "level": 1,
+    "count": 8,
+    "example": "This file is marked with copyleft license, which requires you to open the derived source code."
+  },
+  "V3137": {
+    "code": "V3137",
+    "cwe": 563,
+    "sastId": null,
+    "level": 2,
+    "count": 1,
+    "example": "The 'hr' variable is assigned but is not used by the end of the function."
+  },
+  "V3043": {
+    "code": "V3043",
+    "cwe": 483,
+    "sastId": null,
+    "level": 1,
+    "count": 4,
+    "example": "The code's operational logic does not correspond with its formatting. The statement is indented to the right, but it is always executed. It is possible that curly brackets are missing."
+  },
+  "V3156": {
+    "code": "V3156",
+    "cwe": 628,
+    "sastId": null,
+    "level": 2,
+    "count": 16,
+    "example": "The first argument of the 'Format' method is not expected to be null."
+  },
+  "V3146": {
+    "code": "V3146",
+    "cwe": 476,
+    "sastId": null,
+    "level": 2,
+    "count": 1,
+    "example": "Possible null dereference of the 1st argument 'upload' inside method. The 'FirstOrDefault' can return default null value."
+  },
+  "V3106": {
+    "code": "V3106",
+    "cwe": 125,
+    "sastId": null,
+    "level": 3,
+    "count": 3,
+    "example": "Possible negative index value. The value of 'index - 1' index could reach -1."
+  },
+  "V3117": {
+    "code": "V3117",
+    "cwe": 0,
+    "sastId": null,
+    "level": 2,
+    "count": 5,
+    "example": "Constructor parameter 'filler' is not used."
+  },
+  "V3083": {
+    "code": "V3083",
+    "cwe": 367,
+    "sastId": null,
+    "level": 2,
+    "count": 1,
+    "example": "Unsafe invocation of event 'MouseEventReceived', NullReferenceException is possible. Consider assigning event to a local variable before invoking it."
+  },
+  "V5605": {
+    "code": "V5605",
+    "cwe": 367,
+    "sastId": "OWASP-1.11.3, OWASP-11.1.6",
+    "level": 2,
+    "count": 1,
+    "example": "Unsafe invocation of event 'MouseEventReceived', NullReferenceException is possible. Consider assigning event to a local variable before invoking it."
+  },
+  "V3097": {
+    "code": "V3097",
+    "cwe": 0,
+    "sastId": null,
+    "level": 3,
+    "count": 1,
+    "example": "Possible exception: the 'WindowPlacement' type marked by [Serializable] contains non-serializable members not marked by [NonSerialized]."
+  },
+  "V3171": {
+    "code": "V3171",
+    "cwe": 839,
+    "sastId": null,
+    "level": 2,
+    "count": 1,
+    "example": "The parameter corresponding to the 1st argument 'length - 4' could reach the value of -4 inside method when used as the size of an array."
+  },
+  "V3057": {
+    "code": "V3057",
+    "cwe": 628,
+    "sastId": null,
+    "level": 2,
+    "count": 1,
+    "example": "The 1st argument 'length - 4' has a possibly negative value, but is expected to be non-negative inside method, in 'ms.Read(buffer, 0, (int)count)'."
+  },
+  "V3064": {
+    "code": "V3064",
+    "cwe": 369,
+    "sastId": null,
+    "level": 2,
+    "count": 2,
+    "example": "Potential division by zero. Consider inspecting denominator '(MaxColorsWithTransparency - 1)'."
+  },
+  "V3207": {
+    "code": "V3207",
+    "cwe": 670,
+    "sastId": null,
+    "level": 1,
+    "count": 1,
+    "example": "The 'not ExportFormats.Gif or ExportFormats.Apng' logical pattern may not work as expected. The 'not' pattern is matched only to the first expression from the 'or' pattern."
+  },
+  "V3020": {
+    "code": "V3020",
+    "cwe": 670,
+    "sastId": null,
+    "level": 2,
+    "count": 2,
+    "example": "An unconditional 'break' within a loop."
+  },
+  "V3023": {
+    "code": "V3023",
+    "cwe": 571,
+    "sastId": null,
+    "level": 1,
+    "count": 2,
+    "example": "Consider inspecting this expression. The expression is excessive or contains a misprint."
+  },
+  "V3111": {
+    "code": "V3111",
+    "cwe": 0,
+    "sastId": null,
+    "level": 3,
+    "count": 1,
+    "example": "Checking value of 'message' for null will always return false when generic type is instantiated with a value type."
+  },
+  "V5616": {
+    "code": "V5616",
+    "cwe": 77,
+    "sastId": "OWASP-5.3.8",
+    "level": 3,
+    "count": 4,
+    "example": "Possible command injection. Potentially tainted data in the 'info' variable is used to create an OS command."
+  },
+  "V3168": {
+    "code": "V3168",
+    "cwe": 476,
+    "sastId": null,
+    "level": 2,
+    "count": 1,
+    "example": "Awaiting on the 'GetResponse(HttpMethod.Get, url, headers)' expression with potential null value can lead to NullReferenceException."
+  },
+  "V3052": {
+    "code": "V3052",
+    "cwe": 390,
+    "sastId": null,
+    "level": 2,
+    "count": 1,
+    "example": "The original exception object 'u' was swallowed. Stack of original exception could be lost."
+  },
+  "V5603": {
+    "code": "V5603",
+    "cwe": 390,
+    "sastId": "OWASP-11.1.8",
+    "level": 2,
+    "count": 1,
+    "example": "The original exception object 'u' was swallowed. Stack of original exception could be lost."
+  },
+  "V3148": {
+    "code": "V3148",
+    "cwe": 476,
+    "sastId": null,
+    "level": 2,
+    "count": 277,
+    "example": "Casting potential 'null' value of 'GetValue()' to a value type can lead to NullReferenceException."
+  }
+}

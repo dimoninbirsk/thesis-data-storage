@@ -1,0 +1,74 @@
+{"header" : {
+  "cloc_url"           : "github.com/AlDanial/cloc",
+  "cloc_version"       : "2.04",
+  "elapsed_seconds"    : 0.487751960754395,
+  "n_files"            : 207,
+  "n_lines"            : 49857,
+  "files_per_second"   : 424.396038674735,
+  "lines_per_second"   : 102217.93864834,
+  "report_file"        : "C:\\Users\\dimoninbirsk\\source\\thesis\\cloc\\Riter\\metadata.json"},
+"JSON" :{
+  "nFiles": 15,
+  "blank": 1,
+  "comment": 0,
+  "code": 32285},
+"C#" :{
+  "nFiles": 136,
+  "blank": 1591,
+  "comment": 829,
+  "code": 6293},
+"XAML" :{
+  "nFiles": 16,
+  "blank": 354,
+  "comment": 51,
+  "code": 3556},
+"XML" :{
+  "nFiles": 16,
+  "blank": 0,
+  "comment": 0,
+  "code": 3290},
+"Text" :{
+  "nFiles": 7,
+  "blank": 0,
+  "comment": 0,
+  "code": 374},
+"INI" :{
+  "nFiles": 3,
+  "blank": 50,
+  "comment": 0,
+  "code": 282},
+"Markdown" :{
+  "nFiles": 4,
+  "blank": 77,
+  "comment": 11,
+  "code": 235},
+"Properties" :{
+  "nFiles": 1,
+  "blank": 7,
+  "comment": 0,
+  "code": 187},
+"MSBuild script" :{
+  "nFiles": 2,
+  "blank": 12,
+  "comment": 0,
+  "code": 131},
+"C# Generated" :{
+  "nFiles": 4,
+  "blank": 21,
+  "comment": 56,
+  "code": 59},
+"Visual Studio Solution" :{
+  "nFiles": 1,
+  "blank": 1,
+  "comment": 1,
+  "code": 51},
+"YAML" :{
+  "nFiles": 2,
+  "blank": 10,
+  "comment": 4,
+  "code": 38},
+"SUM": {
+  "blank": 2124,
+  "comment": 952,
+  "code": 46781,
+  "nFiles": 207} }

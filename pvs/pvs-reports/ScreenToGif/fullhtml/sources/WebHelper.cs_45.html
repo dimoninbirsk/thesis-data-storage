@@ -1,0 +1,338 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII" />
+  <title>WebHelper.cs</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <script src="../jquery-3.5.1.min.js"></script>
+</head>
+<body>
+<pre><code class = "cs">
+<a name="ln1">using ScreenToGif.Domain.Enums;</a>
+<a name="ln2">using ScreenToGif.Util.Settings;</a>
+<a name="ln3">using System.Collections.Specialized;</a>
+<a name="ln4">using System.IO;</a>
+<a name="ln5">using System.Net;</a>
+<a name="ln6">using System.Net.Cache;</a>
+<a name="ln7">using System.Net.Http;</a>
+<a name="ln8">using System.Security.Cryptography;</a>
+<a name="ln9">using System.Text;</a>
+<a name="ln10"> </a>
+<a name="ln11">namespace ScreenToGif.Util;</a>
+<a name="ln12"> </a>
+<a name="ln13">/// &lt;summary&gt;</a>
+<a name="ln14">/// Web related methods.</a>
+<a name="ln15">/// Boundary: http://www.w3.org/Protocols/rfc1341/7_2_Multipart.html</a>
+<a name="ln16">/// &lt;/summary&gt;</a>
+<a name="ln17">public static class WebHelper</a>
+<a name="ln18">{</a>
+<a name="ln19">    private const string Boundary = &quot;+++fringe+++&quot;;</a>
+<a name="ln20"> </a>
+<a name="ln21">    public static string Protect(string str)</a>
+<a name="ln22">    {</a>
+<a name="ln23">        var entropy = Encoding.ASCII.GetBytes(Environment.MachineName);</a>
+<a name="ln24">        return Convert.ToBase64String(ProtectedData.Protect(Encoding.ASCII.GetBytes(str), entropy, DataProtectionScope.CurrentUser));</a>
+<a name="ln25">    }</a>
+<a name="ln26"> </a>
+<a name="ln27">    public static string Unprotect(string str)</a>
+<a name="ln28">    {</a>
+<a name="ln29">        if (string.IsNullOrWhiteSpace(str))</a>
+<a name="ln30">            return str;</a>
+<a name="ln31"> </a>
+<a name="ln32">        var entropy = Encoding.ASCII.GetBytes(Environment.MachineName);</a>
+<a name="ln33">        return Encoding.ASCII.GetString(ProtectedData.Unprotect(Convert.FromBase64String(str), entropy, DataProtectionScope.CurrentUser));</a>
+<a name="ln34">    }</a>
+<a name="ln35"> </a>
+<a name="ln36">    public static string AppendQuery(string url, Dictionary&lt;string, string&gt; args)</a>
+<a name="ln37">    {</a>
+<a name="ln38">        if (args == null)</a>
+<a name="ln39">            return url;</a>
+<a name="ln40"> </a>
+<a name="ln41">        var suffix = args.Select(s =&gt; s.Key + &quot;=&quot; + WebUtility.UrlEncode(s.Value)).Aggregate((p, n) =&gt; p + &quot;&amp;&quot; + n);</a>
+<a name="ln42"> </a>
+<a name="ln43">        return url + (string.IsNullOrWhiteSpace(suffix) ? &quot;&quot; : &quot;?&quot; + suffix);</a>
+<a name="ln44">    }</a>
+<a name="ln45"> </a>
+<a name="ln46"> </a>
+<a name="ln47">    public static async Task&lt;string&gt; Get(string url, NameValueCollection headers = null)</a>
+<a name="ln48">    {</a>
+<a name="ln49">        using (var webResponse = await GetResponse(HttpMethod.Get, url, headers))</a>
+<a name="ln50">        {</a>
+<a name="ln51">            await using (var responseStream = webResponse.GetResponseStream())</a>
+<a name="ln52">            {</a>
+<a name="ln53">                if (responseStream == null)</a>
+<a name="ln54">                    return null;</a>
+<a name="ln55"> </a>
+<a name="ln56">                using (var reader = new StreamReader(responseStream, Encoding.UTF8))</a>
+<a name="ln57">                    return await reader.ReadToEndAsync();</a>
+<a name="ln58">            }</a>
+<a name="ln59">        }</a>
+<a name="ln60">    }</a>
+<a name="ln61"> </a>
+<a name="ln62">    public static async Task&lt;string&gt; Post(string url, string content, NameValueCollection headers = null)</a>
+<a name="ln63">    {</a>
+<a name="ln64">        using (var webResponse = await GetResponse(HttpMethod.Post, url, content, &quot;application/json&quot;, headers))</a>
+<a name="ln65">        {</a>
+<a name="ln66">            await using (var responseStream = webResponse.GetResponseStream())</a>
+<a name="ln67">            {</a>
+<a name="ln68">                if (responseStream == null)</a>
+<a name="ln69">                    return null;</a>
+<a name="ln70"> </a>
+<a name="ln71">                using (var reader = new StreamReader(responseStream, Encoding.UTF8))</a>
+<a name="ln72">                    return await reader.ReadToEndAsync();</a>
+<a name="ln73">            }</a>
+<a name="ln74">        }</a>
+<a name="ln75">    }</a>
+<a name="ln76"> </a>
+<a name="ln77">    public static async Task&lt;string&gt; PostMultipart(string url, Dictionary&lt;string, string&gt; args)</a>
+<a name="ln78">    {</a>
+<a name="ln79">        await using (var stream = new MemoryStream())</a>
+<a name="ln80">        {</a>
+<a name="ln81">            stream.WriteStringUtf8(GetMultipartString(Boundary, args));</a>
+<a name="ln82"> </a>
+<a name="ln83">            using (var webResponse = await GetResponse(HttpMethod.Post, url, stream, &quot;multipart/form-data; boundary=&quot; + Boundary))</a>
+<a name="ln84">            {</a>
+<a name="ln85">                await using (var responseStream = webResponse.GetResponseStream())</a>
+<a name="ln86">                {</a>
+<a name="ln87">                    if (responseStream == null)</a>
+<a name="ln88">                        return null;</a>
+<a name="ln89"> </a>
+<a name="ln90">                    using (var reader = new StreamReader(responseStream, Encoding.UTF8))</a>
+<a name="ln91">                        return await reader.ReadToEndAsync();</a>
+<a name="ln92">                }</a>
+<a name="ln93">            }</a>
+<a name="ln94">        }</a>
+<a name="ln95">    }</a>
+<a name="ln96"> </a>
+<a name="ln97">    public static async Task&lt;string&gt; SendFile(string url, Stream data, string filename, Dictionary&lt;string, string&gt; args = null, NameValueCollection headers = null, string streamName = &quot;file&quot;)</a>
+<a name="ln98">    {</a>
+<a name="ln99">        await using (var head = GetMultipartStream(Boundary, args, filename, data, streamName))</a>
+<a name="ln100">        {</a>
+<a name="ln101">            using (var webResponse = await GetResponse(HttpMethod.Post, url, head, &quot;multipart/form-data; boundary=&quot; + Boundary, headers))</a>
+<a name="ln102">            {</a>
+<a name="ln103">                await using (var responseStream = webResponse.GetResponseStream())</a>
+<a name="ln104">                {</a>
+<a name="ln105">                    if (responseStream == null)</a>
+<a name="ln106">                        return null;</a>
+<a name="ln107"> </a>
+<a name="ln108">                    using (var reader = new StreamReader(responseStream, Encoding.UTF8))</a>
+<a name="ln109">                        return await reader.ReadToEndAsync();</a>
+<a name="ln110">                }</a>
+<a name="ln111">            }</a>
+<a name="ln112">        }</a>
+<a name="ln113">    }</a>
+<a name="ln114"> </a>
+<a name="ln115">    public static async Task&lt;string&gt; SendFile2(string url, Stream data, string filename, Dictionary&lt;string, string&gt; args = null, NameValueCollection headers = null)</a>
+<a name="ln116">    {</a>
+<a name="ln117">        await using (var head = GetMultipartStream(Boundary, args, filename, data))</a>
+<a name="ln118">        {</a>
+<a name="ln119">            var request = GetWebRequest(HttpMethod.Post, url, headers, &quot;multipart/form-data; boundary=&quot; + Boundary, head.Length);</a>
+<a name="ln120"> </a>
+<a name="ln121">            await using (var requestStream = await request.GetRequestStreamAsync())</a>
+<a name="ln122">                requestStream.WriteStream(head);</a>
+<a name="ln123"> </a>
+<a name="ln124">            using (var response = await request.GetResponseAsync())</a>
+<a name="ln125">            {</a>
+<a name="ln126">                await using (var responseStream = response.GetResponseStream())</a>
+<a name="ln127">                {</a>
+<a name="ln128">                    if (responseStream == null)</a>
+<a name="ln129">                        return null;</a>
+<a name="ln130"> </a>
+<a name="ln131">                    using (var reader = new StreamReader(responseStream, Encoding.UTF8))</a>
+<a name="ln132">                        return await reader.ReadToEndAsync();</a>
+<a name="ln133">                }</a>
+<a name="ln134">            }</a>
+<a name="ln135">        }</a>
+<a name="ln136">    }</a>
+<a name="ln137"> </a>
+<a name="ln138">    public static Stream GetMultipartStream(string border, Dictionary&lt;string, string&gt; args, string filename, Stream data, string streamName = &quot;file&quot;)</a>
+<a name="ln139">    {</a>
+<a name="ln140">        var stream = new MemoryStream();</a>
+<a name="ln141"> </a>
+<a name="ln142">        if (args.Any(w =&gt; !string.IsNullOrEmpty(w.Key) &amp;&amp; !string.IsNullOrEmpty(w.Value)))</a>
+<a name="ln143">            stream.WriteStringUtf8(&quot;Content-Type: text/plain; charset=utf-8&quot;);</a>
+<a name="ln144"> </a>
+<a name="ln145">        foreach (var content in args.Where(w =&gt; !string.IsNullOrEmpty(w.Key) &amp;&amp; !string.IsNullOrEmpty(w.Value)))</a>
+<a name="ln146">            stream.WriteStringUtf8($&quot;--{border}\r\nContent-Disposition: form-data; name=\&quot;{content.Key}\&quot;\r\n\r\n{content.Value}\r\n&quot;);</a>
+<a name="ln147"> </a>
+<a name="ln148">        if (!string.IsNullOrWhiteSpace(filename))</a>
+<a name="ln149">            stream.WriteStringUtf8($&quot;--{border}\r\nContent-Disposition: form-data; name={streamName}; filename={filename};\r\n\r\n&quot;);</a>
+<a name="ln150">        //stream.WriteStringUtf8($&quot;--{border}\r\nContent-Disposition: form-data; name=\&quot;image\&quot;; filename=\&quot;{filename}\&quot;\r\nContent-Type: image/gif\r\n\r\n&quot;); //TODO: Fixed content type.</a>
+<a name="ln151"> </a>
+<a name="ln152">        stream.WriteStream(data);</a>
+<a name="ln153">            </a>
+<a name="ln154">        stream.WriteStringUtf8($&quot;\r\n--{border}--\r\n&quot;);</a>
+<a name="ln155"> </a>
+<a name="ln156">        stream.Position = 0;</a>
+<a name="ln157">        return stream;</a>
+<a name="ln158">    }</a>
+<a name="ln159"> </a>
+<a name="ln160">    public static string GetMultipartString(string border, Dictionary&lt;string, string&gt; args)</a>
+<a name="ln161">    {</a>
+<a name="ln162">        return args.Where(w =&gt; !string.IsNullOrEmpty(w.Key) &amp;&amp; !string.IsNullOrEmpty(w.Value))</a>
+<a name="ln163">            .Aggregate(&quot;&quot;, (p, n) =&gt; p + $&quot;--{border}\r\nContent-Disposition: form-data; name=\&quot;{n.Key}\&quot;\r\n\r\n{n.Value}\r\n&quot;) + $&quot;--{border}--\r\n&quot;;</a>
+<a name="ln164">    }</a>
+<a name="ln165"> </a>
+<a name="ln166"> </a>
+<a name="ln167">    public static Task&lt;WebResponse&gt; GetResponse(HttpMethod method, string url, NameValueCollection headers = null)</a>
+<a name="ln168">    {</a>
+<a name="ln169">        try</a>
+<a name="ln170">        {</a>
+<a name="ln171">            return GetWebRequest(method, url, headers).GetResponseAsync();</a>
+<a name="ln172">        }</a>
+<a name="ln173">        catch (WebException we)</a>
+<a name="ln174">        {</a>
+<a name="ln175">            if (we.Response is not WebResponse resp)</a>
+<a name="ln176">                throw;</a>
+<a name="ln177"> </a>
+<a name="ln178">            return Task.FromResult(resp);</a>
+<a name="ln179">        }</a>
+<a name="ln180">        catch (Exception ex)</a>
+<a name="ln181">        {</a>
+<a name="ln182">            LogWriter.Log(ex, &quot;Get response: &quot; + url);</a>
+<a name="ln183">        }</a>
+<a name="ln184"> </a>
+<a name="ln185">        return null;</a>
+<a name="ln186">    }</a>
+<a name="ln187"> </a>
+<a name="ln188">    private static Task&lt;WebResponse&gt; GetResponse(HttpMethod method, string url, string content, string contentType = null, NameValueCollection headers = null)</a>
+<a name="ln189">    {</a>
+<a name="ln190">        try</a>
+<a name="ln191">        {</a>
+<a name="ln192">            var request = GetWebRequest(method, url, headers, contentType, content.Length);</a>
+<a name="ln193"> </a>
+<a name="ln194">            if (content.Length &gt; 0)</a>
+<a name="ln195">                using (var requestStream = request.GetRequestStream())</a>
+<a name="ln196">                    requestStream.WriteStringUtf8(content);</a>
+<a name="ln197"> </a>
+<a name="ln198">            return request.GetResponseAsync();</a>
+<a name="ln199">        }</a>
+<a name="ln200">        catch (WebException we)</a>
+<a name="ln201">        {</a>
+<a name="ln202">            if (we.Response is not WebResponse resp)</a>
+<a name="ln203">                throw;</a>
+<a name="ln204"> </a>
+<a name="ln205">            return Task.FromResult(resp);</a>
+<a name="ln206">        }</a>
+<a name="ln207">        catch (Exception ex)</a>
+<a name="ln208">        {</a>
+<a name="ln209">            LogWriter.Log(ex, &quot;Get response: &quot; + url);</a>
+<a name="ln210">        }</a>
+<a name="ln211"> </a>
+<a name="ln212">        return Task.FromResult&lt;WebResponse&gt;(null);</a>
+<a name="ln213">    }</a>
+<a name="ln214"> </a>
+<a name="ln215">    private static async Task&lt;WebResponse&gt; GetResponse(HttpMethod method, string url, Stream data, string contentType = null, NameValueCollection headers = null)</a>
+<a name="ln216">    {</a>
+<a name="ln217">        try</a>
+<a name="ln218">        {</a>
+<a name="ln219">            var request = GetWebRequest(method, url, headers, contentType, data?.Length ?? 0);</a>
+<a name="ln220">                </a>
+<a name="ln221">            if (request.ContentLength &gt; 0)</a>
+<a name="ln222">                await using (var requestStream = await request.GetRequestStreamAsync())</a>
+<a name="ln223">                    requestStream.WriteStream(data);</a>
+<a name="ln224"> </a>
+<a name="ln225">            return await request.GetResponseAsync();</a>
+<a name="ln226">        }</a>
+<a name="ln227">        catch (WebException we)</a>
+<a name="ln228">        {</a>
+<a name="ln229">            if (we.Response is not WebResponse resp)</a>
+<a name="ln230">                throw;</a>
+<a name="ln231"> </a>
+<a name="ln232">            return resp;</a>
+<a name="ln233">        }</a>
+<a name="ln234">        catch (Exception ex)</a>
+<a name="ln235">        {</a>
+<a name="ln236">            LogWriter.Log(ex, &quot;Get response: &quot; + url);</a>
+<a name="ln237">        }</a>
+<a name="ln238"> </a>
+<a name="ln239">        return null;</a>
+<a name="ln240">    }</a>
+<a name="ln241"> </a>
+<a name="ln242"> </a>
+<a name="ln243">    private static HttpWebRequest GetWebRequest(HttpMethod method, string url, NameValueCollection headers = null, string contentType = null, long contentLength = 0)</a>
+<a name="ln244">    {</a>
+<a name="ln245">        var request = (HttpWebRequest) WebRequest.Create(url);</a>
+<a name="ln246"> </a>
+<a name="ln247">        if (headers != null)</a>
+<a name="ln248">            request.Headers.Add(headers);</a>
+<a name="ln249"> </a>
+<a name="ln250">        request.Method = method.ToString();</a>
+<a name="ln251">        request.Proxy = GetProxy();</a>
+<a name="ln252">        request.UserAgent = &quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.79 Safari/537.36 Edge/14.14393&quot;;</a>
+<a name="ln253">        request.ContentType = contentType;</a>
+<a name="ln254"> </a>
+<a name="ln255">        if (contentLength == 0)</a>
+<a name="ln256">        {</a>
+<a name="ln257">            request.KeepAlive = false;</a>
+<a name="ln258">            return request;</a>
+<a name="ln259">        }</a>
+<a name="ln260"> </a>
+<a name="ln261">        if (method == HttpMethod.Get)</a>
+<a name="ln262">            request.CachePolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.NoCacheNoStore);</a>
+<a name="ln263"> </a>
+<a name="ln264">        request.AllowWriteStreamBuffering = IsProxyBeingUsed();</a>
+<a name="ln265">        request.ContentLength = contentLength;</a>
+<a name="ln266">        request.Pipelined = false;</a>
+<a name="ln267">        request.Timeout = -1;</a>
+<a name="ln268">        return request;</a>
+<a name="ln269">    }</a>
+<a name="ln270"> </a>
+<a name="ln271"> </a>
+<a name="ln272">    public static IWebProxy GetProxy()</a>
+<a name="ln273">    {</a>
+<a name="ln274">        if (UserSettings.All.ProxyMode == ProxyTypes.System)</a>
+<a name="ln275">            return WebRequest.GetSystemWebProxy();</a>
+<a name="ln276"> </a>
+<a name="ln277">        if (UserSettings.All.ProxyMode == ProxyTypes.Manual)</a>
+<a name="ln278">            return string.IsNullOrEmpty(UserSettings.All.ProxyHost) || UserSettings.All.ProxyPort &lt;= 0 ? null :</a>
+<a name="ln279">                new WebProxy($&quot;{UserSettings.All.ProxyHost}:{UserSettings.All.ProxyPort}&quot;, true, null, new NetworkCredential(UserSettings.All.ProxyUsername, Unprotect(UserSettings.All.ProxyPassword)));</a>
+<a name="ln280"> </a>
+<a name="ln281">        return null;</a>
+<a name="ln282">    }</a>
+<a name="ln283"> </a>
+<a name="ln284">    internal static bool IsProxyBeingUsed()</a>
+<a name="ln285">    {</a>
+<a name="ln286">        if (UserSettings.All.ProxyMode == ProxyTypes.System)</a>
+<a name="ln287">            return true;</a>
+<a name="ln288"> </a>
+<a name="ln289">        if (UserSettings.All.ProxyMode == ProxyTypes.Manual)</a>
+<a name="ln290">            return !string.IsNullOrEmpty(UserSettings.All.ProxyHost) &amp;&amp; UserSettings.All.ProxyPort &gt; 0;</a>
+<a name="ln291"> </a>
+<a name="ln292">        return false;</a>
+<a name="ln293">    }</a>
+<a name="ln294">}</a>
+</code></pre>
+<div class="balloon" rel="85"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3080/" target="_blank">V3080</a> Possible null dereference. Consider inspecting 'webResponse'.</p></div>
+<div class="balloon" rel="99"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3080/" target="_blank">V3080</a> Possible null dereference inside method at 'args.Any'. Consider inspecting the 2nd argument: args.</p></div>
+<div class="balloon" rel="103"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3080/" target="_blank">V3080</a> Possible null dereference. Consider inspecting 'webResponse'.</p></div>
+<div class="balloon" rel="117"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3080/" target="_blank">V3080</a> Possible null dereference inside method at 'args.Any'. Consider inspecting the 2nd argument: args.</p></div>
+<div class="balloon" rel="49"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3168/" target="_blank">V3168</a> Awaiting on the 'GetResponse(HttpMethod.Get, url, headers)' expression with potential null value can lead to NullReferenceException.</p></div>
+<link rel="stylesheet" href="highlight.css">
+<script src="highlight.pack.js"></script>
+<script src="highlightjs-line-numbers.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script>hljs.initLineNumbersOnLoad();</script>
+<script>
+  $(document).ready(function() {
+      $('.balloon').each(function () {
+          var bl = $(this);
+          var line = bl.attr('rel');
+          var text = $('a[name="ln'+line+'"]').text();
+
+          var space_count = 0;
+          for(var i = 0; i<text.length; i++){
+              var char = text[i];
+              if((char !== ' ')&&(char !== '\t'))break;
+              if(char === '\t')space_count++;
+              space_count++;
+          }
+
+          bl.css('margin-left', space_count*8);
+          $('a[name="ln'+line+'"]').after(bl);
+      });
+
+      window.location = window.location;
+  });
+</script>
+</body>
+</html>

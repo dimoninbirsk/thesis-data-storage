@@ -1,0 +1,74 @@
+{"header" : {
+  "cloc_url"           : "github.com/AlDanial/cloc",
+  "cloc_version"       : "2.04",
+  "elapsed_seconds"    : 0.943192005157471,
+  "n_files"            : 349,
+  "n_lines"            : 102899,
+  "files_per_second"   : 370.020099928363,
+  "lines_per_second"   : 109096.556626156,
+  "report_file"        : "C:\\Users\\dimoninbirsk\\source\\thesis\\cloc\\Lynx\\metadata.json"},
+"C#" :{
+  "nFiles": 236,
+  "blank": 7623,
+  "comment": 9688,
+  "code": 42995},
+"JSON" :{
+  "nFiles": 33,
+  "blank": 11,
+  "comment": 0,
+  "code": 35480},
+"XML" :{
+  "nFiles": 29,
+  "blank": 8,
+  "comment": 3,
+  "code": 3549},
+"Text" :{
+  "nFiles": 20,
+  "blank": 76,
+  "comment": 0,
+  "code": 1141},
+"YAML" :{
+  "nFiles": 8,
+  "blank": 165,
+  "comment": 92,
+  "code": 657},
+"Properties" :{
+  "nFiles": 1,
+  "blank": 15,
+  "comment": 0,
+  "code": 332},
+"INI" :{
+  "nFiles": 7,
+  "blank": 0,
+  "comment": 0,
+  "code": 204},
+"MSBuild script" :{
+  "nFiles": 6,
+  "blank": 46,
+  "comment": 5,
+  "code": 204},
+"Markdown" :{
+  "nFiles": 1,
+  "blank": 138,
+  "comment": 0,
+  "code": 194},
+"Visual Studio Solution" :{
+  "nFiles": 1,
+  "blank": 1,
+  "comment": 1,
+  "code": 77},
+"C# Generated" :{
+  "nFiles": 6,
+  "blank": 24,
+  "comment": 54,
+  "code": 65},
+"make" :{
+  "nFiles": 1,
+  "blank": 9,
+  "comment": 0,
+  "code": 42},
+"SUM": {
+  "blank": 8116,
+  "comment": 9843,
+  "code": 84940,
+  "nFiles": 349} }

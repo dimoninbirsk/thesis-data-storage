@@ -1,0 +1,2045 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII" />
+  <title>EncodingManager.cs</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <script src="../jquery-3.5.1.min.js"></script>
+</head>
+<body>
+<pre><code class = "cs">
+<a name="ln1">using System;</a>
+<a name="ln2">using System.Collections.Generic;</a>
+<a name="ln3">using System.Collections.Specialized;</a>
+<a name="ln4">using System.ComponentModel;</a>
+<a name="ln5">using System.Diagnostics;</a>
+<a name="ln6">using System.Drawing;</a>
+<a name="ln7">using System.Globalization;</a>
+<a name="ln8">using System.IO;</a>
+<a name="ln9">using System.IO.Compression;</a>
+<a name="ln10">using System.Linq;</a>
+<a name="ln11">using System.Runtime.InteropServices;</a>
+<a name="ln12">using System.Text;</a>
+<a name="ln13">using System.Threading;</a>
+<a name="ln14">using System.Threading.Tasks;</a>
+<a name="ln15">using System.Windows;</a>
+<a name="ln16">using System.Windows.Media;</a>
+<a name="ln17">using System.Windows.Media.Imaging;</a>
+<a name="ln18"> </a>
+<a name="ln19">using KGySoft.CoreLibraries;</a>
+<a name="ln20">using KGySoft.Drawing;</a>
+<a name="ln21">using KGySoft.Drawing.Imaging;</a>
+<a name="ln22">using KGySoft.Threading;</a>
+<a name="ln23"> </a>
+<a name="ln24">using ScreenToGif.Cloud;</a>
+<a name="ln25">using ScreenToGif.Controls;</a>
+<a name="ln26">using ScreenToGif.Domain.Enums;</a>
+<a name="ln27">using ScreenToGif.Domain.Interfaces;</a>
+<a name="ln28">using ScreenToGif.Domain.Models;</a>
+<a name="ln29">using ScreenToGif.ImageUtil;</a>
+<a name="ln30">using ScreenToGif.Util.Codification.Apng;</a>
+<a name="ln31">using ScreenToGif.Util.Codification.Gif.Encoder;</a>
+<a name="ln32">using ScreenToGif.Util.Codification.Psd;</a>
+<a name="ln33">using ScreenToGif.Util.Extensions;</a>
+<a name="ln34">using ScreenToGif.Util.Settings;</a>
+<a name="ln35">using ScreenToGif.ViewModel;</a>
+<a name="ln36">using ScreenToGif.ViewModel.ExportPresets;</a>
+<a name="ln37">using ScreenToGif.ViewModel.ExportPresets.AnimatedImage.Apng;</a>
+<a name="ln38">using ScreenToGif.ViewModel.ExportPresets.AnimatedImage.Gif;</a>
+<a name="ln39">using ScreenToGif.ViewModel.ExportPresets.AnimatedImage.Webp;</a>
+<a name="ln40">using ScreenToGif.ViewModel.ExportPresets.Image;</a>
+<a name="ln41">using ScreenToGif.ViewModel.ExportPresets.Other;</a>
+<a name="ln42">using ScreenToGif.ViewModel.ExportPresets.Video;</a>
+<a name="ln43">using ScreenToGif.ViewModel.UploadPresets;</a>
+<a name="ln44">using ScreenToGif.Windows.Other;</a>
+<a name="ln45"> </a>
+<a name="ln46">using Color = System.Windows.Media.Color;</a>
+<a name="ln47">using Encoder = ScreenToGif.Windows.Other.Encoder;</a>
+<a name="ln48">using LegacyGifEncoder = ScreenToGif.Util.Codification.Gif.LegacyEncoder.GifEncoder;</a>
+<a name="ln49">using KGySoftGifEncoder = KGySoft.Drawing.Imaging.GifEncoder;</a>
+<a name="ln50">using ScreenToGif.ViewModel.ExportPresets.AnimatedImage.Avif;</a>
+<a name="ln51"> </a>
+<a name="ln52">namespace ScreenToGif.Util;</a>
+<a name="ln53"> </a>
+<a name="ln54">internal class EncodingManager</a>
+<a name="ln55">{</a>
+<a name="ln56">    #region Variables</a>
+<a name="ln57"> </a>
+<a name="ln58">    public static List&lt;EncodingItem&gt; Encodings { get; set; } = new List&lt;EncodingItem&gt;();</a>
+<a name="ln59"> </a>
+<a name="ln60">    /// &lt;summary&gt;</a>
+<a name="ln61">    /// List of CancellationTokenSource, used to cancel each task.</a>
+<a name="ln62">    /// &lt;/summary&gt;</a>
+<a name="ln63">    private static readonly List&lt;CancellationTokenSource&gt; CancellationTokenList = new List&lt;CancellationTokenSource&gt;();</a>
+<a name="ln64"> </a>
+<a name="ln65">    /// &lt;summary&gt;</a>
+<a name="ln66">    /// List of Tasks, each task executes the encoding process for one recording.</a>
+<a name="ln67">    /// &lt;/summary&gt;</a>
+<a name="ln68">    private static readonly List&lt;Task&gt; TaskList = new List&lt;Task&gt;();</a>
+<a name="ln69"> </a>
+<a name="ln70">    /// &lt;summary&gt;</a>
+<a name="ln71">    /// List of encoding views, used to update the data without lagging the UI.</a>
+<a name="ln72">    /// &lt;/summary&gt;</a>
+<a name="ln73">    internal static readonly List&lt;EncoderListViewItem&gt; ViewList = new List&lt;EncoderListViewItem&gt;();</a>
+<a name="ln74"> </a>
+<a name="ln75">    #endregion</a>
+<a name="ln76"> </a>
+<a name="ln77">    internal static void StartEncoding(ExportProject project, ExportPreset preset)</a>
+<a name="ln78">    {</a>
+<a name="ln79">        //If the user still wants an encoder window, here's when it should be opened.</a>
+<a name="ln80">        if (UserSettings.All.DisplayEncoder)</a>
+<a name="ln81">            Application.Current.Dispatcher?.Invoke(() =&gt; Encoder.Start(preset.Scale));</a>
+<a name="ln82"> </a>
+<a name="ln83">        //Creates the Cancellation Token</a>
+<a name="ln84">        var cancellationTokenSource = new CancellationTokenSource();</a>
+<a name="ln85">        CancellationTokenList.Add(cancellationTokenSource);</a>
+<a name="ln86"> </a>
+<a name="ln87">        var context = Application.Current.Dispatcher?.Invoke(TaskScheduler.FromCurrentSynchronizationContext);</a>
+<a name="ln88"> </a>
+<a name="ln89">        //Creates Task and send the Task Id.</a>
+<a name="ln90">        var taskId = -1;</a>
+<a name="ln91">        var task = new Task(async () =&gt;</a>
+<a name="ln92">        {</a>
+<a name="ln93">            //ReSharper disable once AccessToModifiedClosure</a>
+<a name="ln94">            await Encode(project, preset, taskId, cancellationTokenSource);</a>
+<a name="ln95"> </a>
+<a name="ln96">        }, cancellationTokenSource.Token, TaskCreationOptions.LongRunning);</a>
+<a name="ln97">        taskId = task.Id;</a>
+<a name="ln98"> </a>
+<a name="ln99">        #region Error handling</a>
+<a name="ln100"> </a>
+<a name="ln101">        task.ContinueWith(t =&gt;</a>
+<a name="ln102">        {</a>
+<a name="ln103">            var aggregateException = t.Exception;</a>
+<a name="ln104">            aggregateException?.Handle(exception =&gt; true);</a>
+<a name="ln105"> </a>
+<a name="ln106">            Update(taskId, EncodingStatus.Error, null, false, t.Exception);</a>
+<a name="ln107">            LogWriter.Log(t.Exception, &quot;Encoding error.&quot;);</a>
+<a name="ln108"> </a>
+<a name="ln109">        }, CancellationToken.None, TaskContinuationOptions.OnlyOnFaulted, context);</a>
+<a name="ln110"> </a>
+<a name="ln111">        #endregion</a>
+<a name="ln112"> </a>
+<a name="ln113">        //Adds the encoding to the list.</a>
+<a name="ln114">        Encodings.Add(new EncodingItem</a>
+<a name="ln115">        {</a>
+<a name="ln116">            Id = taskId,</a>
+<a name="ln117">            OutputType = preset.Type,</a>
+<a name="ln118">            Text = LocalizationHelper.Get(&quot;S.Encoder.Starting&quot;),</a>
+<a name="ln119">            FrameCount = project.FrameCount,</a>
+<a name="ln120">            TokenSource = cancellationTokenSource</a>
+<a name="ln121">        });</a>
+<a name="ln122"> </a>
+<a name="ln123">        try</a>
+<a name="ln124">        {</a>
+<a name="ln125">            TaskList.Add(task);</a>
+<a name="ln126">            task.Start();</a>
+<a name="ln127">        }</a>
+<a name="ln128">        catch (Exception ex)</a>
+<a name="ln129">        {</a>
+<a name="ln130">            ErrorDialog.Ok(&quot;Task Error&quot;, &quot;Unable to start the encoding task&quot;, &quot;A generic error occurred while trying to start the encoding task.&quot;, ex);</a>
+<a name="ln131">            LogWriter.Log(ex, &quot;Errow while starting the task.&quot;);</a>
+<a name="ln132">        }</a>
+<a name="ln133"> </a>
+<a name="ln134">        //Application.Current.Dispatcher.Invoke(() =&gt; Refresh(taskId));</a>
+<a name="ln135">        Application.Current.Dispatcher?.Invoke(() =&gt; EncodingAdded(taskId));</a>
+<a name="ln136">    }</a>
+<a name="ln137"> </a>
+<a name="ln138">    #region Encoding manipulation</a>
+<a name="ln139"> </a>
+<a name="ln140">    internal static void Update(int id, int currentFrame, string text)</a>
+<a name="ln141">    {</a>
+<a name="ln142">        var item = Encodings.FirstOrDefault(x =&gt; x.Id == id);</a>
+<a name="ln143"> </a>
+<a name="ln144">        if (item == null)</a>
+<a name="ln145">            return;</a>
+<a name="ln146"> </a>
+<a name="ln147">        item.CurrentFrame = currentFrame;</a>
+<a name="ln148">        item.Text = text;</a>
+<a name="ln149">        item.IsIndeterminate = false;</a>
+<a name="ln150"> </a>
+<a name="ln151">        Application.Current.Dispatcher.Invoke(() =&gt; EncodingUpdated(item));</a>
+<a name="ln152">    }</a>
+<a name="ln153"> </a>
+<a name="ln154">    internal static void Update(int id, int currentFrame)</a>
+<a name="ln155">    {</a>
+<a name="ln156">        var item = Encodings.FirstOrDefault(x =&gt; x.Id == id);</a>
+<a name="ln157"> </a>
+<a name="ln158">        if (item == null)</a>
+<a name="ln159">            return;</a>
+<a name="ln160"> </a>
+<a name="ln161">        item.CurrentFrame = currentFrame;</a>
+<a name="ln162"> </a>
+<a name="ln163">        Application.Current.Dispatcher.Invoke(() =&gt; EncodingUpdated(item));</a>
+<a name="ln164">    }</a>
+<a name="ln165"> </a>
+<a name="ln166">    internal static void Update(int id, int type, TimeSpan elapsed)</a>
+<a name="ln167">    {</a>
+<a name="ln168">        var item = Encodings.FirstOrDefault(x =&gt; x.Id == id);</a>
+<a name="ln169"> </a>
+<a name="ln170">        if (item == null)</a>
+<a name="ln171">            return;</a>
+<a name="ln172"> </a>
+<a name="ln173">        switch (type)</a>
+<a name="ln174">        {</a>
+<a name="ln175">            case 0: //Analysis.</a>
+<a name="ln176">                item.TimeToAnalyze = elapsed;</a>
+<a name="ln177">                break;</a>
+<a name="ln178">            case 1: //Encoding.</a>
+<a name="ln179">                item.TimeToEncode = elapsed;</a>
+<a name="ln180">                break;</a>
+<a name="ln181">            case 2: //Upload.</a>
+<a name="ln182">                item.TimeToUpload = elapsed;</a>
+<a name="ln183">                break;</a>
+<a name="ln184">            case 3: //Copy.</a>
+<a name="ln185">                item.TimeToCopy = elapsed;</a>
+<a name="ln186">                break;</a>
+<a name="ln187">            case 4: //Execute commands.</a>
+<a name="ln188">                item.TimeToExecute = elapsed;</a>
+<a name="ln189">                break;</a>
+<a name="ln190">        }</a>
+<a name="ln191"> </a>
+<a name="ln192">        Application.Current.Dispatcher.Invoke(() =&gt; EncodingUpdated(item));</a>
+<a name="ln193">    }</a>
+<a name="ln194"> </a>
+<a name="ln195">    internal static void Update(int id, string text, bool isIndeterminate = false, bool findText = false)</a>
+<a name="ln196">    {</a>
+<a name="ln197">        var item = Encodings.FirstOrDefault(x =&gt; x.Id == id);</a>
+<a name="ln198"> </a>
+<a name="ln199">        if (item == null)</a>
+<a name="ln200">            return;</a>
+<a name="ln201"> </a>
+<a name="ln202">        item.Text = !findText ? text : LocalizationHelper.Get(text);</a>
+<a name="ln203">        item.IsIndeterminate = isIndeterminate;</a>
+<a name="ln204"> </a>
+<a name="ln205">        Application.Current.Dispatcher.Invoke(() =&gt; EncodingUpdated(item));</a>
+<a name="ln206">    }</a>
+<a name="ln207"> </a>
+<a name="ln208">    /// &lt;summary&gt;</a>
+<a name="ln209">    /// Updates the status of the encoding of a current item.</a>
+<a name="ln210">    /// &lt;/summary&gt;</a>
+<a name="ln211">    /// &lt;param name=&quot;status&quot;&gt;The current status.&lt;/param&gt;</a>
+<a name="ln212">    /// &lt;param name=&quot;id&quot;&gt;The unique ID of the item.&lt;/param&gt;</a>
+<a name="ln213">    /// &lt;param name=&quot;fileName&quot;&gt;The name of the output file.&lt;/param&gt;</a>
+<a name="ln214">    /// &lt;param name=&quot;isIndeterminate&quot;&gt;The state of the progress bar.&lt;/param&gt;</a>
+<a name="ln215">    /// &lt;param name=&quot;exception&quot;&gt;The exception details of the error.&lt;/param&gt;</a>
+<a name="ln216">    /// &lt;param name=&quot;maxSteps&quot;&gt;Optionally sets the maximum steps of the processing if (&lt;paramref name=&quot;status&quot;/&gt; is &lt;see cref=&quot;EncodingStatus.Processing&quot;/&gt;).&lt;/param&gt;</a>
+<a name="ln217">    internal static void Update(int id, EncodingStatus status, string fileName = null, bool isIndeterminate = false, Exception exception = null, int? maxSteps = null)</a>
+<a name="ln218">    {</a>
+<a name="ln219">        var item = Encodings.FirstOrDefault(x =&gt; x.Id == id);</a>
+<a name="ln220"> </a>
+<a name="ln221">        if (item == null)</a>
+<a name="ln222">            return;</a>
+<a name="ln223"> </a>
+<a name="ln224">        var wasStatusUpdated = item.Status != status;</a>
+<a name="ln225"> </a>
+<a name="ln226">        item.Status = status;</a>
+<a name="ln227">        item.IsIndeterminate = isIndeterminate;</a>
+<a name="ln228"> </a>
+<a name="ln229">        switch (status)</a>
+<a name="ln230">        {</a>
+<a name="ln231">            case EncodingStatus.Processing:</a>
+<a name="ln232">                item.Text = String.Format(LocalizationHelper.Get(&quot;S.Encoder.Processing&quot;), fileName == null ? String.Empty : Path.GetFileName(fileName));</a>
+<a name="ln233">                if (maxSteps.HasValue)</a>
+<a name="ln234">                    item.FrameCount = maxSteps.Value;</a>
+<a name="ln235">                break;</a>
+<a name="ln236">            case EncodingStatus.Completed:</a>
+<a name="ln237">            {</a>
+<a name="ln238">                if (fileName == null)</a>
+<a name="ln239">                    break;</a>
+<a name="ln240"> </a>
+<a name="ln241">                if (File.Exists(fileName))</a>
+<a name="ln242">                {</a>
+<a name="ln243">                    var fileInfo = new FileInfo(fileName);</a>
+<a name="ln244">                    fileInfo.Refresh();</a>
+<a name="ln245"> </a>
+<a name="ln246">                    item.SizeInBytes = fileInfo.Length;</a>
+<a name="ln247">                    item.OutputFilename = fileName;</a>
+<a name="ln248">                    item.SavedToDisk = true;</a>
+<a name="ln249">                }</a>
+<a name="ln250"> </a>
+<a name="ln251">                break;</a>
+<a name="ln252">            }</a>
+<a name="ln253">            case EncodingStatus.Error:</a>
+<a name="ln254">            {</a>
+<a name="ln255">                item.Exception = exception;</a>
+<a name="ln256">                break;</a>
+<a name="ln257">            }</a>
+<a name="ln258">        }</a>
+<a name="ln259"> </a>
+<a name="ln260">        Application.Current.Dispatcher.Invoke(() =&gt; EncodingUpdated(item, wasStatusUpdated));</a>
+<a name="ln261">    }</a>
+<a name="ln262"> </a>
+<a name="ln263">    internal static void UpdateMultiple(int id, EncodingStatus status, List&lt;string&gt; fileNames, bool isIndeterminate = false)</a>
+<a name="ln264">    {</a>
+<a name="ln265">        var item = Encodings.FirstOrDefault(x =&gt; x.Id == id);</a>
+<a name="ln266"> </a>
+<a name="ln267">        if (item == null)</a>
+<a name="ln268">            return;</a>
+<a name="ln269"> </a>
+<a name="ln270">        var wasStatusUpdated = item.Status != status;</a>
+<a name="ln271"> </a>
+<a name="ln272">        item.Status = status;</a>
+<a name="ln273">        item.IsIndeterminate = isIndeterminate;</a>
+<a name="ln274">        item.AreMultipleFiles = true;</a>
+<a name="ln275"> </a>
+<a name="ln276">        if (status == EncodingStatus.Completed &amp;&amp; fileNames?.Any() == true)</a>
+<a name="ln277">        {</a>
+<a name="ln278">            foreach (var fileInfo in fileNames.Where(File.Exists).Select(fileName =&gt; new FileInfo(fileName)))</a>
+<a name="ln279">            {</a>
+<a name="ln280">                fileInfo.Refresh();</a>
+<a name="ln281"> </a>
+<a name="ln282">                item.SizeInBytes += fileInfo.Length;</a>
+<a name="ln283">            }</a>
+<a name="ln284"> </a>
+<a name="ln285">            if (item.SizeInBytes &gt; 0)</a>
+<a name="ln286">            {</a>
+<a name="ln287">                item.OutputFilename = fileNames.FirstOrDefault();</a>
+<a name="ln288">                item.SavedToDisk = true;</a>
+<a name="ln289">            }</a>
+<a name="ln290">        }</a>
+<a name="ln291"> </a>
+<a name="ln292">        Application.Current.Dispatcher.Invoke(() =&gt; EncodingUpdated(item, wasStatusUpdated));</a>
+<a name="ln293">    }</a>
+<a name="ln294"> </a>
+<a name="ln295"> </a>
+<a name="ln296">    private static void SetUpload(int id, bool uploaded, string link, string deleteLink = null, Exception exception = null)</a>
+<a name="ln297">    {</a>
+<a name="ln298">        var item = Encodings.FirstOrDefault(x =&gt; x.Id == id);</a>
+<a name="ln299"> </a>
+<a name="ln300">        if (item == null)</a>
+<a name="ln301">            return;</a>
+<a name="ln302"> </a>
+<a name="ln303">        item.Uploaded = uploaded;</a>
+<a name="ln304">        item.UploadLink = link;</a>
+<a name="ln305">        item.UploadLinkDisplay = !string.IsNullOrWhiteSpace(link) ? link.Replace(&quot;https:/&quot;, &quot;&quot;).Replace(&quot;http:/&quot;, &quot;&quot;).Trim('/') : link;</a>
+<a name="ln306">        item.DeletionLink = deleteLink;</a>
+<a name="ln307">        item.UploadTaskException = exception;</a>
+<a name="ln308"> </a>
+<a name="ln309">        Application.Current.Dispatcher.Invoke(() =&gt; EncodingUpdated(item));</a>
+<a name="ln310">    }</a>
+<a name="ln311"> </a>
+<a name="ln312">    private static void SetCopy(int id, bool copied, Exception exception = null)</a>
+<a name="ln313">    {</a>
+<a name="ln314">        var item = Encodings.FirstOrDefault(x =&gt; x.Id == id);</a>
+<a name="ln315"> </a>
+<a name="ln316">        if (item == null)</a>
+<a name="ln317">            return;</a>
+<a name="ln318"> </a>
+<a name="ln319">        item.CopiedToClipboard = copied;</a>
+<a name="ln320">        item.CopyTaskException = exception;</a>
+<a name="ln321"> </a>
+<a name="ln322">        Application.Current.Dispatcher.Invoke(() =&gt; EncodingUpdated(item));</a>
+<a name="ln323">    }</a>
+<a name="ln324"> </a>
+<a name="ln325">    private static void SetCommand(int id, bool executed, string command, string output, Exception exception = null)</a>
+<a name="ln326">    {</a>
+<a name="ln327">        var item = Encodings.FirstOrDefault(x =&gt; x.Id == id);</a>
+<a name="ln328"> </a>
+<a name="ln329">        if (item == null)</a>
+<a name="ln330">            return;</a>
+<a name="ln331"> </a>
+<a name="ln332">        item.CommandExecuted = executed;</a>
+<a name="ln333">        item.Command = command;</a>
+<a name="ln334">        item.CommandOutput = output;</a>
+<a name="ln335">        item.CommandTaskException = exception;</a>
+<a name="ln336"> </a>
+<a name="ln337">        Application.Current.Dispatcher.Invoke(() =&gt; EncodingUpdated(item));</a>
+<a name="ln338">    }</a>
+<a name="ln339"> </a>
+<a name="ln340"> </a>
+<a name="ln341">    /// &lt;summary&gt;</a>
+<a name="ln342">    /// Gets the current status of the encoding of a current item.</a>
+<a name="ln343">    /// &lt;/summary&gt;</a>
+<a name="ln344">    /// &lt;param name=&quot;id&quot;&gt;The unique ID of the item.&lt;/param&gt;</a>
+<a name="ln345">    internal static EncodingStatus? GetStatus(int id)</a>
+<a name="ln346">    {</a>
+<a name="ln347">        return Encodings.FirstOrDefault(f =&gt; f.Id == id)?.Status;</a>
+<a name="ln348">    }</a>
+<a name="ln349"> </a>
+<a name="ln350">    private static string GetUploadLink(int id)</a>
+<a name="ln351">    {</a>
+<a name="ln352">        return Encodings.FirstOrDefault(f =&gt; f.Id == id)?.UploadLink;</a>
+<a name="ln353">    }</a>
+<a name="ln354"> </a>
+<a name="ln355"> </a>
+<a name="ln356">    internal static void RemoveEncodings(int id)</a>
+<a name="ln357">    {</a>
+<a name="ln358">        RemoveEncodings(e =&gt; e.Id == id);</a>
+<a name="ln359">    }</a>
+<a name="ln360"> </a>
+<a name="ln361">    internal static void RemoveFinishedEncodings()</a>
+<a name="ln362">    {</a>
+<a name="ln363">        RemoveEncodings(p =&gt; p.Status != EncodingStatus.Processing);</a>
+<a name="ln364">    }</a>
+<a name="ln365"> </a>
+<a name="ln366">    internal static void RemoveEncodings(Predicate&lt;EncodingItem&gt; match)</a>
+<a name="ln367">    {</a>
+<a name="ln368">        var list = Encodings.Where(match.Invoke).ToList();</a>
+<a name="ln369"> </a>
+<a name="ln370">        foreach (var encoding in list)</a>
+<a name="ln371">        {</a>
+<a name="ln372">            Encodings.Remove(encoding);</a>
+<a name="ln373"> </a>
+<a name="ln374">            TaskList.FirstOrDefault(f =&gt; f.Id == encoding.Id)?.Dispose();</a>
+<a name="ln375">            encoding.TokenSource.Dispose();</a>
+<a name="ln376"> </a>
+<a name="ln377">            TaskList.RemoveAll(r =&gt; r.Id == encoding.Id);</a>
+<a name="ln378">            CancellationTokenList.Remove(encoding.TokenSource);</a>
+<a name="ln379"> </a>
+<a name="ln380">            EncodingRemoved(encoding.Id);</a>
+<a name="ln381">        }</a>
+<a name="ln382">    }</a>
+<a name="ln383"> </a>
+<a name="ln384">    internal static void StopAllEncodings()</a>
+<a name="ln385">    {</a>
+<a name="ln386">        foreach (var tokenSource in CancellationTokenList)</a>
+<a name="ln387">            tokenSource.Cancel();</a>
+<a name="ln388">    }</a>
+<a name="ln389"> </a>
+<a name="ln390">    #endregion</a>
+<a name="ln391"> </a>
+<a name="ln392">    #region Progress report</a>
+<a name="ln393"> </a>
+<a name="ln394">    internal static void EncodingAdded(int id)</a>
+<a name="ln395">    {</a>
+<a name="ln396">        foreach (var window in Application.Current.Windows.OfType&lt;IEncoding&gt;())</a>
+<a name="ln397">        {</a>
+<a name="ln398">            //When set to display the encodings on a separated window, ignore the others (vice-versa).</a>
+<a name="ln399">            if (!UserSettings.All.DisplayEncoder == window.IsEncoderWindow &amp;&amp; Encoder.IsAvailable)</a>
+<a name="ln400">                continue;</a>
+<a name="ln401"> </a>
+<a name="ln402">            var view = window.EncodingAdded(id);</a>
+<a name="ln403"> </a>
+<a name="ln404">            if (view != null)</a>
+<a name="ln405">                ViewList.Add(view);</a>
+<a name="ln406">        }</a>
+<a name="ln407">    }</a>
+<a name="ln408"> </a>
+<a name="ln409">    internal static void EncodingUpdated(EncodingItem current, bool statusUpdated = false)</a>
+<a name="ln410">    {</a>
+<a name="ln411">        foreach (var item in ViewList.Where(w =&gt; w.Id == current.Id))</a>
+<a name="ln412">        {</a>
+<a name="ln413">            item.Status = current.Status;</a>
+<a name="ln414">            item.FrameCount = current.FrameCount;</a>
+<a name="ln415">            item.CurrentFrame = current.CurrentFrame;</a>
+<a name="ln416">            item.Text = current.Text;</a>
+<a name="ln417">            item.IsIndeterminate = current.IsIndeterminate;</a>
+<a name="ln418">            item.SizeInBytes = current.SizeInBytes;</a>
+<a name="ln419">            item.OutputFilename = current.OutputFilename;</a>
+<a name="ln420">            item.SavedToDisk = current.SavedToDisk;</a>
+<a name="ln421">            item.AreMultipleFiles = current.AreMultipleFiles;</a>
+<a name="ln422">            item.Exception = current.Exception;</a>
+<a name="ln423"> </a>
+<a name="ln424">            item.Uploaded = current.Uploaded;</a>
+<a name="ln425">            item.UploadLink = current.UploadLink;</a>
+<a name="ln426">            item.UploadLinkDisplay = current.UploadLinkDisplay;</a>
+<a name="ln427">            item.DeletionLink = current.DeletionLink;</a>
+<a name="ln428">            item.UploadTaskException = current.UploadTaskException;</a>
+<a name="ln429"> </a>
+<a name="ln430">            item.CopiedToClipboard = current.CopiedToClipboard;</a>
+<a name="ln431">            item.CopyTaskException = current.CopyTaskException;</a>
+<a name="ln432"> </a>
+<a name="ln433">            item.CommandExecuted = current.CommandExecuted;</a>
+<a name="ln434">            item.Command = current.Command;</a>
+<a name="ln435">            item.CommandOutput = current.CommandOutput;</a>
+<a name="ln436">            item.CommandTaskException = current.CommandTaskException;</a>
+<a name="ln437"> </a>
+<a name="ln438">            item.TimeToAnalyze = current.TimeToAnalyze;</a>
+<a name="ln439">            item.TimeToEncode = current.TimeToEncode;</a>
+<a name="ln440">            item.TimeToUpload = current.TimeToUpload;</a>
+<a name="ln441">            item.TimeToCopy = current.TimeToCopy;</a>
+<a name="ln442">            item.TimeToExecute = current.TimeToExecute;</a>
+<a name="ln443">        }</a>
+<a name="ln444"> </a>
+<a name="ln445">        if (!statusUpdated)</a>
+<a name="ln446">            return;</a>
+<a name="ln447"> </a>
+<a name="ln448">        foreach (var window in Application.Current.Windows.OfType&lt;IEncoding&gt;())</a>
+<a name="ln449">        {</a>
+<a name="ln450">            //When set to display the encodings on a separated window, ignore the others (vice-versa).</a>
+<a name="ln451">            if (!UserSettings.All.DisplayEncoder == window.IsEncoderWindow &amp;&amp; Encoder.IsAvailable)</a>
+<a name="ln452">                continue;</a>
+<a name="ln453"> </a>
+<a name="ln454">            window.EncodingUpdated(current.Id, true);</a>
+<a name="ln455">        }</a>
+<a name="ln456">    }</a>
+<a name="ln457"> </a>
+<a name="ln458">    internal static void EncodingRemoved(int id)</a>
+<a name="ln459">    {</a>
+<a name="ln460">        foreach (var window in Application.Current.Windows.OfType&lt;IEncoding&gt;())</a>
+<a name="ln461">        {</a>
+<a name="ln462">            var view = window.EncodingRemoved(id);</a>
+<a name="ln463"> </a>
+<a name="ln464">            if (view != null)</a>
+<a name="ln465">                ViewList.Remove(view);</a>
+<a name="ln466">        }</a>
+<a name="ln467">    }</a>
+<a name="ln468"> </a>
+<a name="ln469">    internal static void MoveEncodingsToPopups()</a>
+<a name="ln470">    {</a>
+<a name="ln471">        foreach (var window in Application.Current.Windows.OfType&lt;IEncoding&gt;())</a>
+<a name="ln472">        {</a>
+<a name="ln473">            //Only send this message to editors.</a>
+<a name="ln474">            if (window.IsEncoderWindow)</a>
+<a name="ln475">                continue;</a>
+<a name="ln476"> </a>
+<a name="ln477">            window.EncodingUpdated(null, false);</a>
+<a name="ln478">        }</a>
+<a name="ln479">    }</a>
+<a name="ln480"> </a>
+<a name="ln481">    #endregion</a>
+<a name="ln482"> </a>
+<a name="ln483">    #region Encoding</a>
+<a name="ln484"> </a>
+<a name="ln485">    private static async Task Encode(ExportProject project, ExportPreset preset, int id, CancellationTokenSource tokenSource)</a>
+<a name="ln486">    {</a>
+<a name="ln487">        var processing = LocalizationHelper.Get(&quot;S.Encoder.Processing&quot;);</a>
+<a name="ln488">        var watch = new Stopwatch();</a>
+<a name="ln489">        watch.Start();</a>
+<a name="ln490"> </a>
+<a name="ln491">        try</a>
+<a name="ln492">        {</a>
+<a name="ln493">            #region File naming</a>
+<a name="ln494"> </a>
+<a name="ln495">            if (preset.PickLocation)</a>
+<a name="ln496">            {</a>
+<a name="ln497">                preset.FullPath = Path.Combine(preset.OutputFolder, preset.ResolvedFilename + (preset.Extension ?? preset.DefaultExtension));</a>
+<a name="ln498">            }</a>
+<a name="ln499">            else</a>
+<a name="ln500">            {</a>
+<a name="ln501">                preset.OutputFolder = Path.GetTempPath(); //Get path where the cache is stored instead.</a>
+<a name="ln502">                preset.OutputFilename = Guid.NewGuid() + preset.Extension;</a>
+<a name="ln503">                preset.FullPath = Path.Combine(preset.OutputFolder, preset.OutputFilename);</a>
+<a name="ln504"> </a>
+<a name="ln505">                //If somehow this happens, try again. TODO: File should be created on the spot, to properly prevent this issue.</a>
+<a name="ln506">                if (File.Exists(Path.Combine(preset.OutputFilename, preset.OutputFilename)))</a>
+<a name="ln507">                {</a>
+<a name="ln508">                    preset.OutputFilename = Guid.NewGuid() + preset.Extension;</a>
+<a name="ln509">                    preset.FullPath = Path.Combine(preset.OutputFolder, preset.OutputFilename);</a>
+<a name="ln510">                }</a>
+<a name="ln511">            }</a>
+<a name="ln512"> </a>
+<a name="ln513">            #endregion</a>
+<a name="ln514"> </a>
+<a name="ln515">            switch (preset.Type)</a>
+<a name="ln516">            {</a>
+<a name="ln517">                case ExportFormats.Apng:</a>
+<a name="ln518">                {</a>
+<a name="ln519">                    #region Apng</a>
+<a name="ln520"> </a>
+<a name="ln521">                    switch (preset.Encoder)</a>
+<a name="ln522">                    {</a>
+<a name="ln523">                        case EncoderTypes.ScreenToGif:</a>
+<a name="ln524">                        {</a>
+<a name="ln525">                            if (preset is not EmbeddedApngPreset embApngPreset)</a>
+<a name="ln526">                                return;</a>
+<a name="ln527"> </a>
+<a name="ln528">                            #region Cut/Paint Unchanged Pixels</a>
+<a name="ln529"> </a>
+<a name="ln530">                            if (embApngPreset.DetectUnchanged)</a>
+<a name="ln531">                            {</a>
+<a name="ln532">                                Update(id, 0, LocalizationHelper.Get(&quot;S.Encoder.Analyzing&quot;));</a>
+<a name="ln533"> </a>
+<a name="ln534">                                if (embApngPreset.PaintTransparent)</a>
+<a name="ln535">                                    project.FramesFiles = ImageMethods.PaintTransparentAndCut(project.FramesFiles, Colors.Transparent, id, tokenSource);</a>
+<a name="ln536">                                else</a>
+<a name="ln537">                                    project.FramesFiles = ImageMethods.CutUnchanged(project.FramesFiles, id, tokenSource);</a>
+<a name="ln538"> </a>
+<a name="ln539">                                Update(id, 0, watch.Elapsed);</a>
+<a name="ln540">                                watch.Restart();</a>
+<a name="ln541">                            }</a>
+<a name="ln542">                            else</a>
+<a name="ln543">                            {</a>
+<a name="ln544">                                var size = project.FramesFiles[0].Path.ScaledSize();</a>
+<a name="ln545">                                project.FramesFiles.ForEach(x =&gt; x.Rect = new Int32Rect(0, 0, (int)size.Width, (int)size.Height));</a>
+<a name="ln546">                            }</a>
+<a name="ln547"> </a>
+<a name="ln548">                            #endregion</a>
+<a name="ln549"> </a>
+<a name="ln550">                            #region Encoding</a>
+<a name="ln551"> </a>
+<a name="ln552">                            using (var stream = new MemoryStream())</a>
+<a name="ln553">                            {</a>
+<a name="ln554">                                var frameCount = project.FramesFiles.Count(x =&gt; x.HasArea);</a>
+<a name="ln555"> </a>
+<a name="ln556">                                using (var encoder = new Apng(stream, frameCount, embApngPreset.Looped &amp;&amp; project.FrameCount &gt; 1 ? (embApngPreset.RepeatForever ? 0 : embApngPreset.RepeatCount) : 1))</a>
+<a name="ln557">                                {</a>
+<a name="ln558">                                    for (var i = 0; i &lt; project.FramesFiles.Count; i++)</a>
+<a name="ln559">                                    {</a>
+<a name="ln560">                                        if (!project.FramesFiles[i].HasArea &amp;&amp; embApngPreset.DetectUnchanged)</a>
+<a name="ln561">                                            continue;</a>
+<a name="ln562"> </a>
+<a name="ln563">                                        if (project.FramesFiles[i].Delay == 0)</a>
+<a name="ln564">                                            project.FramesFiles[i].Delay = 10;</a>
+<a name="ln565"> </a>
+<a name="ln566">                                        encoder.AddFrame(project.FramesFiles[i].Path, project.FramesFiles[i].Rect, project.FramesFiles[i].Delay);</a>
+<a name="ln567"> </a>
+<a name="ln568">                                        Update(id, i, string.Format(processing, i));</a>
+<a name="ln569"> </a>
+<a name="ln570">                                        #region Cancellation</a>
+<a name="ln571"> </a>
+<a name="ln572">                                        if (tokenSource.Token.IsCancellationRequested)</a>
+<a name="ln573">                                        {</a>
+<a name="ln574">                                            Update(id, EncodingStatus.Canceled);</a>
+<a name="ln575">                                            break;</a>
+<a name="ln576">                                        }</a>
+<a name="ln577"> </a>
+<a name="ln578">                                        #endregion</a>
+<a name="ln579">                                    }</a>
+<a name="ln580">                                }</a>
+<a name="ln581"> </a>
+<a name="ln582">                                try</a>
+<a name="ln583">                                {</a>
+<a name="ln584">                                    using (var fileStream = new FileStream(embApngPreset.FullPath, FileMode.Create, FileAccess.Write, FileShare.None, 4096))</a>
+<a name="ln585">                                        stream.WriteTo(fileStream);</a>
+<a name="ln586">                                }</a>
+<a name="ln587">                                catch (Exception ex)</a>
+<a name="ln588">                                {</a>
+<a name="ln589">                                    Update(id, EncodingStatus.Error);</a>
+<a name="ln590">                                    LogWriter.Log(ex, &quot;Apng Encoding&quot;);</a>
+<a name="ln591">                                }</a>
+<a name="ln592">                            }</a>
+<a name="ln593"> </a>
+<a name="ln594">                            #endregion</a>
+<a name="ln595"> </a>
+<a name="ln596">                            break;</a>
+<a name="ln597">                        }</a>
+<a name="ln598"> </a>
+<a name="ln599">                        case EncoderTypes.FFmpeg:</a>
+<a name="ln600">                        {</a>
+<a name="ln601">                            EncodeWithFfmpeg(preset, project.FramesFiles, id, tokenSource, processing);</a>
+<a name="ln602">                            break;</a>
+<a name="ln603">                        }</a>
+<a name="ln604">                    }</a>
+<a name="ln605"> </a>
+<a name="ln606">                    Update(id, 1, watch.Elapsed);</a>
+<a name="ln607">                    watch.Restart();</a>
+<a name="ln608"> </a>
+<a name="ln609">                    break;</a>
+<a name="ln610"> </a>
+<a name="ln611">                    #endregion</a>
+<a name="ln612">                }</a>
+<a name="ln613">                case ExportFormats.Gif:</a>
+<a name="ln614">                {</a>
+<a name="ln615">                    #region Gif</a>
+<a name="ln616"> </a>
+<a name="ln617">                    switch (preset.Encoder)</a>
+<a name="ln618">                    {</a>
+<a name="ln619">                        case EncoderTypes.ScreenToGif:</a>
+<a name="ln620"> </a>
+<a name="ln621">                            #region Frame analysis</a>
+<a name="ln622"> </a>
+<a name="ln623">                            Update(id, 0, LocalizationHelper.Get(&quot;S.Encoder.Analyzing&quot;));</a>
+<a name="ln624"> </a>
+<a name="ln625">                            if (preset is not EmbeddedGifPreset embGifPreset)</a>
+<a name="ln626">                                return;</a>
+<a name="ln627"> </a>
+<a name="ln628">                            if (embGifPreset.EnableTransparency)</a>
+<a name="ln629">                            {</a>
+<a name="ln630">                                ImageMethods.PaintAndCutForTransparency(project, embGifPreset.SelectTransparencyColor ? embGifPreset.TransparencyColor : new Color?(), embGifPreset.ChromaKey, id, tokenSource);</a>
+<a name="ln631">                            }</a>
+<a name="ln632">                            else if (embGifPreset.DetectUnchanged)</a>
+<a name="ln633">                            {</a>
+<a name="ln634">                                if (embGifPreset.PaintTransparent)</a>
+<a name="ln635">                                    ImageMethods.PaintTransparentAndCut(project, embGifPreset.ChromaKey, id, tokenSource);</a>
+<a name="ln636">                                else</a>
+<a name="ln637">                                    ImageMethods.CutUnchanged(project, id, tokenSource);</a>
+<a name="ln638">                            }</a>
+<a name="ln639"> </a>
+<a name="ln640">                            Update(id, 0, watch.Elapsed);</a>
+<a name="ln641">                            watch.Restart();</a>
+<a name="ln642"> </a>
+<a name="ln643">                            if (tokenSource.Token.IsCancellationRequested)</a>
+<a name="ln644">                            {</a>
+<a name="ln645">                                Update(id, EncodingStatus.Canceled);</a>
+<a name="ln646">                                return;</a>
+<a name="ln647">                            }</a>
+<a name="ln648"> </a>
+<a name="ln649">                            #endregion</a>
+<a name="ln650"> </a>
+<a name="ln651">                            #region ScreenToGif encoding</a>
+<a name="ln652"> </a>
+<a name="ln653">                            using (var stream = new MemoryStream())</a>
+<a name="ln654">                            {</a>
+<a name="ln655">                                using (var encoder = new GifFile(stream))</a>
+<a name="ln656">                                {</a>
+<a name="ln657">                                    encoder.RepeatCount = embGifPreset.Looped &amp;&amp; project.FrameCount &gt; 1 ? (embGifPreset.RepeatForever ? 0 : embGifPreset.RepeatCount) : -1;</a>
+<a name="ln658">                                    encoder.UseGlobalColorTable = embGifPreset.UseGlobalColorTable;</a>
+<a name="ln659">                                    encoder.TransparentColor = embGifPreset.EnableTransparency &amp;&amp; embGifPreset.SelectTransparencyColor ? Color.FromArgb(0, embGifPreset.TransparencyColor.R, embGifPreset.TransparencyColor.G, embGifPreset.TransparencyColor.B) :</a>
+<a name="ln660">                                        (embGifPreset.DetectUnchanged &amp;&amp; embGifPreset.PaintTransparent) || embGifPreset.EnableTransparency ? Color.FromArgb(0, embGifPreset.ChromaKey.R, embGifPreset.ChromaKey.G, embGifPreset.ChromaKey.B) :</a>
+<a name="ln661">                                        new Color?();</a>
+<a name="ln662">                                    encoder.MaximumNumberColor = embGifPreset.MaximumColorCount;</a>
+<a name="ln663">                                    encoder.UseFullTransparency = embGifPreset.EnableTransparency;</a>
+<a name="ln664">                                    encoder.QuantizationType = embGifPreset.Quantizer;</a>
+<a name="ln665">                                    encoder.SamplingFactor = embGifPreset.SamplingFactor;</a>
+<a name="ln666"> </a>
+<a name="ln667">                                    //Get the last index, in cases where the last frames have no changes.</a>
+<a name="ln668">                                    var last = project.FramesFiles.FindLastIndex(f =&gt; f.HasArea);</a>
+<a name="ln669"> </a>
+<a name="ln670">                                    //Read the frames pixels from the cache.</a>
+<a name="ln671">                                    using (var fileStream = new FileStream(project.ChunkPath, FileMode.Open, FileAccess.Read, FileShare.Read))</a>
+<a name="ln672">                                    {</a>
+<a name="ln673">                                        Update(id, 0, string.Format(processing, 0));</a>
+<a name="ln674"> </a>
+<a name="ln675">                                        for (var i = 0; i &lt; project.Frames.Count; i++)</a>
+<a name="ln676">                                        {</a>
+<a name="ln677">                                            if (!project.Frames[i].HasArea &amp;&amp; embGifPreset.DetectUnchanged)</a>
+<a name="ln678">                                                continue;</a>
+<a name="ln679"> </a>
+<a name="ln680">                                            if (project.Frames[i].Delay == 0)</a>
+<a name="ln681">                                                project.Frames[i].Delay = 10;</a>
+<a name="ln682"> </a>
+<a name="ln683">                                            fileStream.Position = project.Frames[i].DataPosition;</a>
+<a name="ln684">                                            encoder.AddFrame(fileStream.ReadBytes((int)project.Frames[i].DataLength), project.Frames[i].Rect, project.Frames[i].Delay, last == i);</a>
+<a name="ln685"> </a>
+<a name="ln686">                                            Update(id, i, string.Format(processing, i));</a>
+<a name="ln687"> </a>
+<a name="ln688">                                            #region Cancellation</a>
+<a name="ln689"> </a>
+<a name="ln690">                                            if (tokenSource.Token.IsCancellationRequested)</a>
+<a name="ln691">                                            {</a>
+<a name="ln692">                                                Update(id, EncodingStatus.Canceled);</a>
+<a name="ln693">                                                break;</a>
+<a name="ln694">                                            }</a>
+<a name="ln695"> </a>
+<a name="ln696">                                            #endregion</a>
+<a name="ln697">                                        }</a>
+<a name="ln698">                                    }</a>
+<a name="ln699">                                }</a>
+<a name="ln700"> </a>
+<a name="ln701">                                try</a>
+<a name="ln702">                                {</a>
+<a name="ln703">                                    using (var fileStream = new FileStream(preset.FullPath, FileMode.Create, FileAccess.Write, FileShare.None, 4096))</a>
+<a name="ln704">                                        stream.WriteTo(fileStream);</a>
+<a name="ln705">                                }</a>
+<a name="ln706">                                catch (Exception ex)</a>
+<a name="ln707">                                {</a>
+<a name="ln708">                                    Update(id, EncodingStatus.Error);</a>
+<a name="ln709">                                    LogWriter.Log(ex, &quot;Improved Encoding&quot;);</a>
+<a name="ln710">                                }</a>
+<a name="ln711">                            }</a>
+<a name="ln712"> </a>
+<a name="ln713">                            #endregion</a>
+<a name="ln714"> </a>
+<a name="ln715">                            break;</a>
+<a name="ln716"> </a>
+<a name="ln717">                        case EncoderTypes.KGySoft:</a>
+<a name="ln718">                            if (preset is not KGySoftGifPreset kgySoftGifPreset)</a>
+<a name="ln719">                                return;</a>
+<a name="ln720"> </a>
+<a name="ln721">                            await EncodeKGySoftGif(kgySoftGifPreset, project.FramesFiles, id, tokenSource.Token);</a>
+<a name="ln722">                            break;</a>
+<a name="ln723"> </a>
+<a name="ln724">                        case EncoderTypes.System:</a>
+<a name="ln725"> </a>
+<a name="ln726">                            #region System encoding</a>
+<a name="ln727"> </a>
+<a name="ln728">                            if (preset is not SystemGifPreset systemGifPreset)</a>
+<a name="ln729">                                return;</a>
+<a name="ln730"> </a>
+<a name="ln731">                            using (var stream = new MemoryStream())</a>
+<a name="ln732">                            {</a>
+<a name="ln733">                                using (var encoder = new LegacyGifEncoder(stream, null, null, systemGifPreset.Looped &amp;&amp; project.FrameCount &gt; 1 ? (systemGifPreset.RepeatForever ? 0 : systemGifPreset.RepeatCount) : -1))</a>
+<a name="ln734">                                {</a>
+<a name="ln735">                                    for (var i = 0; i &lt; project.FramesFiles.Count; i++)</a>
+<a name="ln736">                                    {</a>
+<a name="ln737">                                        var bitmapAux = new Bitmap(project.FramesFiles[i].Path);</a>
+<a name="ln738">                                        encoder.AddFrame(bitmapAux, 0, 0, TimeSpan.FromMilliseconds(project.FramesFiles[i].Delay));</a>
+<a name="ln739">                                        bitmapAux.Dispose();</a>
+<a name="ln740"> </a>
+<a name="ln741">                                        Update(id, i, string.Format(processing, i));</a>
+<a name="ln742"> </a>
+<a name="ln743">                                        #region Cancellation</a>
+<a name="ln744"> </a>
+<a name="ln745">                                        if (tokenSource.Token.IsCancellationRequested)</a>
+<a name="ln746">                                        {</a>
+<a name="ln747">                                            Update(id, EncodingStatus.Canceled);</a>
+<a name="ln748">                                            break;</a>
+<a name="ln749">                                        }</a>
+<a name="ln750"> </a>
+<a name="ln751">                                        #endregion</a>
+<a name="ln752">                                    }</a>
+<a name="ln753">                                }</a>
+<a name="ln754"> </a>
+<a name="ln755">                                stream.Position = 0;</a>
+<a name="ln756"> </a>
+<a name="ln757">                                try</a>
+<a name="ln758">                                {</a>
+<a name="ln759">                                    using (var fileStream = new FileStream(systemGifPreset.FullPath, FileMode.Create, FileAccess.Write, FileShare.None, Constants.BufferSize, false))</a>
+<a name="ln760">                                        stream.WriteTo(fileStream);</a>
+<a name="ln761">                                }</a>
+<a name="ln762">                                catch (Exception ex)</a>
+<a name="ln763">                                {</a>
+<a name="ln764">                                    Update(id, EncodingStatus.Error);</a>
+<a name="ln765">                                    LogWriter.Log(ex, &quot;Encoding with paint.Net.&quot;);</a>
+<a name="ln766">                                }</a>
+<a name="ln767">                            }</a>
+<a name="ln768"> </a>
+<a name="ln769">                            #endregion</a>
+<a name="ln770"> </a>
+<a name="ln771">                            break;</a>
+<a name="ln772">                        case EncoderTypes.FFmpeg:</a>
+<a name="ln773"> </a>
+<a name="ln774">                            EncodeWithFfmpeg(preset, project.FramesFiles, id, tokenSource, processing);</a>
+<a name="ln775"> </a>
+<a name="ln776">                            break;</a>
+<a name="ln777">                        case EncoderTypes.Gifski:</a>
+<a name="ln778"> </a>
+<a name="ln779">                            #region Gifski encoding</a>
+<a name="ln780"> </a>
+<a name="ln781">                            Update(id, EncodingStatus.Processing, null, true);</a>
+<a name="ln782"> </a>
+<a name="ln783">                            if (preset is not GifskiGifPreset gifskiGifPreset)</a>
+<a name="ln784">                                return;</a>
+<a name="ln785"> </a>
+<a name="ln786">                            if (!Other.IsGifskiPresent())</a>
+<a name="ln787">                                throw new ApplicationException(&quot;Gifski not present.&quot;);</a>
+<a name="ln788"> </a>
+<a name="ln789">                            if (File.Exists(preset.FullPath))</a>
+<a name="ln790">                                File.Delete(preset.FullPath);</a>
+<a name="ln791"> </a>
+<a name="ln792">                            var size = project.FramesFiles[0].Path.ScaledSize();</a>
+<a name="ln793"> </a>
+<a name="ln794">                            var gifski = new GifskiInterop();</a>
+<a name="ln795">                            var handle = gifski.Start((uint)size.Width, (uint)size.Height, gifskiGifPreset.Quality, gifskiGifPreset.Looped, gifskiGifPreset.Fast);</a>
+<a name="ln796"> </a>
+<a name="ln797">                            if (gifski.Version.Major == 0 &amp;&amp; gifski.Version.Minor &lt; 9)</a>
+<a name="ln798">                            {</a>
+<a name="ln799">                                #region Older</a>
+<a name="ln800"> </a>
+<a name="ln801">                                ThreadPool.QueueUserWorkItem(delegate</a>
+<a name="ln802">                                {</a>
+<a name="ln803">                                    Thread.Sleep(500);</a>
+<a name="ln804"> </a>
+<a name="ln805">                                    if (GetStatus(id) == EncodingStatus.Error)</a>
+<a name="ln806">                                        return;</a>
+<a name="ln807"> </a>
+<a name="ln808">                                    Update(id, EncodingStatus.Processing, null, false);</a>
+<a name="ln809"> </a>
+<a name="ln810">                                    GifskiInterop.GifskiError res;</a>
+<a name="ln811"> </a>
+<a name="ln812">                                    for (var i = 0; i &lt; project.FramesFiles.Count; i++)</a>
+<a name="ln813">                                    {</a>
+<a name="ln814">                                        #region Cancellation</a>
+<a name="ln815"> </a>
+<a name="ln816">                                        if (tokenSource.Token.IsCancellationRequested)</a>
+<a name="ln817">                                        {</a>
+<a name="ln818">                                            Update(id, EncodingStatus.Canceled);</a>
+<a name="ln819">                                            break;</a>
+<a name="ln820">                                        }</a>
+<a name="ln821"> </a>
+<a name="ln822">                                        #endregion</a>
+<a name="ln823"> </a>
+<a name="ln824">                                        Update(id, i, string.Format(processing, i));</a>
+<a name="ln825"> </a>
+<a name="ln826">                                        res = gifski.AddFrame(handle, (uint)i, project.FramesFiles[i].Path, project.FramesFiles[i].Delay);</a>
+<a name="ln827"> </a>
+<a name="ln828">                                        if (res != GifskiInterop.GifskiError.Ok)</a>
+<a name="ln829">                                            throw new Exception(&quot;Error while adding frames with Gifski. &quot; + res, new Win32Exception(res.ToString())) { HelpLink = $&quot;Result:\n\r{Marshal.GetLastWin32Error()}&quot; };</a>
+<a name="ln830">                                    }</a>
+<a name="ln831"> </a>
+<a name="ln832">                                    res = gifski.EndAdding(handle);</a>
+<a name="ln833"> </a>
+<a name="ln834">                                    if (res != GifskiInterop.GifskiError.Ok)</a>
+<a name="ln835">                                        throw new Exception(&quot;Error while finishing adding frames with Gifski. &quot; + res, new Win32Exception(res.ToString())) { HelpLink = $&quot;Result:\n\r{Marshal.GetLastWin32Error()}&quot; };</a>
+<a name="ln836">                                }, null);</a>
+<a name="ln837"> </a>
+<a name="ln838">                                gifski.End(handle, gifskiGifPreset.FullPath);</a>
+<a name="ln839"> </a>
+<a name="ln840">                                #endregion</a>
+<a name="ln841">                            }</a>
+<a name="ln842">                            else</a>
+<a name="ln843">                            {</a>
+<a name="ln844">                                #region Version 0.9.3 and newer</a>
+<a name="ln845"> </a>
+<a name="ln846">                                var res = gifski.SetOutput(handle, gifskiGifPreset.FullPath);</a>
+<a name="ln847"> </a>
+<a name="ln848">                                if (res != GifskiInterop.GifskiError.Ok)</a>
+<a name="ln849">                                    throw new Exception(&quot;Error while setting output with Gifski. &quot; + res, new Win32Exception()) { HelpLink = $&quot;Result:\n\r{Marshal.GetLastWin32Error()}&quot; };</a>
+<a name="ln850"> </a>
+<a name="ln851">                                Thread.Sleep(500);</a>
+<a name="ln852"> </a>
+<a name="ln853">                                if (GetStatus(id) == EncodingStatus.Error)</a>
+<a name="ln854">                                    return;</a>
+<a name="ln855"> </a>
+<a name="ln856">                                Update(id, EncodingStatus.Processing, null, false);</a>
+<a name="ln857"> </a>
+<a name="ln858">                                var lastTimestamp = project.FramesFiles.Sum(s =&gt; s.Delay / 1000D); //project.FramesFiles[project.FramesFiles.Count - 1].Delay / 1000d;</a>
+<a name="ln859"> </a>
+<a name="ln860">                                for (var i = 0; i &lt; project.FramesFiles.Count; i++)</a>
+<a name="ln861">                                {</a>
+<a name="ln862">                                    #region Cancellation</a>
+<a name="ln863"> </a>
+<a name="ln864">                                    if (tokenSource.Token.IsCancellationRequested)</a>
+<a name="ln865">                                    {</a>
+<a name="ln866">                                        Update(id, EncodingStatus.Canceled);</a>
+<a name="ln867">                                        break;</a>
+<a name="ln868">                                    }</a>
+<a name="ln869"> </a>
+<a name="ln870">                                    #endregion</a>
+<a name="ln871"> </a>
+<a name="ln872">                                    Update(id, i, string.Format(processing, i));</a>
+<a name="ln873"> </a>
+<a name="ln874">                                    res = gifski.AddFrame(handle, (uint)i, project.FramesFiles[i].Path, project.FramesFiles[i].Delay, lastTimestamp, i + 1 == project.FramesFiles.Count);</a>
+<a name="ln875"> </a>
+<a name="ln876">                                    if (res != GifskiInterop.GifskiError.Ok)</a>
+<a name="ln877">                                        throw new Exception(&quot;Error while adding frames with Gifski. &quot; + res, new Win32Exception(res.ToString())) { HelpLink = $&quot;Result:\n\r{Marshal.GetLastWin32Error()}&quot; };</a>
+<a name="ln878">                                }</a>
+<a name="ln879"> </a>
+<a name="ln880">                                Update(id, EncodingStatus.Processing, null, false);</a>
+<a name="ln881"> </a>
+<a name="ln882">                                gifski.EndAdding(handle);</a>
+<a name="ln883"> </a>
+<a name="ln884">                                #endregion</a>
+<a name="ln885">                            }</a>
+<a name="ln886"> </a>
+<a name="ln887">                            var fileInfo2 = new FileInfo(gifskiGifPreset.FullPath);</a>
+<a name="ln888"> </a>
+<a name="ln889">                            if (!fileInfo2.Exists || fileInfo2.Length == 0)</a>
+<a name="ln890">                                throw new Exception(&quot;Error while encoding the gif with Gifski. Empty output file.&quot;, new Win32Exception()) { HelpLink = $&quot;Result:\n\r{Marshal.GetLastWin32Error()}&quot; };</a>
+<a name="ln891"> </a>
+<a name="ln892">                            #endregion</a>
+<a name="ln893"> </a>
+<a name="ln894">                            break;</a>
+<a name="ln895">                        default:</a>
+<a name="ln896">                            throw new Exception(&quot;Undefined Gif encoder type&quot;);</a>
+<a name="ln897">                    }</a>
+<a name="ln898"> </a>
+<a name="ln899">                    Update(id, 1, watch.Elapsed);</a>
+<a name="ln900">                    watch.Restart();</a>
+<a name="ln901"> </a>
+<a name="ln902">                    break;</a>
+<a name="ln903"> </a>
+<a name="ln904">                    #endregion</a>
+<a name="ln905">                }</a>
+<a name="ln906"> </a>
+<a name="ln907">                case ExportFormats.Bmp:</a>
+<a name="ln908">                case ExportFormats.Jpeg:</a>
+<a name="ln909">                case ExportFormats.Png:</a>
+<a name="ln910">                {</a>
+<a name="ln911">                    if (preset is not ImagePreset imagePreset)</a>
+<a name="ln912">                        return;</a>
+<a name="ln913"> </a>
+<a name="ln914">                    var padLength = project.FramesFiles.Select(s =&gt; s.Index).Max().ToString().Length;</a>
+<a name="ln915"> </a>
+<a name="ln916">                    if (!imagePreset.ZipFiles)</a>
+<a name="ln917">                    {</a>
+<a name="ln918">                        var frameList = new List&lt;string&gt;();</a>
+<a name="ln919"> </a>
+<a name="ln920">                        foreach (var frame in project.FramesFiles)</a>
+<a name="ln921">                        {</a>
+<a name="ln922">                            var path = Path.Combine(preset.OutputFolder, $&quot;{preset.ResolvedFilename}-{frame.Index.ToString().PadLeft(padLength, '0')}{preset.Extension ?? preset.DefaultExtension}&quot;);</a>
+<a name="ln923"> </a>
+<a name="ln924">                            if (File.Exists(path))</a>
+<a name="ln925">                                File.Delete(path);</a>
+<a name="ln926"> </a>
+<a name="ln927">                            Update(id, frame.Index, string.Format(processing, frame.Index));</a>
+<a name="ln928"> </a>
+<a name="ln929">                            switch (preset.Type)</a>
+<a name="ln930">                            {</a>
+<a name="ln931">                                case ExportFormats.Bmp:</a>
+<a name="ln932">                                {</a>
+<a name="ln933">                                    using (var fileStream = new FileStream(path, FileMode.Create))</a>
+<a name="ln934">                                    {</a>
+<a name="ln935">                                        var bmpEncoder = new BmpBitmapEncoder();</a>
+<a name="ln936">                                        bmpEncoder.Frames.Add(BitmapFrame.Create(frame.Path.SourceFrom()));</a>
+<a name="ln937">                                        bmpEncoder.Save(fileStream);</a>
+<a name="ln938">                                    }</a>
+<a name="ln939"> </a>
+<a name="ln940">                                    break;</a>
+<a name="ln941">                                }</a>
+<a name="ln942">                                case ExportFormats.Jpeg:</a>
+<a name="ln943">                                {</a>
+<a name="ln944">                                    using (var fileStream = new FileStream(path, FileMode.Create))</a>
+<a name="ln945">                                    {</a>
+<a name="ln946">                                        var jpgEncoder = new JpegBitmapEncoder { QualityLevel = 100 };</a>
+<a name="ln947">                                        jpgEncoder.Frames.Add(BitmapFrame.Create(frame.Path.SourceFrom()));</a>
+<a name="ln948">                                        jpgEncoder.Save(fileStream);</a>
+<a name="ln949">                                    }</a>
+<a name="ln950"> </a>
+<a name="ln951">                                    break;</a>
+<a name="ln952">                                }</a>
+<a name="ln953">                                case ExportFormats.Png:</a>
+<a name="ln954">                                {</a>
+<a name="ln955">                                    File.Copy(frame.Path, path, true);</a>
+<a name="ln956">                                    break;</a>
+<a name="ln957">                                }</a>
+<a name="ln958">                            }</a>
+<a name="ln959"> </a>
+<a name="ln960">                            frameList.Add(path);</a>
+<a name="ln961">                        }</a>
+<a name="ln962"> </a>
+<a name="ln963">                        UpdateMultiple(id, EncodingStatus.Completed, frameList);</a>
+<a name="ln964">                        return;</a>
+<a name="ln965">                    }</a>
+<a name="ln966">                    else</a>
+<a name="ln967">                    {</a>
+<a name="ln968">                        var fileName = Path.Combine(preset.OutputFolder, preset.ResolvedFilename + &quot;.zip&quot;);</a>
+<a name="ln969"> </a>
+<a name="ln970">                        if (File.Exists(fileName))</a>
+<a name="ln971">                            File.Delete(fileName);</a>
+<a name="ln972"> </a>
+<a name="ln973">                        //Temporary folder.</a>
+<a name="ln974">                        var outPath = Path.Combine(project.Path, &quot;Export&quot;);</a>
+<a name="ln975"> </a>
+<a name="ln976">                        if (Directory.Exists(outPath))</a>
+<a name="ln977">                            Directory.Delete(outPath, true);</a>
+<a name="ln978"> </a>
+<a name="ln979">                        var dir = Directory.CreateDirectory(outPath);</a>
+<a name="ln980"> </a>
+<a name="ln981">                        //Get files.</a>
+<a name="ln982">                        foreach (var frame in project.FramesFiles)</a>
+<a name="ln983">                        {</a>
+<a name="ln984">                            switch (preset.Type)</a>
+<a name="ln985">                            {</a>
+<a name="ln986">                                case ExportFormats.Bmp:</a>
+<a name="ln987">                                {</a>
+<a name="ln988">                                    var path = Path.Combine(dir.FullName, $&quot;{frame.Index.ToString().PadLeft(padLength, '0')}.bmp&quot;);</a>
+<a name="ln989"> </a>
+<a name="ln990">                                    using (var fileStream = new FileStream(path, FileMode.Create))</a>
+<a name="ln991">                                    {</a>
+<a name="ln992">                                        var bmpEncoder = new BmpBitmapEncoder();</a>
+<a name="ln993">                                        bmpEncoder.Frames.Add(BitmapFrame.Create(frame.Path.SourceFrom()));</a>
+<a name="ln994">                                        bmpEncoder.Save(fileStream);</a>
+<a name="ln995">                                    }</a>
+<a name="ln996"> </a>
+<a name="ln997">                                    break;</a>
+<a name="ln998">                                }</a>
+<a name="ln999">                                case ExportFormats.Jpeg:</a>
+<a name="ln1000">                                {</a>
+<a name="ln1001">                                    var path = Path.Combine(dir.FullName, $&quot;{frame.Index.ToString().PadLeft(padLength, '0')}.jpg&quot;);</a>
+<a name="ln1002"> </a>
+<a name="ln1003">                                    using (var fileStream = new FileStream(path, FileMode.Create))</a>
+<a name="ln1004">                                    {</a>
+<a name="ln1005">                                        var jpgEncoder = new JpegBitmapEncoder { QualityLevel = 100 };</a>
+<a name="ln1006">                                        jpgEncoder.Frames.Add(BitmapFrame.Create(frame.Path.SourceFrom()));</a>
+<a name="ln1007">                                        jpgEncoder.Save(fileStream);</a>
+<a name="ln1008">                                    }</a>
+<a name="ln1009"> </a>
+<a name="ln1010">                                    break;</a>
+<a name="ln1011">                                }</a>
+<a name="ln1012">                                case ExportFormats.Png:</a>
+<a name="ln1013">                                {</a>
+<a name="ln1014">                                    var path = Path.Combine(dir.FullName, $&quot;{frame.Index.ToString().PadLeft(padLength, '0')}.png&quot;);</a>
+<a name="ln1015"> </a>
+<a name="ln1016">                                    File.Copy(frame.Path, path, true);</a>
+<a name="ln1017">                                    break;</a>
+<a name="ln1018">                                }</a>
+<a name="ln1019">                            }</a>
+<a name="ln1020">                        }</a>
+<a name="ln1021"> </a>
+<a name="ln1022">                        //Create Zip and clear temporary folder.</a>
+<a name="ln1023">                        ZipFile.CreateFromDirectory(dir.FullName, fileName);</a>
+<a name="ln1024">                        Directory.Delete(dir.FullName, true);</a>
+<a name="ln1025">                    }</a>
+<a name="ln1026"> </a>
+<a name="ln1027">                    break;</a>
+<a name="ln1028">                }</a>
+<a name="ln1029"> </a>
+<a name="ln1030">                case ExportFormats.Webp:</a>
+<a name="ln1031">                case ExportFormats.Avif:</a>
+<a name="ln1032">                case ExportFormats.Avi:</a>
+<a name="ln1033">                case ExportFormats.Mov:</a>
+<a name="ln1034">                case ExportFormats.Mp4:</a>
+<a name="ln1035">                case ExportFormats.Mkv:</a>
+<a name="ln1036">                case ExportFormats.Webm:</a>
+<a name="ln1037">                {</a>
+<a name="ln1038">                    #region FFmpeg</a>
+<a name="ln1039"> </a>
+<a name="ln1040">                    EncodeWithFfmpeg(preset, project.FramesFiles, id, tokenSource, processing);</a>
+<a name="ln1041"> </a>
+<a name="ln1042">                    Update(id, 1, watch.Elapsed);</a>
+<a name="ln1043">                    watch.Restart();</a>
+<a name="ln1044"> </a>
+<a name="ln1045">                    break;</a>
+<a name="ln1046"> </a>
+<a name="ln1047">                    #endregion</a>
+<a name="ln1048">                }</a>
+<a name="ln1049"> </a>
+<a name="ln1050">                case ExportFormats.Psd:</a>
+<a name="ln1051">                {</a>
+<a name="ln1052">                    #region Psd</a>
+<a name="ln1053"> </a>
+<a name="ln1054">                    if (preset is not PsdPreset psdPreset)</a>
+<a name="ln1055">                        return;</a>
+<a name="ln1056"> </a>
+<a name="ln1057">                    using (var stream = new MemoryStream())</a>
+<a name="ln1058">                    {</a>
+<a name="ln1059">                        using (var encoder = new Psd(stream, psdPreset.Height, psdPreset.Width, psdPreset.CompressImage, psdPreset.SaveTimeline))</a>
+<a name="ln1060">                        {</a>
+<a name="ln1061">                            for (var i = 0; i &lt; project.FramesFiles.Count; i++)</a>
+<a name="ln1062">                            {</a>
+<a name="ln1063">                                if (project.FramesFiles[i].Delay == 0)</a>
+<a name="ln1064">                                    project.FramesFiles[i].Delay = 10;</a>
+<a name="ln1065"> </a>
+<a name="ln1066">                                encoder.AddFrame(i, project.FramesFiles[i].Path, project.FramesFiles[i].Delay);</a>
+<a name="ln1067"> </a>
+<a name="ln1068">                                Update(id, i, string.Format(processing, i));</a>
+<a name="ln1069"> </a>
+<a name="ln1070">                                #region Cancellation</a>
+<a name="ln1071"> </a>
+<a name="ln1072">                                if (tokenSource.Token.IsCancellationRequested)</a>
+<a name="ln1073">                                {</a>
+<a name="ln1074">                                    Update(id, EncodingStatus.Canceled);</a>
+<a name="ln1075">                                    break;</a>
+<a name="ln1076">                                }</a>
+<a name="ln1077"> </a>
+<a name="ln1078">                                #endregion</a>
+<a name="ln1079">                            }</a>
+<a name="ln1080">                        }</a>
+<a name="ln1081"> </a>
+<a name="ln1082">                        using (var fileStream = new FileStream(psdPreset.FullPath, FileMode.Create, FileAccess.Write, FileShare.None, 4096))</a>
+<a name="ln1083">                            stream.WriteTo(fileStream);</a>
+<a name="ln1084">                    }</a>
+<a name="ln1085"> </a>
+<a name="ln1086">                    Update(id, 1, watch.Elapsed);</a>
+<a name="ln1087">                    watch.Restart();</a>
+<a name="ln1088"> </a>
+<a name="ln1089">                    break;</a>
+<a name="ln1090"> </a>
+<a name="ln1091">                    #endregion</a>
+<a name="ln1092">                }</a>
+<a name="ln1093">                case ExportFormats.Stg:</a>
+<a name="ln1094">                {</a>
+<a name="ln1095">                    #region Project</a>
+<a name="ln1096"> </a>
+<a name="ln1097">                    if (preset is not StgPreset stgPreset)</a>
+<a name="ln1098">                        return;</a>
+<a name="ln1099"> </a>
+<a name="ln1100">                    Update(id, EncodingStatus.Processing, null, true);</a>
+<a name="ln1101">                    Update(id, 0, LocalizationHelper.Get(&quot;S.Encoder.CreatingFile&quot;));</a>
+<a name="ln1102"> </a>
+<a name="ln1103">                    if (File.Exists(stgPreset.FullPath))</a>
+<a name="ln1104">                        File.Delete(stgPreset.FullPath);</a>
+<a name="ln1105"> </a>
+<a name="ln1106">                    ZipFile.CreateFromDirectory(Path.GetDirectoryName(project.FramesFiles[0].Path), stgPreset.FullPath, stgPreset.CompressionLevel, false);</a>
+<a name="ln1107"> </a>
+<a name="ln1108">                    Update(id, 1, watch.Elapsed);</a>
+<a name="ln1109">                    watch.Restart();</a>
+<a name="ln1110"> </a>
+<a name="ln1111">                    break;</a>
+<a name="ln1112"> </a>
+<a name="ln1113">                    #endregion</a>
+<a name="ln1114">                }</a>
+<a name="ln1115"> </a>
+<a name="ln1116">                default:</a>
+<a name="ln1117">                    throw new ArgumentOutOfRangeException(nameof(preset));</a>
+<a name="ln1118">            }</a>
+<a name="ln1119"> </a>
+<a name="ln1120">            //If it was canceled, try deleting the file.</a>
+<a name="ln1121">            if (tokenSource.Token.IsCancellationRequested)</a>
+<a name="ln1122">            {</a>
+<a name="ln1123">                if (File.Exists(preset.FullPath))</a>
+<a name="ln1124">                    File.Delete(preset.FullPath);</a>
+<a name="ln1125"> </a>
+<a name="ln1126">                Update(id, EncodingStatus.Canceled);</a>
+<a name="ln1127">                return;</a>
+<a name="ln1128">            }</a>
+<a name="ln1129"> </a>
+<a name="ln1130">            #region Upload</a>
+<a name="ln1131"> </a>
+<a name="ln1132">            if (preset.UploadFile &amp;&amp; File.Exists(preset.FullPath))</a>
+<a name="ln1133">            {</a>
+<a name="ln1134">                Update(id, &quot;S.Encoder.Uploading&quot;, true, true);</a>
+<a name="ln1135"> </a>
+<a name="ln1136">                try</a>
+<a name="ln1137">                {</a>
+<a name="ln1138">                    //Get selected preset.</a>
+<a name="ln1139">                    var presetType = preset.Extension == &quot;.zip&quot; ? ExportFormats.Zip : preset.Type;</a>
+<a name="ln1140">                    var uploadPreset = UserSettings.All.UploadPresets.OfType&lt;UploadPreset&gt;().FirstOrDefault(f =&gt; (f.AllowedTypes.Count == 0 || f.AllowedTypes.Contains(presetType)) &amp;&amp; f.Title == preset.UploadService);</a>
+<a name="ln1141"> </a>
+<a name="ln1142">                    if (uploadPreset == null)</a>
+<a name="ln1143">                        throw new Exception($&quot;Missing upload preset called {preset.UploadService}&quot;);</a>
+<a name="ln1144"> </a>
+<a name="ln1145">                    //TODO: Limit upload by imposed service limits.</a>
+<a name="ln1146"> </a>
+<a name="ln1147">                    //Try uploading to the selected service.</a>
+<a name="ln1148">                    var cloud = CloudFactory.CreateCloud(uploadPreset.Type);</a>
+<a name="ln1149">                    var history = await cloud.UploadFileAsync(uploadPreset, preset.FullPath, CancellationToken.None);</a>
+<a name="ln1150"> </a>
+<a name="ln1151">                    uploadPreset.History.Add(history);</a>
+<a name="ln1152">                    UserSettings.Save();</a>
+<a name="ln1153"> </a>
+<a name="ln1154">                    if (history.Result != 200)</a>
+<a name="ln1155">                        throw new Exception(history.Message);</a>
+<a name="ln1156"> </a>
+<a name="ln1157">                    SetUpload(id, true, history.GetLink(uploadPreset), history.DeletionLink);</a>
+<a name="ln1158">                }</a>
+<a name="ln1159">                catch (Exception e)</a>
+<a name="ln1160">                {</a>
+<a name="ln1161">                    LogWriter.Log(e, &quot;It was not possible to upload.&quot;);</a>
+<a name="ln1162">                    SetUpload(id, false, null, null, e);</a>
+<a name="ln1163">                }</a>
+<a name="ln1164">                finally</a>
+<a name="ln1165">                {</a>
+<a name="ln1166">                    Update(id, 2, watch.Elapsed);</a>
+<a name="ln1167">                    watch.Restart();</a>
+<a name="ln1168">                }</a>
+<a name="ln1169">            }</a>
+<a name="ln1170"> </a>
+<a name="ln1171">            #endregion</a>
+<a name="ln1172"> </a>
+<a name="ln1173">            #region Copy to clipboard</a>
+<a name="ln1174"> </a>
+<a name="ln1175">            if (preset.SaveToClipboard &amp;&amp; File.Exists(preset.FullPath))</a>
+<a name="ln1176">            {</a>
+<a name="ln1177">                Application.Current.Dispatcher.Invoke(() =&gt;</a>
+<a name="ln1178">                {</a>
+<a name="ln1179">                    try</a>
+<a name="ln1180">                    {</a>
+<a name="ln1181">                        var data = new DataObject();</a>
+<a name="ln1182"> </a>
+<a name="ln1183">                        switch (preset.CopyType)</a>
+<a name="ln1184">                        {</a>
+<a name="ln1185">                            case CopyModes.File:</a>
+<a name="ln1186">                                //data.SetData(DataFormats.GetDataFormat(&quot;GIF&quot;).Name, System.Drawing.Image.FromFile(param.Filename));</a>
+<a name="ln1187">                                data.SetFileDropList(new StringCollection { preset.FullPath });</a>
+<a name="ln1188">                                break;</a>
+<a name="ln1189">                            case CopyModes.FolderPath:</a>
+<a name="ln1190">                                data.SetText(Path.GetDirectoryName(preset.FullPath) ?? preset.FullPath, TextDataFormat.UnicodeText);</a>
+<a name="ln1191">                                break;</a>
+<a name="ln1192">                            case CopyModes.Link:</a>
+<a name="ln1193">                                var link = GetUploadLink(id);</a>
+<a name="ln1194"> </a>
+<a name="ln1195">                                data.SetText(string.IsNullOrEmpty(link) ? preset.FullPath : link, TextDataFormat.UnicodeText);</a>
+<a name="ln1196">                                break;</a>
+<a name="ln1197">                            default:</a>
+<a name="ln1198">                                data.SetText(preset.FullPath, TextDataFormat.UnicodeText);</a>
+<a name="ln1199">                                break;</a>
+<a name="ln1200">                        }</a>
+<a name="ln1201"> </a>
+<a name="ln1202">                        //It tries to set the data to the clipboard 10 times before failing it to do so.</a>
+<a name="ln1203">                        //This issue may happen if the clipboard is opened by any clipboard manager.</a>
+<a name="ln1204">                        for (var i = 0; i &lt; 10; i++)</a>
+<a name="ln1205">                        {</a>
+<a name="ln1206">                            try</a>
+<a name="ln1207">                            {</a>
+<a name="ln1208">                                System.Windows.Clipboard.SetDataObject(data, true);</a>
+<a name="ln1209">                                break;</a>
+<a name="ln1210">                            }</a>
+<a name="ln1211">                            catch (COMException ex)</a>
+<a name="ln1212">                            {</a>
+<a name="ln1213">                                if ((uint)ex.ErrorCode != 0x800401D0) //CLIPBRD_E_CANT_OPEN</a>
+<a name="ln1214">                                    throw;</a>
+<a name="ln1215">                            }</a>
+<a name="ln1216"> </a>
+<a name="ln1217">                            Thread.Sleep(100);</a>
+<a name="ln1218">                        }</a>
+<a name="ln1219"> </a>
+<a name="ln1220">                        SetCopy(id, true);</a>
+<a name="ln1221">                    }</a>
+<a name="ln1222">                    catch (Exception e)</a>
+<a name="ln1223">                    {</a>
+<a name="ln1224">                        LogWriter.Log(e, &quot;It was not possible to copy the file.&quot;);</a>
+<a name="ln1225">                        SetCopy(id, false, e);</a>
+<a name="ln1226">                    }</a>
+<a name="ln1227">                });</a>
+<a name="ln1228"> </a>
+<a name="ln1229">                Update(id, 3, watch.Elapsed);</a>
+<a name="ln1230">                watch.Restart();</a>
+<a name="ln1231">            }</a>
+<a name="ln1232"> </a>
+<a name="ln1233">            #endregion</a>
+<a name="ln1234"> </a>
+<a name="ln1235">            #region Execute commands</a>
+<a name="ln1236"> </a>
+<a name="ln1237">#if !FULL_MULTI_MSIX_STORE</a>
+<a name="ln1238"> </a>
+<a name="ln1239">            if (preset.ExecuteCustomCommands &amp;&amp; !string.IsNullOrWhiteSpace(preset.CustomCommands))</a>
+<a name="ln1240">            {</a>
+<a name="ln1241">                Update(id, &quot;S.Encoder.Executing&quot;, true, true);</a>
+<a name="ln1242"> </a>
+<a name="ln1243">                var command = preset.CustomCommands.Replace(&quot;{p}&quot;, &quot;\&quot;&quot; + preset.FullPath + &quot;\&quot;&quot;).Replace(&quot;{f}&quot;, &quot;\&quot;&quot; + Path.GetDirectoryName(preset.OutputFolder) + &quot;\&quot;&quot;).Replace(&quot;{u}&quot;, &quot;\&quot;&quot; + GetUploadLink(id) + &quot;\&quot;&quot;);</a>
+<a name="ln1244">                var output = &quot;&quot;;</a>
+<a name="ln1245"> </a>
+<a name="ln1246">                try</a>
+<a name="ln1247">                {</a>
+<a name="ln1248">                    foreach (var com in command.Split(['\n'], StringSplitOptions.RemoveEmptyEntries))</a>
+<a name="ln1249">                    {</a>
+<a name="ln1250">                        var procStartInfo = new ProcessStartInfo(&quot;cmd&quot;, &quot;/c &quot; + com)</a>
+<a name="ln1251">                        {</a>
+<a name="ln1252">                            RedirectStandardOutput = true,</a>
+<a name="ln1253">                            RedirectStandardError = true,</a>
+<a name="ln1254">                            UseShellExecute = false,</a>
+<a name="ln1255">                            CreateNoWindow = true</a>
+<a name="ln1256">                        };</a>
+<a name="ln1257"> </a>
+<a name="ln1258">                        using (var process = new Process())</a>
+<a name="ln1259">                        {</a>
+<a name="ln1260">                            process.StartInfo = procStartInfo;</a>
+<a name="ln1261">                            process.Start();</a>
+<a name="ln1262"> </a>
+<a name="ln1263">                            var message = await process.StandardOutput.ReadToEndAsync();</a>
+<a name="ln1264">                            var error = await process.StandardError.ReadToEndAsync();</a>
+<a name="ln1265"> </a>
+<a name="ln1266">                            if (!string.IsNullOrWhiteSpace(message))</a>
+<a name="ln1267">                                output += message + Environment.NewLine;</a>
+<a name="ln1268"> </a>
+<a name="ln1269">                            if (!string.IsNullOrWhiteSpace(error))</a>
+<a name="ln1270">                            {</a>
+<a name="ln1271">                                output += error + Environment.NewLine;</a>
+<a name="ln1272">                                throw new Exception(output);</a>
+<a name="ln1273">                            }</a>
+<a name="ln1274"> </a>
+<a name="ln1275">                            process.WaitForExit(1000);</a>
+<a name="ln1276">                        }</a>
+<a name="ln1277">                    }</a>
+<a name="ln1278"> </a>
+<a name="ln1279">                    SetCommand(id, true, command, output);</a>
+<a name="ln1280">                }</a>
+<a name="ln1281">                catch (Exception e)</a>
+<a name="ln1282">                {</a>
+<a name="ln1283">                    LogWriter.Log(e, &quot;It was not possible to run the post encoding command.&quot;);</a>
+<a name="ln1284">                    SetCommand(id, false, command, output, e);</a>
+<a name="ln1285">                }</a>
+<a name="ln1286">                finally</a>
+<a name="ln1287">                {</a>
+<a name="ln1288">                    Update(id, 4, watch.Elapsed);</a>
+<a name="ln1289">                    watch.Restart();</a>
+<a name="ln1290">                }</a>
+<a name="ln1291">            }</a>
+<a name="ln1292"> </a>
+<a name="ln1293">#endif</a>
+<a name="ln1294"> </a>
+<a name="ln1295">            #endregion</a>
+<a name="ln1296"> </a>
+<a name="ln1297">            if (!tokenSource.Token.IsCancellationRequested)</a>
+<a name="ln1298">                Update(id, EncodingStatus.Completed, preset.FullPath);</a>
+<a name="ln1299">        }</a>
+<a name="ln1300">        catch (Exception ex)</a>
+<a name="ln1301">        {</a>
+<a name="ln1302">            LogWriter.Log(ex, &quot;Encode&quot;);</a>
+<a name="ln1303"> </a>
+<a name="ln1304">            Update(id, EncodingStatus.Error, null, false, ex);</a>
+<a name="ln1305">        }</a>
+<a name="ln1306">        finally</a>
+<a name="ln1307">        {</a>
+<a name="ln1308">            watch.Stop();</a>
+<a name="ln1309"> </a>
+<a name="ln1310">            #region Delete the encoder folder</a>
+<a name="ln1311"> </a>
+<a name="ln1312">            try</a>
+<a name="ln1313">            {</a>
+<a name="ln1314">                var folder = Path.GetDirectoryName(project.UsesFiles ? project.FramesFiles[0].Path : project.ChunkPath);</a>
+<a name="ln1315"> </a>
+<a name="ln1316">                if (!string.IsNullOrEmpty(folder))</a>
+<a name="ln1317">                    if (Directory.Exists(folder))</a>
+<a name="ln1318">                        Directory.Delete(folder, true);</a>
+<a name="ln1319">            }</a>
+<a name="ln1320">            catch (Exception ex)</a>
+<a name="ln1321">            {</a>
+<a name="ln1322">                LogWriter.Log(ex, &quot;Cleaning the encoder folder&quot;);</a>
+<a name="ln1323">            }</a>
+<a name="ln1324"> </a>
+<a name="ln1325">            #endregion</a>
+<a name="ln1326"> </a>
+<a name="ln1327">            GC.Collect();</a>
+<a name="ln1328">        }</a>
+<a name="ln1329">    }</a>
+<a name="ln1330"> </a>
+<a name="ln1331">    private static async Task EncodeKGySoftGif(KGySoftGifPreset preset, IList&lt;IFrame&gt; frames, int id, CancellationToken cancellationToken)</a>
+<a name="ln1332">    {</a>
+<a name="ln1333">        #region Local Methods</a>
+<a name="ln1334"> </a>
+<a name="ln1335">        IEnumerable&lt;IReadableBitmapData&gt; FramesIterator()</a>
+<a name="ln1336">        {</a>
+<a name="ln1337">            for (int i = 0; i &lt; frames.Count; i++)</a>
+<a name="ln1338">            {</a>
+<a name="ln1339">                Update(id, i);</a>
+<a name="ln1340">                using var bitmap = new Bitmap(frames[i].Path);</a>
+<a name="ln1341">                using var bitmapData = bitmap.GetReadableBitmapData();</a>
+<a name="ln1342">                yield return bitmapData;</a>
+<a name="ln1343">            }</a>
+<a name="ln1344">        }</a>
+<a name="ln1345"> </a>
+<a name="ln1346">        #endregion</a>
+<a name="ln1347"> </a>
+<a name="ln1348">        // A little cheating for PingPong mode: though the encoder could handle it, we convert it explicitly to a simple forward loop so</a>
+<a name="ln1349">        // we can update the progress in FramesIterator and don't need to pass a DrawingProgress implementation to TaskConfig.Progress</a>
+<a name="ln1350">        var animationMode = (AnimationMode)preset.RepeatCount;</a>
+<a name="ln1351">        if (animationMode == AnimationMode.PingPong)</a>
+<a name="ln1352">        {</a>
+<a name="ln1353">            animationMode = AnimationMode.Repeat;</a>
+<a name="ln1354">            for (int i = frames.Count - 2; i &gt; 0; i--)</a>
+<a name="ln1355">                frames.Add(frames[i]);</a>
+<a name="ln1356">        }</a>
+<a name="ln1357"> </a>
+<a name="ln1358">        Update(id, EncodingStatus.Processing, maxSteps: frames.Count);</a>
+<a name="ln1359">        var config = new AnimatedGifConfiguration(FramesIterator(), frames.Select(f =&gt; TimeSpan.FromMilliseconds(f.Delay)))</a>
+<a name="ln1360">        {</a>
+<a name="ln1361">            AllowDeltaFrames = preset.AllowDeltaFrames,</a>
+<a name="ln1362">            AllowClippedFrames = preset.AllowClippedFrames,</a>
+<a name="ln1363">            AnimationMode = animationMode,</a>
+<a name="ln1364">            DeltaTolerance = preset.DeltaTolerance,</a>
+<a name="ln1365">            SizeHandling = AnimationFramesSizeHandling.Center,</a>
+<a name="ln1366">            Quantizer = QuantizerDescriptor.Create(preset.QuantizerId, preset),</a>
+<a name="ln1367">            Ditherer = DithererDescriptor.Create(preset.DithererId, preset),</a>
+<a name="ln1368">        };</a>
+<a name="ln1369"> </a>
+<a name="ln1370">        await using var stream = File.Create(preset.FullPath, Constants.BufferSize);</a>
+<a name="ln1371">        await KGySoftGifEncoder.EncodeAnimationAsync(config, stream, new TaskConfig</a>
+<a name="ln1372">        {</a>
+<a name="ln1373">            CancellationToken = cancellationToken,</a>
+<a name="ln1374">            ThrowIfCanceled = false</a>
+<a name="ln1375">        });</a>
+<a name="ln1376"> </a>
+<a name="ln1377">        if (!cancellationToken.IsCancellationRequested)</a>
+<a name="ln1378">            await stream.FlushAsync(cancellationToken);</a>
+<a name="ln1379">    }</a>
+<a name="ln1380"> </a>
+<a name="ln1381">    private static void EncodeWithFfmpeg(ExportPreset preset, List&lt;IFrame&gt; listFrames, int id, CancellationTokenSource tokenSource, string processing)</a>
+<a name="ln1382">    {</a>
+<a name="ln1383">        Update(id, EncodingStatus.Processing, null, true);</a>
+<a name="ln1384"> </a>
+<a name="ln1385">        if (!Other.IsFfmpegPresent())</a>
+<a name="ln1386">            throw new ApplicationException(&quot;FFmpeg not present.&quot;);</a>
+<a name="ln1387"> </a>
+<a name="ln1388">        if (File.Exists(preset.FullPath))</a>
+<a name="ln1389">            File.Delete(preset.FullPath);</a>
+<a name="ln1390"> </a>
+<a name="ln1391">        #region Generate concat</a>
+<a name="ln1392"> </a>
+<a name="ln1393">        var concat = new StringBuilder();</a>
+<a name="ln1394">        foreach (var frame in listFrames)</a>
+<a name="ln1395">        {</a>
+<a name="ln1396">            concat.AppendLine(&quot;file '&quot; + frame.Path + &quot;'&quot;);</a>
+<a name="ln1397">            concat.AppendLine(&quot;duration &quot; + (frame.Delay / 1000d).ToString(CultureInfo.InvariantCulture));</a>
+<a name="ln1398">        }</a>
+<a name="ln1399"> </a>
+<a name="ln1400">        if (preset.Type is not ExportFormats.Gif or ExportFormats.Apng or ExportFormats.Webp or ExportFormats.Avif)</a>
+<a name="ln1401">        {</a>
+<a name="ln1402">            //Fix for last frame.</a>
+<a name="ln1403">            concat.AppendLine(&quot;file '&quot; + listFrames.LastOrDefault()?.Path + &quot;'&quot;);</a>
+<a name="ln1404">            concat.AppendLine(&quot;duration 0&quot;);</a>
+<a name="ln1405">        }</a>
+<a name="ln1406"> </a>
+<a name="ln1407">        var concatPath = Path.GetDirectoryName(listFrames[0].Path) ?? Path.GetTempPath();</a>
+<a name="ln1408">        var concatFile = Path.Combine(concatPath, &quot;concat.txt&quot;);</a>
+<a name="ln1409"> </a>
+<a name="ln1410">        if (!Directory.Exists(concatPath))</a>
+<a name="ln1411">            Directory.CreateDirectory(concatPath);</a>
+<a name="ln1412"> </a>
+<a name="ln1413">        if (File.Exists(concatFile))</a>
+<a name="ln1414">            File.Delete(concatFile);</a>
+<a name="ln1415"> </a>
+<a name="ln1416">        File.WriteAllText(concatFile, concat.ToString());</a>
+<a name="ln1417"> </a>
+<a name="ln1418">        #endregion</a>
+<a name="ln1419"> </a>
+<a name="ln1420">        var firstPass = &quot;&quot;;</a>
+<a name="ln1421">        var secondPass = &quot;&quot;;</a>
+<a name="ln1422">        //TODO: Adapt the code to support v4 or v6</a>
+<a name="ln1423">        switch (preset.Type)</a>
+<a name="ln1424">        {</a>
+<a name="ln1425">            case ExportFormats.Gif:</a>
+<a name="ln1426">            {</a>
+<a name="ln1427">                #region Gif</a>
+<a name="ln1428"> </a>
+<a name="ln1429">                if (preset is not FfmpegGifPreset gifPreset)</a>
+<a name="ln1430">                    return;</a>
+<a name="ln1431"> </a>
+<a name="ln1432">                //ffmpeg -vsync 0 {I} -loop 0 -lavfi palettegen=stats_mode=single[pal],[0:v][pal]paletteuse=new=1:dither=sierra2_4a:diff_mode=rectangle -f gif {O}</a>
+<a name="ln1433">                if (gifPreset.SettingsMode == VideoSettingsModes.Advanced)</a>
+<a name="ln1434">                    firstPass = gifPreset.Parameters.Replace(&quot;\n&quot;, &quot; &quot;).Replace(&quot;\r&quot;, &quot;&quot;);</a>
+<a name="ln1435">                else</a>
+<a name="ln1436">                {</a>
+<a name="ln1437">                    //Input and loop.</a>
+<a name="ln1438">                    firstPass += &quot;{I} &quot;;</a>
+<a name="ln1439">                    firstPass += $&quot;-loop {(gifPreset.Looped ? gifPreset.RepeatForever ? 0 : gifPreset.RepeatCount : -1)} &quot;;</a>
+<a name="ln1440"> </a>
+<a name="ln1441">                    //Palette and dither. Does not work properly: (gifPreset.UseGlobalColorTable ? &quot;diff&quot; : &quot;single&quot;)</a>
+<a name="ln1442">                    firstPass += $&quot;-lavfi palettegen=stats_mode=diff[pal],[0:v][pal]paletteuse={(gifPreset.UseGlobalColorTable ? &quot;&quot; : &quot;new=1:&quot;)}&quot;;</a>
+<a name="ln1443">                    firstPass += $&quot;dither={gifPreset.Dither.GetDescription()}&quot;;</a>
+<a name="ln1444">                    firstPass += (gifPreset.Dither == DitherMethods.Bayer ? $&quot;:bayer_scale={gifPreset.BayerScale}&quot; : &quot;&quot;);</a>
+<a name="ln1445">                    firstPass += &quot;:diff_mode=rectangle &quot;;</a>
+<a name="ln1446"> </a>
+<a name="ln1447">                    //Pixel format.</a>
+<a name="ln1448">                    if (gifPreset.PixelFormat != VideoPixelFormats.Auto)</a>
+<a name="ln1449">                        firstPass += $&quot;-pix_fmt {gifPreset.PixelFormat.GetLowerDescription()} &quot;;</a>
+<a name="ln1450"> </a>
+<a name="ln1451">                    //Framerate.</a>
+<a name="ln1452">                    if (gifPreset.Framerate != Framerates.Auto)</a>
+<a name="ln1453">                        firstPass += $&quot;-r {(gifPreset.Framerate == Framerates.Custom ? gifPreset.CustomFramerate.ToString(CultureInfo.InvariantCulture) : gifPreset.Framerate.GetLowerDescription())} &quot;;</a>
+<a name="ln1454"> </a>
+<a name="ln1455">                    //Format and output.</a>
+<a name="ln1456">                    firstPass += &quot;-f gif &quot;;</a>
+<a name="ln1457"> </a>
+<a name="ln1458">                    //Vsync</a>
+<a name="ln1459">                    if (gifPreset.Vsync != Vsyncs.Off)</a>
+<a name="ln1460">                    {</a>
+<a name="ln1461">                        if (UserSettings.All.FfmpegVersion == SupportedFFmpegVersions.Version6)</a>
+<a name="ln1462">                            firstPass += &quot;-fps_mode &quot; + gifPreset.Vsync.GetLowerDescription();</a>
+<a name="ln1463">                        else</a>
+<a name="ln1464">                            firstPass += &quot;-vsync &quot; + gifPreset.Vsync.GetLowerDescription();</a>
+<a name="ln1465">                    }</a>
+<a name="ln1466"> </a>
+<a name="ln1467">                    firstPass += &quot; {O}&quot;;</a>
+<a name="ln1468">                }</a>
+<a name="ln1469"> </a>
+<a name="ln1470">                break;</a>
+<a name="ln1471"> </a>
+<a name="ln1472">                #endregion</a>
+<a name="ln1473">            }</a>
+<a name="ln1474">            case ExportFormats.Apng:</a>
+<a name="ln1475">            {</a>
+<a name="ln1476">                #region Apng</a>
+<a name="ln1477"> </a>
+<a name="ln1478">                if (preset is not FfmpegApngPreset apngPreset)</a>
+<a name="ln1479">                    return;</a>
+<a name="ln1480"> </a>
+<a name="ln1481">                //ffmpeg -vsync 0 {I} -pred mixed -plays 0 -f apng {O}</a>
+<a name="ln1482">                if (apngPreset.SettingsMode == VideoSettingsModes.Advanced)</a>
+<a name="ln1483">                    firstPass = apngPreset.Parameters.Replace(&quot;\n&quot;, &quot; &quot;).Replace(&quot;\r&quot;, &quot;&quot;);</a>
+<a name="ln1484">                else</a>
+<a name="ln1485">                {</a>
+<a name="ln1486">                    //Input and loop.</a>
+<a name="ln1487">                    firstPass += &quot;{I} &quot;;</a>
+<a name="ln1488">                    firstPass += $&quot;-plays {(apngPreset.Looped ? apngPreset.RepeatForever ? 0 : apngPreset.RepeatCount : -1)} &quot;;</a>
+<a name="ln1489"> </a>
+<a name="ln1490">                    //Prediction method.</a>
+<a name="ln1491">                    if (apngPreset.PredictionMethod != PredictionMethods.None)</a>
+<a name="ln1492">                        firstPass += $&quot;-pred {apngPreset.PredictionMethod.ToString().ToLower()} &quot;;</a>
+<a name="ln1493"> </a>
+<a name="ln1494">                    //Pixel format.</a>
+<a name="ln1495">                    if (apngPreset.PixelFormat != VideoPixelFormats.Auto)</a>
+<a name="ln1496">                        firstPass += $&quot;-pix_fmt {apngPreset.PixelFormat.GetLowerDescription()} &quot;;</a>
+<a name="ln1497"> </a>
+<a name="ln1498">                    //Framerate.</a>
+<a name="ln1499">                    if (apngPreset.Framerate != Framerates.Auto)</a>
+<a name="ln1500">                        firstPass += $&quot;-r {(apngPreset.Framerate == Framerates.Custom ? apngPreset.CustomFramerate.ToString(CultureInfo.InvariantCulture) : apngPreset.Framerate.GetLowerDescription())} &quot;;</a>
+<a name="ln1501"> </a>
+<a name="ln1502">                    //Format and output.</a>
+<a name="ln1503">                    firstPass += &quot;-f apng &quot;;</a>
+<a name="ln1504"> </a>
+<a name="ln1505">                    //Vsync</a>
+<a name="ln1506">                    if (apngPreset.Vsync != Vsyncs.Off)</a>
+<a name="ln1507">                    {</a>
+<a name="ln1508">                        if (UserSettings.All.FfmpegVersion == SupportedFFmpegVersions.Version6)</a>
+<a name="ln1509">                            firstPass += &quot;-fps_mode &quot; + apngPreset.Vsync.GetLowerDescription();</a>
+<a name="ln1510">                        else</a>
+<a name="ln1511">                            firstPass += &quot;-vsync &quot; + apngPreset.Vsync.GetLowerDescription();</a>
+<a name="ln1512">                    }</a>
+<a name="ln1513"> </a>
+<a name="ln1514">                    firstPass += &quot; {O}&quot;;</a>
+<a name="ln1515">                }</a>
+<a name="ln1516"> </a>
+<a name="ln1517">                break;</a>
+<a name="ln1518"> </a>
+<a name="ln1519">                #endregion</a>
+<a name="ln1520">            }</a>
+<a name="ln1521">            case ExportFormats.Webp:</a>
+<a name="ln1522">            {</a>
+<a name="ln1523">                #region Webp</a>
+<a name="ln1524"> </a>
+<a name="ln1525">                if (preset is not FfmpegWebpPreset webpPreset)</a>
+<a name="ln1526">                    return;</a>
+<a name="ln1527"> </a>
+<a name="ln1528">                //ffmpeg -vsync 0 {I} -c:v libwebp_anim -lossless 0 -quality 75 -loop 0 -f webp {O}</a>
+<a name="ln1529">                if (webpPreset.SettingsMode == VideoSettingsModes.Advanced)</a>
+<a name="ln1530">                    firstPass = webpPreset.Parameters.Replace(&quot;\n&quot;, &quot; &quot;).Replace(&quot;\r&quot;, &quot;&quot;);</a>
+<a name="ln1531">                else</a>
+<a name="ln1532">                {</a>
+<a name="ln1533">                    //Vsync</a>
+<a name="ln1534">                    if (webpPreset.Vsync != Vsyncs.Off)</a>
+<a name="ln1535">                        firstPass += $&quot;-vsync {webpPreset.Vsync.ToString().ToLower()} &quot;;</a>
+<a name="ln1536"> </a>
+<a name="ln1537">                    //Input, encoder and loop.</a>
+<a name="ln1538">                    firstPass += &quot;{I} -c:v libwebp_anim &quot;;</a>
+<a name="ln1539">                    firstPass += $&quot;-loop {(webpPreset.Looped ? webpPreset.RepeatForever ? 0 : webpPreset.RepeatCount : -1)} &quot;;</a>
+<a name="ln1540"> </a>
+<a name="ln1541">                    //Codec preset.</a>
+<a name="ln1542">                    if (webpPreset.CodecPreset != VideoCodecPresets.Default)</a>
+<a name="ln1543">                        firstPass += $&quot;-preset {webpPreset.CodecPreset.GetLowerDescription()} &quot;;</a>
+<a name="ln1544"> </a>
+<a name="ln1545">                    //Lossless.</a>
+<a name="ln1546">                    firstPass += $&quot;-lossless {(webpPreset.Lossless ? &quot;1&quot; : &quot;0&quot;)} &quot;;</a>
+<a name="ln1547"> </a>
+<a name="ln1548">                    //Quality.</a>
+<a name="ln1549">                    firstPass += $&quot;-quality {webpPreset.Quality} &quot;;</a>
+<a name="ln1550"> </a>
+<a name="ln1551">                    //Pixel format.</a>
+<a name="ln1552">                    if (webpPreset.PixelFormat != VideoPixelFormats.Auto)</a>
+<a name="ln1553">                        firstPass += $&quot;-pix_fmt {webpPreset.PixelFormat.GetLowerDescription()} &quot;;</a>
+<a name="ln1554"> </a>
+<a name="ln1555">                    //Framerate.</a>
+<a name="ln1556">                    if (webpPreset.Framerate != Framerates.Auto)</a>
+<a name="ln1557">                        firstPass += $&quot;-r {(webpPreset.Framerate == Framerates.Custom ? webpPreset.CustomFramerate.ToString(CultureInfo.InvariantCulture) : webpPreset.Framerate.GetLowerDescription())} &quot;;</a>
+<a name="ln1558"> </a>
+<a name="ln1559">                    //Format and output.</a>
+<a name="ln1560">                    firstPass += &quot;-f webp &quot;;</a>
+<a name="ln1561"> </a>
+<a name="ln1562">                    //Vsync</a>
+<a name="ln1563">                    if (webpPreset.Vsync != Vsyncs.Off)</a>
+<a name="ln1564">                    {</a>
+<a name="ln1565">                        if (UserSettings.All.FfmpegVersion == SupportedFFmpegVersions.Version6)</a>
+<a name="ln1566">                            firstPass += &quot;-fps_mode &quot; + webpPreset.Vsync.GetLowerDescription();</a>
+<a name="ln1567">                        else</a>
+<a name="ln1568">                            firstPass += &quot;-vsync &quot; + webpPreset.Vsync.GetLowerDescription();</a>
+<a name="ln1569">                    }</a>
+<a name="ln1570"> </a>
+<a name="ln1571">                    firstPass += &quot; {O}&quot;;</a>
+<a name="ln1572">                }</a>
+<a name="ln1573"> </a>
+<a name="ln1574">                break;</a>
+<a name="ln1575"> </a>
+<a name="ln1576">                #endregion</a>
+<a name="ln1577">            }</a>
+<a name="ln1578">            case ExportFormats.Avif:</a>
+<a name="ln1579">            {</a>
+<a name="ln1580">                #region Avif</a>
+<a name="ln1581"> </a>
+<a name="ln1582">                if (preset is not FfmpegAvifPreset avifPreset)</a>
+<a name="ln1583">                    return;</a>
+<a name="ln1584"> </a>
+<a name="ln1585">                //ffmpeg -vsync 0 {I} -c:v libwebp_anim -lossless 0 -quality 75 -loop 0 -f webp {O}</a>
+<a name="ln1586">                if (avifPreset.SettingsMode == VideoSettingsModes.Advanced)</a>
+<a name="ln1587">                    firstPass = avifPreset.Parameters.Replace(&quot;\n&quot;, &quot; &quot;).Replace(&quot;\r&quot;, &quot;&quot;);</a>
+<a name="ln1588">                else</a>
+<a name="ln1589">                {</a>
+<a name="ln1590">                    //Vsync</a>
+<a name="ln1591">                    if (avifPreset.Vsync != Vsyncs.Off)</a>
+<a name="ln1592">                        firstPass += $&quot;-vsync {avifPreset.Vsync.ToString().ToLower()} &quot;;</a>
+<a name="ln1593"> </a>
+<a name="ln1594">                    //Input, encoder and loop.</a>
+<a name="ln1595">                    firstPass += $&quot;{{I}} -c:v {avifPreset.VideoCodec.GetLowerDescription()} &quot;;</a>
+<a name="ln1596">                    firstPass += $&quot;-loop {(avifPreset.Looped ? avifPreset.RepeatForever ? 0 : avifPreset.RepeatCount : -1)} &quot;;</a>
+<a name="ln1597"> </a>
+<a name="ln1598">                    //Codec preset.</a>
+<a name="ln1599">                    if (avifPreset.CodecPreset != VideoCodecPresets.Default)</a>
+<a name="ln1600">                        firstPass += $&quot;-preset {avifPreset.CodecPreset.GetLowerDescription()} &quot;;</a>
+<a name="ln1601"> </a>
+<a name="ln1602">                    //Quality.</a>
+<a name="ln1603">                    firstPass += $&quot;-quality {avifPreset.Quality} &quot;;</a>
+<a name="ln1604"> </a>
+<a name="ln1605">                    //Pixel format.</a>
+<a name="ln1606">                    if (avifPreset.PixelFormat != VideoPixelFormats.Auto)</a>
+<a name="ln1607">                        firstPass += $&quot;-pix_fmt {avifPreset.PixelFormat.GetLowerDescription()} &quot;;</a>
+<a name="ln1608"> </a>
+<a name="ln1609">                    //Framerate.</a>
+<a name="ln1610">                    if (avifPreset.Framerate != Framerates.Auto)</a>
+<a name="ln1611">                        firstPass += $&quot;-r {(avifPreset.Framerate == Framerates.Custom ? avifPreset.CustomFramerate.ToString(CultureInfo.InvariantCulture) : avifPreset.Framerate.GetLowerDescription())} &quot;;</a>
+<a name="ln1612"> </a>
+<a name="ln1613">                    //Format and output.</a>
+<a name="ln1614">                    firstPass += &quot;-f avif &quot;;</a>
+<a name="ln1615"> </a>
+<a name="ln1616">                    //Vsync</a>
+<a name="ln1617">                    if (avifPreset.Vsync != Vsyncs.Off)</a>
+<a name="ln1618">                    {</a>
+<a name="ln1619">                        if (UserSettings.All.FfmpegVersion == SupportedFFmpegVersions.Version6)</a>
+<a name="ln1620">                            firstPass += &quot;-fps_mode &quot; + avifPreset.Vsync.GetLowerDescription();</a>
+<a name="ln1621">                        else</a>
+<a name="ln1622">                            firstPass += &quot;-vsync &quot; + avifPreset.Vsync.GetLowerDescription();</a>
+<a name="ln1623">                    }</a>
+<a name="ln1624"> </a>
+<a name="ln1625">                    firstPass += &quot; {O}&quot;;</a>
+<a name="ln1626">                }</a>
+<a name="ln1627"> </a>
+<a name="ln1628">                break;</a>
+<a name="ln1629"> </a>
+<a name="ln1630">                #endregion</a>
+<a name="ln1631">            }</a>
+<a name="ln1632"> </a>
+<a name="ln1633">            case ExportFormats.Avi:</a>
+<a name="ln1634">            case ExportFormats.Mkv:</a>
+<a name="ln1635">            case ExportFormats.Mov:</a>
+<a name="ln1636">            case ExportFormats.Mp4:</a>
+<a name="ln1637">            case ExportFormats.Webm:</a>
+<a name="ln1638">            {</a>
+<a name="ln1639">                #region Video</a>
+<a name="ln1640"> </a>
+<a name="ln1641">                if (preset is not VideoPreset videoPreset)</a>
+<a name="ln1642">                    return;</a>
+<a name="ln1643"> </a>
+<a name="ln1644">                if (videoPreset.SettingsMode == VideoSettingsModes.Advanced)</a>
+<a name="ln1645">                {</a>
+<a name="ln1646">                    firstPass = videoPreset.Parameters.Replace(&quot;\n&quot;, &quot; &quot;).Replace(&quot;\r&quot;, &quot;&quot;);</a>
+<a name="ln1647"> </a>
+<a name="ln1648">                    if (firstPass.Contains(&quot;-pass 2&quot;))</a>
+<a name="ln1649">                    {</a>
+<a name="ln1650">                        firstPass = firstPass.Replace(&quot;-pass 2&quot;, $&quot;-pass 1 -passlogfile \&quot;{preset.FullPath}\&quot; &quot;);</a>
+<a name="ln1651">                        secondPass = &quot;-hide_banner &quot; + firstPass.Replace(&quot;-pass 1&quot;, $&quot;-pass 2 -passlogfile \&quot;{preset.FullPath}\&quot; &quot;);</a>
+<a name="ln1652">                    }</a>
+<a name="ln1653">                }</a>
+<a name="ln1654">                else</a>
+<a name="ln1655">                {</a>
+<a name="ln1656">                    //Hardware acceleration.</a>
+<a name="ln1657">                    if (videoPreset.HardwareAcceleration != HardwareAccelerationModes.Off)</a>
+<a name="ln1658">                        firstPass += &quot;-hwaccel auto &quot;;</a>
+<a name="ln1659"> </a>
+<a name="ln1660">                    //Input and encoder.</a>
+<a name="ln1661">                    firstPass += &quot;{I} &quot;;</a>
+<a name="ln1662">                    firstPass += $&quot;-c:v {videoPreset.VideoCodec.GetLowerDescription()} &quot;;</a>
+<a name="ln1663"> </a>
+<a name="ln1664">                    //Some codecs require special treatments.</a>
+<a name="ln1665">                    if (videoPreset.VideoCodec == VideoCodecs.Mpeg4)</a>
+<a name="ln1666">                        firstPass += &quot;-vtag xvid &quot;;</a>
+<a name="ln1667">                    else if (videoPreset.VideoCodec == VideoCodecs.Vp9)</a>
+<a name="ln1668">                        firstPass += &quot;-tile-columns 6 -frame-parallel 1 -auto-alt-ref 1 -lag-in-frames 25 &quot;;</a>
+<a name="ln1669"> </a>
+<a name="ln1670">                    //Codec preset.</a>
+<a name="ln1671">                    if (videoPreset.CodecPreset != VideoCodecPresets.Default &amp;&amp; videoPreset.CodecPreset != VideoCodecPresets.None &amp;&amp; videoPreset.CodecPreset != VideoCodecPresets.NotSelected)</a>
+<a name="ln1672">                    {</a>
+<a name="ln1673">                        if (videoPreset.VideoCodec is VideoCodecs.SvtAv1 or VideoCodecs.Rav1E)</a>
+<a name="ln1674">                            firstPass += $&quot;-preset {(int) videoPreset.CodecPreset} &quot;;</a>
+<a name="ln1675">                        else</a>
+<a name="ln1676">                            firstPass += $&quot;-preset {videoPreset.CodecPreset.GetLowerDescription()} &quot;;</a>
+<a name="ln1677">                    }</a>
+<a name="ln1678"> </a>
+<a name="ln1679">                    //Pixel format.</a>
+<a name="ln1680">                    if (videoPreset.PixelFormat != VideoPixelFormats.Auto)</a>
+<a name="ln1681">                        firstPass += $&quot;-pix_fmt {videoPreset.PixelFormat.GetLowerDescription()} &quot;;</a>
+<a name="ln1682"> </a>
+<a name="ln1683">                    //Workaround, makes the size to be divisible by two.</a>
+<a name="ln1684">                    firstPass += &quot;-vf \&quot;scale=trunc(iw/2)*2:trunc(ih/2)*2\&quot; &quot;; //&quot;scale=iw+mod(iw,2):ih+mod(ih,2):flags=neighbor&quot; OR &quot;pad=width={W}:height={H}:x=0:y=0:color=black&quot;</a>
+<a name="ln1685"> </a>
+<a name="ln1686">                    //CRF.</a>
+<a name="ln1687">                    if (videoPreset.ConstantRateFactor &gt; 0)</a>
+<a name="ln1688">                        firstPass += $&quot;-crf {videoPreset.ConstantRateFactor.Value.ToString(CultureInfo.InvariantCulture)} &quot;;</a>
+<a name="ln1689"> </a>
+<a name="ln1690">                    //Bitrate.</a>
+<a name="ln1691">                    if (videoPreset.IsVariableBitRate)</a>
+<a name="ln1692">                        firstPass += $&quot;-q:v {videoPreset.QualityLevel.ToString(CultureInfo.InvariantCulture)} &quot;;</a>
+<a name="ln1693">                    else</a>
+<a name="ln1694">                    {</a>
+<a name="ln1695">                        if (videoPreset.BitRate &gt; 0)</a>
+<a name="ln1696">                            firstPass += $&quot;-b:v {videoPreset.BitRate.ToString(CultureInfo.InvariantCulture)}{videoPreset.BitRateUnit.GetDescription()} &quot;;</a>
+<a name="ln1697">                        else if (videoPreset.BitRate == 0 &amp;&amp; (videoPreset.VideoCodec == VideoCodecs.Vp8 || videoPreset.VideoCodec == VideoCodecs.Vp9))</a>
+<a name="ln1698">                            firstPass += &quot;-b:v 0 &quot;;</a>
+<a name="ln1699">                    }</a>
+<a name="ln1700"> </a>
+<a name="ln1701">                    //Minimum bitrate.</a>
+<a name="ln1702">                    if (videoPreset.MinimumBitRate &gt; 0)</a>
+<a name="ln1703">                        firstPass += $&quot;-minrate {videoPreset.MinimumBitRate.ToString(CultureInfo.InvariantCulture)}{videoPreset.MinimumBitRateUnit.GetDescription()} &quot;;</a>
+<a name="ln1704"> </a>
+<a name="ln1705">                    //Maximum bitrate.</a>
+<a name="ln1706">                    if (videoPreset.MaximumBitRate &gt; 0)</a>
+<a name="ln1707">                        firstPass += $&quot;-maxrate {videoPreset.MaximumBitRate.ToString(CultureInfo.InvariantCulture)}{videoPreset.MaximumBitRateUnit.GetDescription()} &quot;;</a>
+<a name="ln1708"> </a>
+<a name="ln1709">                    //Buffer size.</a>
+<a name="ln1710">                    if (videoPreset.RateControlBuffer &gt; 0)</a>
+<a name="ln1711">                        firstPass += $&quot;-bufsize {videoPreset.RateControlBuffer.ToString(CultureInfo.InvariantCulture)}{videoPreset.RateControlBufferUnit.GetDescription()} &quot;;</a>
+<a name="ln1712"> </a>
+<a name="ln1713">                    //First pass adjustments.</a>
+<a name="ln1714">                    if (videoPreset.Pass &gt; 1)</a>
+<a name="ln1715">                    {</a>
+<a name="ln1716">                        if (videoPreset.VideoCodec == VideoCodecs.X265)</a>
+<a name="ln1717">                            firstPass += &quot;-x265-params pass=1 &quot;;</a>
+<a name="ln1718">                        else</a>
+<a name="ln1719">                            firstPass += &quot;-pass 1 &quot;;</a>
+<a name="ln1720"> </a>
+<a name="ln1721">                        firstPass += $&quot;-passlogfile \&quot;{preset.FullPath}\&quot; &quot;;</a>
+<a name="ln1722">                    }</a>
+<a name="ln1723"> </a>
+<a name="ln1724">                    //Framerate.</a>
+<a name="ln1725">                    if (videoPreset.Framerate != Framerates.Auto)</a>
+<a name="ln1726">                        firstPass += $&quot;-r {(videoPreset.Framerate == Framerates.Custom ? videoPreset.CustomFramerate.ToString(CultureInfo.InvariantCulture) : videoPreset.Framerate.GetLowerDescription())} &quot;;</a>
+<a name="ln1727"> </a>
+<a name="ln1728">                    //Format and output.</a>
+<a name="ln1729">                    firstPass += $&quot;-f {preset.Type.ToString().ToLower().Replace(&quot;mkv&quot;, &quot;matroska&quot;)} &quot;;</a>
+<a name="ln1730"> </a>
+<a name="ln1731">                    //Vsync</a>
+<a name="ln1732">                    if (videoPreset.Vsync != Vsyncs.Off)</a>
+<a name="ln1733">                    {</a>
+<a name="ln1734">                        if (UserSettings.All.FfmpegVersion == SupportedFFmpegVersions.Version6)</a>
+<a name="ln1735">                            firstPass += &quot;-fps_mode &quot; + videoPreset.Vsync.GetLowerDescription();</a>
+<a name="ln1736">                        else</a>
+<a name="ln1737">                            firstPass += &quot;-vsync &quot; + videoPreset.Vsync.GetLowerDescription();</a>
+<a name="ln1738">                    }</a>
+<a name="ln1739"> </a>
+<a name="ln1740">                    firstPass += &quot; {O}&quot;;</a>
+<a name="ln1741"> </a>
+<a name="ln1742">                    //Second pass, using a similar command with some adjustments.</a>
+<a name="ln1743">                    if (videoPreset.Pass &gt; 1)</a>
+<a name="ln1744">                        secondPass = &quot;-hide_banner &quot; + firstPass.Replace(&quot;-pass 1&quot;, &quot;-pass 2&quot;).Replace(&quot;pass=1&quot;, &quot;pass=2&quot;);</a>
+<a name="ln1745">                }</a>
+<a name="ln1746"> </a>
+<a name="ln1747">                break;</a>
+<a name="ln1748"> </a>
+<a name="ln1749">                #endregion</a>
+<a name="ln1750">            }</a>
+<a name="ln1751">        }</a>
+<a name="ln1752"> </a>
+<a name="ln1753">        //Replace special params.</a>
+<a name="ln1754">        firstPass = firstPass.Replace(&quot;{I}&quot;, $&quot;-safe 0 -f concat -i \&quot;file:{concatFile}\&quot;&quot;).Replace(&quot;{O}&quot;, $&quot;-y \&quot;{preset.FullPath}\&quot;&quot;)</a>
+<a name="ln1755">            .Replace(&quot;{H}&quot;, preset.Height.DivisibleByTwo().ToString(CultureInfo.InvariantCulture)).Replace(&quot;{W}&quot;, preset.Width.DivisibleByTwo().ToString(CultureInfo.InvariantCulture));</a>
+<a name="ln1756"> </a>
+<a name="ln1757">        secondPass = secondPass.Replace(&quot;{I}&quot;, $&quot;-safe 0 -f concat -i \&quot;file:{concatFile}\&quot;&quot;).Replace(&quot;{O}&quot;, $&quot;-y \&quot;{preset.FullPath}\&quot;&quot;)</a>
+<a name="ln1758">            .Replace(&quot;{H}&quot;, preset.Height.DivisibleByTwo().ToString(CultureInfo.InvariantCulture)).Replace(&quot;{W}&quot;, preset.Width.DivisibleByTwo().ToString(CultureInfo.InvariantCulture));</a>
+<a name="ln1759"> </a>
+<a name="ln1760">        var process = new ProcessStartInfo(UserSettings.All.FfmpegLocation)</a>
+<a name="ln1761">        {</a>
+<a name="ln1762">            Arguments = firstPass,</a>
+<a name="ln1763">            CreateNoWindow = true,</a>
+<a name="ln1764">            ErrorDialog = false,</a>
+<a name="ln1765">            UseShellExecute = false,</a>
+<a name="ln1766">            RedirectStandardError = true</a>
+<a name="ln1767">        };</a>
+<a name="ln1768"> </a>
+<a name="ln1769">        var log = &quot;&quot;;</a>
+<a name="ln1770">        using (var pro = Process.Start(process))</a>
+<a name="ln1771">        {</a>
+<a name="ln1772">            var indeterminate = true;</a>
+<a name="ln1773"> </a>
+<a name="ln1774">            Update(id, 0, LocalizationHelper.Get(&quot;S.Encoder.Analyzing&quot;));</a>
+<a name="ln1775"> </a>
+<a name="ln1776">            while (!pro.StandardError.EndOfStream)</a>
+<a name="ln1777">            {</a>
+<a name="ln1778">                if (tokenSource.IsCancellationRequested)</a>
+<a name="ln1779">                {</a>
+<a name="ln1780">                    pro.Kill();</a>
+<a name="ln1781">                    return;</a>
+<a name="ln1782">                }</a>
+<a name="ln1783"> </a>
+<a name="ln1784">                var line = pro.StandardError.ReadLine() ?? &quot;&quot;;</a>
+<a name="ln1785">                log += Environment.NewLine + line;</a>
+<a name="ln1786"> </a>
+<a name="ln1787">                var split = line.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);</a>
+<a name="ln1788">                var containsDuplicatedFrames = line.Contains(&quot;dup=&quot;);</a>
+<a name="ln1789"> </a>
+<a name="ln1790">                for (var block = 0; block &lt; split.Length; block++)</a>
+<a name="ln1791">                {</a>
+<a name="ln1792">                    //frame=  321 fps=170 q=-0.0 Lsize=      57kB time=00:00:14.85 bitrate=  31.2kbits/s speed=7.87x</a>
+<a name="ln1793">                    if (!split[block].StartsWith(&quot;frame=&quot;))</a>
+<a name="ln1794">                        continue;</a>
+<a name="ln1795"> </a>
+<a name="ln1796">                    if (int.TryParse(split[block + 1], out var frame))</a>
+<a name="ln1797">                    {</a>
+<a name="ln1798">                        if (containsDuplicatedFrames)</a>
+<a name="ln1799">                        {</a>
+<a name="ln1800">                            var dupFramesPosition = split.IndexOf(x =&gt; x.Contains(&quot;dup=&quot;));</a>
+<a name="ln1801">                            var dupFramesValue = split[dupFramesPosition][4..]; //skip dup=</a>
+<a name="ln1802">                            if (int.TryParse(dupFramesValue, out var duplicatedFrames))</a>
+<a name="ln1803">                            {</a>
+<a name="ln1804">                                // if we've managed to read number of duplicated frames - adjust the frame number</a>
+<a name="ln1805">                                frame -= duplicatedFrames;</a>
+<a name="ln1806">                            }</a>
+<a name="ln1807">                        }</a>
+<a name="ln1808">                        if (frame &gt; 0)</a>
+<a name="ln1809">                        {</a>
+<a name="ln1810">                            if (indeterminate)</a>
+<a name="ln1811">                            {</a>
+<a name="ln1812">                                Update(id, EncodingStatus.Processing, null, false);</a>
+<a name="ln1813">                                indeterminate = false;</a>
+<a name="ln1814">                            }</a>
+<a name="ln1815"> </a>
+<a name="ln1816">                            Update(id, frame, string.Format(processing, frame));</a>
+<a name="ln1817">                        }</a>
+<a name="ln1818">                    }</a>
+<a name="ln1819"> </a>
+<a name="ln1820">                    break;</a>
+<a name="ln1821">                }</a>
+<a name="ln1822">            }</a>
+<a name="ln1823">        }</a>
+<a name="ln1824"> </a>
+<a name="ln1825">        var fileInfo = new FileInfo(preset.FullPath);</a>
+<a name="ln1826"> </a>
+<a name="ln1827">        //Execute the second pass, cleaning up the logs.</a>
+<a name="ln1828">        if (!string.IsNullOrWhiteSpace(secondPass))</a>
+<a name="ln1829">        {</a>
+<a name="ln1830">            //I could try using as a single command.</a>
+<a name="ln1831">            //ffmpeg -y -hwaccel auto {I} -c:v h264_nvenc -pix_fmt yuv420p -vf &quot;scale=trunc(iw/2)*2:trunc(ih/2)*2&quot; -pass 1 -f avi NUL</a>
+<a name="ln1832">            //&amp;&amp;</a>
+<a name="ln1833">            //ffmpeg -y -hwaccel auto {I} -c:v h264_nvenc -pix_fmt yuv420p -vf &quot;scale=trunc(iw/2)*2:trunc(ih/2)*2&quot; -pass 2 -f avi {O}</a>
+<a name="ln1834"> </a>
+<a name="ln1835">            log += Environment.NewLine + SecondPassFfmpeg(secondPass, id, tokenSource, LocalizationHelper.Get(&quot;S.Encoder.Processing.Second&quot;));</a>
+<a name="ln1836"> </a>
+<a name="ln1837">            EraseSecondPassLogs(preset.FullPath);</a>
+<a name="ln1838">        }</a>
+<a name="ln1839"> </a>
+<a name="ln1840">        if (!fileInfo.Exists || fileInfo.Length == 0)</a>
+<a name="ln1841">            throw new Exception($&quot;Error while encoding the {preset.Type} with FFmpeg.&quot;) { HelpLink = $&quot;Command:\n\r{firstPass + Environment.NewLine + secondPass}\n\rResult:\n\r{log}&quot; };</a>
+<a name="ln1842">    }</a>
+<a name="ln1843"> </a>
+<a name="ln1844">    private static string SecondPassFfmpeg(string command, int id, CancellationTokenSource tokenSource, string processing)</a>
+<a name="ln1845">    {</a>
+<a name="ln1846">        var log = &quot;&quot;;</a>
+<a name="ln1847"> </a>
+<a name="ln1848">        var process = new ProcessStartInfo(UserSettings.All.FfmpegLocation)</a>
+<a name="ln1849">        {</a>
+<a name="ln1850">            Arguments = command,</a>
+<a name="ln1851">            CreateNoWindow = true,</a>
+<a name="ln1852">            ErrorDialog = false,</a>
+<a name="ln1853">            UseShellExecute = false,</a>
+<a name="ln1854">            RedirectStandardError = true</a>
+<a name="ln1855">        };</a>
+<a name="ln1856"> </a>
+<a name="ln1857">        using (var pro = Process.Start(process))</a>
+<a name="ln1858">        {</a>
+<a name="ln1859">            var indeterminate = true;</a>
+<a name="ln1860"> </a>
+<a name="ln1861">            Update(id, 0, LocalizationHelper.Get(&quot;S.Encoder.Analyzing.Second&quot;));</a>
+<a name="ln1862"> </a>
+<a name="ln1863">            while (!pro.StandardError.EndOfStream)</a>
+<a name="ln1864">            {</a>
+<a name="ln1865">                if (tokenSource.IsCancellationRequested)</a>
+<a name="ln1866">                {</a>
+<a name="ln1867">                    pro.Kill();</a>
+<a name="ln1868">                    return log;</a>
+<a name="ln1869">                }</a>
+<a name="ln1870"> </a>
+<a name="ln1871">                var line = pro.StandardError.ReadLine() ?? &quot;&quot;;</a>
+<a name="ln1872">                log += Environment.NewLine + line;</a>
+<a name="ln1873"> </a>
+<a name="ln1874">                var split = line.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);</a>
+<a name="ln1875"> </a>
+<a name="ln1876">                for (var block = 0; block &lt; split.Length; block++)</a>
+<a name="ln1877">                {</a>
+<a name="ln1878">                    //frame=  321 fps=170 q=-0.0 Lsize=      57kB time=00:00:14.85 bitrate=  31.2kbits/s speed=7.87x</a>
+<a name="ln1879">                    if (!split[block].StartsWith(&quot;frame=&quot;))</a>
+<a name="ln1880">                        continue;</a>
+<a name="ln1881"> </a>
+<a name="ln1882">                    if (int.TryParse(split[block + 1], out var frame))</a>
+<a name="ln1883">                    {</a>
+<a name="ln1884">                        if (frame &gt; 0)</a>
+<a name="ln1885">                        {</a>
+<a name="ln1886">                            if (indeterminate)</a>
+<a name="ln1887">                            {</a>
+<a name="ln1888">                                Update(id, EncodingStatus.Processing, null, false);</a>
+<a name="ln1889">                                indeterminate = false;</a>
+<a name="ln1890">                            }</a>
+<a name="ln1891"> </a>
+<a name="ln1892">                            Update(id, frame, string.Format(processing, frame));</a>
+<a name="ln1893">                        }</a>
+<a name="ln1894">                    }</a>
+<a name="ln1895"> </a>
+<a name="ln1896">                    break;</a>
+<a name="ln1897">                }</a>
+<a name="ln1898">            }</a>
+<a name="ln1899">        }</a>
+<a name="ln1900"> </a>
+<a name="ln1901">        return log;</a>
+<a name="ln1902">    }</a>
+<a name="ln1903"> </a>
+<a name="ln1904">    private static void EraseSecondPassLogs(string filename)</a>
+<a name="ln1905">    {</a>
+<a name="ln1906">        try</a>
+<a name="ln1907">        {</a>
+<a name="ln1908">            if (File.Exists(filename + &quot;-0.log.mbtree&quot;))</a>
+<a name="ln1909">                File.Delete(filename + &quot;-0.log.mbtree&quot;);</a>
+<a name="ln1910"> </a>
+<a name="ln1911">            if (File.Exists(filename + &quot;-0.log&quot;))</a>
+<a name="ln1912">                File.Delete(filename + &quot;-0.log&quot;);</a>
+<a name="ln1913">        }</a>
+<a name="ln1914">        catch (Exception ex)</a>
+<a name="ln1915">        {</a>
+<a name="ln1916">            LogWriter.Log(ex, &quot;Impossible to delete the log files created by the second pass.&quot;);</a>
+<a name="ln1917">        }</a>
+<a name="ln1918">    }</a>
+<a name="ln1919"> </a>
+<a name="ln1920">    #endregion</a>
+<a name="ln1921">}</a>
+<a name="ln1922"> </a>
+<a name="ln1923"> </a>
+<a name="ln1924">interface IEncoding</a>
+<a name="ln1925">{</a>
+<a name="ln1926">    bool IsEncoderWindow { get; }</a>
+<a name="ln1927"> </a>
+<a name="ln1928">    EncoderListViewItem EncodingAdded(int id);</a>
+<a name="ln1929">    void EncodingUpdated(int? id = null, bool onlyStatus = false);</a>
+<a name="ln1930">    EncoderListViewItem EncodingRemoved(int id);</a>
+<a name="ln1931">}</a>
+<a name="ln1932"> </a>
+<a name="ln1933">internal class EncodingItem</a>
+<a name="ln1934">{</a>
+<a name="ln1935">    public int Id { get; set; }</a>
+<a name="ln1936"> </a>
+<a name="ln1937">    public ExportFormats OutputType { get; set; }</a>
+<a name="ln1938"> </a>
+<a name="ln1939">    public EncodingStatus Status { get; set;}</a>
+<a name="ln1940"> </a>
+<a name="ln1941">    public string Text { get; set; }</a>
+<a name="ln1942"> </a>
+<a name="ln1943">    public int FrameCount { get; set; }</a>
+<a name="ln1944"> </a>
+<a name="ln1945">    public int CurrentFrame { get; set; }</a>
+<a name="ln1946"> </a>
+<a name="ln1947">    public bool IsIndeterminate { get; set; }</a>
+<a name="ln1948"> </a>
+<a name="ln1949">    public long SizeInBytes { get; set; }</a>
+<a name="ln1950"> </a>
+<a name="ln1951">    public string OutputFilename { get; set; }</a>
+<a name="ln1952"> </a>
+<a name="ln1953">    public bool SavedToDisk { get; set; }</a>
+<a name="ln1954"> </a>
+<a name="ln1955">    public bool AreMultipleFiles { get; set; }</a>
+<a name="ln1956"> </a>
+<a name="ln1957"> </a>
+<a name="ln1958">    public bool CopiedToClipboard { get; set; }</a>
+<a name="ln1959"> </a>
+<a name="ln1960">    public Exception CopyTaskException { get; set; }</a>
+<a name="ln1961"> </a>
+<a name="ln1962"> </a>
+<a name="ln1963">    public bool CommandExecuted { get; set; }</a>
+<a name="ln1964"> </a>
+<a name="ln1965">    public string Command { get; set; }</a>
+<a name="ln1966"> </a>
+<a name="ln1967">    public string CommandOutput { get; set; }</a>
+<a name="ln1968"> </a>
+<a name="ln1969">    public Exception CommandTaskException { get; set; }</a>
+<a name="ln1970"> </a>
+<a name="ln1971"> </a>
+<a name="ln1972">    public bool Uploaded { get; set; }</a>
+<a name="ln1973"> </a>
+<a name="ln1974">    public string UploadLink { get; set; }</a>
+<a name="ln1975"> </a>
+<a name="ln1976">    public string UploadLinkDisplay { get; set; }</a>
+<a name="ln1977"> </a>
+<a name="ln1978">    public string DeletionLink { get; set; }</a>
+<a name="ln1979"> </a>
+<a name="ln1980">    public Exception UploadTaskException { get; set; }</a>
+<a name="ln1981"> </a>
+<a name="ln1982">    public Exception Exception { get; set; }</a>
+<a name="ln1983"> </a>
+<a name="ln1984">    public CancellationTokenSource TokenSource { get; set; }</a>
+<a name="ln1985"> </a>
+<a name="ln1986"> </a>
+<a name="ln1987">    public TimeSpan TimeToAnalyze { get; set; }</a>
+<a name="ln1988"> </a>
+<a name="ln1989">    public TimeSpan TimeToEncode { get; set; }</a>
+<a name="ln1990"> </a>
+<a name="ln1991">    public TimeSpan TimeToUpload { get; set; }</a>
+<a name="ln1992"> </a>
+<a name="ln1993">    public TimeSpan TimeToCopy { get; set; }</a>
+<a name="ln1994"> </a>
+<a name="ln1995">    public TimeSpan TimeToExecute { get; set; }</a>
+<a name="ln1996">}</a>
+</code></pre>
+<div class="balloon" rel="1400"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3207/" target="_blank">V3207</a> The 'not ExportFormats.Gif or ExportFormats.Apng' logical pattern may not work as expected. The 'not' pattern is matched only to the first expression from the 'or' pattern.</p></div>
+<div class="balloon" rel="232"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3156/" target="_blank">V3156</a> The first argument of the 'Format' method is not expected to be null.</p></div>
+<div class="balloon" rel="568"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3156/" target="_blank">V3156</a> The first argument of the 'Format' method is not expected to be null. Potential null value: processing.</p></div>
+<div class="balloon" rel="673"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3156/" target="_blank">V3156</a> The first argument of the 'Format' method is not expected to be null. Potential null value: processing.</p></div>
+<div class="balloon" rel="741"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3156/" target="_blank">V3156</a> The first argument of the 'Format' method is not expected to be null. Potential null value: processing.</p></div>
+<div class="balloon" rel="872"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3156/" target="_blank">V3156</a> The first argument of the 'Format' method is not expected to be null. Potential null value: processing.</p></div>
+<div class="balloon" rel="927"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3156/" target="_blank">V3156</a> The first argument of the 'Format' method is not expected to be null. Potential null value: processing.</p></div>
+<div class="balloon" rel="1068"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3156/" target="_blank">V3156</a> The first argument of the 'Format' method is not expected to be null. Potential null value: processing.</p></div>
+<div class="balloon" rel="1835"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3156/" target="_blank">V3156</a> The fourth argument of the 'SecondPassFfmpeg' method is passed as an argument to the 'Format' method and is not expected to be null.</p></div>
+<div class="balloon" rel="229"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3002/" target="_blank">V3002</a> The switch statement does not cover all values of the 'EncodingStatus' enum: Canceled, FileDeletedOrMoved.</p></div>
+<link rel="stylesheet" href="highlight.css">
+<script src="highlight.pack.js"></script>
+<script src="highlightjs-line-numbers.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script>hljs.initLineNumbersOnLoad();</script>
+<script>
+  $(document).ready(function() {
+      $('.balloon').each(function () {
+          var bl = $(this);
+          var line = bl.attr('rel');
+          var text = $('a[name="ln'+line+'"]').text();
+
+          var space_count = 0;
+          for(var i = 0; i<text.length; i++){
+              var char = text[i];
+              if((char !== ' ')&&(char !== '\t'))break;
+              if(char === '\t')space_count++;
+              space_count++;
+          }
+
+          bl.css('margin-left', space_count*8);
+          $('a[name="ln'+line+'"]').after(bl);
+      });
+
+      window.location = window.location;
+  });
+</script>
+</body>
+</html>

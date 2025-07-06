@@ -1,0 +1,4009 @@
+{
+  "version": 3,
+  "warnings": [
+    {
+      "code": "Renew",
+      "cwe": 0,
+      "level": 1,
+      "positions": [
+        {
+          "file": "",
+          "line": 1,
+          "endLine": 1,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 0,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [],
+      "message": "Your license will expire in 29 days. Click 'Renew' to learn more or contact us via Feedback form on our website. This is an information message. You can continue using the analyzer with your current license. To hide this message, use the '--disableLicenseExpirationCheck' flag.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3120",
+      "cwe": 835,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.ConstantsGenerator\\PawnIslandsGenerator.cs",
+          "line": 100,
+          "endLine": 100,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 86552649,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.ConstantsGenerator"
+      ],
+      "message": "Potentially infinite loop. The 'pawns' variable from the loop exit condition does not change its value between iterations.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3150",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.ConstantsGenerator\\PawnIslandsGenerator.cs",
+          "line": 100,
+          "endLine": 100,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 86552649,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.ConstantsGenerator"
+      ],
+      "message": "Loop break conditions do not depend on the number of iterations.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3060",
+      "cwe": 682,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx\\AttackGenerator.cs",
+          "line": 350,
+          "endLine": 350,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 82192515,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx"
+      ],
+      "message": "A value of variable is not modified. Consider inspecting the expression. It is possible that other value should be present instead of '0'.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3060",
+      "cwe": 682,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx\\AttackGenerator.cs",
+          "line": 401,
+          "endLine": 401,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 82192539,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx"
+      ],
+      "message": "A value of variable is not modified. Consider inspecting the expression. It is possible that other value should be present instead of '0'.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3155",
+      "cwe": 682,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx\\Masks.cs",
+          "line": 151,
+          "endLine": 151,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 850643760,
+            "nextLine": 1114466224,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx"
+      ],
+      "message": "The expression is incorrect or it can be simplified. The 'SetFileRankMask(-1, rank)' expression always evaluates to '0'.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3106",
+      "cwe": 125,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx\\Model\\Move.cs",
+          "line": 358,
+          "endLine": 358,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -23394625,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx"
+      ],
+      "message": "Possibly index is out of bound. The value of 'promotedPiece' index could reach 15.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3202",
+      "cwe": 561,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx\\OnlineTablebaseProber.cs",
+          "line": 69,
+          "endLine": 69,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -2089933155,
+            "nextLine": 1461247657,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx"
+      ],
+      "message": "Unreachable code detected. The 'case' value 'TablebaseEvaluationCategory.Unknown' is out of range of the match expression 'tablebaseEval.Category'.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3073",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx\\Model\\Game.cs",
+          "line": 7,
+          "endLine": 7,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 1219561526,
+            "nextLine": 123,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx\\Model\\Game.cs",
+          "line": 30,
+          "endLine": 30
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx\\Model\\Game.cs",
+          "line": 32,
+          "endLine": 32
+        }
+      ],
+      "projects": [
+        "Lynx"
+      ],
+      "message": "Not all IDisposable members are properly disposed. Call 'Dispose' when disposing 'Game' class. Inspect: CurrentPosition, PositionBeforeLastSearch.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3002",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx\\Model\\Position.cs",
+          "line": 459,
+          "endLine": 459,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 547727224,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx"
+      ],
+      "message": "The switch statement does not cover all values of the 'SpecialMoveType' enum: DoublePawnPush.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3072",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx\\Searcher.cs",
+          "line": 10,
+          "endLine": 10,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 1531492544,
+            "nextLine": 123,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx\\Searcher.cs",
+          "line": 22,
+          "endLine": 22
+        }
+      ],
+      "projects": [
+        "Lynx"
+      ],
+      "message": "The 'Searcher' class containing IDisposable members does not itself implement IDisposable. Inspect: _mainEngine.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3022",
+      "cwe": 571,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx\\Searcher.cs",
+          "line": 181,
+          "endLine": 181,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 94786560,
+            "nextLine": -1323192656,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx"
+      ],
+      "message": "Expression is always true.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3063",
+      "cwe": 571,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\CheckmateDetectionLimits_Benchmark.cs",
+          "line": 93,
+          "endLine": 93,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 727131476,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "A part of conditional expression is always true if it is evaluated: iterations > -EvaluationConstants.PositiveCheckmateDetectionLimit.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3010",
+      "cwe": 252,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\EncodeMove_Benchmark.cs",
+          "line": 55,
+          "endLine": 55,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -791467418,
+            "nextLine": -1504263033,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "The return value of function 'EncodeMoveBool' is required to be utilized.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3010",
+      "cwe": 252,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\EncodeMove_Benchmark.cs",
+          "line": 56,
+          "endLine": 56,
+          "navigation": {
+            "previousLine": -791467418,
+            "currentLine": -1504263033,
+            "nextLine": 1853856990,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "The return value of function 'EncodeMoveBool' is required to be utilized.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3010",
+      "cwe": 252,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\EncodeMove_Benchmark.cs",
+          "line": 57,
+          "endLine": 57,
+          "navigation": {
+            "previousLine": -1504263033,
+            "currentLine": 1853856990,
+            "nextLine": -1413513601,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "The return value of function 'EncodeMoveBool' is required to be utilized.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3010",
+      "cwe": 252,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\EncodeMove_Benchmark.cs",
+          "line": 58,
+          "endLine": 58,
+          "navigation": {
+            "previousLine": 1853856990,
+            "currentLine": -1413513601,
+            "nextLine": -1812832820,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "The return value of function 'EncodeMoveBool' is required to be utilized.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3010",
+      "cwe": 252,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\EncodeMove_Benchmark.cs",
+          "line": 59,
+          "endLine": 59,
+          "navigation": {
+            "previousLine": -1413513601,
+            "currentLine": -1812832820,
+            "nextLine": 178230210,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "The return value of function 'EncodeMoveBool' is required to be utilized.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3010",
+      "cwe": 252,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\EncodeMove_Benchmark.cs",
+          "line": 60,
+          "endLine": 60,
+          "navigation": {
+            "previousLine": -1812832820,
+            "currentLine": 178230210,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "The return value of function 'EncodeMoveBool' is required to be utilized.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3010",
+      "cwe": 252,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\EncodeMove_Benchmark.cs",
+          "line": 73,
+          "endLine": 73,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -2053986836,
+            "nextLine": -184760069,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "The return value of function 'EncodeMoveInt' is required to be utilized.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3010",
+      "cwe": 252,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\EncodeMove_Benchmark.cs",
+          "line": 74,
+          "endLine": 74,
+          "navigation": {
+            "previousLine": -2053986836,
+            "currentLine": -184760069,
+            "nextLine": -855099550,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "The return value of function 'EncodeMoveInt' is required to be utilized.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3010",
+      "cwe": 252,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\EncodeMove_Benchmark.cs",
+          "line": 75,
+          "endLine": 75,
+          "navigation": {
+            "previousLine": -184760069,
+            "currentLine": -855099550,
+            "nextLine": 690308112,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "The return value of function 'EncodeMoveInt' is required to be utilized.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3010",
+      "cwe": 252,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\EncodeMove_Benchmark.cs",
+          "line": 76,
+          "endLine": 76,
+          "navigation": {
+            "previousLine": -855099550,
+            "currentLine": 690308112,
+            "nextLine": 1811981464,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "The return value of function 'EncodeMoveInt' is required to be utilized.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3010",
+      "cwe": 252,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\EncodeMove_Benchmark.cs",
+          "line": 77,
+          "endLine": 77,
+          "navigation": {
+            "previousLine": 690308112,
+            "currentLine": 1811981464,
+            "nextLine": -315645695,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "The return value of function 'EncodeMoveInt' is required to be utilized.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3010",
+      "cwe": 252,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\EncodeMove_Benchmark.cs",
+          "line": 78,
+          "endLine": 78,
+          "navigation": {
+            "previousLine": 1811981464,
+            "currentLine": -315645695,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "The return value of function 'EncodeMoveInt' is required to be utilized.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3120",
+      "cwe": 835,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\MoveGeneratorArrayVsDictionary_Benchmark.cs",
+          "line": 49,
+          "endLine": 49,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 695086153,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "Potentially infinite loop. The 'bitboard' variable from the loop exit condition does not change its value between iterations.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3150",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\MoveGeneratorArrayVsDictionary_Benchmark.cs",
+          "line": 49,
+          "endLine": 49,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 695086153,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "Loop break conditions do not depend on the number of iterations.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3114",
+      "cwe": 404,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\MoveGeneratorArrayVsDictionary_Benchmark.cs",
+          "line": 43,
+          "endLine": 43,
+          "navigation": {
+            "previousLine": 83767,
+            "currentLine": 103096476,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "IDisposable object 'position' is not disposed before method returns.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3120",
+      "cwe": 835,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\MoveGeneratorArrayVsDictionary_Benchmark.cs",
+          "line": 74,
+          "endLine": 74,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 695086153,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "Potentially infinite loop. The 'bitboard' variable from the loop exit condition does not change its value between iterations.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3150",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\MoveGeneratorArrayVsDictionary_Benchmark.cs",
+          "line": 74,
+          "endLine": 74,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 695086153,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "Loop break conditions do not depend on the number of iterations.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3114",
+      "cwe": 404,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\MoveGeneratorArrayVsDictionary_Benchmark.cs",
+          "line": 68,
+          "endLine": 68,
+          "navigation": {
+            "previousLine": 83767,
+            "currentLine": 103096476,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "IDisposable object 'position' is not disposed before method returns.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3117",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\FENGeneration_Benchmark.cs",
+          "line": 494,
+          "endLine": 494,
+          "navigation": {
+            "previousLine": 216764,
+            "currentLine": -773068914,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "Constructor parameter 'calculateFen' is not used.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3117",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\FENGeneration_Benchmark.cs",
+          "line": 836,
+          "endLine": 836,
+          "navigation": {
+            "previousLine": 216764,
+            "currentLine": 483357793,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "Constructor parameter 'calculateFen' is not used.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3117",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\FENGeneration_Benchmark.cs",
+          "line": 1182,
+          "endLine": 1182,
+          "navigation": {
+            "previousLine": 216764,
+            "currentLine": -1061289388,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "Constructor parameter 'calculateFen' is not used.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3117",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\FENGeneration_Benchmark.cs",
+          "line": 1528,
+          "endLine": 1528,
+          "navigation": {
+            "previousLine": 216764,
+            "currentLine": -17100831,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "Constructor parameter 'calculateFen' is not used.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3117",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\FENGeneration_Benchmark.cs",
+          "line": 1874,
+          "endLine": 1874,
+          "navigation": {
+            "previousLine": 216764,
+            "currentLine": 730242626,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "Constructor parameter 'calculateFen' is not used.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3106",
+      "cwe": 125,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\Move_UCIString_Benchmark.cs",
+          "line": 110,
+          "endLine": 110,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -23394625,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "Possibly index is out of bound. The value of 'promotedPiece' index could reach 15.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3013",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\MutableReadonlyBitBoard_Benchmark.cs",
+          "line": 97,
+          "endLine": 97,
+          "navigation": {
+            "previousLine": 1063936976,
+            "currentLine": -560801550,
+            "nextLine": 238830704,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\MutableReadonlyBitBoard_Benchmark.cs",
+          "line": 98,
+          "endLine": 98
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "It is odd that the body of 'AddMutableByType' function is fully equivalent to the body of 'AddMutableByRef' function (97, line 98).",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3013",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\MutableReadonlyBitBoard_Benchmark.cs",
+          "line": 99,
+          "endLine": 99,
+          "navigation": {
+            "previousLine": 238830704,
+            "currentLine": -1729655068,
+            "nextLine": 547435975,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\MutableReadonlyBitBoard_Benchmark.cs",
+          "line": 100,
+          "endLine": 100
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "It is odd that the body of 'AddMutableReadonlyByType' function is fully equivalent to the body of 'AddMutableReadonlyByRef' function (99, line 100).",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3072",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\ParseGame_Benchmark.cs",
+          "line": 475,
+          "endLine": 475,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": -1265945626,
+            "nextLine": 123,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\ParseGame_Benchmark.cs",
+          "line": 489,
+          "endLine": 489
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\ParseGame_Benchmark.cs",
+          "line": 487,
+          "endLine": 487
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "The 'OriginalGame' class containing IDisposable members does not itself implement IDisposable. Inspect: _gameInitialPosition, CurrentPosition.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3072",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\ParseGame_Benchmark.cs",
+          "line": 550,
+          "endLine": 550,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": -1265934874,
+            "nextLine": 123,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\ParseGame_Benchmark.cs",
+          "line": 564,
+          "endLine": 564
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\ParseGame_Benchmark.cs",
+          "line": 562,
+          "endLine": 562
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "The 'ImprovedGame' class containing IDisposable members does not itself implement IDisposable. Inspect: _gameInitialPosition, CurrentPosition.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3072",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\ParseGame_Benchmark.cs",
+          "line": 631,
+          "endLine": 631,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 1763097599,
+            "nextLine": 123,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\ParseGame_Benchmark.cs",
+          "line": 645,
+          "endLine": 645
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\ParseGame_Benchmark.cs",
+          "line": 643,
+          "endLine": 643
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "The 'ImprovedGame2' class containing IDisposable members does not itself implement IDisposable. Inspect: _gameInitialPosition, CurrentPosition.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3120",
+      "cwe": 835,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\PawnIslandsBenchmark.cs",
+          "line": 122,
+          "endLine": 122,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 86552649,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "Potentially infinite loop. The 'pawns' variable from the loop exit condition does not change its value between iterations.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3150",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\PawnIslandsBenchmark.cs",
+          "line": 122,
+          "endLine": 122,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 86552649,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "Loop break conditions do not depend on the number of iterations.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3120",
+      "cwe": 835,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\PawnIslandsBenchmark.cs",
+          "line": 160,
+          "endLine": 160,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 86552649,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "Potentially infinite loop. The 'pawns' variable from the loop exit condition does not change its value between iterations.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3150",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\PawnIslandsBenchmark.cs",
+          "line": 160,
+          "endLine": 160,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 86552649,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "Loop break conditions do not depend on the number of iterations.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3120",
+      "cwe": 835,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\PawnIslandsBenchmark.cs",
+          "line": 194,
+          "endLine": 194,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 86552649,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "Potentially infinite loop. The 'pawns' variable from the loop exit condition does not change its value between iterations.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3150",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\PawnIslandsBenchmark.cs",
+          "line": 194,
+          "endLine": 194,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 86552649,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "Loop break conditions do not depend on the number of iterations.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3120",
+      "cwe": 835,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\PawnIslandsBenchmark.cs",
+          "line": 210,
+          "endLine": 210,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 86552649,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "Potentially infinite loop. The 'pawns' variable from the loop exit condition does not change its value between iterations.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3150",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\PawnIslandsBenchmark.cs",
+          "line": 210,
+          "endLine": 210,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 86552649,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "Loop break conditions do not depend on the number of iterations.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3072",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\PEXT_Benchmark.cs",
+          "line": 45,
+          "endLine": 45,
+          "navigation": {
+            "previousLine": 644022077,
+            "currentLine": -1270069472,
+            "nextLine": 123,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\PEXT_Benchmark.cs",
+          "line": 47,
+          "endLine": 47
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "The 'PEXTBenchmark_Benchmark' class containing IDisposable members does not itself implement IDisposable. Inspect: _position.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3120",
+      "cwe": 835,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\PieceAtSquare_Benchmark.cs",
+          "line": 67,
+          "endLine": 67,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 10837065,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "Potentially infinite loop. The 'bb' variable from the loop exit condition does not change its value between iterations.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3150",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\PieceAtSquare_Benchmark.cs",
+          "line": 67,
+          "endLine": 67,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 10837065,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "Loop break conditions do not depend on the number of iterations.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3120",
+      "cwe": 835,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\PieceAtSquare_Benchmark.cs",
+          "line": 93,
+          "endLine": 93,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 21680201,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "Potentially infinite loop. The 'bb1' variable from the loop exit condition does not change its value between iterations.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3150",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\PieceAtSquare_Benchmark.cs",
+          "line": 93,
+          "endLine": 93,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 21680201,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "Loop break conditions do not depend on the number of iterations.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3120",
+      "cwe": 835,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\PieceAtSquare_Benchmark.cs",
+          "line": 101,
+          "endLine": 101,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 21683273,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "Potentially infinite loop. The 'bb2' variable from the loop exit condition does not change its value between iterations.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3150",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\PieceAtSquare_Benchmark.cs",
+          "line": 101,
+          "endLine": 101,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 21683273,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "Loop break conditions do not depend on the number of iterations.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3120",
+      "cwe": 835,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\PieceAtSquare_Benchmark.cs",
+          "line": 109,
+          "endLine": 109,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 21682249,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "Potentially infinite loop. The 'bb3' variable from the loop exit condition does not change its value between iterations.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3150",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\PieceAtSquare_Benchmark.cs",
+          "line": 109,
+          "endLine": 109,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 21682249,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "Loop break conditions do not depend on the number of iterations.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3120",
+      "cwe": 835,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\PieceAtSquare_Benchmark.cs",
+          "line": 117,
+          "endLine": 117,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 21677129,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "Potentially infinite loop. The 'bb4' variable from the loop exit condition does not change its value between iterations.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3150",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\PieceAtSquare_Benchmark.cs",
+          "line": 117,
+          "endLine": 117,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 21677129,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "Loop break conditions do not depend on the number of iterations.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3120",
+      "cwe": 835,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\PieceAtSquare_Benchmark.cs",
+          "line": 140,
+          "endLine": 140,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 10837065,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "Potentially infinite loop. The 'bb' variable from the loop exit condition does not change its value between iterations.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3150",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\PieceAtSquare_Benchmark.cs",
+          "line": 140,
+          "endLine": 140,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 10837065,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "Loop break conditions do not depend on the number of iterations.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3120",
+      "cwe": 835,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\PieceAtSquare_Benchmark.cs",
+          "line": 166,
+          "endLine": 166,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 21680201,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "Potentially infinite loop. The 'bb1' variable from the loop exit condition does not change its value between iterations.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3150",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\PieceAtSquare_Benchmark.cs",
+          "line": 166,
+          "endLine": 166,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 21680201,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "Loop break conditions do not depend on the number of iterations.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3120",
+      "cwe": 835,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\PieceAtSquare_Benchmark.cs",
+          "line": 174,
+          "endLine": 174,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 21683273,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "Potentially infinite loop. The 'bb2' variable from the loop exit condition does not change its value between iterations.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3150",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\PieceAtSquare_Benchmark.cs",
+          "line": 174,
+          "endLine": 174,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 21683273,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "Loop break conditions do not depend on the number of iterations.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3120",
+      "cwe": 835,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\PieceAtSquare_Benchmark.cs",
+          "line": 182,
+          "endLine": 182,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 21682249,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "Potentially infinite loop. The 'bb3' variable from the loop exit condition does not change its value between iterations.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3150",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\PieceAtSquare_Benchmark.cs",
+          "line": 182,
+          "endLine": 182,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 21682249,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "Loop break conditions do not depend on the number of iterations.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3120",
+      "cwe": 835,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\PieceAtSquare_Benchmark.cs",
+          "line": 190,
+          "endLine": 190,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 21677129,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "Potentially infinite loop. The 'bb4' variable from the loop exit condition does not change its value between iterations.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3150",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\PieceAtSquare_Benchmark.cs",
+          "line": 190,
+          "endLine": 190,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 21677129,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "Loop break conditions do not depend on the number of iterations.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3072",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\TryParseFromUCIString_Benchmark.cs",
+          "line": 170,
+          "endLine": 170,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 1243135342,
+            "nextLine": 123,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\TryParseFromUCIString_Benchmark.cs",
+          "line": 185,
+          "endLine": 185
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\TryParseFromUCIString_Benchmark.cs",
+          "line": 183,
+          "endLine": 183
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "The 'TryParseFromUCIString_Benchmark_Game' class containing IDisposable members does not itself implement IDisposable. Inspect: _gameInitialPosition, CurrentPosition.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3117",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\MakeUnmakeMove_integration_Benchmark.cs",
+          "line": 355,
+          "endLine": 355,
+          "navigation": {
+            "previousLine": 730369143,
+            "currentLine": -1867858637,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "Constructor parameter 'nullMove' is not used.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3150",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\MakeUnmakeMove_integration_Benchmark.cs",
+          "line": 1498,
+          "endLine": 1498,
+          "navigation": {
+            "previousLine": 177868184,
+            "currentLine": -1167361955,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "Loop break conditions do not depend on the number of iterations.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3150",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\MakeUnmakeMove_integration_Benchmark.cs",
+          "line": 1441,
+          "endLine": 1441,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 695086153,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "Loop break conditions do not depend on the number of iterations.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3150",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\MakeUnmakeMove_integration_Benchmark.cs",
+          "line": 1603,
+          "endLine": 1603,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 347789385,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "Loop break conditions do not depend on the number of iterations.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3150",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\MakeUnmakeMove_integration_Benchmark.cs",
+          "line": 1595,
+          "endLine": 1595,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 695086153,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "Loop break conditions do not depend on the number of iterations.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3117",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\MakeUnmakeMove_implementation_Benchmark.cs",
+          "line": 352,
+          "endLine": 352,
+          "navigation": {
+            "previousLine": 730369143,
+            "currentLine": -1867858637,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "Constructor parameter 'nullMove' is not used.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3002",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\MakeUnmakeMove_implementation_Benchmark.cs",
+          "line": 1251,
+          "endLine": 1251,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 547727224,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "The switch statement does not cover all values of the 'SpecialMoveType' enum: DoublePawnPush.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3150",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\MakeUnmakeMove_implementation_Benchmark.cs",
+          "line": 1628,
+          "endLine": 1628,
+          "navigation": {
+            "previousLine": 177868184,
+            "currentLine": -1167361955,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "Loop break conditions do not depend on the number of iterations.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3150",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\MakeUnmakeMove_implementation_Benchmark.cs",
+          "line": 1579,
+          "endLine": 1579,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 695086153,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "Loop break conditions do not depend on the number of iterations.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3150",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\MakeUnmakeMove_implementation_Benchmark.cs",
+          "line": 1733,
+          "endLine": 1733,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 347789385,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "Loop break conditions do not depend on the number of iterations.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3150",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\MakeUnmakeMove_implementation_Benchmark.cs",
+          "line": 1725,
+          "endLine": 1725,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 695086153,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "Loop break conditions do not depend on the number of iterations.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3114",
+      "cwe": 404,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\UCI_Benchmark.cs",
+          "line": 47,
+          "endLine": 47,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -1934071601,
+            "nextLine": 136452313,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "IDisposable object 'engine' is not disposed before method returns.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3120",
+      "cwe": 835,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\ZobristPositionHash_Benchmark.cs",
+          "line": 124,
+          "endLine": 124,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 695086153,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "Potentially infinite loop. The 'bitboard' variable from the loop exit condition does not change its value between iterations.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3150",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\ZobristPositionHash_Benchmark.cs",
+          "line": 124,
+          "endLine": 124,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 695086153,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "Loop break conditions do not depend on the number of iterations.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3060",
+      "cwe": 682,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\SkipLocalsInit_Benchmark.cs",
+          "line": 411,
+          "endLine": 411,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 82192515,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "A value of variable is not modified. Consider inspecting the expression. It is possible that other value should be present instead of '0'.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3060",
+      "cwe": 682,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\SkipLocalsInit_Benchmark.cs",
+          "line": 462,
+          "endLine": 462,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 82192539,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "A value of variable is not modified. Consider inspecting the expression. It is possible that other value should be present instead of '0'.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3060",
+      "cwe": 682,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\SkipLocalsInit_Benchmark.cs",
+          "line": 1162,
+          "endLine": 1162,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 82192515,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "A value of variable is not modified. Consider inspecting the expression. It is possible that other value should be present instead of '0'.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3060",
+      "cwe": 682,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\SkipLocalsInit_Benchmark.cs",
+          "line": 1213,
+          "endLine": 1213,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 82192539,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "A value of variable is not modified. Consider inspecting the expression. It is possible that other value should be present instead of '0'.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3060",
+      "cwe": 682,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\SkipLocalsInit_Benchmark.cs",
+          "line": 1886,
+          "endLine": 1886,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 82192515,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "A value of variable is not modified. Consider inspecting the expression. It is possible that other value should be present instead of '0'.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3060",
+      "cwe": 682,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Benchmark\\SkipLocalsInit_Benchmark.cs",
+          "line": 1937,
+          "endLine": 1937,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 82192539,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Benchmark"
+      ],
+      "message": "A value of variable is not modified. Consider inspecting the expression. It is possible that other value should be present instead of '0'.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3155",
+      "cwe": 682,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\tests\\Lynx.Test\\EvaluationConstantsTest.cs",
+          "line": 20,
+          "endLine": 20,
+          "navigation": {
+            "previousLine": 1675692790,
+            "currentLine": 872657825,
+            "nextLine": -1782970191,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Test"
+      ],
+      "message": "The expression is incorrect or it can be simplified. Consider inspecting the '1' literal.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3198",
+      "cwe": 1164,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Dev\\Program.cs",
+          "line": 185,
+          "endLine": 185,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -520565073,
+            "nextLine": 10210345,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Dev\\Program.cs",
+          "line": 179,
+          "endLine": 179
+        }
+      ],
+      "projects": [
+        "Lynx.Dev"
+      ],
+      "message": "The 'occupancy' variable is assigned the '0' value that it already holds.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3198",
+      "cwe": 1164,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Dev\\Program.cs",
+          "line": 196,
+          "endLine": 196,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -520565073,
+            "nextLine": 10210345,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Dev\\Program.cs",
+          "line": 185,
+          "endLine": 185
+        }
+      ],
+      "projects": [
+        "Lynx.Dev"
+      ],
+      "message": "The 'occupancy' variable is assigned the '0' value that it already holds.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3114",
+      "cwe": 404,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Dev\\Program.cs",
+          "line": 277,
+          "endLine": 277,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 609553099,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Dev"
+      ],
+      "message": "IDisposable object 'position' is not disposed before method returns.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3114",
+      "cwe": 404,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Dev\\Program.cs",
+          "line": 301,
+          "endLine": 301,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -1963180579,
+            "nextLine": 5446185,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Dev"
+      ],
+      "message": "IDisposable object 'position' is not disposed before method returns.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3114",
+      "cwe": 404,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Dev\\Program.cs",
+          "line": 312,
+          "endLine": 312,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 622991231,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Dev"
+      ],
+      "message": "IDisposable object 'position' is not disposed before method returns.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3114",
+      "cwe": 404,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Dev\\Program.cs",
+          "line": 324,
+          "endLine": 324,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -1963180579,
+            "nextLine": -306084128,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Dev"
+      ],
+      "message": "IDisposable object 'position' is not disposed before method returns.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3114",
+      "cwe": 404,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Dev\\Program.cs",
+          "line": 330,
+          "endLine": 330,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -499192403,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Dev"
+      ],
+      "message": "IDisposable object 'position' is not disposed before method returns.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3114",
+      "cwe": 404,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Dev\\Program.cs",
+          "line": 343,
+          "endLine": 343,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 604965579,
+            "nextLine": -73317434,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Dev"
+      ],
+      "message": "IDisposable object 'position' is not disposed before method returns.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3114",
+      "cwe": 404,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Dev\\Program.cs",
+          "line": 353,
+          "endLine": 353,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 604965579,
+            "nextLine": -979287094,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Dev"
+      ],
+      "message": "IDisposable object 'position' is not disposed before method returns.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3114",
+      "cwe": 404,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Dev\\Program.cs",
+          "line": 370,
+          "endLine": 370,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 604965579,
+            "nextLine": -1314831362,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Dev"
+      ],
+      "message": "IDisposable object 'position' is not disposed before method returns.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3114",
+      "cwe": 404,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Dev\\Program.cs",
+          "line": 376,
+          "endLine": 376,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": -2118369827,
+            "nextLine": -1286038469,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Dev"
+      ],
+      "message": "IDisposable object 'position' is not disposed before method returns.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3114",
+      "cwe": 404,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Dev\\Program.cs",
+          "line": 502,
+          "endLine": 502,
+          "navigation": {
+            "previousLine": 9147,
+            "currentLine": 1705751479,
+            "nextLine": 5446185,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Dev"
+      ],
+      "message": "IDisposable object 'position' is not disposed before method returns.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3114",
+      "cwe": 404,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Dev\\Program.cs",
+          "line": 505,
+          "endLine": 505,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": -314710094,
+            "nextLine": 5446185,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Dev"
+      ],
+      "message": "IDisposable object 'position' is not disposed before method returns.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3114",
+      "cwe": 404,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Dev\\Program.cs",
+          "line": 508,
+          "endLine": 508,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 498190928,
+            "nextLine": -1310541124,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Dev"
+      ],
+      "message": "IDisposable object 'game' is not disposed before method returns.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3114",
+      "cwe": 404,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Dev\\Program.cs",
+          "line": 509,
+          "endLine": 509,
+          "navigation": {
+            "previousLine": 498190928,
+            "currentLine": -1310541124,
+            "nextLine": 483418312,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Dev"
+      ],
+      "message": "IDisposable object 'reversedGame' is not disposed before method returns.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3114",
+      "cwe": 404,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Dev\\Program.cs",
+          "line": 577,
+          "endLine": 577,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -1716827829,
+            "nextLine": 5446185,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Dev"
+      ],
+      "message": "IDisposable object 'position' is not disposed before method returns.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3001",
+      "cwe": 0,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Dev\\Program.cs",
+          "line": 775,
+          "endLine": 775,
+          "navigation": {
+            "previousLine": 289892873,
+            "currentLine": -1202237802,
+            "nextLine": 1890491670,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Dev\\Program.cs",
+          "line": 776,
+          "endLine": 776
+        }
+      ],
+      "projects": [
+        "Lynx.Dev"
+      ],
+      "message": "There are identical sub-expressions 'zobristTable[piece, targetSquare]' to the left and to the right of the '^' operator.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3114",
+      "cwe": 404,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Dev\\Program.cs",
+          "line": 987,
+          "endLine": 987,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 370441920,
+            "nextLine": 938710963,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Dev"
+      ],
+      "message": "IDisposable object 'position' is not disposed before method returns.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3114",
+      "cwe": 404,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Dev\\Program.cs",
+          "line": 992,
+          "endLine": 992,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 1244427014,
+            "nextLine": 5446185,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Dev"
+      ],
+      "message": "IDisposable object 'position' is not disposed before method returns.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3114",
+      "cwe": 404,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Dev\\Program.cs",
+          "line": 997,
+          "endLine": 997,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": -506977529,
+            "nextLine": 5446185,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Dev"
+      ],
+      "message": "IDisposable object 'position' is not disposed before method returns.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3114",
+      "cwe": 404,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Dev\\Program.cs",
+          "line": 1002,
+          "endLine": 1002,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": -1011701740,
+            "nextLine": 5446185,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Dev"
+      ],
+      "message": "IDisposable object 'position' is not disposed before method returns.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3114",
+      "cwe": 404,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Dev\\Program.cs",
+          "line": 1007,
+          "endLine": 1007,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": -1548572651,
+            "nextLine": 5446185,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Dev"
+      ],
+      "message": "IDisposable object 'position' is not disposed before method returns.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3114",
+      "cwe": 404,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Dev\\Program.cs",
+          "line": 1012,
+          "endLine": 1012,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": -1410865131,
+            "nextLine": 5446185,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Dev"
+      ],
+      "message": "IDisposable object 'position' is not disposed before method returns.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3114",
+      "cwe": 404,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Dev\\Program.cs",
+          "line": 1017,
+          "endLine": 1017,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": -127408111,
+            "nextLine": 5446185,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Dev"
+      ],
+      "message": "IDisposable object 'position' is not disposed before method returns.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3114",
+      "cwe": 404,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Dev\\Program.cs",
+          "line": 1025,
+          "endLine": 1025,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 1547506725,
+            "nextLine": 5446185,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Dev"
+      ],
+      "message": "IDisposable object 'position' is not disposed before method returns.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3114",
+      "cwe": 404,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Dev\\Program.cs",
+          "line": 1030,
+          "endLine": 1030,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": -294752431,
+            "nextLine": 5446185,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Dev"
+      ],
+      "message": "IDisposable object 'position' is not disposed before method returns.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3114",
+      "cwe": 404,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Dev\\Program.cs",
+          "line": 1035,
+          "endLine": 1035,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": -1368756399,
+            "nextLine": 5446185,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Dev"
+      ],
+      "message": "IDisposable object 'position' is not disposed before method returns.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3022",
+      "cwe": 571,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Dev\\Program.cs",
+          "line": 1201,
+          "endLine": 1201,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": -648839318,
+            "nextLine": 79841487,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Dev"
+      ],
+      "message": "Expression '((Masks.LightSquaresMask >> (int)BoardSquare.h1) & 1) != 0' is always true.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3022",
+      "cwe": 571,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Dev\\Program.cs",
+          "line": 1202,
+          "endLine": 1202,
+          "navigation": {
+            "previousLine": -648839318,
+            "currentLine": 79841487,
+            "nextLine": -648848534,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Dev"
+      ],
+      "message": "Expression '(((9 * (int)BoardSquare.h1) + 8) & 8) != 0' is always true.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3022",
+      "cwe": 570,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Dev\\Program.cs",
+          "line": 1203,
+          "endLine": 1203,
+          "navigation": {
+            "previousLine": 79841487,
+            "currentLine": -648848534,
+            "nextLine": 79915215,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Dev"
+      ],
+      "message": "Expression '((Masks.LightSquaresMask >> (int)BoardSquare.a1) & 1) != 0' is always false.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3022",
+      "cwe": 570,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Dev\\Program.cs",
+          "line": 1204,
+          "endLine": 1204,
+          "navigation": {
+            "previousLine": -648848534,
+            "currentLine": 79915215,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Dev"
+      ],
+      "message": "Expression '(((9 * (int)BoardSquare.a1) + 8) & 8) != 0' is always false.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3120",
+      "cwe": 835,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\tests\\Lynx.Test\\Model\\PositionTest.cs",
+          "line": 1009,
+          "endLine": 1009,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 695086153,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Test"
+      ],
+      "message": "Potentially infinite loop. The 'bitboard' variable from the loop exit condition does not change its value between iterations.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3150",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\tests\\Lynx.Test\\Model\\PositionTest.cs",
+          "line": 1009,
+          "endLine": 1009,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 695086153,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Test"
+      ],
+      "message": "Loop break conditions do not depend on the number of iterations.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3114",
+      "cwe": 404,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\tests\\Lynx.Test\\Model\\PositionTest.cs",
+          "line": 1027,
+          "endLine": 1027,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 103096476,
+            "nextLine": -1462080116,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Test"
+      ],
+      "message": "IDisposable object 'position' is not disposed before method returns.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3120",
+      "cwe": 835,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\tests\\Lynx.Test\\PawnIslandsTest.cs",
+          "line": 68,
+          "endLine": 68,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 86552649,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Test"
+      ],
+      "message": "Potentially infinite loop. The 'pawns' variable from the loop exit condition does not change its value between iterations.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3150",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\tests\\Lynx.Test\\PawnIslandsTest.cs",
+          "line": 68,
+          "endLine": 68,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 86552649,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Test"
+      ],
+      "message": "Loop break conditions do not depend on the number of iterations.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3134",
+      "cwe": 128,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\tests\\Lynx.Test\\PregeneratedAttacks\\PawnAttacksTest.cs",
+          "line": 64,
+          "endLine": 64,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": -1957727400,
+            "nextLine": -2116182583,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Test"
+      ],
+      "message": "Shift by a possibly negative number -1 will result in shifting the first operand by 6 low-order bits of the second operand.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3134",
+      "cwe": 128,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\tests\\Lynx.Test\\PregeneratedAttacks\\PawnAttacksTest.cs",
+          "line": 71,
+          "endLine": 71,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": -1961704616,
+            "nextLine": -2116166169,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Test"
+      ],
+      "message": "Shift by 64 bits is greater than the size of 'UInt64' type of expression 'attackDiagram'.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3022",
+      "cwe": 570,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\tests\\Lynx.Test\\PregeneratedAttacks\\IsAttackedSquareTest.cs",
+          "line": 21,
+          "endLine": 21,
+          "navigation": {
+            "previousLine": -945732622,
+            "currentLine": -1720312400,
+            "nextLine": -243788239,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Test"
+      ],
+      "message": "Expression 'position.IsSquareAttacked(square, Side.Black)' is always false.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3022",
+      "cwe": 570,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\tests\\Lynx.Test\\PregeneratedAttacks\\IsAttackedSquareTest.cs",
+          "line": 22,
+          "endLine": 22,
+          "navigation": {
+            "previousLine": -1720312400,
+            "currentLine": -243788239,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Test"
+      ],
+      "message": "Expression 'position.IsSquareAttacked(square, Side.White)' is always false.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3022",
+      "cwe": 570,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\tests\\Lynx.Test\\PregeneratedAttacks\\IsAttackedSquareTest.cs",
+          "line": 38,
+          "endLine": 38,
+          "navigation": {
+            "previousLine": -2019474454,
+            "currentLine": -243786319,
+            "nextLine": -1720314320,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Test"
+      ],
+      "message": "Expression 'position.IsSquareAttacked(square, Side.Black)' is always false.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3022",
+      "cwe": 570,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\tests\\Lynx.Test\\PregeneratedAttacks\\IsAttackedSquareTest.cs",
+          "line": 39,
+          "endLine": 39,
+          "navigation": {
+            "previousLine": -243786319,
+            "currentLine": -1720314320,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Test"
+      ],
+      "message": "Expression 'position.IsSquareAttacked(square, Side.White)' is always false.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3022",
+      "cwe": 570,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\tests\\Lynx.Test\\PregeneratedAttacks\\IsAttackedSquareTest.cs",
+          "line": 55,
+          "endLine": 55,
+          "navigation": {
+            "previousLine": -73317394,
+            "currentLine": -1720312400,
+            "nextLine": -243788239,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Test"
+      ],
+      "message": "Expression 'position.IsSquareAttacked(square, Side.Black)' is always false.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3022",
+      "cwe": 570,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\tests\\Lynx.Test\\PregeneratedAttacks\\IsAttackedSquareTest.cs",
+          "line": 56,
+          "endLine": 56,
+          "navigation": {
+            "previousLine": -1720312400,
+            "currentLine": -243788239,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Test"
+      ],
+      "message": "Expression 'position.IsSquareAttacked(square, Side.White)' is always false.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3022",
+      "cwe": 570,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\tests\\Lynx.Test\\PregeneratedAttacks\\IsAttackedSquareTest.cs",
+          "line": 73,
+          "endLine": 73,
+          "navigation": {
+            "previousLine": -1147059218,
+            "currentLine": -243786319,
+            "nextLine": -1720314320,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Test"
+      ],
+      "message": "Expression 'position.IsSquareAttacked(square, Side.Black)' is always false.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3022",
+      "cwe": 570,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\tests\\Lynx.Test\\PregeneratedAttacks\\IsAttackedSquareTest.cs",
+          "line": 74,
+          "endLine": 74,
+          "navigation": {
+            "previousLine": -243786319,
+            "currentLine": -1720314320,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Test"
+      ],
+      "message": "Expression 'position.IsSquareAttacked(square, Side.White)' is always false.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3022",
+      "cwe": 570,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\tests\\Lynx.Test\\PregeneratedAttacks\\IsAttackedSquareTest.cs",
+          "line": 91,
+          "endLine": 91,
+          "navigation": {
+            "previousLine": -475970570,
+            "currentLine": -1720312400,
+            "nextLine": -243788239,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Test"
+      ],
+      "message": "Expression 'position.IsSquareAttacked(square, Side.Black)' is always false.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3022",
+      "cwe": 570,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\tests\\Lynx.Test\\PregeneratedAttacks\\IsAttackedSquareTest.cs",
+          "line": 92,
+          "endLine": 92,
+          "navigation": {
+            "previousLine": -1720312400,
+            "currentLine": -243788239,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Test"
+      ],
+      "message": "Expression 'position.IsSquareAttacked(square, Side.White)' is always false.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3022",
+      "cwe": 570,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\tests\\Lynx.Test\\PregeneratedAttacks\\IsAttackedSquareTest.cs",
+          "line": 108,
+          "endLine": 108,
+          "navigation": {
+            "previousLine": -1549712438,
+            "currentLine": -243786319,
+            "nextLine": -1720314320,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Test"
+      ],
+      "message": "Expression 'position.IsSquareAttacked(square, Side.Black)' is always false.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3022",
+      "cwe": 570,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\tests\\Lynx.Test\\PregeneratedAttacks\\IsAttackedSquareTest.cs",
+          "line": 109,
+          "endLine": 109,
+          "navigation": {
+            "previousLine": -243786319,
+            "currentLine": -1720314320,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Test"
+      ],
+      "message": "Expression 'position.IsSquareAttacked(square, Side.White)' is always false.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3022",
+      "cwe": 570,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\tests\\Lynx.Test\\PregeneratedAttacks\\IsAttackedSquareTest.cs",
+          "line": 125,
+          "endLine": 125,
+          "navigation": {
+            "previousLine": -1012841522,
+            "currentLine": -1720312400,
+            "nextLine": -243788239,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Test"
+      ],
+      "message": "Expression 'position.IsSquareAttacked(square, Side.Black)' is always false.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3022",
+      "cwe": 570,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\tests\\Lynx.Test\\PregeneratedAttacks\\IsAttackedSquareTest.cs",
+          "line": 126,
+          "endLine": 126,
+          "navigation": {
+            "previousLine": -1720312400,
+            "currentLine": -243788239,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Test"
+      ],
+      "message": "Expression 'position.IsSquareAttacked(square, Side.White)' is always false.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3022",
+      "cwe": 570,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\tests\\Lynx.Test\\PregeneratedAttacks\\IsAttackedSquareTest.cs",
+          "line": 142,
+          "endLine": 142,
+          "navigation": {
+            "previousLine": -2086583318,
+            "currentLine": -243786319,
+            "nextLine": -1720314320,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Test"
+      ],
+      "message": "Expression 'position.IsSquareAttacked(square, Side.Black)' is always false.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3022",
+      "cwe": 570,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\tests\\Lynx.Test\\PregeneratedAttacks\\IsAttackedSquareTest.cs",
+          "line": 143,
+          "endLine": 143,
+          "navigation": {
+            "previousLine": -243786319,
+            "currentLine": -1720314320,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Test"
+      ],
+      "message": "Expression 'position.IsSquareAttacked(square, Side.White)' is always false.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3022",
+      "cwe": 570,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\tests\\Lynx.Test\\PregeneratedAttacks\\IsAttackedSquareTest.cs",
+          "line": 172,
+          "endLine": 172,
+          "navigation": {
+            "previousLine": -979287062,
+            "currentLine": 854047726,
+            "nextLine": -486821780,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Test"
+      ],
+      "message": "Expression 'position.IsSquareAttacked(square1, Side.Black)' is always false.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3022",
+      "cwe": 570,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\tests\\Lynx.Test\\PregeneratedAttacks\\IsAttackedSquareTest.cs",
+          "line": 173,
+          "endLine": 173,
+          "navigation": {
+            "previousLine": 854047726,
+            "currentLine": -486821780,
+            "nextLine": 854031342,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Test"
+      ],
+      "message": "Expression 'position.IsSquareAttacked(square1, Side.White)' is always false.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3022",
+      "cwe": 570,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\tests\\Lynx.Test\\PregeneratedAttacks\\IsAttackedSquareTest.cs",
+          "line": 174,
+          "endLine": 174,
+          "navigation": {
+            "previousLine": -486821780,
+            "currentLine": 854031342,
+            "nextLine": -486838164,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Test"
+      ],
+      "message": "Expression 'position.IsSquareAttacked(square2, Side.Black)' is always false.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3022",
+      "cwe": 570,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\tests\\Lynx.Test\\PregeneratedAttacks\\IsAttackedSquareTest.cs",
+          "line": 175,
+          "endLine": 175,
+          "navigation": {
+            "previousLine": 854031342,
+            "currentLine": -486838164,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Test"
+      ],
+      "message": "Expression 'position.IsSquareAttacked(square2, Side.White)' is always false.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3022",
+      "cwe": 570,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\tests\\Lynx.Test\\PregeneratedAttacks\\IsAttackedSquareTest.cs",
+          "line": 204,
+          "endLine": 204,
+          "navigation": {
+            "previousLine": -2053028886,
+            "currentLine": 854044782,
+            "nextLine": -486818836,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Test"
+      ],
+      "message": "Expression 'position.IsSquareAttacked(square1, Side.White)' is always false.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3022",
+      "cwe": 570,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\tests\\Lynx.Test\\PregeneratedAttacks\\IsAttackedSquareTest.cs",
+          "line": 205,
+          "endLine": 205,
+          "navigation": {
+            "previousLine": 854044782,
+            "currentLine": -486818836,
+            "nextLine": 854028398,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Test"
+      ],
+      "message": "Expression 'position.IsSquareAttacked(square1, Side.Black)' is always false.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3022",
+      "cwe": 570,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\tests\\Lynx.Test\\PregeneratedAttacks\\IsAttackedSquareTest.cs",
+          "line": 206,
+          "endLine": 206,
+          "navigation": {
+            "previousLine": -486818836,
+            "currentLine": 854028398,
+            "nextLine": -486835220,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Test"
+      ],
+      "message": "Expression 'position.IsSquareAttacked(square2, Side.White)' is always false.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3022",
+      "cwe": 570,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\tests\\Lynx.Test\\PregeneratedAttacks\\IsAttackedSquareTest.cs",
+          "line": 207,
+          "endLine": 207,
+          "navigation": {
+            "previousLine": 854028398,
+            "currentLine": -486835220,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Test"
+      ],
+      "message": "Expression 'position.IsSquareAttacked(square2, Side.Black)' is always false.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3022",
+      "cwe": 570,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\tests\\Lynx.Test\\PregeneratedAttacks\\IsAttackedSquareTest.cs",
+          "line": 225,
+          "endLine": 225,
+          "navigation": {
+            "previousLine": -241089538,
+            "currentLine": -1720312400,
+            "nextLine": -243788239,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Test"
+      ],
+      "message": "Expression 'position.IsSquareAttacked(square, Side.Black)' is always false.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3022",
+      "cwe": 570,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\tests\\Lynx.Test\\PregeneratedAttacks\\IsAttackedSquareTest.cs",
+          "line": 226,
+          "endLine": 226,
+          "navigation": {
+            "previousLine": -1720312400,
+            "currentLine": -243788239,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Test"
+      ],
+      "message": "Expression 'position.IsSquareAttacked(square, Side.White)' is always false.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3022",
+      "cwe": 570,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\tests\\Lynx.Test\\PregeneratedAttacks\\IsAttackedSquareTest.cs",
+          "line": 244,
+          "endLine": 244,
+          "navigation": {
+            "previousLine": -1314831362,
+            "currentLine": -243786319,
+            "nextLine": -1720314320,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Test"
+      ],
+      "message": "Expression 'position.IsSquareAttacked(square, Side.Black)' is always false.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3022",
+      "cwe": 570,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\tests\\Lynx.Test\\PregeneratedAttacks\\IsAttackedSquareTest.cs",
+          "line": 245,
+          "endLine": 245,
+          "navigation": {
+            "previousLine": -243786319,
+            "currentLine": -1720314320,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Test"
+      ],
+      "message": "Expression 'position.IsSquareAttacked(square, Side.White)' is always false.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V5621",
+      "cwe": 535,
+      "sastId": "OWASP-8.3.5",
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx\\UCIHandler.cs",
+          "line": 891,
+          "endLine": 891,
+          "navigation": {
+            "previousLine": 1804918588,
+            "currentLine": -1544183353,
+            "nextLine": 1804918124,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx\\UCIHandler.cs",
+          "line": 899,
+          "endLine": 899
+        }
+      ],
+      "projects": [
+        "Lynx"
+      ],
+      "message": "Error message contains potentially sensitive data, in 'errorMessage', that may be exposed.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V5621",
+      "cwe": 535,
+      "sastId": "OWASP-8.3.5",
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Cli\\Runner.cs",
+          "line": 44,
+          "endLine": 44,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 42401958,
+            "nextLine": 159853478,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Cli"
+      ],
+      "message": "Error message contains potentially sensitive data, in 'taskCanceledException.Message', that may be exposed.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V5621",
+      "cwe": 535,
+      "sastId": "OWASP-8.3.5",
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Cli\\Runner.cs",
+          "line": 49,
+          "endLine": 49,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 1478290649,
+            "nextLine": 1497689217,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Cli"
+      ],
+      "message": "Error message contains potentially sensitive data, in 'e.Message', that may be exposed.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V5621",
+      "cwe": 535,
+      "sastId": "OWASP-8.3.5",
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Lynx\\src\\Lynx.Cli\\Runner.cs",
+          "line": 57,
+          "endLine": 57,
+          "navigation": {
+            "previousLine": -5684474,
+            "currentLine": 1417556467,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Lynx.Cli"
+      ],
+      "message": "Error message contains potentially sensitive data, in 'e.Message', that may be exposed.",
+      "favorite": false,
+      "falseAlarm": false
+    }
+  ]
+}

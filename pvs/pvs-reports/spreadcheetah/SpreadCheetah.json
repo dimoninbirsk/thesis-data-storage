@@ -1,0 +1,503 @@
+{
+  "version": 3,
+  "warnings": [
+    {
+      "code": "Renew",
+      "cwe": 0,
+      "level": 1,
+      "positions": [
+        {
+          "file": "",
+          "line": 1,
+          "endLine": 1,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 0,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [],
+      "message": "Your license will expire in 29 days. Click 'Renew' to learn more or contact us via Feedback form on our website. This is an information message. You can continue using the analyzer with your current license. To hide this message, use the '--disableLicenseExpirationCheck' flag.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3090",
+      "cwe": 833,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\.nuget\\packages\\polyfill\\7.13.0\\contentFiles\\cs\\netstandard2.0\\Polyfill\\Lock.cs",
+          "line": 24,
+          "endLine": 24,
+          "navigation": {
+            "previousLine": 100,
+            "currentLine": 18273,
+            "nextLine": 123,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\.nuget\\packages\\polyfill\\7.13.0\\contentFiles\\cs\\netstandard2.0\\Polyfill\\Lock.cs",
+          "line": 33,
+          "endLine": 33
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\.nuget\\packages\\polyfill\\7.13.0\\contentFiles\\cs\\netstandard2.0\\Polyfill\\Lock.cs",
+          "line": 42,
+          "endLine": 42
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\.nuget\\packages\\polyfill\\7.13.0\\contentFiles\\cs\\netstandard2.0\\Polyfill\\Lock.cs",
+          "line": 59,
+          "endLine": 59
+        }
+      ],
+      "projects": [
+        "SpreadCheetah",
+        "SpreadCheetah.SourceGenerator",
+        "SpreadCheetah.SourceGenerator.Test",
+        "SpreadCheetah.TestHelpers"
+      ],
+      "message": "Unsafe locking on 'this' instance in class 'Lock'.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3111",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\.nuget\\packages\\polyfill\\7.13.0\\contentFiles\\cs\\netstandard2.0\\Polyfill\\Polyfill_Memory_EndsWith.cs",
+          "line": 35,
+          "endLine": 35,
+          "navigation": {
+            "previousLine": -110136636,
+            "currentLine": -1956550538,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "SpreadCheetah",
+        "SpreadCheetah.SourceGenerator",
+        "SpreadCheetah.SourceGenerator.Test"
+      ],
+      "message": "Checking value of 'last' for null will always return false when generic type is instantiated with a value type.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3111",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\.nuget\\packages\\polyfill\\7.13.0\\contentFiles\\cs\\netstandard2.0\\Polyfill\\Polyfill_Memory_StartsWith.cs",
+          "line": 28,
+          "endLine": 28,
+          "navigation": {
+            "previousLine": 339272904,
+            "currentLine": -550454729,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "SpreadCheetah",
+        "SpreadCheetah.SourceGenerator",
+        "SpreadCheetah.SourceGenerator.Test"
+      ],
+      "message": "Checking value of 'target[0]' for null will always return false when generic type is instantiated with a value type.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3117",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\.nuget\\packages\\polyfill\\7.13.0\\contentFiles\\cs\\netstandard2.0\\Polyfill\\Polyfill_Memory_SpanSplitEnumerator.cs",
+          "line": 92,
+          "endLine": 92,
+          "navigation": {
+            "previousLine": -1345192744,
+            "currentLine": 1132264294,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "SpreadCheetah",
+        "SpreadCheetah.SourceGenerator",
+        "SpreadCheetah.SourceGenerator.Test"
+      ],
+      "message": "Constructor parameter 'treatAsSingleSeparator' is not used.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3167",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\.nuget\\packages\\polyfill\\7.13.0\\contentFiles\\cs\\netstandard2.0\\Polyfill\\TaskCompletionSource.cs",
+          "line": 125,
+          "endLine": 125,
+          "navigation": {
+            "previousLine": -1606510993,
+            "currentLine": 1510547436,
+            "nextLine": -794292576,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "SpreadCheetah",
+        "SpreadCheetah.SourceGenerator",
+        "SpreadCheetah.SourceGenerator.Test"
+      ],
+      "message": "Parameter of the 'CancellationToken' type is not utilized inside a method. Ignoring the parameter can cause application to be unresponsive to cancellation events.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V5607",
+      "cwe": 544,
+      "sastId": "OWASP-7.4.2",
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\.nuget\\packages\\polyfill\\7.13.0\\contentFiles\\cs\\netstandard2.0\\Polyfill\\UnreachableException.cs",
+          "line": 23,
+          "endLine": 23,
+          "navigation": {
+            "previousLine": 100,
+            "currentLine": -2125783814,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "SpreadCheetah",
+        "SpreadCheetah.SourceGenerator",
+        "SpreadCheetah.SourceGenerator.Test"
+      ],
+      "message": "Exception classes should be publicly accessible.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3117",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\.nuget\\packages\\polyfill\\7.13.0\\contentFiles\\cs\\netstandard2.0\\Polyfill\\StringInterpolation\\AppendInterpolatedStringHandler.cs",
+          "line": 46,
+          "endLine": 46,
+          "navigation": {
+            "previousLine": -2055892199,
+            "currentLine": 2077042188,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "SpreadCheetah",
+        "SpreadCheetah.SourceGenerator",
+        "SpreadCheetah.SourceGenerator.Test"
+      ],
+      "message": "Constructor parameters 'literalLength', 'formattedCount' are not used.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3117",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\.nuget\\packages\\polyfill\\7.13.0\\contentFiles\\cs\\netstandard2.0\\Polyfill\\StringInterpolation\\AppendInterpolatedStringHandler.cs",
+          "line": 58,
+          "endLine": 58,
+          "navigation": {
+            "previousLine": 1942475926,
+            "currentLine": 1770929317,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "SpreadCheetah",
+        "SpreadCheetah.SourceGenerator",
+        "SpreadCheetah.SourceGenerator.Test"
+      ],
+      "message": "Constructor parameters 'literalLength', 'formattedCount' are not used.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3111",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\.nuget\\packages\\polyfill\\7.13.0\\contentFiles\\cs\\netstandard2.0\\Polyfill\\StringInterpolation\\DefaultInterpolatedStringHandler.cs",
+          "line": 264,
+          "endLine": 264,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 63280049,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "SpreadCheetah",
+        "SpreadCheetah.SourceGenerator",
+        "SpreadCheetah.SourceGenerator.Test"
+      ],
+      "message": "Checking value of 'value' for null will always return false when generic type is instantiated with a value type.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3111",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\.nuget\\packages\\polyfill\\7.13.0\\contentFiles\\cs\\netstandard2.0\\Polyfill\\StringInterpolation\\DefaultInterpolatedStringHandler.cs",
+          "line": 319,
+          "endLine": 319,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 63280049,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "SpreadCheetah",
+        "SpreadCheetah.SourceGenerator",
+        "SpreadCheetah.SourceGenerator.Test"
+      ],
+      "message": "Checking value of 'value' for null will always return false when generic type is instantiated with a value type.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3117",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\.nuget\\packages\\polyfill\\7.13.0\\contentFiles\\cs\\netstandard2.0\\Polyfill\\StringInterpolation\\DefaultInterpolatedStringHandler.cs",
+          "line": 79,
+          "endLine": 79,
+          "navigation": {
+            "previousLine": 100459349,
+            "currentLine": 1069815969,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "SpreadCheetah",
+        "SpreadCheetah.SourceGenerator",
+        "SpreadCheetah.SourceGenerator.Test"
+      ],
+      "message": "Constructor parameters 'literalLength', 'formattedCount' are not used.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3022",
+      "cwe": 571,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\spreadcheetah\\SpreadCheetah\\Helpers\\OADate.cs",
+          "line": 49,
+          "endLine": 49,
+          "navigation": {
+            "previousLine": 1615104937,
+            "currentLine": 269366409,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "SpreadCheetah"
+      ],
+      "message": "Expression 'TryFormatWithFraction(days, millisAfterMidnight, destination, out bytesWritten)' is always true.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3009",
+      "cwe": 393,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\spreadcheetah\\SpreadCheetah\\Helpers\\OADate.cs",
+          "line": 78,
+          "endLine": 78,
+          "navigation": {
+            "previousLine": 1341402164,
+            "currentLine": -1219208606,
+            "nextLine": 536095798,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "SpreadCheetah"
+      ],
+      "message": "It's odd that this method always returns one and the same value of 'true'.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3111",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\spreadcheetah\\SpreadCheetah\\SpreadsheetBuffer.cs",
+          "line": 245,
+          "endLine": 245,
+          "navigation": {
+            "previousLine": 406574044,
+            "currentLine": 4297649,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "SpreadCheetah"
+      ],
+      "message": "Checking value of 'value' for null will always return false when generic type is instantiated with a value type.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3057",
+      "cwe": 628,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\spreadcheetah\\SpreadCheetah.Test\\Helpers\\FormulaGenerator.cs",
+          "line": 31,
+          "endLine": 31,
+          "navigation": {
+            "previousLine": 1115541,
+            "currentLine": 1474750700,
+            "nextLine": 1115541,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "SpreadCheetah.Test"
+      ],
+      "message": "The '' constructor could receive the '-1' value while non-negative value is expected. Inspect the second argument.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3111",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\spreadcheetah\\SpreadCheetah.SourceGenerator\\Helpers\\HashCode.cs",
+          "line": 54,
+          "endLine": 54,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": -1527064313,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "SpreadCheetah.SourceGenerator"
+      ],
+      "message": "Checking value of 'value' for null will always return false when generic type is instantiated with a value type.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3056",
+      "cwe": 682,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\spreadcheetah\\SpreadCheetah.SourceGenerator\\Helpers\\HashCode.cs",
+          "line": 60,
+          "endLine": 60,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 225242355,
+            "nextLine": 1751539,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\spreadcheetah\\SpreadCheetah.SourceGenerator\\Helpers\\HashCode.cs",
+          "line": 61,
+          "endLine": 61
+        }
+      ],
+      "projects": [
+        "SpreadCheetah.SourceGenerator"
+      ],
+      "message": "Consider reviewing the correctness of 'Prime2' item's usage.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3111",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\.nuget\\packages\\polyfill\\7.13.0\\contentFiles\\cs\\netstandard2.0\\Polyfill\\Polyfill_Memory_SpanSplitEnumerator.cs",
+          "line": 128,
+          "endLine": 128,
+          "navigation": {
+            "previousLine": 123,
+            "currentLine": 12381545,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "SpreadCheetah.SourceGenerator.Test"
+      ],
+      "message": "Checking value of '_span[i]' for null will always return false when generic type is instantiated with a value type.",
+      "favorite": false,
+      "falseAlarm": false
+    }
+  ]
+}

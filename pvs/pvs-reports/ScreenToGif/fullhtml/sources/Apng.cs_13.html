@@ -1,0 +1,451 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>Apng.cs</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <script src="../jquery-3.5.1.min.js"></script>
+</head>
+<body>
+<pre><code class = "cs">
+<a name="ln1">using ScreenToGif.Util.Codification.Apng.Chunks;</a>
+<a name="ln2">using System.IO;</a>
+<a name="ln3">using System.Text;</a>
+<a name="ln4">using System.Windows;</a>
+<a name="ln5">using System.Windows.Media;</a>
+<a name="ln6">using System.Windows.Media.Imaging;</a>
+<a name="ln7">using PixelFormats = System.Windows.Media.PixelFormats;</a>
+<a name="ln8"> </a>
+<a name="ln9">namespace ScreenToGif.Util.Codification.Apng;</a>
+<a name="ln10"> </a>
+<a name="ln11">/// &lt;summary&gt;</a>
+<a name="ln12">/// Apng encoder and decoder.</a>
+<a name="ln13">/// https://en.wikipedia.org/wiki/APNG</a>
+<a name="ln14">/// https://wiki.mozilla.org/APNG_Specification</a>
+<a name="ln15">/// https://www.w3.org/TR/PNG/</a>
+<a name="ln16">/// &lt;/summary&gt;</a>
+<a name="ln17">public class Apng : IDisposable</a>
+<a name="ln18">{</a>
+<a name="ln19">    public enum DisposeOps</a>
+<a name="ln20">    {</a>
+<a name="ln21">        None = 0,</a>
+<a name="ln22">        Background = 1,</a>
+<a name="ln23">        Previous = 2</a>
+<a name="ln24">    }</a>
+<a name="ln25"> </a>
+<a name="ln26">    public enum BlendOps</a>
+<a name="ln27">    {</a>
+<a name="ln28">        Source = 0,</a>
+<a name="ln29">        Over = 1</a>
+<a name="ln30">    }</a>
+<a name="ln31"> </a>
+<a name="ln32"> </a>
+<a name="ln33">    #region Properties</a>
+<a name="ln34"> </a>
+<a name="ln35">    /// &lt;summary&gt;</a>
+<a name="ln36">    /// The stream which the apng is written on.</a>
+<a name="ln37">    /// &lt;/summary&gt;</a>
+<a name="ln38">    private Stream InternalStream { get; set; }</a>
+<a name="ln39"> </a>
+<a name="ln40">    /// &lt;summary&gt;</a>
+<a name="ln41">    /// The total number of frames.</a>
+<a name="ln42">    /// &lt;/summary&gt;</a>
+<a name="ln43">    internal int FrameCount { get; set; } = 0;</a>
+<a name="ln44"> </a>
+<a name="ln45">    /// &lt;summary&gt;</a>
+<a name="ln46">    /// Repeat Count for the apng.</a>
+<a name="ln47">    /// &lt;/summary&gt;</a>
+<a name="ln48">    internal int RepeatCount { get; set; } = 0;</a>
+<a name="ln49"> </a>
+<a name="ln50">    /// &lt;summary&gt;</a>
+<a name="ln51">    /// True if it's the first frame of the apng.</a>
+<a name="ln52">    /// &lt;/summary&gt;</a>
+<a name="ln53">    private bool IsFirstFrame { get; set; } = true;</a>
+<a name="ln54"> </a>
+<a name="ln55">    /// &lt;summary&gt;</a>
+<a name="ln56">    /// The sequence number of frame.</a>
+<a name="ln57">    /// &lt;/summary&gt;</a>
+<a name="ln58">    private int SequenceNumber { get; set; } = 0;</a>
+<a name="ln59"> </a>
+<a name="ln60">    #endregion</a>
+<a name="ln61"> </a>
+<a name="ln62">    #region Internal chunks</a>
+<a name="ln63"> </a>
+<a name="ln64">    /// &lt;summary&gt;</a>
+<a name="ln65">    /// The image header chunk.</a>
+<a name="ln66">    /// &lt;/summary&gt;</a>
+<a name="ln67">    public IhdrChunk Ihdr { get; private set; }</a>
+<a name="ln68"> </a>
+<a name="ln69">    /// &lt;summary&gt;</a>
+<a name="ln70">    /// The animation control chunk.</a>
+<a name="ln71">    /// &lt;/summary&gt;</a>
+<a name="ln72">    public ActlChunk Actl { get; private set; }</a>
+<a name="ln73"> </a>
+<a name="ln74">    /// &lt;summary&gt;</a>
+<a name="ln75">    /// All the chunks of the Png, except IHDR, acTL and IEND.</a>
+<a name="ln76">    /// &lt;/summary&gt;</a>
+<a name="ln77">    internal List&lt;Chunk&gt; Chunks { get; } = new();</a>
+<a name="ln78"> </a>
+<a name="ln79">    #endregion</a>
+<a name="ln80"> </a>
+<a name="ln81"> </a>
+<a name="ln82">    public Apng(Stream stream, int frameCount, int repeatCount)</a>
+<a name="ln83">    {</a>
+<a name="ln84">        InternalStream = stream;</a>
+<a name="ln85">        FrameCount = frameCount;</a>
+<a name="ln86">        RepeatCount = repeatCount;</a>
+<a name="ln87">    }</a>
+<a name="ln88"> </a>
+<a name="ln89">    public Apng(Stream stream)</a>
+<a name="ln90">    {</a>
+<a name="ln91">        InternalStream = stream;</a>
+<a name="ln92">    }</a>
+<a name="ln93"> </a>
+<a name="ln94">    public void AddFrame(string path, Int32Rect rect, int delay = 66)</a>
+<a name="ln95">    {</a>
+<a name="ln96">        using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))</a>
+<a name="ln97">        {</a>
+<a name="ln98">            if (IsFirstFrame)</a>
+<a name="ln99">            {</a>
+<a name="ln100">                //Png Header: 8 bytes.</a>
+<a name="ln101">                InternalStream.WriteBytes(stream.ReadBytes(8));</a>
+<a name="ln102"> </a>
+<a name="ln103">                //IHDR chunk. 13 bytes (Length + Type + CRC, 4 bytes each) = 25 bytes.</a>
+<a name="ln104">                InternalStream.WriteBytes(stream.ReadBytes(25));</a>
+<a name="ln105"> </a>
+<a name="ln106">                //acTL: Animation control chunk. 8 bytes (Length + Type + CRC, 4 bytes each) = 20 bytes.</a>
+<a name="ln107">                InternalStream.WriteUInt32(BitHelper.ConvertEndian(8u)); //Length, 4 bytes.</a>
+<a name="ln108">                InternalStream.WriteBytes(Encoding.ASCII.GetBytes(&quot;acTL&quot;)); //Chunk type, 4 bytes.</a>
+<a name="ln109">                InternalStream.WriteUInt32(BitHelper.ConvertEndian((uint)FrameCount)); //NumFrames, 4 bytes.</a>
+<a name="ln110">                InternalStream.WriteUInt32(BitHelper.ConvertEndian((uint)RepeatCount)); //NumPlays, 4 bytes.</a>
+<a name="ln111">                InternalStream.WriteUInt32(BitHelper.ConvertEndian(CrcHelper.Calculate(InternalStream.PeekBytes(InternalStream.Position - 12, 12)))); //CRC, 4 bytes.</a>
+<a name="ln112">            }</a>
+<a name="ln113"> </a>
+<a name="ln114">            //fcTL: Frame control chunk. 26 bytes (Length + Type + CRC, 4 bytes each) = 38 bytes.</a>
+<a name="ln115">            InternalStream.WriteUInt32(BitHelper.ConvertEndian(26u)); //Length, 4 bytes.</a>
+<a name="ln116">            InternalStream.WriteBytes(Encoding.ASCII.GetBytes(&quot;fcTL&quot;)); //Chunk type, 4 bytes.</a>
+<a name="ln117">            InternalStream.WriteUInt32(BitHelper.ConvertEndian((uint)SequenceNumber++)); //SequenceNumber, 4 bytes.</a>
+<a name="ln118">            InternalStream.WriteUInt32(BitHelper.ConvertEndian((uint)rect.Width)); //Width, 4 bytes.</a>
+<a name="ln119">            InternalStream.WriteUInt32(BitHelper.ConvertEndian((uint)rect.Height)); //Height, 4 bytes.</a>
+<a name="ln120">            InternalStream.WriteUInt32(BitHelper.ConvertEndian((uint)rect.X)); //OffsetX, 4 bytes.</a>
+<a name="ln121">            InternalStream.WriteUInt32(BitHelper.ConvertEndian((uint)rect.Y)); //OffsetY, 4 bytes.</a>
+<a name="ln122">            InternalStream.WriteUInt16(BitHelper.ConvertEndian((ushort)delay)); //Delay numerator, 2 bytes.</a>
+<a name="ln123">            InternalStream.WriteUInt16(BitHelper.ConvertEndian((ushort)1000)); //Delay denominator, 2 bytes.</a>
+<a name="ln124"> </a>
+<a name="ln125">            if (IsFirstFrame)</a>
+<a name="ln126">            {</a>
+<a name="ln127">                InternalStream.WriteByte((byte)DisposeOps.None); //DisposeOp, 1 byte.</a>
+<a name="ln128">                InternalStream.WriteByte((byte)BlendOps.Source); //BlendOp, 1 byte.</a>
+<a name="ln129">            }</a>
+<a name="ln130">            else</a>
+<a name="ln131">            {</a>
+<a name="ln132">                InternalStream.WriteByte((byte)DisposeOps.None); //DisposeOp, 1 byte.</a>
+<a name="ln133">                InternalStream.WriteByte((byte)BlendOps.Over); //BlendOp, 1 byte.</a>
+<a name="ln134">            }</a>
+<a name="ln135"> </a>
+<a name="ln136">            InternalStream.WriteUInt32(BitHelper.ConvertEndian(CrcHelper.Calculate(InternalStream.PeekBytes(InternalStream.Position - 30, 30)))); //CRC, 4 bytes.</a>
+<a name="ln137"> </a>
+<a name="ln138">            //fdAT: Frame data chunk. 4 + n bytes (Length + Type + CRC, 4 bytes each) = 16 + n bytes, where n is the frame data.</a>
+<a name="ln139">            var dataList = GetData(stream);</a>
+<a name="ln140"> </a>
+<a name="ln141">            foreach (var data in dataList)</a>
+<a name="ln142">            {</a>
+<a name="ln143">                if (IsFirstFrame)</a>
+<a name="ln144">                {</a>
+<a name="ln145">                    InternalStream.WriteUInt32(BitHelper.ConvertEndian((uint)data.Length)); //Length, 4 bytes.</a>
+<a name="ln146">                    InternalStream.WriteBytes(Encoding.ASCII.GetBytes(&quot;IDAT&quot;)); //Chunk type, 4 bytes.</a>
+<a name="ln147">                    InternalStream.WriteBytes(data); //Frame data, n bytes.</a>
+<a name="ln148">                    InternalStream.WriteUInt32(BitHelper.ConvertEndian(CrcHelper.Calculate(InternalStream.PeekBytes(InternalStream.Position - (data.Length + 4), data.Length + 4)))); //CRC, 4 bytes.</a>
+<a name="ln149">                }</a>
+<a name="ln150">                else</a>
+<a name="ln151">                {</a>
+<a name="ln152">                    InternalStream.WriteUInt32(BitHelper.ConvertEndian(4 + (uint)data.Length)); //Length, 4 bytes.</a>
+<a name="ln153">                    InternalStream.WriteBytes(Encoding.ASCII.GetBytes(&quot;fdAT&quot;)); //Chunk type, 4 bytes.</a>
+<a name="ln154">                    InternalStream.WriteUInt32(BitHelper.ConvertEndian((uint)SequenceNumber++)); //SequenceNumber, 4 bytes.</a>
+<a name="ln155">                    InternalStream.WriteBytes(data); //Frame data, n bytes.</a>
+<a name="ln156">                    InternalStream.WriteUInt32(BitHelper.ConvertEndian(CrcHelper.Calculate(InternalStream.PeekBytes(InternalStream.Position - (data.Length + 8), data.Length + 8)))); //CRC, 4 bytes.</a>
+<a name="ln157">                }</a>
+<a name="ln158">            }</a>
+<a name="ln159"> </a>
+<a name="ln160">            IsFirstFrame = false;</a>
+<a name="ln161">        }</a>
+<a name="ln162">    }</a>
+<a name="ln163"> </a>
+<a name="ln164">    private static IEnumerable&lt;byte[]&gt; GetData(Stream ms)</a>
+<a name="ln165">    {</a>
+<a name="ln166">        ms.Position = 8 + 25;</a>
+<a name="ln167"> </a>
+<a name="ln168">        var list = new List&lt;byte[]&gt;();</a>
+<a name="ln169"> </a>
+<a name="ln170">        while (ms.CanRead)</a>
+<a name="ln171">        {</a>
+<a name="ln172">            var length = BitHelper.ConvertEndian(ms.ReadUInt32());</a>
+<a name="ln173">            var chunkType = Encoding.ASCII.GetString(ms.ReadBytes(4));</a>
+<a name="ln174">            var data = ms.ReadBytes(length);</a>
+<a name="ln175"> </a>
+<a name="ln176">            if (chunkType == &quot;IDAT&quot;)</a>
+<a name="ln177">                list.Add(data);</a>
+<a name="ln178"> </a>
+<a name="ln179">            if (chunkType == &quot;IEND&quot;)</a>
+<a name="ln180">                break;</a>
+<a name="ln181"> </a>
+<a name="ln182">            ms.ReadUInt32();</a>
+<a name="ln183">        }</a>
+<a name="ln184"> </a>
+<a name="ln185">        return list;</a>
+<a name="ln186">    }</a>
+<a name="ln187"> </a>
+<a name="ln188">    public bool ReadFrames()</a>
+<a name="ln189">    {</a>
+<a name="ln190">        //Png header, 8 bytes.</a>
+<a name="ln191">        if (!InternalStream.ReadBytes(8).SequenceEqual(new byte[] {137, 80, 78, 71, 13, 10, 26, 10}))</a>
+<a name="ln192">            throw new Exception(&quot;Invalid file format, expected PNG signature not found.&quot;);</a>
+<a name="ln193"> </a>
+<a name="ln194">        //IHDR chunk, 25 bytes.</a>
+<a name="ln195">        Ihdr = IhdrChunk.Read(InternalStream);</a>
+<a name="ln196"> </a>
+<a name="ln197">        //aCTl chunk, 16 bytes.</a>
+<a name="ln198">        Actl = ActlChunk.Read(InternalStream);</a>
+<a name="ln199"> </a>
+<a name="ln200">        //If there's no animation control chunk, it's a normal Png.</a>
+<a name="ln201">        if (Actl == null)</a>
+<a name="ln202">            return false;</a>
+<a name="ln203"> </a>
+<a name="ln204">        var masterSequence = 0;</a>
+<a name="ln205">        var frameGroupId = -1;</a>
+<a name="ln206"> </a>
+<a name="ln207">        //Read frames.</a>
+<a name="ln208">        while (InternalStream.CanRead)</a>
+<a name="ln209">        {</a>
+<a name="ln210">            //Tries to read any chunk, except IEND.</a>
+<a name="ln211">            var chunk = Chunk.Read(InternalStream, masterSequence++);</a>
+<a name="ln212"> </a>
+<a name="ln213">            //End reached, prematurely or not.</a>
+<a name="ln214">            if (chunk == null || chunk.ChunkType == &quot;IEND&quot;)</a>
+<a name="ln215">                break;</a>
+<a name="ln216"> </a>
+<a name="ln217">            //Chunks can be grouped into frames.</a>
+<a name="ln218">            if (new[] {&quot;fcTL&quot;, &quot;fdAT&quot;, &quot;IDAT&quot;}.Contains(chunk.ChunkType))</a>
+<a name="ln219">            {</a>
+<a name="ln220">                if (chunk.ChunkType == &quot;fcTL&quot;)</a>
+<a name="ln221">                    frameGroupId++;</a>
+<a name="ln222"> </a>
+<a name="ln223">                chunk.FrameGroupId = frameGroupId;</a>
+<a name="ln224">            }</a>
+<a name="ln225"> </a>
+<a name="ln226">            Chunks.Add(chunk);</a>
+<a name="ln227">        }</a>
+<a name="ln228"> </a>
+<a name="ln229">        return true;</a>
+<a name="ln230">    }</a>
+<a name="ln231"> </a>
+<a name="ln232">    public ApngFrame GetFrame(int index)</a>
+<a name="ln233">    {</a>
+<a name="ln234">        //Build each frame using:</a>
+<a name="ln235">        //Starting blocks: IHDR, tIME, zTXt, tEXt, iTXt, pHYs, sPLT, (iCCP | sRGB), sBIT, gAMA, cHRM, PLTE, tRNS, hIST, bKGD.</a>
+<a name="ln236">        //Image data: IDAT.</a>
+<a name="ln237">        //End block: IEND.</a>
+<a name="ln238"> </a>
+<a name="ln239">        var chunks = Chunks.Where(w =&gt; w.FrameGroupId == index).ToList();</a>
+<a name="ln240">        var otherChunks = Chunks.Where(w =&gt; w.FrameGroupId == -1 &amp;&amp; w.ChunkType != &quot;IDAT&quot;).ToList();</a>
+<a name="ln241"> </a>
+<a name="ln242">        if (!chunks.Any())</a>
+<a name="ln243">            return null;</a>
+<a name="ln244"> </a>
+<a name="ln245">        var frame = new ApngFrame();</a>
+<a name="ln246"> </a>
+<a name="ln247">        //First frame • Second frame</a>
+<a name="ln248">        //Default image is part of the animation:       fcTL + IDAT • fcTL + fdAT</a>
+<a name="ln249">        //Default image isn't part of the animation:    IDAT • fcTL + fdAT</a>
+<a name="ln250"> </a>
+<a name="ln251">        if (chunks[0].ChunkType == &quot;fcTL&quot;)</a>
+<a name="ln252">        {</a>
+<a name="ln253">            var fctl = FctlChunk.Read(chunks[0].Length, chunks[0].ChunkData);</a>
+<a name="ln254">            frame.Delay = fctl.DelayNum == 0 ? 10 : (int)(fctl.DelayNum / (fctl.DelayDen == 0 ? 100d : fctl.DelayDen) * 1000d);</a>
+<a name="ln255">            frame.Width = fctl.Width;</a>
+<a name="ln256">            frame.Height = fctl.Height;</a>
+<a name="ln257">            frame.Left = fctl.XOffset;</a>
+<a name="ln258">            frame.Top = fctl.YOffset;</a>
+<a name="ln259">            frame.ColorType = Ihdr.ColorType;</a>
+<a name="ln260">            frame.BitDepth = Ihdr.BitDepth;</a>
+<a name="ln261">            frame.DisposeOp = fctl.DisposeOp;</a>
+<a name="ln262">            frame.BlendOp = fctl.BlendOp;</a>
+<a name="ln263"> </a>
+<a name="ln264">            using (var stream = new MemoryStream())</a>
+<a name="ln265">            {</a>
+<a name="ln266">                //Png signature, 8 bytes.</a>
+<a name="ln267">                stream.WriteBytes(new byte[] {137, 80, 78, 71, 13, 10, 26, 10});</a>
+<a name="ln268"> </a>
+<a name="ln269">                //Image header chunk. 25 bytes.</a>
+<a name="ln270">                Ihdr.Write(stream, fctl.Width, fctl.Height);</a>
+<a name="ln271"> </a>
+<a name="ln272">                //Any other auxiliary chunks.</a>
+<a name="ln273">                foreach (var other in otherChunks)</a>
+<a name="ln274">                    other.Write(stream);</a>
+<a name="ln275"> </a>
+<a name="ln276">                //Frame has multiple chunks.</a>
+<a name="ln277">                if (chunks.Count &gt; 2)</a>
+<a name="ln278">                {</a>
+<a name="ln279">                    var datas = new List&lt;byte[]&gt;();</a>
+<a name="ln280"> </a>
+<a name="ln281">                    //Data chunks.</a>
+<a name="ln282">                    for (var i = 1; i &lt; chunks.Count; i++)</a>
+<a name="ln283">                    {</a>
+<a name="ln284">                        switch (chunks[i].ChunkType)</a>
+<a name="ln285">                        {</a>
+<a name="ln286">                            case &quot;fdAT&quot;:</a>
+<a name="ln287">                            {</a>
+<a name="ln288">                                var fdat = FdatChunk.Read(chunks[i].Length, chunks[i].ChunkData);</a>
+<a name="ln289">                                datas.Add(fdat.FrameData);</a>
+<a name="ln290">                                break;</a>
+<a name="ln291">                            }</a>
+<a name="ln292">                            case &quot;IDAT&quot;:</a>
+<a name="ln293">                            {</a>
+<a name="ln294">                                var idat = IdatChunk.Read(chunks[i].Length, chunks[i].ChunkData);</a>
+<a name="ln295">                                datas.Add(idat.FrameData);</a>
+<a name="ln296">                                break;</a>
+<a name="ln297">                            }</a>
+<a name="ln298">                        }</a>
+<a name="ln299">                    }</a>
+<a name="ln300"> </a>
+<a name="ln301">                    //Write combined frame data.</a>
+<a name="ln302">                    var length = datas.Sum(s =&gt; s.Length);</a>
+<a name="ln303"> </a>
+<a name="ln304">                    stream.WriteUInt32(BitHelper.ConvertEndian((uint)length)); //4 bytes.</a>
+<a name="ln305">                    stream.WriteBytes(Encoding.ASCII.GetBytes(&quot;IDAT&quot;)); //4 bytes.</a>
+<a name="ln306">                    stream.WriteBytes(datas.SelectMany(s =&gt; s).ToArray()); //XX bytes.</a>
+<a name="ln307">                    stream.WriteUInt32(BitHelper.ConvertEndian(CrcHelper.Calculate(stream.PeekBytes(stream.Position - (length + 4), length + 4)))); //CRC, 4 bytes.</a>
+<a name="ln308">                }</a>
+<a name="ln309">                else</a>
+<a name="ln310">                {</a>
+<a name="ln311">                    switch (chunks[1].ChunkType)</a>
+<a name="ln312">                    {</a>
+<a name="ln313">                        case &quot;fdAT&quot;:</a>
+<a name="ln314">                        {</a>
+<a name="ln315">                            var fdat = FdatChunk.Read(chunks[1].Length, chunks[1].ChunkData);</a>
+<a name="ln316">                            fdat.Write(stream);</a>
+<a name="ln317">                            break;</a>
+<a name="ln318">                        }</a>
+<a name="ln319">                        case &quot;IDAT&quot;:</a>
+<a name="ln320">                        {</a>
+<a name="ln321">                            var idat = IdatChunk.Read(chunks[1].Length, chunks[1].ChunkData);</a>
+<a name="ln322">                            idat.Write(stream);</a>
+<a name="ln323">                            break;</a>
+<a name="ln324">                        }</a>
+<a name="ln325">                    }</a>
+<a name="ln326">                }</a>
+<a name="ln327"> </a>
+<a name="ln328">                //End chunk.</a>
+<a name="ln329">                stream.WriteUInt32(BitHelper.ConvertEndian(0u)); //Chunk length, 4 bytes.</a>
+<a name="ln330">                stream.WriteBytes(Encoding.ASCII.GetBytes(&quot;IEND&quot;)); //Chunk type, 4 bytes.</a>
+<a name="ln331">                stream.WriteUInt32(BitHelper.ConvertEndian(CrcHelper.Calculate(stream.PeekBytes(stream.Position - 4, 4)))); //CRC, 4 bytes.</a>
+<a name="ln332"> </a>
+<a name="ln333">                //Gets the whole Png.</a>
+<a name="ln334">                frame.ImageData = stream.ToArray();</a>
+<a name="ln335">            }</a>
+<a name="ln336">        }</a>
+<a name="ln337">        else</a>
+<a name="ln338">        {</a>
+<a name="ln339">            //This is not supposed to happen.</a>
+<a name="ln340">            //All chunks with an FrameGroupId are grouped with a starting fcTL, ending with a IDAT or fdAT chunk.</a>
+<a name="ln341">            LogWriter.Log(new Exception(&quot;Missing fcTL on frame number &quot; + index), $&quot;It was not possible to read frame number {index}&quot;);</a>
+<a name="ln342">            return null;</a>
+<a name="ln343">        }</a>
+<a name="ln344"> </a>
+<a name="ln345">        return frame;</a>
+<a name="ln346">    }</a>
+<a name="ln347"> </a>
+<a name="ln348">    public static BitmapSource MakeFrame(System.Drawing.Size fullSize, BitmapSource rawFrame, ApngFrame frame, BitmapSource baseFrame)</a>
+<a name="ln349">    {</a>
+<a name="ln350">        var visual = new DrawingVisual();</a>
+<a name="ln351">        using (var context = visual.RenderOpen())</a>
+<a name="ln352">        {</a>
+<a name="ln353">            if (baseFrame != null)</a>
+<a name="ln354">            {</a>
+<a name="ln355">                var fullRect = new Rect(0, 0, fullSize.Width, fullSize.Height);</a>
+<a name="ln356">                context.DrawImage(frame.BlendOp == BlendOps.Source ? ClearArea(baseFrame, frame) : baseFrame,  fullRect);</a>
+<a name="ln357">            }</a>
+<a name="ln358"> </a>
+<a name="ln359">            var rect = new Rect(frame.Left, frame.Top, frame.Width, frame.Height);</a>
+<a name="ln360">            context.DrawImage(rawFrame, rect);</a>
+<a name="ln361">        }</a>
+<a name="ln362"> </a>
+<a name="ln363">        var bitmap = new RenderTargetBitmap(fullSize.Width, fullSize.Height, rawFrame.DpiX, rawFrame.DpiY, PixelFormats.Pbgra32);</a>
+<a name="ln364">        bitmap.Render(visual);</a>
+<a name="ln365"> </a>
+<a name="ln366">        if (bitmap.CanFreeze &amp;&amp; !bitmap.IsFrozen)</a>
+<a name="ln367">            bitmap.Freeze();</a>
+<a name="ln368"> </a>
+<a name="ln369">        return bitmap;</a>
+<a name="ln370">    }</a>
+<a name="ln371"> </a>
+<a name="ln372">    public static bool IsFullFrame(ApngFrame metadata, System.Drawing.Size fullSize)</a>
+<a name="ln373">    {</a>
+<a name="ln374">        return metadata.Left == 0 &amp;&amp; metadata.Top == 0 &amp;&amp; metadata.Width == fullSize.Width &amp;&amp; metadata.Height == fullSize.Height;</a>
+<a name="ln375">    }</a>
+<a name="ln376"> </a>
+<a name="ln377">    public static BitmapSource ClearArea(BitmapSource frame, ApngFrame metadata)</a>
+<a name="ln378">    {</a>
+<a name="ln379">        var visual = new DrawingVisual();</a>
+<a name="ln380">        using (var context = visual.RenderOpen())</a>
+<a name="ln381">        {</a>
+<a name="ln382">            var fullRect = new Rect(0, 0, frame.PixelWidth, frame.PixelHeight);</a>
+<a name="ln383">            var clearRect = new Rect(metadata.Left, metadata.Top, metadata.Width, metadata.Height);</a>
+<a name="ln384">            var clip = Geometry.Combine(new RectangleGeometry(fullRect), new RectangleGeometry(clearRect), GeometryCombineMode.Exclude, null);</a>
+<a name="ln385"> </a>
+<a name="ln386">            context.PushClip(clip);</a>
+<a name="ln387">            context.DrawImage(frame, fullRect);</a>
+<a name="ln388">        }</a>
+<a name="ln389"> </a>
+<a name="ln390">        var bitmap = new RenderTargetBitmap(frame.PixelWidth, frame.PixelHeight, frame.DpiX, frame.DpiY, PixelFormats.Pbgra32);</a>
+<a name="ln391">        bitmap.Render(visual);</a>
+<a name="ln392"> </a>
+<a name="ln393">        if (bitmap.CanFreeze &amp;&amp; !bitmap.IsFrozen)</a>
+<a name="ln394">            bitmap.Freeze();</a>
+<a name="ln395"> </a>
+<a name="ln396">        return bitmap;</a>
+<a name="ln397">    }</a>
+<a name="ln398"> </a>
+<a name="ln399">    public void Dispose()</a>
+<a name="ln400">    {</a>
+<a name="ln401">        //IEND: The end of the Png datastream. 0 bytes (Length + Type + CRC, 4 bytes each) = 12 bytes.</a>
+<a name="ln402">        InternalStream.WriteUInt32(BitHelper.ConvertEndian(0u)); //Length, 4 bytes.</a>
+<a name="ln403">        InternalStream.WriteBytes(Encoding.ASCII.GetBytes(&quot;IEND&quot;)); //Chunk type, 4 bytes.</a>
+<a name="ln404">        InternalStream.WriteUInt32(BitHelper.ConvertEndian(CrcHelper.Calculate(InternalStream.PeekBytes(InternalStream.Position - 4, 4)))); //CRC, 4 bytes.</a>
+<a name="ln405"> </a>
+<a name="ln406">        InternalStream.Flush();</a>
+<a name="ln407">        //Resets the stream position to save afterwards.</a>
+<a name="ln408">        InternalStream.Position = 0;</a>
+<a name="ln409">    }</a>
+<a name="ln410">}</a>
+</code></pre>
+<div class="balloon" rel="214"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3063/" target="_blank">V3063</a> A part of conditional expression is always false if it is evaluated: chunk == null.</p></div>
+<div class="balloon" rel="96"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v5609/" target="_blank">V5609</a> Possible path traversal vulnerability. Potentially tainted data from the 'path' variable is used as path.</p></div>
+<link rel="stylesheet" href="highlight.css">
+<script src="highlight.pack.js"></script>
+<script src="highlightjs-line-numbers.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script>hljs.initLineNumbersOnLoad();</script>
+<script>
+  $(document).ready(function() {
+      $('.balloon').each(function () {
+          var bl = $(this);
+          var line = bl.attr('rel');
+          var text = $('a[name="ln'+line+'"]').text();
+
+          var space_count = 0;
+          for(var i = 0; i<text.length; i++){
+              var char = text[i];
+              if((char !== ' ')&&(char !== '\t'))break;
+              if(char === '\t')space_count++;
+              space_count++;
+          }
+
+          bl.css('margin-left', space_count*8);
+          $('a[name="ln'+line+'"]').after(bl);
+      });
+
+      window.location = window.location;
+  });
+</script>
+</body>
+</html>

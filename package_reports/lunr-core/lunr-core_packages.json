@@ -1,0 +1,173 @@
+﻿[
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Microsoft.Bcl.AsyncInterfaces",
+        "CurrentVersion":  "8.0.0",
+        "LatestVersion":  "9.0.4",
+        "Reason":  "New version available",
+        "Solution":  "lunr-core",
+        "Timestamp":  "20250416_175654"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Microsoft.SourceLink.GitHub",
+        "CurrentVersion":  "1.0.0",
+        "LatestVersion":  "8.0.0",
+        "Reason":  "New version available",
+        "Solution":  "lunr-core",
+        "Timestamp":  "20250416_175654"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "System.Text.Json",
+        "CurrentVersion":  "8.0.5",
+        "LatestVersion":  "9.0.4",
+        "Reason":  "New version available",
+        "Solution":  "lunr-core",
+        "Timestamp":  "20250416_175654"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Microsoft.SourceLink.GitHub",
+        "CurrentVersion":  "1.0.0",
+        "LatestVersion":  "8.0.0",
+        "Reason":  "New version available",
+        "Solution":  "lunr-core",
+        "Timestamp":  "20250416_175654"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Microsoft.SourceLink.GitHub",
+        "CurrentVersion":  "1.0.0",
+        "LatestVersion":  "8.0.0",
+        "Reason":  "New version available",
+        "Solution":  "lunr-core",
+        "Timestamp":  "20250416_175654"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "coverlet.collector",
+        "CurrentVersion":  "3.0.3",
+        "LatestVersion":  "6.0.4",
+        "Reason":  "New version available",
+        "Solution":  "lunr-core",
+        "Timestamp":  "20250416_175654"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Microsoft.NET.Test.Sdk",
+        "CurrentVersion":  "16.9.4",
+        "LatestVersion":  "17.13.0",
+        "Reason":  "New version available",
+        "Solution":  "lunr-core",
+        "Timestamp":  "20250416_175654"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "xunit",
+        "CurrentVersion":  "2.4.1",
+        "LatestVersion":  "2.9.3",
+        "Reason":  "New version available",
+        "Solution":  "lunr-core",
+        "Timestamp":  "20250416_175654"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "xunit.runner.visualstudio",
+        "CurrentVersion":  "2.4.3",
+        "LatestVersion":  "3.0.2",
+        "Reason":  "New version available",
+        "Solution":  "lunr-core",
+        "Timestamp":  "20250416_175654"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "BenchmarkDotNet",
+        "CurrentVersion":  "0.12.1",
+        "LatestVersion":  "0.14.0",
+        "Reason":  "New version available",
+        "Solution":  "lunr-core",
+        "Timestamp":  "20250416_175654"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "LightningDB",
+        "CurrentVersion":  "0.13.0",
+        "LatestVersion":  "0.18.0",
+        "Reason":  "New version available",
+        "Solution":  "lunr-core",
+        "Timestamp":  "20250416_175654"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Microsoft.SourceLink.GitHub",
+        "CurrentVersion":  "1.0.0",
+        "LatestVersion":  "8.0.0",
+        "Reason":  "New version available",
+        "Solution":  "lunr-core",
+        "Timestamp":  "20250416_175654"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "LightningDB",
+        "CurrentVersion":  "0.13.0",
+        "LatestVersion":  "0.18.0",
+        "Reason":  "New version available",
+        "Solution":  "lunr-core",
+        "Timestamp":  "20250416_175654"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Microsoft.SourceLink.GitHub",
+        "CurrentVersion":  "1.0.0",
+        "LatestVersion":  "8.0.0",
+        "Reason":  "New version available",
+        "Solution":  "lunr-core",
+        "Timestamp":  "20250416_175654"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "coverlet.collector",
+        "CurrentVersion":  "3.0.3",
+        "LatestVersion":  "6.0.4",
+        "Reason":  "New version available",
+        "Solution":  "lunr-core",
+        "Timestamp":  "20250416_175654"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Microsoft.NET.Test.Sdk",
+        "CurrentVersion":  "16.9.4",
+        "LatestVersion":  "17.13.0",
+        "Reason":  "New version available",
+        "Solution":  "lunr-core",
+        "Timestamp":  "20250416_175654"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "xunit",
+        "CurrentVersion":  "2.4.1",
+        "LatestVersion":  "2.9.3",
+        "Reason":  "New version available",
+        "Solution":  "lunr-core",
+        "Timestamp":  "20250416_175654"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "xunit.runner.visualstudio",
+        "CurrentVersion":  "2.4.3",
+        "LatestVersion":  "3.0.2",
+        "Reason":  "New version available",
+        "Solution":  "lunr-core",
+        "Timestamp":  "20250416_175654"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "BenchmarkDotNet",
+        "CurrentVersion":  "0.12.1",
+        "LatestVersion":  "0.14.0",
+        "Reason":  "New version available",
+        "Solution":  "lunr-core",
+        "Timestamp":  "20250416_175654"
+    }
+]

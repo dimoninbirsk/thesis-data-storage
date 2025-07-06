@@ -1,0 +1,313 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII" />
+  <title>HexadecimalBox.cs</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <script src="../jquery-3.5.1.min.js"></script>
+</head>
+<body>
+<pre><code class = "cs">
+<a name="ln1">using System;</a>
+<a name="ln2">using System.Linq;</a>
+<a name="ln3">using System.Text.RegularExpressions;</a>
+<a name="ln4">using System.Windows;</a>
+<a name="ln5">using System.Windows.Controls;</a>
+<a name="ln6">using System.Windows.Input;</a>
+<a name="ln7"> </a>
+<a name="ln8">namespace ScreenToGif.Controls;</a>
+<a name="ln9"> </a>
+<a name="ln10">public class HexadecimalBox : ExtendedTextBox</a>
+<a name="ln11">{</a>
+<a name="ln12">    #region Dependency Properties</a>
+<a name="ln13"> </a>
+<a name="ln14">    public static readonly DependencyProperty RedProperty = DependencyProperty.Register(&quot;Red&quot;, typeof(int), typeof(HexadecimalBox), new PropertyMetadata(0, Value_PropertyChanged));</a>
+<a name="ln15"> </a>
+<a name="ln16">    public static readonly DependencyProperty GreenProperty = DependencyProperty.Register(&quot;Green&quot;, typeof(int), typeof(HexadecimalBox), new PropertyMetadata(0, Value_PropertyChanged));</a>
+<a name="ln17"> </a>
+<a name="ln18">    public static readonly DependencyProperty BlueProperty = DependencyProperty.Register(&quot;Blue&quot;, typeof(int), typeof(HexadecimalBox), new PropertyMetadata(0, Value_PropertyChanged));</a>
+<a name="ln19"> </a>
+<a name="ln20">    public static readonly DependencyProperty AlphaProperty = DependencyProperty.Register(&quot;Alpha&quot;, typeof(int), typeof(HexadecimalBox), new PropertyMetadata(255, Value_PropertyChanged));</a>
+<a name="ln21"> </a>
+<a name="ln22">    public static readonly DependencyProperty DisplayGlyphProperty = DependencyProperty.Register(&quot;DisplayGlyph&quot;, typeof(bool), typeof(HexadecimalBox), new PropertyMetadata(true));</a>
+<a name="ln23"> </a>
+<a name="ln24">    public static readonly DependencyProperty DisplayAlphaProperty = DependencyProperty.Register(&quot;DisplayAlpha&quot;, typeof(bool), typeof(HexadecimalBox), new PropertyMetadata(true));</a>
+<a name="ln25"> </a>
+<a name="ln26">    public static readonly RoutedEvent ValueChangedEvent = EventManager.RegisterRoutedEvent(&quot;ValueChanged&quot;, RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(HexadecimalBox));</a>
+<a name="ln27"> </a>
+<a name="ln28">    #endregion</a>
+<a name="ln29"> </a>
+<a name="ln30">    #region Properties</a>
+<a name="ln31"> </a>
+<a name="ln32">    public int Red</a>
+<a name="ln33">    {</a>
+<a name="ln34">        get =&gt; (int)GetValue(RedProperty);</a>
+<a name="ln35">        set =&gt; SetValue(RedProperty, value);</a>
+<a name="ln36">    }</a>
+<a name="ln37"> </a>
+<a name="ln38">    public int Blue</a>
+<a name="ln39">    {</a>
+<a name="ln40">        get =&gt; (int)GetValue(BlueProperty);</a>
+<a name="ln41">        set =&gt; SetValue(BlueProperty, value);</a>
+<a name="ln42">    }</a>
+<a name="ln43"> </a>
+<a name="ln44">    public int Green</a>
+<a name="ln45">    {</a>
+<a name="ln46">        get =&gt; (int)GetValue(GreenProperty);</a>
+<a name="ln47">        set =&gt; SetValue(GreenProperty, value);</a>
+<a name="ln48">    }</a>
+<a name="ln49"> </a>
+<a name="ln50">    public int Alpha</a>
+<a name="ln51">    {</a>
+<a name="ln52">        get =&gt; (int)GetValue(AlphaProperty);</a>
+<a name="ln53">        set =&gt; SetValue(AlphaProperty, value);</a>
+<a name="ln54">    }</a>
+<a name="ln55"> </a>
+<a name="ln56">    public bool DisplayGlyph</a>
+<a name="ln57">    {</a>
+<a name="ln58">        get =&gt; (bool)GetValue(DisplayGlyphProperty);</a>
+<a name="ln59">        set =&gt; SetValue(DisplayGlyphProperty, value);</a>
+<a name="ln60">    }</a>
+<a name="ln61"> </a>
+<a name="ln62">    public bool DisplayAlpha</a>
+<a name="ln63">    {</a>
+<a name="ln64">        get =&gt; (bool)GetValue(DisplayAlphaProperty);</a>
+<a name="ln65">        set =&gt; SetValue(DisplayAlphaProperty, value);</a>
+<a name="ln66">    }</a>
+<a name="ln67"> </a>
+<a name="ln68">    public event RoutedEventHandler ValueChanged</a>
+<a name="ln69">    {</a>
+<a name="ln70">        add =&gt; AddHandler(ValueChangedEvent, value);</a>
+<a name="ln71">        remove =&gt; RemoveHandler(ValueChangedEvent, value);</a>
+<a name="ln72">    }</a>
+<a name="ln73"> </a>
+<a name="ln74">    #endregion</a>
+<a name="ln75"> </a>
+<a name="ln76">    private static void Value_PropertyChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)</a>
+<a name="ln77">    {</a>
+<a name="ln78">        var hexaBox = o as HexadecimalBox;</a>
+<a name="ln79"> </a>
+<a name="ln80">        if (hexaBox == null)</a>
+<a name="ln81">            return;</a>
+<a name="ln82"> </a>
+<a name="ln83">        hexaBox.RaiseValueChangedEvent();</a>
+<a name="ln84"> </a>
+<a name="ln85">        hexaBox.Text = $&quot;{(hexaBox.DisplayGlyph ? &quot;#&quot; : &quot;&quot;)}{(hexaBox.DisplayAlpha ? hexaBox.Alpha.ToString(&quot;X2&quot;) : &quot;&quot;)}{hexaBox.Red:X2}{hexaBox.Green:X2}{hexaBox.Blue:X2}&quot;;</a>
+<a name="ln86">    }</a>
+<a name="ln87"> </a>
+<a name="ln88">    static HexadecimalBox()</a>
+<a name="ln89">    {</a>
+<a name="ln90">        DefaultStyleKeyProperty.OverrideMetadata(typeof(HexadecimalBox), new FrameworkPropertyMetadata(typeof(HexadecimalBox)));</a>
+<a name="ln91">    }</a>
+<a name="ln92"> </a>
+<a name="ln93">    #region Overrides</a>
+<a name="ln94"> </a>
+<a name="ln95">    public override void OnApplyTemplate()</a>
+<a name="ln96">    {</a>
+<a name="ln97">        base.OnApplyTemplate();</a>
+<a name="ln98"> </a>
+<a name="ln99">        AddHandler(DataObject.PastingEvent, new DataObjectPastingEventHandler(OnPasting));</a>
+<a name="ln100"> </a>
+<a name="ln101">        Text = $&quot;{(DisplayGlyph ? &quot;#&quot; : &quot;&quot;)}{(DisplayAlpha ? Alpha.ToString(&quot;X2&quot;) : &quot;&quot;)}{Red:X2}{Green:X2}{Blue:X2}&quot;;</a>
+<a name="ln102">    }</a>
+<a name="ln103"> </a>
+<a name="ln104">    protected override void OnPreviewMouseLeftButtonDown(MouseButtonEventArgs e)</a>
+<a name="ln105">    {</a>
+<a name="ln106">        if (!IsKeyboardFocusWithin)</a>
+<a name="ln107">        {</a>
+<a name="ln108">            e.Handled = true;</a>
+<a name="ln109">            Focus();</a>
+<a name="ln110">        }</a>
+<a name="ln111">    }</a>
+<a name="ln112"> </a>
+<a name="ln113">    protected override void OnGotFocus(RoutedEventArgs e)</a>
+<a name="ln114">    {</a>
+<a name="ln115">        base.OnGotFocus(e);</a>
+<a name="ln116"> </a>
+<a name="ln117">        SelectAll();</a>
+<a name="ln118">    }</a>
+<a name="ln119"> </a>
+<a name="ln120">    protected override void OnPreviewTextInput(TextCompositionEventArgs e)</a>
+<a name="ln121">    {</a>
+<a name="ln122">        if (string.IsNullOrEmpty(e.Text))</a>
+<a name="ln123">        {</a>
+<a name="ln124">            e.Handled = true;</a>
+<a name="ln125">            return;</a>
+<a name="ln126">        }</a>
+<a name="ln127"> </a>
+<a name="ln128">        if (!IsEntryAllowed(this, e.Text))</a>
+<a name="ln129">        {</a>
+<a name="ln130">            e.Handled = true;</a>
+<a name="ln131">            return;</a>
+<a name="ln132">        }</a>
+<a name="ln133"> </a>
+<a name="ln134">        base.OnPreviewTextInput(e);</a>
+<a name="ln135">    }</a>
+<a name="ln136"> </a>
+<a name="ln137">    protected override void OnTextChanged(TextChangedEventArgs e)</a>
+<a name="ln138">    {</a>
+<a name="ln139">        if (string.IsNullOrEmpty(Text)) return;</a>
+<a name="ln140"> </a>
+<a name="ln141">        if (!IsTextAllowed(Text)) return;</a>
+<a name="ln142"> </a>
+<a name="ln143">        base.OnTextChanged(e);</a>
+<a name="ln144">    }</a>
+<a name="ln145"> </a>
+<a name="ln146">    protected override void OnLostFocus(RoutedEventArgs e)</a>
+<a name="ln147">    {</a>
+<a name="ln148">        base.OnLostFocus(e);</a>
+<a name="ln149"> </a>
+<a name="ln150">        if (string.IsNullOrEmpty(Text) || !IsTextAllowed(Text))</a>
+<a name="ln151">        {</a>
+<a name="ln152">            Alpha = 255;</a>
+<a name="ln153">            Red = 0;</a>
+<a name="ln154">            Green = 0;</a>
+<a name="ln155">            Blue = 0;</a>
+<a name="ln156"> </a>
+<a name="ln157">            Text = $&quot;{(DisplayGlyph ? &quot;#&quot; : &quot;&quot;)}{(DisplayAlpha ? Alpha.ToString(&quot;X2&quot;) : &quot;&quot;)}{Red:X2}{Green:X2}{Blue:X2}&quot;;</a>
+<a name="ln158">            return;</a>
+<a name="ln159">        }</a>
+<a name="ln160"> </a>
+<a name="ln161">        #region Try parse</a>
+<a name="ln162"> </a>
+<a name="ln163">        try</a>
+<a name="ln164">        {</a>
+<a name="ln165">            var source = Text.Replace(&quot;#&quot;, &quot;&quot;);</a>
+<a name="ln166"> </a>
+<a name="ln167">            switch (source.Length)</a>
+<a name="ln168">            {</a>
+<a name="ln169">                case 2:</a>
+<a name="ln170">                    Alpha = 255;</a>
+<a name="ln171">                    Blue = Green = Red = Convert.ToInt32(source.Substring(0, 2), 16);</a>
+<a name="ln172">                    break;</a>
+<a name="ln173">                case 4:</a>
+<a name="ln174">                    Alpha = Convert.ToInt32(source.Substring(0, 2), 16);</a>
+<a name="ln175">                    Blue = Green = Red = Convert.ToInt32(source.Substring(2, 2), 16);</a>
+<a name="ln176">                    break;</a>
+<a name="ln177">                case 6:</a>
+<a name="ln178">                    Alpha = 255;</a>
+<a name="ln179">                    Red = Convert.ToInt32(source.Substring(0, 2), 16);</a>
+<a name="ln180">                    Green = Convert.ToInt32(source.Substring(2, 2), 16);</a>
+<a name="ln181">                    Blue = Convert.ToInt32(source.Substring(4, 2), 16);</a>
+<a name="ln182">                    break;</a>
+<a name="ln183">                case 8:</a>
+<a name="ln184">                    Alpha = Convert.ToInt32(source.Substring(0, 2), 16);</a>
+<a name="ln185">                    Red = Convert.ToInt32(source.Substring(2, 2), 16);</a>
+<a name="ln186">                    Green = Convert.ToInt32(source.Substring(4, 2), 16);</a>
+<a name="ln187">                    Blue = Convert.ToInt32(source.Substring(6, 2), 16);</a>
+<a name="ln188">                    break;</a>
+<a name="ln189">            }</a>
+<a name="ln190">        }</a>
+<a name="ln191">        catch</a>
+<a name="ln192">        {}</a>
+<a name="ln193"> </a>
+<a name="ln194">        #endregion</a>
+<a name="ln195"> </a>
+<a name="ln196">        Text = $&quot;{(DisplayGlyph ? &quot;#&quot; : &quot;&quot;)}{(DisplayAlpha ? Alpha.ToString(&quot;X2&quot;) : &quot;&quot;)}{Red:X2}{Green:X2}{Blue:X2}&quot;;</a>
+<a name="ln197">    }</a>
+<a name="ln198"> </a>
+<a name="ln199">    #endregion</a>
+<a name="ln200"> </a>
+<a name="ln201">    #region Base Properties Changed</a>
+<a name="ln202"> </a>
+<a name="ln203">    private void OnPasting(object sender, DataObjectPastingEventArgs e)</a>
+<a name="ln204">    {</a>
+<a name="ln205">        if (e.DataObject.GetDataPresent(typeof(string)))</a>
+<a name="ln206">        {</a>
+<a name="ln207">            var text = e.DataObject.GetData(typeof(string)) as string;</a>
+<a name="ln208"> </a>
+<a name="ln209">            if (!IsTextAllowed(text))</a>
+<a name="ln210">                e.CancelCommand();</a>
+<a name="ln211">        }</a>
+<a name="ln212">        else</a>
+<a name="ln213">        {</a>
+<a name="ln214">            e.CancelCommand();</a>
+<a name="ln215">        }</a>
+<a name="ln216">    }</a>
+<a name="ln217"> </a>
+<a name="ln218">    #endregion</a>
+<a name="ln219"> </a>
+<a name="ln220">    #region Methods</a>
+<a name="ln221"> </a>
+<a name="ln222">    void RaiseValueChangedEvent()</a>
+<a name="ln223">    {</a>
+<a name="ln224">        var newEventArgs = new RoutedEventArgs(ValueChangedEvent);</a>
+<a name="ln225">        RaiseEvent(newEventArgs);</a>
+<a name="ln226">    }</a>
+<a name="ln227"> </a>
+<a name="ln228">    private bool IsEntryAllowed(TextBox textBox, string text)</a>
+<a name="ln229">    {</a>
+<a name="ln230">        //Digits, points or commas.</a>
+<a name="ln231">        var regex = new Regex(@&quot;^#|[0-9]|[A-F]|$&quot;);</a>
+<a name="ln232"> </a>
+<a name="ln233">        //Checks if it's a valid char based on the context.</a>
+<a name="ln234">        return regex.IsMatch(text) &amp;&amp; IsEntryAllowedInContext(textBox, text);</a>
+<a name="ln235">    }</a>
+<a name="ln236"> </a>
+<a name="ln237">    private bool IsEntryAllowedInContext(TextBox textBox, string next)</a>
+<a name="ln238">    {</a>
+<a name="ln239">        if (textBox.Text.Replace(&quot;#&quot;, &quot;&quot;).Length &gt; 7 &amp;&amp; textBox.SelectionLength == 0)</a>
+<a name="ln240">            return false;</a>
+<a name="ln241"> </a>
+<a name="ln242">        var nChar = next.ToCharArray().FirstOrDefault();</a>
+<a name="ln243"> </a>
+<a name="ln244">        if (char.IsNumber(nChar) || (nChar &gt;= 97 &amp;&amp; nChar &lt;= 102)) //0 to 9, A to F</a>
+<a name="ln245">        {</a>
+<a name="ln246">            if (textBox.Text.Contains(&quot;#&quot;) &amp;&amp; textBox.SelectionStart == 0)</a>
+<a name="ln247">                return false;</a>
+<a name="ln248"> </a>
+<a name="ln249">            return true;</a>
+<a name="ln250">        }</a>
+<a name="ln251"> </a>
+<a name="ln252">        if (nChar == '#')</a>
+<a name="ln253">        {</a>
+<a name="ln254">            if (textBox.Text.Any(x =&gt; x.Equals('#')))</a>
+<a name="ln255">                return false;</a>
+<a name="ln256"> </a>
+<a name="ln257">            if (textBox.SelectionStart != 0)</a>
+<a name="ln258">                return false;</a>
+<a name="ln259"> </a>
+<a name="ln260">            return true;</a>
+<a name="ln261">        }</a>
+<a name="ln262"> </a>
+<a name="ln263">        return true;</a>
+<a name="ln264">    }</a>
+<a name="ln265"> </a>
+<a name="ln266">    private bool IsTextAllowed(string text)</a>
+<a name="ln267">    {</a>
+<a name="ln268">        //Allows: #FF, #FF11, #FF1122, #FF112233</a>
+<a name="ln269">        return Regex.IsMatch(text, @&quot;^#{0,1}(([0-9a-fA-F]{2}){1,4})$&quot;);</a>
+<a name="ln270">    }</a>
+<a name="ln271"> </a>
+<a name="ln272">    #endregion</a>
+<a name="ln273">}</a>
+</code></pre>
+<div class="balloon" rel="191"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v5606/" target="_blank">V5606</a> An empty exception handler. Silent suppression of exceptions may hide the presence of bugs or vulnerabilities.</p></div>
+<link rel="stylesheet" href="highlight.css">
+<script src="highlight.pack.js"></script>
+<script src="highlightjs-line-numbers.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script>hljs.initLineNumbersOnLoad();</script>
+<script>
+  $(document).ready(function() {
+      $('.balloon').each(function () {
+          var bl = $(this);
+          var line = bl.attr('rel');
+          var text = $('a[name="ln'+line+'"]').text();
+
+          var space_count = 0;
+          for(var i = 0; i<text.length; i++){
+              var char = text[i];
+              if((char !== ' ')&&(char !== '\t'))break;
+              if(char === '\t')space_count++;
+              space_count++;
+          }
+
+          bl.css('margin-left', space_count*8);
+          $('a[name="ln'+line+'"]').after(bl);
+      });
+
+      window.location = window.location;
+  });
+</script>
+</body>
+</html>

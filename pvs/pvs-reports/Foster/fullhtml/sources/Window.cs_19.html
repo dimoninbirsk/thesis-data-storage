@@ -1,0 +1,483 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII" />
+  <title>Window.cs</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <script src="../jquery-3.5.1.min.js"></script>
+</head>
+<body>
+<pre><code class = "cs">
+<a name="ln1">using System.Numerics;</a>
+<a name="ln2">using System.Runtime.CompilerServices;</a>
+<a name="ln3">using static SDL3.SDL;</a>
+<a name="ln4"> </a>
+<a name="ln5">namespace Foster.Framework;</a>
+<a name="ln6"> </a>
+<a name="ln7">public sealed class Window : IDrawableTarget</a>
+<a name="ln8">{</a>
+<a name="ln9">	internal nint Handle { get; private set; }</a>
+<a name="ln10">	internal readonly uint ID;</a>
+<a name="ln11"> </a>
+<a name="ln12">	private string title = string.Empty;</a>
+<a name="ln13">	private readonly App app;</a>
+<a name="ln14">	private readonly GraphicsDevice graphicsDevice;</a>
+<a name="ln15">	private readonly Exception closedWindowException = new(&quot;The Window has been Closed&quot;);</a>
+<a name="ln16">	object? IDrawableTarget.Surface =&gt; this;</a>
+<a name="ln17"> </a>
+<a name="ln18">	/// &lt;summary&gt;</a>
+<a name="ln19">	/// Holds a reference to the current cursor in use, to avoid it getting collected.</a>
+<a name="ln20">	/// &lt;/summary&gt;</a>
+<a name="ln21">	private Cursor? currentCursor;</a>
+<a name="ln22"> </a>
+<a name="ln23">	/// &lt;summary&gt;</a>
+<a name="ln24">	/// The Renderer associated with this Window</a>
+<a name="ln25">	/// &lt;/summary&gt;</a>
+<a name="ln26">	public GraphicsDevice GraphicsDevice =&gt; graphicsDevice;</a>
+<a name="ln27"> </a>
+<a name="ln28">	/// &lt;summary&gt;</a>
+<a name="ln29">	/// The Window Title</a>
+<a name="ln30">	/// &lt;/summary&gt;</a>
+<a name="ln31">	public string Title</a>
+<a name="ln32">	{</a>
+<a name="ln33">		get =&gt; title;</a>
+<a name="ln34">		set</a>
+<a name="ln35">		{</a>
+<a name="ln36">			if (title != value)</a>
+<a name="ln37">			{</a>
+<a name="ln38">				title = value;</a>
+<a name="ln39">				if (Handle != nint.Zero)</a>
+<a name="ln40">					SDL_SetWindowTitle(Handle, value);</a>
+<a name="ln41">			}</a>
+<a name="ln42">		}</a>
+<a name="ln43">	}</a>
+<a name="ln44"> </a>
+<a name="ln45">	/// &lt;summary&gt;</a>
+<a name="ln46">	/// The Window width, which isn't necessarily the size in Pixels depending on the Platform.</a>
+<a name="ln47">	/// Use WidthInPixels to get the drawable size.</a>
+<a name="ln48">	/// &lt;/summary&gt;</a>
+<a name="ln49">	public int Width</a>
+<a name="ln50">	{</a>
+<a name="ln51">		get =&gt; Size.X;</a>
+<a name="ln52">		set =&gt; Size = new(value, Height);</a>
+<a name="ln53">	}</a>
+<a name="ln54"> </a>
+<a name="ln55">	/// &lt;summary&gt;</a>
+<a name="ln56">	/// The Window height, which isn't necessarily the size in Pixels depending on the Platform.</a>
+<a name="ln57">	/// Use HeightInPixels to get the drawable size.</a>
+<a name="ln58">	/// &lt;/summary&gt;</a>
+<a name="ln59">	public int Height</a>
+<a name="ln60">	{</a>
+<a name="ln61">		get =&gt; Size.Y;</a>
+<a name="ln62">		set =&gt; Size = new(Width, value);</a>
+<a name="ln63">	}</a>
+<a name="ln64"> </a>
+<a name="ln65">	/// &lt;summary&gt;</a>
+<a name="ln66">	/// The Window size, which isn't necessarily the size in Pixels depending on the Platform.</a>
+<a name="ln67">	/// Use SizeInPixels to get the drawable size.</a>
+<a name="ln68">	/// &lt;/summary&gt;</a>
+<a name="ln69">	public Point2 Size</a>
+<a name="ln70">	{</a>
+<a name="ln71">		get</a>
+<a name="ln72">		{</a>
+<a name="ln73">			if (Handle == nint.Zero)</a>
+<a name="ln74">				throw closedWindowException;</a>
+<a name="ln75">			SDL_GetWindowSize(Handle, out int w, out int h);</a>
+<a name="ln76">			return new(w, h);</a>
+<a name="ln77">		}</a>
+<a name="ln78">		set</a>
+<a name="ln79">		{</a>
+<a name="ln80">			if (Handle == nint.Zero)</a>
+<a name="ln81">				throw closedWindowException;</a>
+<a name="ln82">			SDL_SetWindowSize(Handle, value.X, value.Y);</a>
+<a name="ln83">		}</a>
+<a name="ln84">	}</a>
+<a name="ln85"> </a>
+<a name="ln86">	/// &lt;summary&gt;</a>
+<a name="ln87">	/// The Width of the Window in Pixels</a>
+<a name="ln88">	/// &lt;/summary&gt;</a>
+<a name="ln89">	public int WidthInPixels =&gt; SizeInPixels.X;</a>
+<a name="ln90"> </a>
+<a name="ln91">	/// &lt;summary&gt;</a>
+<a name="ln92">	/// The Height of the Window in Pixels</a>
+<a name="ln93">	/// &lt;/summary&gt;</a>
+<a name="ln94">	public int HeightInPixels =&gt; SizeInPixels.Y;</a>
+<a name="ln95"> </a>
+<a name="ln96">	/// &lt;summary&gt;</a>
+<a name="ln97">	/// The Size of the Window in Pixels</a>
+<a name="ln98">	/// &lt;/summary&gt;</a>
+<a name="ln99">	public Point2 SizeInPixels</a>
+<a name="ln100">	{</a>
+<a name="ln101">		get</a>
+<a name="ln102">		{</a>
+<a name="ln103">			if (Handle == nint.Zero)</a>
+<a name="ln104">				throw closedWindowException;</a>
+<a name="ln105">			SDL_GetWindowSizeInPixels(Handle, out int w, out int h);</a>
+<a name="ln106">			return new(w, h);</a>
+<a name="ln107">		}</a>
+<a name="ln108">	}</a>
+<a name="ln109"> </a>
+<a name="ln110">	/// &lt;summary&gt;</a>
+<a name="ln111">	/// Gets the Size of the Display that the Application Window is currently in.</a>
+<a name="ln112">	/// &lt;/summary&gt;</a>
+<a name="ln113">	public unsafe Point2 DisplaySize</a>
+<a name="ln114">	{</a>
+<a name="ln115">		get</a>
+<a name="ln116">		{</a>
+<a name="ln117">			if (Handle == nint.Zero)</a>
+<a name="ln118">				throw closedWindowException;</a>
+<a name="ln119">			var index = SDL_GetDisplayForWindow(Handle);</a>
+<a name="ln120">			var mode = (SDL_DisplayMode*)SDL_GetCurrentDisplayMode(index);</a>
+<a name="ln121">			if (mode == null)</a>
+<a name="ln122">				return Point2.Zero;</a>
+<a name="ln123">			return new(mode-&gt;w, mode-&gt;h);</a>
+<a name="ln124">		}</a>
+<a name="ln125">	}</a>
+<a name="ln126"> </a>
+<a name="ln127">	/// &lt;summary&gt;</a>
+<a name="ln128">	/// Gets the Content Scale for the Application Window.</a>
+<a name="ln129">	/// &lt;/summary&gt;</a>
+<a name="ln130">	public Vector2 ContentScale</a>
+<a name="ln131">	{</a>
+<a name="ln132">		get</a>
+<a name="ln133">		{</a>
+<a name="ln134">			if (Handle == nint.Zero)</a>
+<a name="ln135">				throw closedWindowException;</a>
+<a name="ln136">			var scale = SDL_GetWindowDisplayScale(Handle);</a>
+<a name="ln137">			if (scale &lt;= 0)</a>
+<a name="ln138">			{</a>
+<a name="ln139">				Log.Warning($&quot;SDL_GetWindowDisplayScale failed: {SDL_GetError()}&quot;);</a>
+<a name="ln140">				return new(WidthInPixels / Width, HeightInPixels / Height);</a>
+<a name="ln141">			}</a>
+<a name="ln142">			return Vector2.One * scale;</a>
+<a name="ln143">		}</a>
+<a name="ln144">	}</a>
+<a name="ln145"> </a>
+<a name="ln146">	/// &lt;summary&gt;</a>
+<a name="ln147">	/// Whether the Window is Fullscreen or not</a>
+<a name="ln148">	/// &lt;/summary&gt;</a>
+<a name="ln149">	public bool Fullscreen</a>
+<a name="ln150">	{</a>
+<a name="ln151">		get</a>
+<a name="ln152">		{</a>
+<a name="ln153">			if (Handle == nint.Zero)</a>
+<a name="ln154">				throw closedWindowException;</a>
+<a name="ln155">			return (SDL_GetWindowFlags(Handle) &amp; SDL_WindowFlags.SDL_WINDOW_FULLSCREEN) != 0;</a>
+<a name="ln156">		}</a>
+<a name="ln157">		set</a>
+<a name="ln158">		{</a>
+<a name="ln159">			if (Handle == nint.Zero)</a>
+<a name="ln160">				throw closedWindowException;</a>
+<a name="ln161">			SDL_SetWindowFullscreen(Handle, value);</a>
+<a name="ln162">		}</a>
+<a name="ln163">	}</a>
+<a name="ln164"> </a>
+<a name="ln165">	/// &lt;summary&gt;</a>
+<a name="ln166">	/// Whether the Window is Resizable by the User</a>
+<a name="ln167">	/// &lt;/summary&gt;</a>
+<a name="ln168">	public bool Resizable</a>
+<a name="ln169">	{</a>
+<a name="ln170">		get</a>
+<a name="ln171">		{</a>
+<a name="ln172">			if (Handle == nint.Zero)</a>
+<a name="ln173">				throw closedWindowException;</a>
+<a name="ln174">			return (SDL_GetWindowFlags(Handle) &amp; SDL_WindowFlags.SDL_WINDOW_RESIZABLE) != 0;</a>
+<a name="ln175">		}</a>
+<a name="ln176">		set</a>
+<a name="ln177">		{</a>
+<a name="ln178">			if (Handle == nint.Zero)</a>
+<a name="ln179">				throw closedWindowException;</a>
+<a name="ln180">			SDL_SetWindowResizable(Handle, value);</a>
+<a name="ln181">		}</a>
+<a name="ln182">	}</a>
+<a name="ln183"> </a>
+<a name="ln184">	/// &lt;summary&gt;</a>
+<a name="ln185">	/// Whether the Window is Maximized</a>
+<a name="ln186">	/// &lt;/summary&gt;</a>
+<a name="ln187">	public bool Maximized</a>
+<a name="ln188">	{</a>
+<a name="ln189">		get</a>
+<a name="ln190">		{</a>
+<a name="ln191">			if (Handle == nint.Zero)</a>
+<a name="ln192">				throw closedWindowException;</a>
+<a name="ln193">			return (SDL_GetWindowFlags(Handle) &amp; SDL_WindowFlags.SDL_WINDOW_MAXIMIZED) != 0;</a>
+<a name="ln194">		}</a>
+<a name="ln195">		set</a>
+<a name="ln196">		{</a>
+<a name="ln197">			if (Handle == nint.Zero)</a>
+<a name="ln198">				throw closedWindowException;</a>
+<a name="ln199">			if (value &amp;&amp; !Maximized)</a>
+<a name="ln200">				SDL_MaximizeWindow(Handle);</a>
+<a name="ln201">			else if (!value &amp;&amp; Maximized)</a>
+<a name="ln202">				SDL_RestoreWindow(Handle);</a>
+<a name="ln203">		}</a>
+<a name="ln204">	}</a>
+<a name="ln205"> </a>
+<a name="ln206">	/// &lt;summary&gt;</a>
+<a name="ln207">	/// Returns whether the Application Window is currently Focused or not.</a>
+<a name="ln208">	/// &lt;/summary&gt;</a>
+<a name="ln209">	public bool Focused</a>
+<a name="ln210">	{</a>
+<a name="ln211">		get</a>
+<a name="ln212">		{</a>
+<a name="ln213">			if (Handle == nint.Zero)</a>
+<a name="ln214">				throw closedWindowException;</a>
+<a name="ln215">			var flags = SDL_WindowFlags.SDL_WINDOW_INPUT_FOCUS | SDL_WindowFlags.SDL_WINDOW_MOUSE_FOCUS;</a>
+<a name="ln216">			return (SDL_GetWindowFlags(Handle) &amp; flags) != 0;</a>
+<a name="ln217">		}</a>
+<a name="ln218">	}</a>
+<a name="ln219"> </a>
+<a name="ln220">	/// &lt;summary&gt;</a>
+<a name="ln221">	/// Called when the Window gains focus</a>
+<a name="ln222">	/// &lt;/summary&gt;</a>
+<a name="ln223">	public event Action? OnFocusGain = null;</a>
+<a name="ln224"> </a>
+<a name="ln225">	/// &lt;summary&gt;</a>
+<a name="ln226">	/// Called when the Window loses focus</a>
+<a name="ln227">	/// &lt;/summary&gt;</a>
+<a name="ln228">	public event Action? OnFocusLost = null;</a>
+<a name="ln229"> </a>
+<a name="ln230">	/// &lt;summary&gt;</a>
+<a name="ln231">	/// Called when the Mouse enters the Window</a>
+<a name="ln232">	/// &lt;/summary&gt;</a>
+<a name="ln233">	public event Action? OnMouseEnter = null;</a>
+<a name="ln234"> </a>
+<a name="ln235">	/// &lt;summary&gt;</a>
+<a name="ln236">	/// Called when the Mouse leaves the Window</a>
+<a name="ln237">	/// &lt;/summary&gt;</a>
+<a name="ln238">	public event Action? OnMouseLeave = null;</a>
+<a name="ln239"> </a>
+<a name="ln240">	/// &lt;summary&gt;</a>
+<a name="ln241">	/// Called when the Window is resized</a>
+<a name="ln242">	/// &lt;/summary&gt;</a>
+<a name="ln243">	public event Action? OnResize = null;</a>
+<a name="ln244"> </a>
+<a name="ln245">	/// &lt;summary&gt;</a>
+<a name="ln246">	/// Called when the Window is restored (after being minimized)</a>
+<a name="ln247">	/// &lt;/summary&gt;</a>
+<a name="ln248">	public event Action? OnRestore = null;</a>
+<a name="ln249"> </a>
+<a name="ln250">	/// &lt;summary&gt;</a>
+<a name="ln251">	/// Called when the Window is maximized</a>
+<a name="ln252">	/// &lt;/summary&gt;</a>
+<a name="ln253">	public event Action? OnMaximize = null;</a>
+<a name="ln254"> </a>
+<a name="ln255">	/// &lt;summary&gt;</a>
+<a name="ln256">	/// Called when the Window is minimized</a>
+<a name="ln257">	/// &lt;/summary&gt;</a>
+<a name="ln258">	public event Action? OnMinimize = null;</a>
+<a name="ln259"> </a>
+<a name="ln260">	/// &lt;summary&gt;</a>
+<a name="ln261">	/// Called when the Window enters full screen mode</a>
+<a name="ln262">	/// &lt;/summary&gt;</a>
+<a name="ln263">	public event Action? OnFullscreenEnter = null;</a>
+<a name="ln264"> </a>
+<a name="ln265">	/// &lt;summary&gt;</a>
+<a name="ln266">	/// Called when the Window exits full screen mode</a>
+<a name="ln267">	/// &lt;/summary&gt;</a>
+<a name="ln268">	public event Action? OnFullscreenExit = null;</a>
+<a name="ln269"> </a>
+<a name="ln270">	/// &lt;summary&gt;</a>
+<a name="ln271">	/// What action to perform when the user requests for the Window to close.</a>
+<a name="ln272">	/// If not assigned, the default behavior will call &lt;see cref=&quot;App.Exit&quot;/&gt;.</a>
+<a name="ln273">	/// &lt;/summary&gt;</a>
+<a name="ln274">	public Action? OnCloseRequested;</a>
+<a name="ln275"> </a>
+<a name="ln276">	internal Window(App app, GraphicsDevice graphicsDevice, string title, int width, int height, bool fullscreen)</a>
+<a name="ln277">	{</a>
+<a name="ln278">		this.app = app;</a>
+<a name="ln279">		this.graphicsDevice = graphicsDevice;</a>
+<a name="ln280">		this.title = title;</a>
+<a name="ln281"> </a>
+<a name="ln282">		var windowFlags = </a>
+<a name="ln283">			SDL_WindowFlags.SDL_WINDOW_HIGH_PIXEL_DENSITY | SDL_WindowFlags.SDL_WINDOW_RESIZABLE | </a>
+<a name="ln284">			SDL_WindowFlags.SDL_WINDOW_HIDDEN;</a>
+<a name="ln285"> </a>
+<a name="ln286">		if (fullscreen)</a>
+<a name="ln287">			windowFlags |= SDL_WindowFlags.SDL_WINDOW_FULLSCREEN;</a>
+<a name="ln288"> </a>
+<a name="ln289">		Handle = SDL_CreateWindow(title, width, height, windowFlags);</a>
+<a name="ln290">		if (Handle == IntPtr.Zero)</a>
+<a name="ln291">			throw Platform.CreateExceptionFromSDL(nameof(SDL_CreateWindow));</a>
+<a name="ln292"> </a>
+<a name="ln293">		ID = SDL_GetWindowID(Handle);</a>
+<a name="ln294">	}</a>
+<a name="ln295">	</a>
+<a name="ln296">	/// &lt;summary&gt;</a>
+<a name="ln297">	/// Sets whether the Mouse Cursor should be visible while over the Application Window</a>
+<a name="ln298">	/// &lt;/summary&gt;</a>
+<a name="ln299">	public void SetMouseVisible(bool enabled)</a>
+<a name="ln300">	{</a>
+<a name="ln301">		if (enabled == SDL_CursorVisible())</a>
+<a name="ln302">			return;</a>
+<a name="ln303"> </a>
+<a name="ln304">		// TODO:</a>
+<a name="ln305">		// Should this method be here? It seems like it's maybe application-specific</a>
+<a name="ln306">		// instead of unique to a given window.</a>
+<a name="ln307">		</a>
+<a name="ln308">		bool result;</a>
+<a name="ln309">		if (enabled)</a>
+<a name="ln310">			result = SDL_ShowCursor();</a>
+<a name="ln311">		else</a>
+<a name="ln312">			result = SDL_HideCursor();</a>
+<a name="ln313">		if (!result)</a>
+<a name="ln314">			Log.Warning($&quot;Failed to set Mouse visibility: {SDL_GetError()}&quot;);</a>
+<a name="ln315">	}</a>
+<a name="ln316"> </a>
+<a name="ln317">	/// &lt;summary&gt;</a>
+<a name="ln318">	/// Sets whether the Mouse is in Relative Mode.</a>
+<a name="ln319">	/// While in Relative Mode, the Mouse Cursor is not visible, and the mouse</a>
+<a name="ln320">	/// is constrained to the Window while still updating Mouse delta.</a>
+<a name="ln321">	/// &lt;/summary&gt;</a>
+<a name="ln322">	public void SetMouseRelativeMode(bool enabled)</a>
+<a name="ln323">	{</a>
+<a name="ln324">		if (enabled == SDL_GetWindowRelativeMouseMode(Handle))</a>
+<a name="ln325">			return;</a>
+<a name="ln326"> </a>
+<a name="ln327">		if (!SDL_SetWindowRelativeMouseMode(Handle, enabled))</a>
+<a name="ln328">			Log.Warning($&quot;Failed to set Mouse Relative Mode: {SDL_GetError()}&quot;);</a>
+<a name="ln329"> </a>
+<a name="ln330">		SDL_WarpMouseInWindow(Handle, Width / 2, Height / 2);</a>
+<a name="ln331">	}</a>
+<a name="ln332"> </a>
+<a name="ln333">	/// &lt;summary&gt;</a>
+<a name="ln334">	/// Sets the Mouse Cursor. If null, resets the Cursor to the default OS cursor.</a>
+<a name="ln335">	/// &lt;/summary&gt;</a>
+<a name="ln336">	public void SetMouseCursor(Cursor? cursor)</a>
+<a name="ln337">	{</a>
+<a name="ln338">		if (currentCursor == cursor)</a>
+<a name="ln339">			return;</a>
+<a name="ln340"> </a>
+<a name="ln341">		if (cursor == null)</a>
+<a name="ln342">		{</a>
+<a name="ln343">			currentCursor = null;</a>
+<a name="ln344">			SDL_SetCursor(SDL_GetDefaultCursor());</a>
+<a name="ln345">			return;</a>
+<a name="ln346">		}</a>
+<a name="ln347"> </a>
+<a name="ln348">		if (cursor.Disposed)</a>
+<a name="ln349">			throw new Exception(&quot;Using an invalid cursor!&quot;);</a>
+<a name="ln350"> </a>
+<a name="ln351">		if (SDL_SetCursor(cursor.Handle))</a>
+<a name="ln352">			currentCursor = cursor;</a>
+<a name="ln353">		else</a>
+<a name="ln354">			Log.Warning($&quot;Failed to set Mouse Cursor: {SDL_GetError()}&quot;);</a>
+<a name="ln355">	}</a>
+<a name="ln356"> </a>
+<a name="ln357">	/// &lt;summary&gt;</a>
+<a name="ln358">	/// This will enable Text input in the Window, by populating keyboard </a>
+<a name="ln359">	/// text in &lt;see cref=&quot;KeyboardState.Text&quot;/&gt;.&lt;br/&gt;</a>
+<a name="ln360">	/// &lt;br/&gt;</a>
+<a name="ln361">	/// On some platforms this function will show an on-screen keyboard.</a>
+<a name="ln362">	/// &lt;/summary&gt;</a>
+<a name="ln363">	public void StartTextInput()</a>
+<a name="ln364">	{</a>
+<a name="ln365">		if (app.IsMainThread())</a>
+<a name="ln366">			SDL_StartTextInput(Handle);</a>
+<a name="ln367">		else</a>
+<a name="ln368">			app.RunOnMainThread(() =&gt; SDL_StartTextInput(Handle));</a>
+<a name="ln369">	}</a>
+<a name="ln370"> </a>
+<a name="ln371">	/// &lt;summary&gt;</a>
+<a name="ln372">	/// This disables Text input in the Window</a>
+<a name="ln373">	/// &lt;/summary&gt;</a>
+<a name="ln374">	public void StopTextInput()</a>
+<a name="ln375">	{</a>
+<a name="ln376">		if (app.IsMainThread())</a>
+<a name="ln377">			SDL_StopTextInput(Handle);</a>
+<a name="ln378">		else</a>
+<a name="ln379">			app.RunOnMainThread(() =&gt; SDL_StopTextInput(Handle));</a>
+<a name="ln380">	}</a>
+<a name="ln381"> </a>
+<a name="ln382">	internal void OnEvent(SDL_EventType ev)</a>
+<a name="ln383">	{</a>
+<a name="ln384">		switch (ev)</a>
+<a name="ln385">		{</a>
+<a name="ln386">		case SDL_EventType.SDL_EVENT_WINDOW_FOCUS_GAINED:</a>
+<a name="ln387">			OnFocusGain?.Invoke();</a>
+<a name="ln388">			break;</a>
+<a name="ln389">		case SDL_EventType.SDL_EVENT_WINDOW_FOCUS_LOST:</a>
+<a name="ln390">			OnFocusLost?.Invoke();</a>
+<a name="ln391">			break;</a>
+<a name="ln392">		case SDL_EventType.SDL_EVENT_WINDOW_MOUSE_ENTER:</a>
+<a name="ln393">			OnMouseEnter?.Invoke();</a>
+<a name="ln394">			break;</a>
+<a name="ln395">		case SDL_EventType.SDL_EVENT_WINDOW_MOUSE_LEAVE:</a>
+<a name="ln396">			OnMouseLeave?.Invoke();</a>
+<a name="ln397">			break;</a>
+<a name="ln398">		case SDL_EventType.SDL_EVENT_WINDOW_RESIZED:</a>
+<a name="ln399">			OnResize?.Invoke();</a>
+<a name="ln400">			break;</a>
+<a name="ln401">		case SDL_EventType.SDL_EVENT_WINDOW_RESTORED:</a>
+<a name="ln402">			OnRestore?.Invoke();</a>
+<a name="ln403">			break;</a>
+<a name="ln404">		case SDL_EventType.SDL_EVENT_WINDOW_MAXIMIZED:</a>
+<a name="ln405">			OnMaximize?.Invoke();</a>
+<a name="ln406">			break;</a>
+<a name="ln407">		case SDL_EventType.SDL_EVENT_WINDOW_MINIMIZED:</a>
+<a name="ln408">			OnMinimize?.Invoke();</a>
+<a name="ln409">			break;</a>
+<a name="ln410">		case SDL_EventType.SDL_EVENT_WINDOW_ENTER_FULLSCREEN:</a>
+<a name="ln411">			OnFullscreenEnter?.Invoke();</a>
+<a name="ln412">			break;</a>
+<a name="ln413">		case SDL_EventType.SDL_EVENT_WINDOW_LEAVE_FULLSCREEN:</a>
+<a name="ln414">			OnFullscreenExit?.Invoke();</a>
+<a name="ln415">			break;</a>
+<a name="ln416">		case SDL_EventType.SDL_EVENT_WINDOW_CLOSE_REQUESTED:</a>
+<a name="ln417">			if (OnCloseRequested != null)</a>
+<a name="ln418">				OnCloseRequested.Invoke();</a>
+<a name="ln419">			else</a>
+<a name="ln420">				app.Exit();</a>
+<a name="ln421">			break;</a>
+<a name="ln422">		}</a>
+<a name="ln423">	}</a>
+<a name="ln424"> </a>
+<a name="ln425">	internal void Show()</a>
+<a name="ln426">	{</a>
+<a name="ln427">		SDL_ShowWindow(Handle);</a>
+<a name="ln428">		SDL_SetWindowFullscreenMode(Handle, ref Unsafe.NullRef&lt;SDL_DisplayMode&gt;());</a>
+<a name="ln429">		SDL_SetWindowBordered(Handle, true);</a>
+<a name="ln430">		SDL_ShowCursor();</a>
+<a name="ln431">	}</a>
+<a name="ln432"> </a>
+<a name="ln433">	internal void Hide()</a>
+<a name="ln434">	{</a>
+<a name="ln435">		SDL_HideWindow(Handle);</a>
+<a name="ln436">	}</a>
+<a name="ln437"> </a>
+<a name="ln438">	internal void Close()</a>
+<a name="ln439">	{</a>
+<a name="ln440">		SDL_DestroyWindow(Handle);</a>
+<a name="ln441">		Handle = nint.Zero;</a>
+<a name="ln442">	}</a>
+<a name="ln443">}</a>
+</code></pre>
+<div class="balloon" rel="330"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3041/" target="_blank">V3041</a> The expression was implicitly cast from 'int' type to 'float' type. Consider utilizing an explicit type cast to avoid the loss of a fractional part. An example: double A = (double)(X) / Y;.</p></div>
+<link rel="stylesheet" href="highlight.css">
+<script src="highlight.pack.js"></script>
+<script src="highlightjs-line-numbers.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script>hljs.initLineNumbersOnLoad();</script>
+<script>
+  $(document).ready(function() {
+      $('.balloon').each(function () {
+          var bl = $(this);
+          var line = bl.attr('rel');
+          var text = $('a[name="ln'+line+'"]').text();
+
+          var space_count = 0;
+          for(var i = 0; i<text.length; i++){
+              var char = text[i];
+              if((char !== ' ')&&(char !== '\t'))break;
+              if(char === '\t')space_count++;
+              space_count++;
+          }
+
+          bl.css('margin-left', space_count*8);
+          $('a[name="ln'+line+'"]').after(bl);
+      });
+
+      window.location = window.location;
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,477 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>Feedback.xaml.cs</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <script src="../jquery-3.5.1.min.js"></script>
+</head>
+<body>
+<pre><code class = "cs">
+<a name="ln1">using Microsoft.Win32;</a>
+<a name="ln2">using ScreenToGif.Controls;</a>
+<a name="ln3">using ScreenToGif.Util;</a>
+<a name="ln4">using System;</a>
+<a name="ln5">using System.Collections.Generic;</a>
+<a name="ln6">using System.Collections.ObjectModel;</a>
+<a name="ln7">using System.Globalization;</a>
+<a name="ln8">using System.IO;</a>
+<a name="ln9">using System.IO.Compression;</a>
+<a name="ln10">using System.Linq;</a>
+<a name="ln11">using System.Management;</a>
+<a name="ln12">using System.Reflection;</a>
+<a name="ln13">using System.Text;</a>
+<a name="ln14">using System.Threading.Tasks;</a>
+<a name="ln15">using System.Windows;</a>
+<a name="ln16">using System.Windows.Input;</a>
+<a name="ln17">using ScreenToGif.Native.External;</a>
+<a name="ln18">using ScreenToGif.Native.Helpers;</a>
+<a name="ln19">using ScreenToGif.Native.Structs;</a>
+<a name="ln20">using ScreenToGif.Util.Extensions;</a>
+<a name="ln21">using ScreenToGif.Util.Settings;</a>
+<a name="ln22"> </a>
+<a name="ln23">namespace ScreenToGif.Windows.Other;</a>
+<a name="ln24"> </a>
+<a name="ln25">public partial class Feedback</a>
+<a name="ln26">{</a>
+<a name="ln27">    private ObservableCollection&lt;AttachmentListBoxItem&gt; _fileList = new();</a>
+<a name="ln28"> </a>
+<a name="ln29">    public Feedback()</a>
+<a name="ln30">    {</a>
+<a name="ln31">        InitializeComponent();</a>
+<a name="ln32">    }</a>
+<a name="ln33"> </a>
+<a name="ln34">    #region Events</a>
+<a name="ln35"> </a>
+<a name="ln36">    private async void Feedback_Loaded(object sender, RoutedEventArgs e)</a>
+<a name="ln37">    {</a>
+<a name="ln38">        Cursor = Cursors.AppStarting;</a>
+<a name="ln39">        MainGrid.IsEnabled = false;</a>
+<a name="ln40"> </a>
+<a name="ln41">        await Task.Factory.StartNew(LoadFiles);</a>
+<a name="ln42"> </a>
+<a name="ln43">        MainGrid.IsEnabled = true;</a>
+<a name="ln44">        Cursor = Cursors.Arrow;</a>
+<a name="ln45">    }</a>
+<a name="ln46"> </a>
+<a name="ln47">    private void AddAttachmentButton_Click(object sender, RoutedEventArgs e)</a>
+<a name="ln48">    {</a>
+<a name="ln49">        var ofd = new OpenFileDialog</a>
+<a name="ln50">        {</a>
+<a name="ln51">            InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop),</a>
+<a name="ln52">            Multiselect = true</a>
+<a name="ln53">        };</a>
+<a name="ln54"> </a>
+<a name="ln55">        var result = ofd.ShowDialog(this);</a>
+<a name="ln56"> </a>
+<a name="ln57">        if (!result.Value)</a>
+<a name="ln58">            return;</a>
+<a name="ln59"> </a>
+<a name="ln60">        foreach (var fileName in ofd.FileNames)</a>
+<a name="ln61">        {</a>
+<a name="ln62">            if (!_fileList.Any(x =&gt; x.Attachment.Equals(fileName)))</a>
+<a name="ln63">                _fileList.Add(new AttachmentListBoxItem(fileName));</a>
+<a name="ln64">        }</a>
+<a name="ln65">    }</a>
+<a name="ln66"> </a>
+<a name="ln67">    private void SendButton_Click(object sender, RoutedEventArgs e)</a>
+<a name="ln68">    {</a>
+<a name="ln69">        Send();</a>
+<a name="ln70">    }</a>
+<a name="ln71"> </a>
+<a name="ln72">    private void PreviewButton_Click(object sender, RoutedEventArgs e)</a>
+<a name="ln73">    {</a>
+<a name="ln74">        var preview = new FeedbackPreview</a>
+<a name="ln75">        {</a>
+<a name="ln76">            Owner = this, </a>
+<a name="ln77">            Html = BuildBody(TitleTextBox.Text, MessageTextBox.Text, EmailTextBox.Text, IssueCheckBox.IsChecked == true, SuggestionCheckBox.IsChecked == true)</a>
+<a name="ln78">        };</a>
+<a name="ln79">        preview.ShowDialog();</a>
+<a name="ln80">    }</a>
+<a name="ln81"> </a>
+<a name="ln82">    private void CancelButton_Click(object sender, RoutedEventArgs e)</a>
+<a name="ln83">    {</a>
+<a name="ln84">        DialogResult = false;</a>
+<a name="ln85">    }</a>
+<a name="ln86"> </a>
+<a name="ln87">    private void RemoveButton_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)</a>
+<a name="ln88">    {</a>
+<a name="ln89">        _fileList.RemoveAt(AttachmentListBox.SelectedIndex);</a>
+<a name="ln90">    }</a>
+<a name="ln91"> </a>
+<a name="ln92">    private void RemoveAllAttachmentButton_Click(object sender, RoutedEventArgs e)</a>
+<a name="ln93">    {</a>
+<a name="ln94">        _fileList.Clear();</a>
+<a name="ln95">    }</a>
+<a name="ln96"> </a>
+<a name="ln97">    #endregion</a>
+<a name="ln98"> </a>
+<a name="ln99">    #region Methods</a>
+<a name="ln100"> </a>
+<a name="ln101">    private async void LoadFiles()</a>
+<a name="ln102">    {</a>
+<a name="ln103">        try</a>
+<a name="ln104">        {</a>
+<a name="ln105">            var logFolder = Path.Combine(UserSettings.All.LogsFolder, &quot;ScreenToGif&quot;, &quot;Logs&quot;);</a>
+<a name="ln106">            var local = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, &quot;Settings.xaml&quot;);</a>
+<a name="ln107">            var appData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), &quot;ScreenToGif&quot;, &quot;Settings.xaml&quot;);</a>
+<a name="ln108"> </a>
+<a name="ln109">            var list = new List&lt;string&gt;();</a>
+<a name="ln110"> </a>
+<a name="ln111">            //Search for file inside the log folder.</a>
+<a name="ln112">            if (Directory.Exists(logFolder))</a>
+<a name="ln113">                list.AddRange(await Task.Factory.StartNew(() =&gt; Directory.GetFiles(logFolder).ToList()));</a>
+<a name="ln114"> </a>
+<a name="ln115">            //Add the Settings file too.</a>
+<a name="ln116">            if (File.Exists(local))</a>
+<a name="ln117">                list.Add(local);</a>
+<a name="ln118"> </a>
+<a name="ln119">            if (File.Exists(appData))</a>
+<a name="ln120">                list.Add(appData);</a>
+<a name="ln121"> </a>
+<a name="ln122">            Dispatcher.Invoke(() =&gt; AttachmentListBox.ItemsSource = _fileList = new ObservableCollection&lt;AttachmentListBoxItem&gt;(list.Select(s =&gt; new AttachmentListBoxItem(s))));</a>
+<a name="ln123">        }</a>
+<a name="ln124">        catch (Exception ex)</a>
+<a name="ln125">        {</a>
+<a name="ln126">            LogWriter.Log(ex, &quot;Impossible to load the default attachments&quot;);</a>
+<a name="ln127">        }</a>
+<a name="ln128">    }</a>
+<a name="ln129"> </a>
+<a name="ln130">    private string GetProcessor()</a>
+<a name="ln131">    {</a>
+<a name="ln132">        var sb = new StringBuilder();</a>
+<a name="ln133">        sb.Append(&quot;&lt;tr&gt;&lt;th&gt;Processor&lt;/th&gt;&quot;);</a>
+<a name="ln134">        sb.Append(&quot;&lt;th&gt;Cores&lt;/th&gt;&lt;/tr&gt;&quot;);</a>
+<a name="ln135"> </a>
+<a name="ln136">        try</a>
+<a name="ln137">        {</a>
+<a name="ln138">            using (var searcher = new ManagementObjectSearcher(&quot;select * from Win32_Processor&quot;))</a>
+<a name="ln139">            {</a>
+<a name="ln140">                foreach (var obj in searcher.Get())</a>
+<a name="ln141">                {</a>
+<a name="ln142">                    sb.AppendFormat(&quot;&lt;td class=\&quot;textcentered\&quot;&gt;{0}&lt;/td&gt;&quot;, obj[&quot;Name&quot;]);</a>
+<a name="ln143">                    sb.AppendFormat(&quot;&lt;td class=\&quot;textcentered\&quot;&gt;{0} ({1})&lt;/td&gt;&lt;/tr&gt;&quot;, obj[&quot;NumberOfCores&quot;], obj[&quot;NumberOfLogicalProcessors&quot;]);</a>
+<a name="ln144">                }</a>
+<a name="ln145">            }</a>
+<a name="ln146">        }</a>
+<a name="ln147">        catch (Exception e)</a>
+<a name="ln148">        {</a>
+<a name="ln149">            LogWriter.Log(e, &quot;Error while trying to find a processor.&quot;);</a>
+<a name="ln150"> </a>
+<a name="ln151">            sb.AppendFormat(&quot;&lt;tr&gt;&lt;td colspan=\&quot;2\&quot; class=\&quot;textcentered\&quot;&gt;No processor found ({0})&lt;/td&gt;&lt;/tr&gt;&quot;, e.Message);</a>
+<a name="ln152">        }</a>
+<a name="ln153"> </a>
+<a name="ln154">        return sb.ToString();</a>
+<a name="ln155">    }</a>
+<a name="ln156"> </a>
+<a name="ln157">    private string GetGraphicsAdapter()</a>
+<a name="ln158">    {</a>
+<a name="ln159">        var sb = new StringBuilder();</a>
+<a name="ln160">        sb.Append(&quot;&lt;tr&gt;&lt;th&gt;Graphics adapter&lt;/th&gt;&quot;);</a>
+<a name="ln161">        sb.Append(&quot;&lt;th&gt;Driver version&lt;/th&gt;&lt;/tr&gt;&quot;);</a>
+<a name="ln162"> </a>
+<a name="ln163">        try</a>
+<a name="ln164">        {</a>
+<a name="ln165">            using (var searcher = new ManagementObjectSearcher(&quot;select * from Win32_VideoController&quot;))</a>
+<a name="ln166">            {</a>
+<a name="ln167">                foreach (var obj in searcher.Get())</a>
+<a name="ln168">                {</a>
+<a name="ln169">                    sb.AppendFormat(&quot;&lt;td class=\&quot;textcentered\&quot;&gt;{0} @ {1}Hz&lt;/td&gt;&quot;, obj[&quot;Name&quot;], obj[&quot;CurrentRefreshRate&quot;]);</a>
+<a name="ln170">                    sb.AppendFormat(&quot;&lt;td class=\&quot;textcentered\&quot;&gt;{0}&lt;/td&gt;&lt;/tr&gt;&quot;, obj[&quot;DriverVersion&quot;]);</a>
+<a name="ln171">                }</a>
+<a name="ln172">            }</a>
+<a name="ln173">        }</a>
+<a name="ln174">        catch (Exception e)</a>
+<a name="ln175">        {</a>
+<a name="ln176">            LogWriter.Log(e, &quot;Error while trying to find a graphics adapter.&quot;);</a>
+<a name="ln177"> </a>
+<a name="ln178">            sb.AppendFormat(&quot;&lt;tr&gt;&lt;td class=\&quot;textcentered\&quot;&gt;No graphics adapter found ({0})&lt;/td&gt;&lt;/tr&gt;&quot;, e.Message);</a>
+<a name="ln179">        }</a>
+<a name="ln180"> </a>
+<a name="ln181">        return sb.ToString();</a>
+<a name="ln182">    }</a>
+<a name="ln183"> </a>
+<a name="ln184">    private string BuildBody(string title, string message, string email, bool issue, bool suggestion)</a>
+<a name="ln185">    {</a>
+<a name="ln186">        var sb = new StringBuilder();</a>
+<a name="ln187">        sb.Append(&quot;&lt;html xmlns:msxsl=\&quot;urn:schemas-microsoft-com:xslt\&quot;&gt;&quot;);</a>
+<a name="ln188">        sb.Append(&quot;&lt;head&gt;&lt;meta content=\&quot;en-us\&quot; http-equiv=\&quot;Content-Language\&quot; /&gt;&quot; +</a>
+<a name="ln189">                  &quot;&lt;meta content=\&quot;text/html; charset=utf-16\&quot; http-equiv=\&quot;Content-Type\&quot; /&gt;&quot; +</a>
+<a name="ln190">                  &quot;&lt;title&gt;ScreenToGif - Feedback&lt;/title&gt;&quot; +</a>
+<a name="ln191">                  &quot;&lt;/head&gt;&quot;);</a>
+<a name="ln192"> </a>
+<a name="ln193">        sb.AppendFormat(&quot;&lt;style&gt;{0}&lt;/style&gt;&quot;, Util.Other.GetTextResource(&quot;ScreenToGif.Resources.Style.css&quot;));</a>
+<a name="ln194"> </a>
+<a name="ln195">        sb.Append(&quot;&lt;body&gt;&quot;);</a>
+<a name="ln196">        sb.AppendFormat(&quot;&lt;h1&gt;{0}&lt;/h1&gt;&quot;, (title ?? &quot;&quot;).Length &gt; 0 ? title : &quot;Title of the feedback&quot;);</a>
+<a name="ln197">        sb.Append(&quot;&lt;div id=\&quot;content\&quot;&gt;&lt;div&gt;&quot;);</a>
+<a name="ln198">        sb.Append(&quot;&lt;h2&gt;Overview&lt;/h2&gt;&quot;);</a>
+<a name="ln199">        sb.Append(&quot;&lt;div id=\&quot;overview\&quot;&gt;&lt;table&gt;&quot;);</a>
+<a name="ln200"> </a>
+<a name="ln201">        //First overview row.</a>
+<a name="ln202">        sb.Append(&quot;&lt;tr&gt;&lt;th&gt;User&lt;/th&gt;&quot;);</a>
+<a name="ln203">        sb.Append(&quot;&lt;th&gt;Machine&lt;/th&gt;&quot;);</a>
+<a name="ln204">        sb.Append(&quot;&lt;th&gt;Startup&lt;/th&gt;&quot;);</a>
+<a name="ln205">        sb.Append(&quot;&lt;th&gt;Date&lt;/th&gt;&quot;);</a>
+<a name="ln206">        sb.Append(&quot;&lt;th&gt;Running&lt;/th&gt;&quot;);</a>
+<a name="ln207">        sb.Append(&quot;&lt;th&gt;Version&lt;/th&gt;&lt;/tr&gt;&quot;);</a>
+<a name="ln208"> </a>
+<a name="ln209">        var culture = new CultureInfo(&quot;pt-BR&quot;);</a>
+<a name="ln210"> </a>
+<a name="ln211">        sb.AppendFormat(&quot;&lt;tr&gt;&lt;td class=\&quot;textcentered\&quot;&gt;{0}&lt;/td&gt;&quot;, Environment.UserName);</a>
+<a name="ln212">        sb.AppendFormat(&quot;&lt;td class=\&quot;textcentered\&quot;&gt;{0}&lt;/td&gt;&quot;, Environment.MachineName);</a>
+<a name="ln213">        sb.AppendFormat(culture, &quot;&lt;td class=\&quot;textcentered\&quot;&gt;{0:g}&lt;/td&gt;&quot;, Global.StartupDateTime);</a>
+<a name="ln214">        sb.AppendFormat(culture, &quot;&lt;td class=\&quot;textcentered\&quot;&gt;{0:g}&lt;/td&gt;&quot;, DateTime.Now);</a>
+<a name="ln215">        sb.AppendFormat(culture, &quot;&lt;td class=\&quot;textcentered\&quot;&gt;{0:d':'hh':'mm':'ss}&lt;/td&gt;&quot;, Global.StartupDateTime != DateTime.MinValue ? DateTime.Now - Global.StartupDateTime : TimeSpan.Zero);</a>
+<a name="ln216">        sb.AppendFormat(&quot;&lt;td class=\&quot;textcentered\&quot;&gt;{0}&lt;/td&gt;&lt;/tr&gt;&quot;, Assembly.GetExecutingAssembly().GetName().Version?.ToString(4));</a>
+<a name="ln217"> </a>
+<a name="ln218">        //Second overview row.</a>
+<a name="ln219">        sb.Append(&quot;&lt;tr&gt;&lt;th colspan=\&quot;2\&quot;&gt;Windows&lt;/th&gt;&quot;);</a>
+<a name="ln220">        sb.Append(&quot;&lt;th&gt;Architecture&lt;/th&gt;&quot;);</a>
+<a name="ln221">        sb.Append(&quot;&lt;th&gt;Used&lt;/th&gt;&quot;);</a>
+<a name="ln222">        sb.Append(&quot;&lt;th&gt;Available&lt;/th&gt;&quot;);</a>
+<a name="ln223">        sb.Append(&quot;&lt;th&gt;Total&lt;/th&gt;&lt;/tr&gt;&quot;);</a>
+<a name="ln224"> </a>
+<a name="ln225">        var status = new MemoryStatusEx(true);</a>
+<a name="ln226">        Kernel32.GlobalMemoryStatusEx(ref status);</a>
+<a name="ln227"> </a>
+<a name="ln228">        sb.AppendFormat(&quot;&lt;td class=\&quot;textcentered\&quot; colspan=\&quot;2\&quot;&gt;{0}&lt;/td&gt;&quot;, Environment.OSVersion.Version);</a>
+<a name="ln229">        sb.AppendFormat(&quot;&lt;td class=\&quot;textcentered\&quot;&gt;{0}&lt;/td&gt;&quot;, Environment.Is64BitOperatingSystem ? &quot;64 bits&quot; : &quot;32 Bits&quot;);</a>
+<a name="ln230">        sb.AppendFormat(&quot;&lt;td class=\&quot;textcentered\&quot;&gt;{0}&lt;/td&gt;&quot;, Humanizer.BytesToString(Environment.WorkingSet));</a>
+<a name="ln231">        sb.AppendFormat(&quot;&lt;td class=\&quot;textcentered\&quot;&gt;{0}&lt;/td&gt;&quot;, Humanizer.BytesToString(status.AvailablePhysicalMemory));</a>
+<a name="ln232">        sb.AppendFormat(&quot;&lt;td class=\&quot;textcentered\&quot;&gt;{0}&lt;/td&gt;&lt;/tr&gt;&quot;, Humanizer.BytesToString(status.TotalPhysicalMemory));</a>
+<a name="ln233"> </a>
+<a name="ln234">        //Third overview row.</a>
+<a name="ln235">        sb.Append(&quot;&lt;tr&gt;&lt;th colspan=\&quot;3\&quot;&gt;E-mail&lt;/th&gt;&quot;);</a>
+<a name="ln236">        sb.Append(&quot;&lt;th&gt;.Net version&lt;/th&gt;&quot;);</a>
+<a name="ln237">        sb.Append(&quot;&lt;th&gt;Issue?&lt;/th&gt;&quot;);</a>
+<a name="ln238">        sb.Append(&quot;&lt;th&gt;Suggestion?&lt;/th&gt;&lt;/tr&gt;&quot;);</a>
+<a name="ln239"> </a>
+<a name="ln240">        sb.AppendFormat(&quot;&lt;td colspan=\&quot;3\&quot; class=\&quot;textcentered\&quot;&gt;{0}&lt;/td&gt;&quot;, (email ?? &quot;&quot;).Length &gt; 0 ? email : &quot;example@outlook.com&quot;);</a>
+<a name="ln241">        sb.AppendFormat(&quot;&lt;td class=\&quot;textcentered\&quot;&gt;{0}&lt;/td&gt;&quot;, FrameworkHelper.QueryFrameworkVersion());</a>
+<a name="ln242">        sb.AppendFormat(&quot;&lt;td class=\&quot;textcentered\&quot;&gt;{0}&lt;/td&gt;&quot;, issue ? &quot;Yes&quot; : &quot;No&quot;);</a>
+<a name="ln243">        sb.AppendFormat(&quot;&lt;td class=\&quot;textcentered\&quot;&gt;{0}&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/div&gt;&quot;, suggestion ? &quot;Yes&quot; : &quot;No&quot;);</a>
+<a name="ln244"> </a>
+<a name="ln245">        //Processors.</a>
+<a name="ln246">        sb.Append(&quot;&lt;br&gt;&lt;h2&gt;Processors&lt;/h2&gt;&lt;table&gt;&quot;);</a>
+<a name="ln247">        sb.Append(GetProcessor());</a>
+<a name="ln248">        sb.Append(GetGraphicsAdapter());</a>
+<a name="ln249">        sb.Append(&quot;&lt;/table&gt;&quot;);</a>
+<a name="ln250"> </a>
+<a name="ln251">        //System.Windows.Forms.SystemInformation.PowerStatus.BatteryChargeStatus == System.Windows.Forms.BatteryChargeStatus.NoSystemBattery</a>
+<a name="ln252"> </a>
+<a name="ln253">        //Monitors.</a>
+<a name="ln254">        sb.Append(&quot;&lt;br&gt;&lt;h2&gt;Monitors&lt;/h2&gt;&lt;table&gt;&quot;);</a>
+<a name="ln255">        sb.Append(&quot;&lt;tr&gt;&lt;th&gt;Name&lt;/th&gt;&quot;);</a>
+<a name="ln256">        sb.Append(&quot;&lt;th&gt;Bounds&lt;/th&gt;&quot;);</a>
+<a name="ln257">        sb.Append(&quot;&lt;th&gt;Working area&lt;/th&gt;&quot;);</a>
+<a name="ln258">        sb.Append(&quot;&lt;th&gt;DPI/Scale&lt;/th&gt;&quot;);</a>
+<a name="ln259">        sb.Append(&quot;&lt;th&gt;Graphics adapter&lt;/th&gt;&quot;);</a>
+<a name="ln260">        sb.Append(&quot;&lt;th&gt;Primary?&lt;/th&gt;&lt;/tr&gt;&quot;);</a>
+<a name="ln261"> </a>
+<a name="ln262">        foreach (var monitor in MonitorHelper.AllMonitors)</a>
+<a name="ln263">        {</a>
+<a name="ln264">            sb.AppendFormat(&quot;&lt;td class=\&quot;textcentered\&quot;&gt;{0} ({1})&lt;/td&gt;&quot;, monitor.FriendlyName, monitor.Name);</a>
+<a name="ln265">            sb.AppendFormat(&quot;&lt;td class=\&quot;textcentered\&quot;&gt;{0}:{1} • {2}x{3}&lt;/td&gt;&quot;, monitor.Bounds.Left, monitor.Bounds.Top, monitor.Bounds.Width, monitor.Bounds.Height);</a>
+<a name="ln266">            sb.AppendFormat(&quot;&lt;td class=\&quot;textcentered\&quot;&gt;{0}:{1} • {2}x{3}&lt;/td&gt;&quot;, monitor.WorkingArea.Left, monitor.WorkingArea.Top, monitor.WorkingArea.Width, monitor.WorkingArea.Height);</a>
+<a name="ln267">            sb.AppendFormat(&quot;&lt;td class=\&quot;textcentered\&quot;&gt;{0}dpi / {1:#00}%&lt;/td&gt;&quot;, monitor.Dpi, monitor.Dpi / 96d * 100d);</a>
+<a name="ln268">            sb.AppendFormat(&quot;&lt;td class=\&quot;textcentered\&quot;&gt;{0}&lt;/td&gt;&quot;, monitor.AdapterName);</a>
+<a name="ln269">            sb.AppendFormat(&quot;&lt;td class=\&quot;textcentered\&quot;&gt;{0}&lt;/td&gt;&lt;/tr&gt;&quot;, monitor.IsPrimary ? &quot;Yes&quot; : &quot;No&quot;);</a>
+<a name="ln270">        }</a>
+<a name="ln271"> </a>
+<a name="ln272">        sb.Append(&quot;&lt;/table&gt;&quot;);</a>
+<a name="ln273"> </a>
+<a name="ln274">        if (MonitorHelper.AllMonitors.Count &gt; 0)</a>
+<a name="ln275">        {</a>
+<a name="ln276">            sb.AppendFormat(&quot;&quot;);</a>
+<a name="ln277"> </a>
+<a name="ln278">            //sb.Append(&quot;&lt;svg&gt;&quot; +</a>
+<a name="ln279">            //          &quot;&lt;circle cx=\&quot;40\&quot; cy=\&quot;40\&quot; r=\&quot;24\&quot; style=\&quot;stroke:#006600; fill:#00cc00\&quot;/&gt;&quot; +</a>
+<a name="ln280">            //          &quot;&lt;rect id=\&quot;box\&quot; x=\&quot;0\&quot; y=\&quot;0\&quot; width=\&quot;50\&quot; height=\&quot;50\&quot; style=\&quot;stroke:#006600; fill:#00cc00\&quot;/&gt;&quot; +</a>
+<a name="ln281">            //          &quot;&lt;/svg&gt;&quot;);</a>
+<a name="ln282">        }</a>
+<a name="ln283"> </a>
+<a name="ln284">        //Drives.</a>
+<a name="ln285">        sb.Append(&quot;&lt;br&gt;&lt;h2&gt;Drives&lt;/h2&gt;&lt;table&gt;&quot;);</a>
+<a name="ln286">        sb.Append(&quot;&lt;tr&gt;&lt;th&gt;Root&lt;/th&gt;&quot;);</a>
+<a name="ln287">        sb.Append(&quot;&lt;th&gt;Used&lt;/th&gt;&quot;);</a>
+<a name="ln288">        sb.Append(&quot;&lt;th&gt;Free&lt;/th&gt;&quot;);</a>
+<a name="ln289">        sb.Append(&quot;&lt;th&gt;Total&lt;/th&gt;&quot;);</a>
+<a name="ln290">        sb.Append(&quot;&lt;th&gt;Format&lt;/th&gt;&quot;);</a>
+<a name="ln291">        sb.Append(&quot;&lt;th&gt;Type&lt;/th&gt;&quot;);</a>
+<a name="ln292">        sb.Append(&quot;&lt;th&gt;Ready?&lt;/th&gt;&lt;/tr&gt;&quot;);</a>
+<a name="ln293"> </a>
+<a name="ln294">        foreach (var drive in DriveInfo.GetDrives())</a>
+<a name="ln295">        {</a>
+<a name="ln296">            #region Try get the size</a>
+<a name="ln297"> </a>
+<a name="ln298">            var total = 0L;</a>
+<a name="ln299">            var available = 0L;</a>
+<a name="ln300">            var format = &quot;&quot;;</a>
+<a name="ln301"> </a>
+<a name="ln302">            try</a>
+<a name="ln303">            {</a>
+<a name="ln304">                total = drive.TotalSize;</a>
+<a name="ln305">                available = drive.AvailableFreeSpace;</a>
+<a name="ln306">                format = drive.DriveFormat;</a>
+<a name="ln307">            }</a>
+<a name="ln308">            catch (Exception e)</a>
+<a name="ln309">            {</a>
+<a name="ln310">                //LogWriter.Log(e, &quot;Not possible to get driver details&quot;);</a>
+<a name="ln311">            }</a>
+<a name="ln312"> </a>
+<a name="ln313">            #endregion</a>
+<a name="ln314"> </a>
+<a name="ln315">            var used = total - available;</a>
+<a name="ln316">            var usedPerc = Math.Round(MathExtensions.CrossMultiplication((decimal)total, used, null), 1);</a>
+<a name="ln317">            var avaiPerc = Math.Round(MathExtensions.CrossMultiplication((decimal)total, available, null), 1);</a>
+<a name="ln318">                </a>
+<a name="ln319">            sb.AppendFormat(&quot;&lt;td class=\&quot;textcentered\&quot;&gt;{0}&lt;/td&gt;&quot;, drive.Name);</a>
+<a name="ln320">            sb.AppendFormat(&quot;&lt;td class=\&quot;textRight\&quot;&gt;({0} %) {1}&lt;/td&gt;&quot;, usedPerc, Humanizer.BytesToString(used, &quot;N1&quot;));</a>
+<a name="ln321">            sb.AppendFormat(&quot;&lt;td class=\&quot;textRight\&quot;&gt;({0} %) {1}&lt;/td&gt;&quot;, avaiPerc, Humanizer.BytesToString(available, &quot;N1&quot;));</a>
+<a name="ln322">            sb.AppendFormat(&quot;&lt;td class=\&quot;textRight\&quot;&gt;{0}&lt;/td&gt;&quot;, Humanizer.BytesToString(total, &quot;N1&quot;));</a>
+<a name="ln323">            sb.AppendFormat(&quot;&lt;td class=\&quot;textcentered\&quot;&gt;{0}&lt;/td&gt;&quot;, format);</a>
+<a name="ln324">            sb.AppendFormat(&quot;&lt;td class=\&quot;textcentered\&quot;&gt;{0}&lt;/td&gt;&quot;, drive.DriveType);</a>
+<a name="ln325">            sb.AppendFormat(&quot;&lt;td class=\&quot;textcentered\&quot;&gt;{0}&lt;/td&gt;&lt;/tr&gt;&quot;, drive.IsReady ? &quot;Yes&quot; : &quot;No&quot;);</a>
+<a name="ln326">        }</a>
+<a name="ln327"> </a>
+<a name="ln328">        sb.Append(&quot;&lt;table&gt;&quot;);</a>
+<a name="ln329"> </a>
+<a name="ln330">        //Details.</a>
+<a name="ln331">        sb.Append(&quot;&lt;br&gt;&lt;h2&gt;Details&lt;/h2&gt;&lt;div&gt;&lt;div&gt;&lt;table&gt;&quot;);</a>
+<a name="ln332">        sb.Append(&quot;&lt;tr id=\&quot;ProjectNameHeaderRow\&quot;&gt;&lt;th class=\&quot;messageHeader\&quot;&gt;Message&lt;/th&gt;&lt;/tr&gt;&quot;);</a>
+<a name="ln333">        sb.Append(&quot;&lt;tr name=\&quot;MessageRowClassProjectName\&quot;&gt;&quot;);</a>
+<a name="ln334">        sb.AppendFormat(&quot;&lt;td class=\&quot;messageCell\&quot;&gt;{0}&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&quot;, message.Replace(Environment.NewLine, &quot;&lt;br&gt;&quot;));</a>
+<a name="ln335">        sb.Append(&quot;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;&quot;);</a>
+<a name="ln336"> </a>
+<a name="ln337">        return sb.ToString();</a>
+<a name="ln338">    }</a>
+<a name="ln339"> </a>
+<a name="ln340">    private void Send()</a>
+<a name="ln341">    {</a>
+<a name="ln342">        StatusBand.Hide();</a>
+<a name="ln343"> </a>
+<a name="ln344">        #region Validation</a>
+<a name="ln345"> </a>
+<a name="ln346">        if (TitleTextBox.Text.Length == 0)</a>
+<a name="ln347">        {</a>
+<a name="ln348">            StatusBand.Warning(LocalizationHelper.Get(&quot;S.Feedback.Warning.Title&quot;));</a>
+<a name="ln349">            TitleTextBox.Focus();</a>
+<a name="ln350">            return;</a>
+<a name="ln351">        }</a>
+<a name="ln352"> </a>
+<a name="ln353">        if (MessageTextBox.Text.Length == 0)</a>
+<a name="ln354">        {</a>
+<a name="ln355">            StatusBand.Warning(LocalizationHelper.Get(&quot;S.Feedback.Warning.Message&quot;));</a>
+<a name="ln356">            MessageTextBox.Focus();</a>
+<a name="ln357">            return;</a>
+<a name="ln358">        }</a>
+<a name="ln359"> </a>
+<a name="ln360">        if (EmailTextBox.Text.Length == 0)</a>
+<a name="ln361">        {</a>
+<a name="ln362">            StatusBand.Warning(LocalizationHelper.Get(&quot;S.Feedback.Warning.Email&quot;));</a>
+<a name="ln363">            EmailTextBox.Focus();</a>
+<a name="ln364">            return;</a>
+<a name="ln365">        }</a>
+<a name="ln366"> </a>
+<a name="ln367">        #endregion</a>
+<a name="ln368"> </a>
+<a name="ln369">        StatusBand.Info(LocalizationHelper.Get(&quot;S.Feedback.Sending&quot;));</a>
+<a name="ln370"> </a>
+<a name="ln371">        Cursor = Cursors.AppStarting;</a>
+<a name="ln372">        MainGrid.IsEnabled = false;</a>
+<a name="ln373">        MainGrid.UpdateLayout();</a>
+<a name="ln374"> </a>
+<a name="ln375">        Persist();</a>
+<a name="ln376"> </a>
+<a name="ln377">        Cursor = Cursors.Arrow;</a>
+<a name="ln378">        MainGrid.IsEnabled = true;</a>
+<a name="ln379">    }</a>
+<a name="ln380"> </a>
+<a name="ln381">    private async void Persist()</a>
+<a name="ln382">    {</a>
+<a name="ln383">        try</a>
+<a name="ln384">        {</a>
+<a name="ln385">            var path = Path.Combine(UserSettings.All.TemporaryFolderResolved, &quot;ScreenToGif&quot;, &quot;Feedback&quot;);</a>
+<a name="ln386"> </a>
+<a name="ln387">            if (!Directory.Exists(path))</a>
+<a name="ln388">                Directory.CreateDirectory(path);</a>
+<a name="ln389"> </a>
+<a name="ln390">            var name = Path.Combine(path, DateTime.Now.ToString(&quot;yy_MM_dd HH-mm-ss&quot;));</a>
+<a name="ln391"> </a>
+<a name="ln392">            var title = TitleTextBox.Text;</a>
+<a name="ln393">            var message = MessageTextBox.Text;</a>
+<a name="ln394">            var email = EmailTextBox.Text;</a>
+<a name="ln395">            var issue = IssueCheckBox.IsChecked == true;</a>
+<a name="ln396">            var suggestion = SuggestionCheckBox.IsChecked == true;</a>
+<a name="ln397"> </a>
+<a name="ln398">            await Task.Factory.StartNew(() =&gt; File.WriteAllText(name + &quot;.html&quot;, BuildBody(title, message, email, issue, suggestion)));</a>
+<a name="ln399"> </a>
+<a name="ln400">            if (AttachmentListBox.Items.Count &lt;= 0)</a>
+<a name="ln401">            {</a>
+<a name="ln402">                DialogResult = true;</a>
+<a name="ln403">                return;</a>
+<a name="ln404">            }</a>
+<a name="ln405"> </a>
+<a name="ln406">            if (Directory.Exists(name))</a>
+<a name="ln407">                Directory.Delete(name);</a>
+<a name="ln408"> </a>
+<a name="ln409">            Directory.CreateDirectory(name);</a>
+<a name="ln410"> </a>
+<a name="ln411">            foreach (var item in AttachmentListBox.Items.OfType&lt;AttachmentListBoxItem&gt;())</a>
+<a name="ln412">            {</a>
+<a name="ln413">                var sourceName = Path.GetFileName(item.Attachment);</a>
+<a name="ln414">                var destName = Path.Combine(name, sourceName);</a>
+<a name="ln415"> </a>
+<a name="ln416">                if (item.Attachment.StartsWith(UserSettings.All.LogsFolder))</a>
+<a name="ln417">                    File.Move(item.Attachment, destName);</a>
+<a name="ln418">                else</a>
+<a name="ln419">                    File.Copy(item.Attachment, destName, true);</a>
+<a name="ln420">            }</a>
+<a name="ln421"> </a>
+<a name="ln422">            ZipFile.CreateFromDirectory(name, name + &quot;.zip&quot;);</a>
+<a name="ln423"> </a>
+<a name="ln424">            Directory.Delete(name, true);</a>
+<a name="ln425"> </a>
+<a name="ln426">            DialogResult = true;</a>
+<a name="ln427">        }</a>
+<a name="ln428">        catch (Exception ex)</a>
+<a name="ln429">        {</a>
+<a name="ln430">            LogWriter.Log(ex, &quot;Persist feedback&quot;);</a>
+<a name="ln431"> </a>
+<a name="ln432">            Dialog.Ok(&quot;Feedback&quot;, &quot;Error while creating the feedback&quot;, ex.Message);</a>
+<a name="ln433">        }</a>
+<a name="ln434">    }</a>
+<a name="ln435"> </a>
+<a name="ln436">    #endregion</a>
+<a name="ln437">}</a>
+</code></pre>
+<div class="balloon" rel="308"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v5606/" target="_blank">V5606</a> An empty exception handler. Silent suppression of exceptions may hide the presence of bugs or vulnerabilities.</p></div>
+<link rel="stylesheet" href="highlight.css">
+<script src="highlight.pack.js"></script>
+<script src="highlightjs-line-numbers.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script>hljs.initLineNumbersOnLoad();</script>
+<script>
+  $(document).ready(function() {
+      $('.balloon').each(function () {
+          var bl = $(this);
+          var line = bl.attr('rel');
+          var text = $('a[name="ln'+line+'"]').text();
+
+          var space_count = 0;
+          for(var i = 0; i<text.length; i++){
+              var char = text[i];
+              if((char !== ' ')&&(char !== '\t'))break;
+              if(char === '\t')space_count++;
+              space_count++;
+          }
+
+          bl.css('margin-left', space_count*8);
+          $('a[name="ln'+line+'"]').after(bl);
+      });
+
+      window.location = window.location;
+  });
+</script>
+</body>
+</html>

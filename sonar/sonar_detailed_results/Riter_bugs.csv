@@ -1,0 +1,2 @@
+Key,Type,Severity,File,Line,Message,Effort,Debt,Rule,Tags
+24fc1f0b-b389-4c07-8956-c15188473c20,BUG,MINOR,Riter:src/Riter/Core/Drawing/ColorPalette.cs,7,Use an immutable collection or reduce the accessibility of the non-private readonly field 'Colors'.,15min,15min,csharpsquid:S3887,

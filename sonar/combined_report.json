@@ -1,0 +1,3278 @@
+{
+  "csharpsquid:S4200": {
+    "details": {
+      "code": "csharpsquid:S4200",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "csharpsquid:S4200"
+    },
+    "total_count": 1077,
+    "projects": [
+      "Foster",
+      "ScreenToGif"
+    ],
+    "example": "Make this native method private and provide a wrapper."
+  },
+  "external_roslyn:CA1401": {
+    "details": {
+      "code": "external_roslyn:CA1401",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:CA1401"
+    },
+    "total_count": 667,
+    "projects": [
+      "Foster",
+      "ScreenToGif"
+    ],
+    "example": "P/Invoke method 'SDL_GetTrayEntryParent' should not be visible"
+  },
+  "csharpsquid:S101": {
+    "details": {
+      "code": "csharpsquid:S101",
+      "type": "CODE_SMELL",
+      "severity": "MINOR",
+      "rule_name": "csharpsquid:S101"
+    },
+    "total_count": 617,
+    "projects": [
+      "Foster",
+      "Chloe",
+      "ScreenToGif"
+    ],
+    "example": "Rename class 'Compare_HandlerBase' to match pascal case naming rules, consider using 'CompareHandlerBase'."
+  },
+  "csharpsquid:S2325": {
+    "details": {
+      "code": "csharpsquid:S2325",
+      "type": "CODE_SMELL",
+      "severity": "MINOR",
+      "rule_name": "csharpsquid:S2325"
+    },
+    "total_count": 470,
+    "projects": [
+      "Saunter",
+      "SoundFlow",
+      "lunr",
+      "ScreenToGif",
+      "Riter",
+      "Foster",
+      "Chloe"
+    ],
+    "example": "Make 'IsFreeTextShadowGroupExpanded' a static property."
+  },
+  "external_roslyn:CA1822": {
+    "details": {
+      "code": "external_roslyn:CA1822",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:CA1822"
+    },
+    "total_count": 439,
+    "projects": [
+      "RestSharp",
+      "Saunter",
+      "SoundFlow",
+      "lunr",
+      "ScreenToGif",
+      "Riter",
+      "Foster"
+    ],
+    "example": "Member 'CursorFollowing' does not access instance data and can be marked as static"
+  },
+  "csharpsquid:S125": {
+    "details": {
+      "code": "csharpsquid:S125",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "csharpsquid:S125"
+    },
+    "total_count": 386,
+    "projects": [
+      "RestSharp",
+      "Chloe",
+      "Saunter",
+      "ScreenToGif"
+    ],
+    "example": "Remove this commented out code."
+  },
+  "csharpsquid:S2933": {
+    "details": {
+      "code": "csharpsquid:S2933",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "csharpsquid:S2933"
+    },
+    "total_count": 372,
+    "projects": [
+      "Chloe",
+      "lunr",
+      "ScreenToGif"
+    ],
+    "example": "Make '_typeDescriptor' 'readonly'."
+  },
+  "external_roslyn:RCS1261": {
+    "details": {
+      "code": "external_roslyn:RCS1261",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:RCS1261"
+    },
+    "total_count": 259,
+    "projects": [
+      "spreadcheetah"
+    ],
+    "example": "Resource can be disposed asynchronously"
+  },
+  "csharpsquid:S3776": {
+    "details": {
+      "code": "csharpsquid:S3776",
+      "type": "CODE_SMELL",
+      "severity": "CRITICAL",
+      "rule_name": "csharpsquid:S3776"
+    },
+    "total_count": 252,
+    "projects": [
+      "Lynx",
+      "RestSharp",
+      "spreadcheetah",
+      "SoundFlow",
+      "lunr",
+      "ScreenToGif",
+      "Riter",
+      "Foster",
+      "Chloe"
+    ],
+    "example": "Refactor this method to reduce its Cognitive Complexity from 92 to the 15 allowed."
+  },
+  "csharpsquid:S112": {
+    "details": {
+      "code": "csharpsquid:S112",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "csharpsquid:S112"
+    },
+    "total_count": 157,
+    "projects": [
+      "Lynx",
+      "RestSharp",
+      "lunr",
+      "ScreenToGif",
+      "Riter",
+      "Foster",
+      "Chloe"
+    ],
+    "example": "'System.NullReferenceException' should not be thrown by user code."
+  },
+  "csharpsquid:S4136": {
+    "details": {
+      "code": "csharpsquid:S4136",
+      "type": "CODE_SMELL",
+      "severity": "MINOR",
+      "rule_name": "csharpsquid:S4136"
+    },
+    "total_count": 150,
+    "projects": [
+      "RestSharp",
+      "lunr",
+      "ScreenToGif",
+      "Foster",
+      "Chloe"
+    ],
+    "example": "All 'Average' method overloads should be adjacent."
+  },
+  "csharpsquid:S1104": {
+    "details": {
+      "code": "csharpsquid:S1104",
+      "type": "CODE_SMELL",
+      "severity": "MINOR",
+      "rule_name": "csharpsquid:S1104"
+    },
+    "total_count": 143,
+    "projects": [
+      "Foster",
+      "SoundFlow",
+      "lunr",
+      "ScreenToGif"
+    ],
+    "example": "Make this field 'private' and encapsulate it in a 'public' property."
+  },
+  "csharpsquid:S1135": {
+    "details": {
+      "code": "csharpsquid:S1135",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "csharpsquid:S1135"
+    },
+    "total_count": 138,
+    "projects": [
+      "Foster",
+      "Chloe",
+      "SoundFlow",
+      "ScreenToGif"
+    ],
+    "example": "Complete the task associated to this 'TODO' comment."
+  },
+  "csharpsquid:S6608": {
+    "details": {
+      "code": "csharpsquid:S6608",
+      "type": "CODE_SMELL",
+      "severity": "MINOR",
+      "rule_name": "csharpsquid:S6608"
+    },
+    "total_count": 121,
+    "projects": [
+      "RestSharp",
+      "Chloe",
+      "ScreenToGif"
+    ],
+    "example": "Indexing at 0 should be used instead of the \"Enumerable\" extension method \"First\""
+  },
+  "csharpsquid:S2342": {
+    "details": {
+      "code": "csharpsquid:S2342",
+      "type": "CODE_SMELL",
+      "severity": "MINOR",
+      "rule_name": "csharpsquid:S2342"
+    },
+    "total_count": 117,
+    "projects": [
+      "spreadcheetah",
+      "SoundFlow",
+      "lunr",
+      "ScreenToGif",
+      "Foster",
+      "Chloe"
+    ],
+    "example": "Rename this enumeration to match the regular expression: '^([A-Z]{1,3}[a-z0-9]+)*([A-Z]{2})?$'."
+  },
+  "csharpsquid:S3358": {
+    "details": {
+      "code": "csharpsquid:S3358",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "csharpsquid:S3358"
+    },
+    "total_count": 104,
+    "projects": [
+      "RestSharp",
+      "SoundFlow",
+      "lunr",
+      "ScreenToGif",
+      "Riter",
+      "Foster"
+    ],
+    "example": "Extract this nested ternary operation into an independent statement."
+  },
+  "external_roslyn:SYSLIB1054": {
+    "details": {
+      "code": "external_roslyn:SYSLIB1054",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:SYSLIB1054"
+    },
+    "total_count": 97,
+    "projects": [
+      "Riter",
+      "ScreenToGif"
+    ],
+    "example": "Mark the method 'GetWindowLongPtr64' with 'LibraryImportAttribute' instead of 'DllImportAttribute' to generate P/Invoke marshalling code at compile time"
+  },
+  "csharpsquid:S1192": {
+    "details": {
+      "code": "csharpsquid:S1192",
+      "type": "CODE_SMELL",
+      "severity": "MINOR",
+      "rule_name": "csharpsquid:S1192"
+    },
+    "total_count": 92,
+    "projects": [
+      "Lynx",
+      "SoundFlow",
+      "lunr",
+      "ScreenToGif",
+      "Riter",
+      "Chloe"
+    ],
+    "example": "Define a constant instead of using this literal '-vsync ' 5 times."
+  },
+  "csharpsquid:S1481": {
+    "details": {
+      "code": "csharpsquid:S1481",
+      "type": "CODE_SMELL",
+      "severity": "MINOR",
+      "rule_name": "csharpsquid:S1481"
+    },
+    "total_count": 80,
+    "projects": [
+      "Foster",
+      "Chloe",
+      "lunr",
+      "ScreenToGif"
+    ],
+    "example": "Remove the unused local variable 'mutex'."
+  },
+  "csharpsquid:S1133": {
+    "details": {
+      "code": "csharpsquid:S1133",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "csharpsquid:S1133"
+    },
+    "total_count": 80,
+    "projects": [
+      "RestSharp",
+      "spreadcheetah",
+      "ScreenToGif",
+      "Foster",
+      "Chloe"
+    ],
+    "example": "Do not forget to remove this deprecated code someday."
+  },
+  "csharpsquid:S1244": {
+    "details": {
+      "code": "csharpsquid:S1244",
+      "type": "BUG",
+      "severity": "MAJOR",
+      "rule_name": "csharpsquid:S1244"
+    },
+    "total_count": 80,
+    "projects": [
+      "Foster",
+      "SoundFlow",
+      "lunr",
+      "ScreenToGif"
+    ],
+    "example": "Do not check floating point inequality with exact values, use a range instead."
+  },
+  "csharpsquid:S2094": {
+    "details": {
+      "code": "csharpsquid:S2094",
+      "type": "CODE_SMELL",
+      "severity": "MINOR",
+      "rule_name": "csharpsquid:S2094"
+    },
+    "total_count": 79,
+    "projects": [
+      "Saunter",
+      "Chloe",
+      "ScreenToGif"
+    ],
+    "example": "Remove this empty class, write its code or make it an \"interface\"."
+  },
+  "csharpsquid:S6966": {
+    "details": {
+      "code": "csharpsquid:S6966",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "csharpsquid:S6966"
+    },
+    "total_count": 77,
+    "projects": [
+      "RestSharp",
+      "Chloe",
+      "ScreenToGif"
+    ],
+    "example": "Await GetAsync instead."
+  },
+  "csharpsquid:S1215": {
+    "details": {
+      "code": "csharpsquid:S1215",
+      "type": "CODE_SMELL",
+      "severity": "CRITICAL",
+      "rule_name": "csharpsquid:S1215"
+    },
+    "total_count": 77,
+    "projects": [
+      "ScreenToGif"
+    ],
+    "example": "Refactor the code to remove this use of 'GC.Collect'."
+  },
+  "external_roslyn:CS1591": {
+    "details": {
+      "code": "external_roslyn:CS1591",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "external_roslyn:CS1591"
+    },
+    "total_count": 71,
+    "projects": [
+      "SoundFlow"
+    ],
+    "example": "Missing XML comment for publicly visible type or member 'Result.NoDataAvailable'"
+  },
+  "csharpsquid:S3881": {
+    "details": {
+      "code": "csharpsquid:S3881",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "csharpsquid:S3881"
+    },
+    "total_count": 70,
+    "projects": [
+      "RestSharp",
+      "SoundFlow",
+      "ScreenToGif",
+      "Foster",
+      "Chloe"
+    ],
+    "example": "Fix this implementation of 'IDisposable' to conform to the dispose pattern."
+  },
+  "external_roslyn:CA1859": {
+    "details": {
+      "code": "external_roslyn:CA1859",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:CA1859"
+    },
+    "total_count": 66,
+    "projects": [
+      "RestSharp",
+      "Chloe",
+      "ScreenToGif"
+    ],
+    "example": "Change type of variable 'result' from 'System.Collections.Generic.IList<byte>' to 'System.Collections.Generic.List<byte>' for improved performance"
+  },
+  "csharpsquid:S108": {
+    "details": {
+      "code": "csharpsquid:S108",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "csharpsquid:S108"
+    },
+    "total_count": 57,
+    "projects": [
+      "lunr",
+      "ScreenToGif",
+      "Riter",
+      "Foster",
+      "Chloe"
+    ],
+    "example": "Either remove or fill this block of code."
+  },
+  "csharpsquid:S1125": {
+    "details": {
+      "code": "csharpsquid:S1125",
+      "type": "CODE_SMELL",
+      "severity": "MINOR",
+      "rule_name": "csharpsquid:S1125"
+    },
+    "total_count": 57,
+    "projects": [
+      "Chloe",
+      "ScreenToGif"
+    ],
+    "example": "Remove the unnecessary Boolean literal(s)."
+  },
+  "external_roslyn:xUnit1042": {
+    "details": {
+      "code": "external_roslyn:xUnit1042",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:xUnit1042"
+    },
+    "total_count": 56,
+    "projects": [
+      "RestSharp",
+      "spreadcheetah"
+    ],
+    "example": "The member referenced by the MemberData attribute returns untyped data rows, such as object[]. Consider using TheoryData<> as the return type to provide better type safety."
+  },
+  "csharpsquid:S1066": {
+    "details": {
+      "code": "csharpsquid:S1066",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "csharpsquid:S1066"
+    },
+    "total_count": 53,
+    "projects": [
+      "RestSharp",
+      "SoundFlow",
+      "ScreenToGif",
+      "Riter",
+      "Foster",
+      "Chloe"
+    ],
+    "example": "Merge this if statement with the enclosing one."
+  },
+  "csharpsquid:S6562": {
+    "details": {
+      "code": "csharpsquid:S6562",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "csharpsquid:S6562"
+    },
+    "total_count": 52,
+    "projects": [
+      "RestSharp",
+      "Chloe",
+      "ScreenToGif"
+    ],
+    "example": "Provide the \"DateTimeKind\" when creating this object."
+  },
+  "csharpsquid:S927": {
+    "details": {
+      "code": "csharpsquid:S927",
+      "type": "CODE_SMELL",
+      "severity": "CRITICAL",
+      "rule_name": "csharpsquid:S927"
+    },
+    "total_count": 49,
+    "projects": [
+      "RestSharp",
+      "SoundFlow",
+      "ScreenToGif",
+      "Foster",
+      "Chloe"
+    ],
+    "example": "Rename parameter 'lambda' to 'exp' to match the base class declaration."
+  },
+  "external_roslyn:CS8632": {
+    "details": {
+      "code": "external_roslyn:CS8632",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "external_roslyn:CS8632"
+    },
+    "total_count": 49,
+    "projects": [
+      "Chloe"
+    ],
+    "example": "The annotation for nullable reference types should only be used in code within a '#nullable' annotations context."
+  },
+  "csharpsquid:S1118": {
+    "details": {
+      "code": "csharpsquid:S1118",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "csharpsquid:S1118"
+    },
+    "total_count": 48,
+    "projects": [
+      "Saunter",
+      "lunr",
+      "ScreenToGif",
+      "Riter",
+      "Chloe"
+    ],
+    "example": "Add a 'protected' constructor or the 'static' keyword to the class declaration."
+  },
+  "external_roslyn:CA1834": {
+    "details": {
+      "code": "external_roslyn:CA1834",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:CA1834"
+    },
+    "total_count": 48,
+    "projects": [
+      "Chloe"
+    ],
+    "example": "Use 'StringBuilder.Append(char)' instead of 'StringBuilder.Append(string)' when the input is a constant unit string"
+  },
+  "csharpsquid:S4663": {
+    "details": {
+      "code": "csharpsquid:S4663",
+      "type": "CODE_SMELL",
+      "severity": "MINOR",
+      "rule_name": "csharpsquid:S4663"
+    },
+    "total_count": 46,
+    "projects": [
+      "Chloe",
+      "ScreenToGif"
+    ],
+    "example": "Remove this empty comment"
+  },
+  "csharpsquid:S1144": {
+    "details": {
+      "code": "csharpsquid:S1144",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "csharpsquid:S1144"
+    },
+    "total_count": 45,
+    "projects": [
+      "RestSharp",
+      "SoundFlow",
+      "lunr",
+      "ScreenToGif",
+      "Foster",
+      "Chloe"
+    ],
+    "example": "Remove the unused private method 'GenerateCommandFactorWithoutCache'."
+  },
+  "csharpsquid:S6580": {
+    "details": {
+      "code": "csharpsquid:S6580",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "csharpsquid:S6580"
+    },
+    "total_count": 45,
+    "projects": [
+      "RestSharp",
+      "Chloe",
+      "ScreenToGif"
+    ],
+    "example": "Use a format provider when parsing date and time."
+  },
+  "csharpsquid:S3267": {
+    "details": {
+      "code": "csharpsquid:S3267",
+      "type": "CODE_SMELL",
+      "severity": "MINOR",
+      "rule_name": "csharpsquid:S3267"
+    },
+    "total_count": 44,
+    "projects": [
+      "SoundFlow",
+      "lunr",
+      "ScreenToGif",
+      "Riter",
+      "Foster",
+      "Chloe"
+    ],
+    "example": "Loop should be simplified by calling Select(layer => layer.ChannelList))"
+  },
+  "external_roslyn:IDE0046": {
+    "details": {
+      "code": "external_roslyn:IDE0046",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:IDE0046"
+    },
+    "total_count": 43,
+    "projects": [
+      "spreadcheetah"
+    ],
+    "example": "'if' statement can be simplified"
+  },
+  "csharpsquid:S1939": {
+    "details": {
+      "code": "csharpsquid:S1939",
+      "type": "CODE_SMELL",
+      "severity": "MINOR",
+      "rule_name": "csharpsquid:S1939"
+    },
+    "total_count": 42,
+    "projects": [
+      "Foster",
+      "Chloe",
+      "ScreenToGif"
+    ],
+    "example": "'IDbConnection' implements 'IDisposable' so 'IDisposable' can be removed from the inheritance list."
+  },
+  "external_roslyn:CA1069": {
+    "details": {
+      "code": "external_roslyn:CA1069",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:CA1069"
+    },
+    "total_count": 42,
+    "projects": [
+      "Foster",
+      "ScreenToGif"
+    ],
+    "example": "The enum member 'B' has the same constant value '1' as member 'East'"
+  },
+  "external_roslyn:MA0038": {
+    "details": {
+      "code": "external_roslyn:MA0038",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:MA0038"
+    },
+    "total_count": 39,
+    "projects": [
+      "spreadcheetah"
+    ],
+    "example": "Make method static (deprecated, use CA1822 instead)"
+  },
+  "csharpsquid:S907": {
+    "details": {
+      "code": "csharpsquid:S907",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "csharpsquid:S907"
+    },
+    "total_count": 37,
+    "projects": [
+      "Foster",
+      "Chloe",
+      "ScreenToGif"
+    ],
+    "example": "Remove this use of 'goto'."
+  },
+  "csharpsquid:S2971": {
+    "details": {
+      "code": "csharpsquid:S2971",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "csharpsquid:S2971"
+    },
+    "total_count": 34,
+    "projects": [
+      "Chloe",
+      "Riter",
+      "ScreenToGif"
+    ],
+    "example": "Drop 'Where' and move the condition into the 'Any'."
+  },
+  "external_roslyn:IDE0057": {
+    "details": {
+      "code": "external_roslyn:IDE0057",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:IDE0057"
+    },
+    "total_count": 34,
+    "projects": [
+      "spreadcheetah"
+    ],
+    "example": "Substring can be simplified"
+  },
+  "csharpsquid:S1172": {
+    "details": {
+      "code": "csharpsquid:S1172",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "csharpsquid:S1172"
+    },
+    "total_count": 31,
+    "projects": [
+      "Foster",
+      "Chloe",
+      "SoundFlow",
+      "ScreenToGif"
+    ],
+    "example": "Remove this unused method parameter 'wParam'."
+  },
+  "external_roslyn:MA0042": {
+    "details": {
+      "code": "external_roslyn:MA0042",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:MA0042"
+    },
+    "total_count": 31,
+    "projects": [
+      "spreadcheetah"
+    ],
+    "example": "Prefer using 'await using'"
+  },
+  "csharpsquid:S1450": {
+    "details": {
+      "code": "csharpsquid:S1450",
+      "type": "CODE_SMELL",
+      "severity": "MINOR",
+      "rule_name": "csharpsquid:S1450"
+    },
+    "total_count": 29,
+    "projects": [
+      "Foster",
+      "Chloe",
+      "lunr",
+      "ScreenToGif"
+    ],
+    "example": "Remove the field 'dataLength' and declare it as a local variable in the relevant methods."
+  },
+  "external_roslyn:CA2208": {
+    "details": {
+      "code": "external_roslyn:CA2208",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:CA2208"
+    },
+    "total_count": 29,
+    "projects": [
+      "RestSharp",
+      "Chloe",
+      "ScreenToGif"
+    ],
+    "example": "Method ConvertToByte passes parameter name 'bits' as the message argument to a ArgumentException constructor. Replace this argument with a descriptive message and pass the parameter name in the correct position."
+  },
+  "csharpsquid:S1199": {
+    "details": {
+      "code": "csharpsquid:S1199",
+      "type": "CODE_SMELL",
+      "severity": "MINOR",
+      "rule_name": "csharpsquid:S1199"
+    },
+    "total_count": 29,
+    "projects": [
+      "Foster",
+      "ScreenToGif"
+    ],
+    "example": "Extract this nested code block into a separate method."
+  },
+  "csharpsquid:S107": {
+    "details": {
+      "code": "csharpsquid:S107",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "csharpsquid:S107"
+    },
+    "total_count": 28,
+    "projects": [
+      "spreadcheetah",
+      "lunr",
+      "ScreenToGif",
+      "Riter",
+      "Foster",
+      "Chloe"
+    ],
+    "example": "Constructor has 13 parameters, which is greater than the 7 authorized."
+  },
+  "csharpsquid:S3928": {
+    "details": {
+      "code": "csharpsquid:S3928",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "csharpsquid:S3928"
+    },
+    "total_count": 28,
+    "projects": [
+      "RestSharp",
+      "Chloe",
+      "SoundFlow",
+      "ScreenToGif"
+    ],
+    "example": "The parameter name 'Type' is not declared in the argument list."
+  },
+  "external_roslyn:CA1816": {
+    "details": {
+      "code": "external_roslyn:CA1816",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:CA1816"
+    },
+    "total_count": 27,
+    "projects": [
+      "SoundFlow",
+      "lunr",
+      "ScreenToGif",
+      "Foster",
+      "Chloe"
+    ],
+    "example": "Change SpectrumVisualizer.Dispose() to call GC.SuppressFinalize(object). This will prevent derived types that introduce a finalizer from needing to re-implement 'IDisposable' to call it."
+  },
+  "csharpsquid:S1006": {
+    "details": {
+      "code": "csharpsquid:S1006",
+      "type": "CODE_SMELL",
+      "severity": "CRITICAL",
+      "rule_name": "csharpsquid:S1006"
+    },
+    "total_count": 26,
+    "projects": [
+      "Chloe",
+      "Foster",
+      "Riter"
+    ],
+    "example": "Add the default parameter value defined in the overridden method."
+  },
+  "csharpsquid:S2486": {
+    "details": {
+      "code": "csharpsquid:S2486",
+      "type": "CODE_SMELL",
+      "severity": "MINOR",
+      "rule_name": "csharpsquid:S2486"
+    },
+    "total_count": 25,
+    "projects": [
+      "Chloe",
+      "Foster",
+      "Riter",
+      "ScreenToGif"
+    ],
+    "example": "Handle the exception or explain in a comment why it can be ignored."
+  },
+  "csharpsquid:S1854": {
+    "details": {
+      "code": "csharpsquid:S1854",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "csharpsquid:S1854"
+    },
+    "total_count": 25,
+    "projects": [
+      "Foster",
+      "Chloe",
+      "ScreenToGif"
+    ],
+    "example": "Remove this useless assignment to local variable 'imageAux1'."
+  },
+  "csharpsquid:S1121": {
+    "details": {
+      "code": "csharpsquid:S1121",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "csharpsquid:S1121"
+    },
+    "total_count": 25,
+    "projects": [
+      "Foster",
+      "SoundFlow",
+      "lunr",
+      "ScreenToGif"
+    ],
+    "example": "Extract the assignment of '_readCallback' from this expression."
+  },
+  "csharpsquid:S2223": {
+    "details": {
+      "code": "csharpsquid:S2223",
+      "type": "CODE_SMELL",
+      "severity": "CRITICAL",
+      "rule_name": "csharpsquid:S2223"
+    },
+    "total_count": 24,
+    "projects": [
+      "Foster",
+      "Chloe",
+      "lunr",
+      "ScreenToGif"
+    ],
+    "example": "Change the visibility of 'FeedbackCommandProperty' or make it 'const' or 'readonly'."
+  },
+  "csharpsquid:S1075": {
+    "details": {
+      "code": "csharpsquid:S1075",
+      "type": "CODE_SMELL",
+      "severity": "MINOR",
+      "rule_name": "csharpsquid:S1075"
+    },
+    "total_count": 22,
+    "projects": [
+      "RestSharp",
+      "Saunter",
+      "SoundFlow",
+      "ScreenToGif",
+      "Riter"
+    ],
+    "example": "Refactor your code not to use hardcoded absolute paths or URIs."
+  },
+  "external_roslyn:CA2211": {
+    "details": {
+      "code": "external_roslyn:CA2211",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:CA2211"
+    },
+    "total_count": 22,
+    "projects": [
+      "Foster",
+      "lunr",
+      "ScreenToGif"
+    ],
+    "example": "Non-constant fields should not be visible"
+  },
+  "external_roslyn:CA1806": {
+    "details": {
+      "code": "external_roslyn:CA1806",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:CA1806"
+    },
+    "total_count": 21,
+    "projects": [
+      "Chloe",
+      "ScreenToGif"
+    ],
+    "example": "EnableMaximize calls SetWindowLong but does not use the HRESULT or error code that the method returns. This could lead to unexpected behavior in error conditions or low-resource situations. Use the result in a conditional statement, assign the result to a variable, or pass it as an argument to another method."
+  },
+  "csharpsquid:S127": {
+    "details": {
+      "code": "csharpsquid:S127",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "csharpsquid:S127"
+    },
+    "total_count": 21,
+    "projects": [
+      "Foster",
+      "SoundFlow",
+      "lunr",
+      "ScreenToGif"
+    ],
+    "example": "Do not update the loop counter 'j' within the loop body."
+  },
+  "csharpsquid:S3963": {
+    "details": {
+      "code": "csharpsquid:S3963",
+      "type": "CODE_SMELL",
+      "severity": "MINOR",
+      "rule_name": "csharpsquid:S3963"
+    },
+    "total_count": 20,
+    "projects": [
+      "RestSharp",
+      "lunr",
+      "ScreenToGif",
+      "Riter",
+      "Chloe"
+    ],
+    "example": "Initialize all 'static fields' inline and remove the 'static constructor'."
+  },
+  "csharpsquid:S2436": {
+    "details": {
+      "code": "csharpsquid:S2436",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "csharpsquid:S2436"
+    },
+    "total_count": 20,
+    "projects": [
+      "Chloe"
+    ],
+    "example": "Reduce the number of generic parameters in the 'JoinResult' class to no more than the 2 authorized."
+  },
+  "external_roslyn:SYSLIB1045": {
+    "details": {
+      "code": "external_roslyn:SYSLIB1045",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:SYSLIB1045"
+    },
+    "total_count": 19,
+    "projects": [
+      "ScreenToGif"
+    ],
+    "example": "Use 'GeneratedRegexAttribute' to generate the regular expression implementation at compile-time."
+  },
+  "external_roslyn:MA0028": {
+    "details": {
+      "code": "external_roslyn:MA0028",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:MA0028"
+    },
+    "total_count": 19,
+    "projects": [
+      "spreadcheetah"
+    ],
+    "example": "Replace string interpolation with multiple AppendLine calls or use an interpolated string"
+  },
+  "csharpsquid:S2696": {
+    "details": {
+      "code": "csharpsquid:S2696",
+      "type": "CODE_SMELL",
+      "severity": "CRITICAL",
+      "rule_name": "csharpsquid:S2696"
+    },
+    "total_count": 18,
+    "projects": [
+      "RestSharp",
+      "Saunter",
+      "SoundFlow",
+      "ScreenToGif",
+      "Riter",
+      "Foster"
+    ],
+    "example": "Remove this set, which updates a 'static' field from an instance method."
+  },
+  "csharpsquid:S1905": {
+    "details": {
+      "code": "csharpsquid:S1905",
+      "type": "CODE_SMELL",
+      "severity": "MINOR",
+      "rule_name": "csharpsquid:S1905"
+    },
+    "total_count": 18,
+    "projects": [
+      "Foster",
+      "Chloe",
+      "ScreenToGif"
+    ],
+    "example": "Remove this unnecessary cast to 'object'."
+  },
+  "csharpsquid:S3247": {
+    "details": {
+      "code": "csharpsquid:S3247",
+      "type": "CODE_SMELL",
+      "severity": "MINOR",
+      "rule_name": "csharpsquid:S3247"
+    },
+    "total_count": 18,
+    "projects": [
+      "Chloe",
+      "ScreenToGif"
+    ],
+    "example": "Replace this type-check-and-cast sequence to use pattern matching."
+  },
+  "external_roslyn:CA1507": {
+    "details": {
+      "code": "external_roslyn:CA1507",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:CA1507"
+    },
+    "total_count": 18,
+    "projects": [
+      "Chloe"
+    ],
+    "example": "Use nameof in place of string literal 'orderString'"
+  },
+  "external_roslyn:CA1510": {
+    "details": {
+      "code": "external_roslyn:CA1510",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:CA1510"
+    },
+    "total_count": 18,
+    "projects": [
+      "RestSharp",
+      "Chloe",
+      "ScreenToGif"
+    ],
+    "example": "Use 'ArgumentNullException.ThrowIfNull' instead of explicitly throwing a new exception instance"
+  },
+  "csharpsquid:S1871": {
+    "details": {
+      "code": "csharpsquid:S1871",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "csharpsquid:S1871"
+    },
+    "total_count": 18,
+    "projects": [
+      "Foster",
+      "ScreenToGif"
+    ],
+    "example": "Either merge this case with the identical one on line 1386 or change one of the implementations."
+  },
+  "csharpsquid:S2344": {
+    "details": {
+      "code": "csharpsquid:S2344",
+      "type": "CODE_SMELL",
+      "severity": "MINOR",
+      "rule_name": "csharpsquid:S2344"
+    },
+    "total_count": 18,
+    "projects": [
+      "Foster",
+      "ScreenToGif"
+    ],
+    "example": "Rename this enumeration to remove the 'Flags' suffix."
+  },
+  "external_roslyn:CA1860": {
+    "details": {
+      "code": "external_roslyn:CA1860",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:CA1860"
+    },
+    "total_count": 18,
+    "projects": [
+      "RestSharp",
+      "ScreenToGif"
+    ],
+    "example": "Prefer comparing 'Count' to 0 rather than using 'Any()', both for clarity and for performance"
+  },
+  "external_roslyn:SYSLIB1096": {
+    "details": {
+      "code": "external_roslyn:SYSLIB1096",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:SYSLIB1096"
+    },
+    "total_count": 18,
+    "projects": [
+      "ScreenToGif"
+    ],
+    "example": "Mark the type 'IEnumFilters' with 'GeneratedComInterfaceAttribute' instead of 'ComImportAttribute' to generate COM marshalling code at compile time"
+  },
+  "csharpsquid:S4487": {
+    "details": {
+      "code": "csharpsquid:S4487",
+      "type": "CODE_SMELL",
+      "severity": "CRITICAL",
+      "rule_name": "csharpsquid:S4487"
+    },
+    "total_count": 17,
+    "projects": [
+      "Foster",
+      "Chloe",
+      "SoundFlow",
+      "ScreenToGif"
+    ],
+    "example": "Remove this unread private field '_result' or refactor the code to use its value."
+  },
+  "csharpsquid:S3260": {
+    "details": {
+      "code": "csharpsquid:S3260",
+      "type": "CODE_SMELL",
+      "severity": "MINOR",
+      "rule_name": "csharpsquid:S3260"
+    },
+    "total_count": 16,
+    "projects": [
+      "Foster",
+      "SoundFlow",
+      "lunr",
+      "ScreenToGif"
+    ],
+    "example": "Private classes which are not derived in the current assembly should be marked as 'sealed'."
+  },
+  "external_roslyn:IDE0007": {
+    "details": {
+      "code": "external_roslyn:IDE0007",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:IDE0007"
+    },
+    "total_count": 16,
+    "projects": [
+      "spreadcheetah"
+    ],
+    "example": "use 'var' instead of explicit type"
+  },
+  "csharpsquid:S3626": {
+    "details": {
+      "code": "csharpsquid:S3626",
+      "type": "CODE_SMELL",
+      "severity": "MINOR",
+      "rule_name": "csharpsquid:S3626"
+    },
+    "total_count": 15,
+    "projects": [
+      "RestSharp",
+      "Chloe",
+      "SoundFlow",
+      "ScreenToGif"
+    ],
+    "example": "Remove this redundant jump."
+  },
+  "csharpsquid:S3457": {
+    "details": {
+      "code": "csharpsquid:S3457",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "csharpsquid:S3457"
+    },
+    "total_count": 15,
+    "projects": [
+      "Chloe",
+      "ScreenToGif"
+    ],
+    "example": "Remove this formatting call and simply use the input string."
+  },
+  "csharpsquid:S3168": {
+    "details": {
+      "code": "csharpsquid:S3168",
+      "type": "BUG",
+      "severity": "MAJOR",
+      "rule_name": "csharpsquid:S3168"
+    },
+    "total_count": 15,
+    "projects": [
+      "SoundFlow",
+      "ScreenToGif"
+    ],
+    "example": "Return 'Task' instead."
+  },
+  "external_roslyn:RCS1123": {
+    "details": {
+      "code": "external_roslyn:RCS1123",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:RCS1123"
+    },
+    "total_count": 15,
+    "projects": [
+      "spreadcheetah"
+    ],
+    "example": "Add parentheses when necessary"
+  },
+  "csharpsquid:S6610": {
+    "details": {
+      "code": "csharpsquid:S6610",
+      "type": "CODE_SMELL",
+      "severity": "MINOR",
+      "rule_name": "csharpsquid:S6610"
+    },
+    "total_count": 14,
+    "projects": [
+      "Chloe"
+    ],
+    "example": "\"EndsWith\" overloads that take a \"char\" should be used"
+  },
+  "external_roslyn:CA1866": {
+    "details": {
+      "code": "external_roslyn:CA1866",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:CA1866"
+    },
+    "total_count": 14,
+    "projects": [
+      "Chloe"
+    ],
+    "example": "Use 'string.EndsWith(char)' instead of 'string.EndsWith(string)' when you have a string with a single char"
+  },
+  "external_roslyn:SYSLIB0014": {
+    "details": {
+      "code": "external_roslyn:SYSLIB0014",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "external_roslyn:SYSLIB0014"
+    },
+    "total_count": 14,
+    "projects": [
+      "ScreenToGif"
+    ],
+    "example": "'WebClient.WebClient()' is obsolete: 'WebRequest, HttpWebRequest, ServicePoint, and WebClient are obsolete. Use HttpClient instead.'"
+  },
+  "external_roslyn:CS1998": {
+    "details": {
+      "code": "external_roslyn:CS1998",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "external_roslyn:CS1998"
+    },
+    "total_count": 13,
+    "projects": [
+      "Chloe"
+    ],
+    "example": "This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread."
+  },
+  "csharpsquid:S3220": {
+    "details": {
+      "code": "csharpsquid:S3220",
+      "type": "CODE_SMELL",
+      "severity": "MINOR",
+      "rule_name": "csharpsquid:S3220"
+    },
+    "total_count": 13,
+    "projects": [
+      "Chloe",
+      "ScreenToGif"
+    ],
+    "example": "Review this call, which partially matches an overload without 'params'. The partial match is 'List<T> IDbContext.SqlQuery<T>(string sql, object parameter)'."
+  },
+  "csharpsquid:S1117": {
+    "details": {
+      "code": "csharpsquid:S1117",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "csharpsquid:S1117"
+    },
+    "total_count": 13,
+    "projects": [
+      "RestSharp",
+      "Foster"
+    ],
+    "example": "Rename 'ptr' which hides the field with the same name."
+  },
+  "external_roslyn:CA1861": {
+    "details": {
+      "code": "external_roslyn:CA1861",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:CA1861"
+    },
+    "total_count": 12,
+    "projects": [
+      "Chloe",
+      "ScreenToGif"
+    ],
+    "example": "Prefer 'static readonly' fields over constant array arguments if the called method is called repeatedly and is not mutating the passed array"
+  },
+  "csharpsquid:S1168": {
+    "details": {
+      "code": "csharpsquid:S1168",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "csharpsquid:S1168"
+    },
+    "total_count": 12,
+    "projects": [
+      "Chloe",
+      "ScreenToGif"
+    ],
+    "example": "Return an empty collection instead of null."
+  },
+  "external_roslyn:CA1847": {
+    "details": {
+      "code": "external_roslyn:CA1847",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:CA1847"
+    },
+    "total_count": 11,
+    "projects": [
+      "Chloe",
+      "ScreenToGif"
+    ],
+    "example": "Use 'string.Contains(char)' instead of 'string.Contains(string)' when searching for a single character"
+  },
+  "external_roslyn:CA2012": {
+    "details": {
+      "code": "external_roslyn:CA2012",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:CA2012"
+    },
+    "total_count": 11,
+    "projects": [
+      "RestSharp",
+      "Chloe",
+      "lunr"
+    ],
+    "example": "ValueTask instances should not have their result directly accessed unless the instance has already completed. Unlike Tasks, calling Result or GetAwaiter().GetResult() on a ValueTask is not guaranteed to block until the operation completes. If you can't simply await the instance, consider first checking its IsCompleted property (or asserting it's true if you know that to be the case)."
+  },
+  "csharpsquid:S3878": {
+    "details": {
+      "code": "csharpsquid:S3878",
+      "type": "CODE_SMELL",
+      "severity": "MINOR",
+      "rule_name": "csharpsquid:S3878"
+    },
+    "total_count": 10,
+    "projects": [
+      "Chloe",
+      "SoundFlow"
+    ],
+    "example": "Remove this array creation and simply pass the elements."
+  },
+  "csharpsquid:S2292": {
+    "details": {
+      "code": "csharpsquid:S2292",
+      "type": "CODE_SMELL",
+      "severity": "MINOR",
+      "rule_name": "csharpsquid:S2292"
+    },
+    "total_count": 9,
+    "projects": [
+      "Foster",
+      "Riter",
+      "SoundFlow"
+    ],
+    "example": "Make this an auto-implemented property and remove its backing field."
+  },
+  "csharpsquid:S3993": {
+    "details": {
+      "code": "csharpsquid:S3993",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "csharpsquid:S3993"
+    },
+    "total_count": 9,
+    "projects": [
+      "Saunter",
+      "Chloe"
+    ],
+    "example": "Specify AttributeUsage on 'SubscribeOperationAttribute' to improve readability, even though it inherits it from its base type."
+  },
+  "csharpsquid:S1186": {
+    "details": {
+      "code": "csharpsquid:S1186",
+      "type": "CODE_SMELL",
+      "severity": "CRITICAL",
+      "rule_name": "csharpsquid:S1186"
+    },
+    "total_count": 9,
+    "projects": [
+      "Saunter",
+      "Chloe",
+      "ScreenToGif"
+    ],
+    "example": "Add a nested comment explaining why this method is empty, throw a 'NotSupportedException' or complete the implementation."
+  },
+  "csharpsquid:S6561": {
+    "details": {
+      "code": "csharpsquid:S6561",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "csharpsquid:S6561"
+    },
+    "total_count": 9,
+    "projects": [
+      "Chloe",
+      "SoundFlow",
+      "ScreenToGif"
+    ],
+    "example": "Avoid using \"DateTime.Now\" for benchmarking or timespan calculation operations."
+  },
+  "secrets:S6703": {
+    "details": {
+      "code": "secrets:S6703",
+      "type": "VULNERABILITY",
+      "severity": "BLOCKER",
+      "rule_name": "secrets:S6703"
+    },
+    "total_count": 8,
+    "projects": [
+      "Chloe"
+    ],
+    "example": "Make sure this database password gets changed and removed from the code."
+  },
+  "csharpsquid:S2372": {
+    "details": {
+      "code": "csharpsquid:S2372",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "csharpsquid:S2372"
+    },
+    "total_count": 8,
+    "projects": [
+      "Foster"
+    ],
+    "example": "Remove the exception throwing from this property getter, or refactor the property into a method."
+  },
+  "external_roslyn:CS0612": {
+    "details": {
+      "code": "external_roslyn:CS0612",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "external_roslyn:CS0612"
+    },
+    "total_count": 8,
+    "projects": [
+      "ScreenToGif"
+    ],
+    "example": "'RecorderStages.Snapping' is obsolete"
+  },
+  "external_roslyn:RCS1251": {
+    "details": {
+      "code": "external_roslyn:RCS1251",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:RCS1251"
+    },
+    "total_count": 8,
+    "projects": [
+      "spreadcheetah"
+    ],
+    "example": "Remove unnecessary braces"
+  },
+  "csharpsquid:S6664": {
+    "details": {
+      "code": "csharpsquid:S6664",
+      "type": "CODE_SMELL",
+      "severity": "MINOR",
+      "rule_name": "csharpsquid:S6664"
+    },
+    "total_count": 7,
+    "projects": [
+      "Lynx"
+    ],
+    "example": "Reduce the number of Error logging calls within this code block from 2 to the 1 allowed."
+  },
+  "csharpsquid:S2346": {
+    "details": {
+      "code": "csharpsquid:S2346",
+      "type": "CODE_SMELL",
+      "severity": "CRITICAL",
+      "rule_name": "csharpsquid:S2346"
+    },
+    "total_count": 7,
+    "projects": [
+      "Foster",
+      "Chloe",
+      "ScreenToGif"
+    ],
+    "example": "Rename 'ByCommand' to 'None'."
+  },
+  "external_roslyn:CA1018": {
+    "details": {
+      "code": "external_roslyn:CA1018",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:CA1018"
+    },
+    "total_count": 7,
+    "projects": [
+      "Chloe"
+    ],
+    "example": "Specify AttributeUsage on DataTypeAttribute"
+  },
+  "csharpsquid:S3011": {
+    "details": {
+      "code": "csharpsquid:S3011",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "csharpsquid:S3011"
+    },
+    "total_count": 7,
+    "projects": [
+      "Chloe",
+      "ScreenToGif"
+    ],
+    "example": "Make sure that this accessibility bypass is safe here."
+  },
+  "csharpsquid:S1643": {
+    "details": {
+      "code": "csharpsquid:S1643",
+      "type": "CODE_SMELL",
+      "severity": "MINOR",
+      "rule_name": "csharpsquid:S1643"
+    },
+    "total_count": 7,
+    "projects": [
+      "Chloe",
+      "ScreenToGif"
+    ],
+    "example": "Use a StringBuilder instead."
+  },
+  "csharpsquid:S3442": {
+    "details": {
+      "code": "csharpsquid:S3442",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "csharpsquid:S3442"
+    },
+    "total_count": 7,
+    "projects": [
+      "Foster",
+      "Chloe"
+    ],
+    "example": "Change the visibility of this constructor to 'protected'."
+  },
+  "external_roslyn:CA1845": {
+    "details": {
+      "code": "external_roslyn:CA1845",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:CA1845"
+    },
+    "total_count": 7,
+    "projects": [
+      "Chloe",
+      "lunr",
+      "ScreenToGif"
+    ],
+    "example": "Use span-based 'string.Concat' and 'AsSpan' instead of 'Substring'"
+  },
+  "csharpsquid:S2551": {
+    "details": {
+      "code": "csharpsquid:S2551",
+      "type": "BUG",
+      "severity": "CRITICAL",
+      "rule_name": "csharpsquid:S2551"
+    },
+    "total_count": 7,
+    "projects": [
+      "Chloe",
+      "ScreenToGif"
+    ],
+    "example": "Lock on a dedicated object instance instead."
+  },
+  "csharpsquid:S3459": {
+    "details": {
+      "code": "csharpsquid:S3459",
+      "type": "CODE_SMELL",
+      "severity": "MINOR",
+      "rule_name": "csharpsquid:S3459"
+    },
+    "total_count": 7,
+    "projects": [
+      "Foster",
+      "ScreenToGif"
+    ],
+    "example": "Remove unassigned field '_lastPosition', or set its value."
+  },
+  "external_roslyn:IDE0305": {
+    "details": {
+      "code": "external_roslyn:IDE0305",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "external_roslyn:IDE0305"
+    },
+    "total_count": 7,
+    "projects": [
+      "spreadcheetah"
+    ],
+    "example": "Collection initialization can be simplified"
+  },
+  "external_roslyn:CA2101": {
+    "details": {
+      "code": "external_roslyn:CA2101",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:CA2101"
+    },
+    "total_count": 6,
+    "projects": [
+      "Riter",
+      "ScreenToGif"
+    ],
+    "example": "Specify marshaling for P/Invoke string arguments"
+  },
+  "csharpsquid:S2674": {
+    "details": {
+      "code": "csharpsquid:S2674",
+      "type": "BUG",
+      "severity": "MINOR",
+      "rule_name": "csharpsquid:S2674"
+    },
+    "total_count": 6,
+    "projects": [
+      "ScreenToGif"
+    ],
+    "example": "Check the return value of the 'Read' call to see how many bytes were read."
+  },
+  "external_roslyn:CA1825": {
+    "details": {
+      "code": "external_roslyn:CA1825",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:CA1825"
+    },
+    "total_count": 5,
+    "projects": [
+      "Chloe",
+      "ScreenToGif"
+    ],
+    "example": "Avoid unnecessary zero-length array allocations.  Use Array.Empty<string>() instead."
+  },
+  "csharpsquid:S3427": {
+    "details": {
+      "code": "csharpsquid:S3427",
+      "type": "CODE_SMELL",
+      "severity": "BLOCKER",
+      "rule_name": "csharpsquid:S3427"
+    },
+    "total_count": 5,
+    "projects": [
+      "RestSharp",
+      "Chloe",
+      "ScreenToGif"
+    ],
+    "example": "This method signature overlaps the one defined on line 41, the default parameter value can't be used."
+  },
+  "csharpsquid:S3241": {
+    "details": {
+      "code": "csharpsquid:S3241",
+      "type": "CODE_SMELL",
+      "severity": "MINOR",
+      "rule_name": "csharpsquid:S3241"
+    },
+    "total_count": 5,
+    "projects": [
+      "Foster",
+      "Chloe",
+      "lunr",
+      "ScreenToGif"
+    ],
+    "example": "Change return type to 'void'; not a single caller uses the returned value."
+  },
+  "csharpsquid:S1185": {
+    "details": {
+      "code": "csharpsquid:S1185",
+      "type": "CODE_SMELL",
+      "severity": "MINOR",
+      "rule_name": "csharpsquid:S1185"
+    },
+    "total_count": 5,
+    "projects": [
+      "Chloe"
+    ],
+    "example": "Remove this method 'VisitMethodCall' to simply inherit its behavior."
+  },
+  "csharpsquid:S2184": {
+    "details": {
+      "code": "csharpsquid:S2184",
+      "type": "BUG",
+      "severity": "MINOR",
+      "rule_name": "csharpsquid:S2184"
+    },
+    "total_count": 5,
+    "projects": [
+      "Foster",
+      "Chloe"
+    ],
+    "example": "Cast one of the operands of this division to 'float'."
+  },
+  "csharpsquid:S2699": {
+    "details": {
+      "code": "csharpsquid:S2699",
+      "type": "CODE_SMELL",
+      "severity": "BLOCKER",
+      "rule_name": "csharpsquid:S2699"
+    },
+    "total_count": 5,
+    "projects": [
+      "RestSharp"
+    ],
+    "example": "Add at least one assertion to this test case."
+  },
+  "docker:S6587": {
+    "details": {
+      "code": "docker:S6587",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "docker:S6587"
+    },
+    "total_count": 5,
+    "projects": [
+      "RestSharp"
+    ],
+    "example": "Remove cache after installing packages or store it in a cache mount."
+  },
+  "external_roslyn:CA1846": {
+    "details": {
+      "code": "external_roslyn:CA1846",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:CA1846"
+    },
+    "total_count": 5,
+    "projects": [
+      "ScreenToGif"
+    ],
+    "example": "Prefer 'AsSpan' over 'Substring' when span-based overloads are available"
+  },
+  "external_roslyn:CS0168": {
+    "details": {
+      "code": "external_roslyn:CS0168",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "external_roslyn:CS0168"
+    },
+    "total_count": 5,
+    "projects": [
+      "ScreenToGif"
+    ],
+    "example": "The variable 'ex' is declared but never used"
+  },
+  "external_roslyn:IDE0290": {
+    "details": {
+      "code": "external_roslyn:IDE0290",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:IDE0290"
+    },
+    "total_count": 5,
+    "projects": [
+      "spreadcheetah"
+    ],
+    "example": "Use primary constructor"
+  },
+  "csharpsquid:S3604": {
+    "details": {
+      "code": "csharpsquid:S3604",
+      "type": "CODE_SMELL",
+      "severity": "MINOR",
+      "rule_name": "csharpsquid:S3604"
+    },
+    "total_count": 4,
+    "projects": [
+      "Chloe",
+      "Foster",
+      "Riter"
+    ],
+    "example": "Remove the member initializer, all constructors set an initial value for the member."
+  },
+  "external_roslyn:CS3021": {
+    "details": {
+      "code": "external_roslyn:CS3021",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "external_roslyn:CS3021"
+    },
+    "total_count": 4,
+    "projects": [
+      "Chloe"
+    ],
+    "example": "'BitOperations.RotateLeft(uint, int)' does not need a CLSCompliant attribute because the assembly does not have a CLSCompliant attribute"
+  },
+  "csharpsquid:S1116": {
+    "details": {
+      "code": "csharpsquid:S1116",
+      "type": "CODE_SMELL",
+      "severity": "MINOR",
+      "rule_name": "csharpsquid:S1116"
+    },
+    "total_count": 4,
+    "projects": [
+      "Foster",
+      "Chloe",
+      "ScreenToGif"
+    ],
+    "example": "Remove this empty statement."
+  },
+  "csharpsquid:S1155": {
+    "details": {
+      "code": "csharpsquid:S1155",
+      "type": "CODE_SMELL",
+      "severity": "MINOR",
+      "rule_name": "csharpsquid:S1155"
+    },
+    "total_count": 4,
+    "projects": [
+      "Chloe",
+      "ScreenToGif"
+    ],
+    "example": "Use '.Any()' to test whether this 'IEnumerable<System.Windows.Window>' is empty or not."
+  },
+  "external_roslyn:CA1827": {
+    "details": {
+      "code": "external_roslyn:CA1827",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:CA1827"
+    },
+    "total_count": 4,
+    "projects": [
+      "Chloe",
+      "ScreenToGif"
+    ],
+    "example": "Count() is used where Any() could be used instead to improve performance"
+  },
+  "csharpsquid:S1696": {
+    "details": {
+      "code": "csharpsquid:S1696",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "csharpsquid:S1696"
+    },
+    "total_count": 4,
+    "projects": [
+      "Chloe",
+      "ScreenToGif"
+    ],
+    "example": "Do not catch NullReferenceException; test for null instead."
+  },
+  "csharpsquid:S2955": {
+    "details": {
+      "code": "csharpsquid:S2955",
+      "type": "BUG",
+      "severity": "MINOR",
+      "rule_name": "csharpsquid:S2955"
+    },
+    "total_count": 4,
+    "projects": [
+      "Chloe",
+      "ScreenToGif"
+    ],
+    "example": "Use a comparison to 'default(T)' instead or add a constraint to 'T' so that it can't be a value type."
+  },
+  "external_roslyn:CA2249": {
+    "details": {
+      "code": "external_roslyn:CA2249",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:CA2249"
+    },
+    "total_count": 4,
+    "projects": [
+      "lunr"
+    ],
+    "example": "Use 'string.Contains' instead of 'string.IndexOf' to improve readability"
+  },
+  "external_roslyn:xUnit2024": {
+    "details": {
+      "code": "external_roslyn:xUnit2024",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:xUnit2024"
+    },
+    "total_count": 4,
+    "projects": [
+      "RestSharp"
+    ],
+    "example": "Do not use Assert.False to test equality against null, numeric, string, or enum literals. Use Assert.NotEqual instead."
+  },
+  "external_roslyn:CA1050": {
+    "details": {
+      "code": "external_roslyn:CA1050",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:CA1050"
+    },
+    "total_count": 4,
+    "projects": [
+      "Saunter"
+    ],
+    "example": "Declare types in namespaces"
+  },
+  "csharpsquid:S3903": {
+    "details": {
+      "code": "csharpsquid:S3903",
+      "type": "BUG",
+      "severity": "MAJOR",
+      "rule_name": "csharpsquid:S3903"
+    },
+    "total_count": 4,
+    "projects": [
+      "Saunter"
+    ],
+    "example": "Move 'DocumentFilterContext' into a named namespace."
+  },
+  "csharpsquid:S3973": {
+    "details": {
+      "code": "csharpsquid:S3973",
+      "type": "CODE_SMELL",
+      "severity": "CRITICAL",
+      "rule_name": "csharpsquid:S3973"
+    },
+    "total_count": 4,
+    "projects": [
+      "ScreenToGif"
+    ],
+    "example": "Use curly braces or indentation to denote the code conditionally executed by this 'if'"
+  },
+  "csharpsquid:S4070": {
+    "details": {
+      "code": "csharpsquid:S4070",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "csharpsquid:S4070"
+    },
+    "total_count": 4,
+    "projects": [
+      "ScreenToGif"
+    ],
+    "example": "Remove the 'FlagsAttribute' from this enum."
+  },
+  "external_roslyn:CS0169": {
+    "details": {
+      "code": "external_roslyn:CS0169",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "external_roslyn:CS0169"
+    },
+    "total_count": 4,
+    "projects": [
+      "ScreenToGif"
+    ],
+    "example": "The field 'LzwEncoder._imgH' is never used"
+  },
+  "csharpsquid:S1940": {
+    "details": {
+      "code": "csharpsquid:S1940",
+      "type": "CODE_SMELL",
+      "severity": "MINOR",
+      "rule_name": "csharpsquid:S1940"
+    },
+    "total_count": 4,
+    "projects": [
+      "SoundFlow",
+      "ScreenToGif"
+    ],
+    "example": "Use the opposite operator ('>=') instead."
+  },
+  "csharpsquid:S2681": {
+    "details": {
+      "code": "csharpsquid:S2681",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "csharpsquid:S2681"
+    },
+    "total_count": 4,
+    "projects": [
+      "ScreenToGif"
+    ],
+    "example": "This line will not be executed conditionally; only the first line of this 1-line block will be. The rest will execute unconditionally."
+  },
+  "csharpsquid:S1751": {
+    "details": {
+      "code": "csharpsquid:S1751",
+      "type": "BUG",
+      "severity": "MAJOR",
+      "rule_name": "csharpsquid:S1751"
+    },
+    "total_count": 4,
+    "projects": [
+      "ScreenToGif"
+    ],
+    "example": "Refactor the containing loop to do more than one iteration."
+  },
+  "external_roslyn:IDE0130": {
+    "details": {
+      "code": "external_roslyn:IDE0130",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:IDE0130"
+    },
+    "total_count": 4,
+    "projects": [
+      "spreadcheetah"
+    ],
+    "example": "Namespace \"System\" does not match folder structure, expected \"SpreadCheetah.Helpers.Backporting\""
+  },
+  "external_roslyn:IDE0300": {
+    "details": {
+      "code": "external_roslyn:IDE0300",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "external_roslyn:IDE0300"
+    },
+    "total_count": 4,
+    "projects": [
+      "spreadcheetah"
+    ],
+    "example": "Collection initialization can be simplified"
+  },
+  "csharpsquid:S3010": {
+    "details": {
+      "code": "csharpsquid:S3010",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "csharpsquid:S3010"
+    },
+    "total_count": 3,
+    "projects": [
+      "Riter",
+      "SoundFlow",
+      "ScreenToGif"
+    ],
+    "example": "Remove this assignment of '_orchestratorViewModel' or initialize it statically."
+  },
+  "csharpsquid:S3887": {
+    "details": {
+      "code": "csharpsquid:S3887",
+      "type": "BUG",
+      "severity": "MINOR",
+      "rule_name": "csharpsquid:S3887"
+    },
+    "total_count": 3,
+    "projects": [
+      "Chloe",
+      "Foster",
+      "Riter"
+    ],
+    "example": "Use an immutable collection or reduce the accessibility of the non-private readonly field 'EmptyArray'."
+  },
+  "external_roslyn:CA2231": {
+    "details": {
+      "code": "external_roslyn:CA2231",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:CA2231"
+    },
+    "total_count": 3,
+    "projects": [
+      "Chloe"
+    ],
+    "example": "Implement the equality operators and make their behavior identical to that of the Equals method"
+  },
+  "csharpsquid:S3877": {
+    "details": {
+      "code": "csharpsquid:S3877",
+      "type": "CODE_SMELL",
+      "severity": "BLOCKER",
+      "rule_name": "csharpsquid:S3877"
+    },
+    "total_count": 3,
+    "projects": [
+      "Foster",
+      "Chloe"
+    ],
+    "example": "Remove this 'throw' expression."
+  },
+  "csharpsquid:S2306": {
+    "details": {
+      "code": "csharpsquid:S2306",
+      "type": "CODE_SMELL",
+      "severity": "BLOCKER",
+      "rule_name": "csharpsquid:S2306"
+    },
+    "total_count": 3,
+    "projects": [
+      "Chloe"
+    ],
+    "example": "Rename 'async' to not use a contextual keyword as an identifier."
+  },
+  "external_roslyn:CA1830": {
+    "details": {
+      "code": "external_roslyn:CA1830",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:CA1830"
+    },
+    "total_count": 3,
+    "projects": [
+      "Chloe"
+    ],
+    "example": "Remove the ToString call in order to use a strongly-typed StringBuilder overload"
+  },
+  "external_roslyn:CA1513": {
+    "details": {
+      "code": "external_roslyn:CA1513",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:CA1513"
+    },
+    "total_count": 3,
+    "projects": [
+      "Chloe"
+    ],
+    "example": "Use 'ObjectDisposedException.ThrowIf' instead of explicitly throwing a new exception instance"
+  },
+  "csharpsquid:S2953": {
+    "details": {
+      "code": "csharpsquid:S2953",
+      "type": "CODE_SMELL",
+      "severity": "BLOCKER",
+      "rule_name": "csharpsquid:S2953"
+    },
+    "total_count": 3,
+    "projects": [
+      "Chloe"
+    ],
+    "example": "Either implement 'IDisposable.Dispose', or totally rename this method to prevent confusion."
+  },
+  "csharpsquid:S2219": {
+    "details": {
+      "code": "csharpsquid:S2219",
+      "type": "CODE_SMELL",
+      "severity": "MINOR",
+      "rule_name": "csharpsquid:S2219"
+    },
+    "total_count": 3,
+    "projects": [
+      "Chloe",
+      "ScreenToGif"
+    ],
+    "example": "Use the 'is' operator instead."
+  },
+  "csharpsquid:S3998": {
+    "details": {
+      "code": "csharpsquid:S3998",
+      "type": "CODE_SMELL",
+      "severity": "CRITICAL",
+      "rule_name": "csharpsquid:S3998"
+    },
+    "total_count": 3,
+    "projects": [
+      "Chloe"
+    ],
+    "example": "Replace this lock on 'Type' with a lock against an object that cannot be accessed across application domain boundaries."
+  },
+  "csharpsquid:S2365": {
+    "details": {
+      "code": "csharpsquid:S2365",
+      "type": "CODE_SMELL",
+      "severity": "CRITICAL",
+      "rule_name": "csharpsquid:S2365"
+    },
+    "total_count": 3,
+    "projects": [
+      "Chloe",
+      "ScreenToGif"
+    ],
+    "example": "Refactor 'Values' into a method, properties should not copy collections."
+  },
+  "csharpsquid:S4275": {
+    "details": {
+      "code": "csharpsquid:S4275",
+      "type": "BUG",
+      "severity": "CRITICAL",
+      "rule_name": "csharpsquid:S4275"
+    },
+    "total_count": 3,
+    "projects": [
+      "Chloe"
+    ],
+    "example": "Refactor this getter so that it actually refers to the field '_type'."
+  },
+  "csharpsquid:S2701": {
+    "details": {
+      "code": "csharpsquid:S2701",
+      "type": "CODE_SMELL",
+      "severity": "CRITICAL",
+      "rule_name": "csharpsquid:S2701"
+    },
+    "total_count": 3,
+    "projects": [
+      "lunr"
+    ],
+    "example": "Remove or correct this assertion."
+  },
+  "csharpsquid:S1123": {
+    "details": {
+      "code": "csharpsquid:S1123",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "csharpsquid:S1123"
+    },
+    "total_count": 3,
+    "projects": [
+      "ScreenToGif"
+    ],
+    "example": "Add an explanation."
+  },
+  "csharpsquid:S4144": {
+    "details": {
+      "code": "csharpsquid:S4144",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "csharpsquid:S4144"
+    },
+    "total_count": 3,
+    "projects": [
+      "ScreenToGif"
+    ],
+    "example": "Update this method so that its implementation is not identical to 'IsAdornerVisible_PropertyChanged'."
+  },
+  "csharpsquid:S6618": {
+    "details": {
+      "code": "csharpsquid:S6618",
+      "type": "CODE_SMELL",
+      "severity": "MINOR",
+      "rule_name": "csharpsquid:S6618"
+    },
+    "total_count": 3,
+    "projects": [
+      "ScreenToGif"
+    ],
+    "example": "Use \"string.Create\" instead of \"FormattableString\"."
+  },
+  "external_roslyn:CA1865": {
+    "details": {
+      "code": "external_roslyn:CA1865",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:CA1865"
+    },
+    "total_count": 3,
+    "projects": [
+      "ScreenToGif"
+    ],
+    "example": "Use 'string.IndexOf(char)' instead of 'string.IndexOf(string)' when you have a string with a single char"
+  },
+  "csharpsquid:S1206": {
+    "details": {
+      "code": "csharpsquid:S1206",
+      "type": "BUG",
+      "severity": "MINOR",
+      "rule_name": "csharpsquid:S1206"
+    },
+    "total_count": 3,
+    "projects": [
+      "ScreenToGif"
+    ],
+    "example": "This class overrides 'GetHashCode' and should therefore also override 'Equals'."
+  },
+  "csharpsquid:S4586": {
+    "details": {
+      "code": "csharpsquid:S4586",
+      "type": "BUG",
+      "severity": "CRITICAL",
+      "rule_name": "csharpsquid:S4586"
+    },
+    "total_count": 3,
+    "projects": [
+      "ScreenToGif"
+    ],
+    "example": "Do not return null from this method, instead return 'Task.FromResult<T>(null)', 'Task.CompletedTask' or 'Task.Delay(0)'."
+  },
+  "csharpsquid:S5445": {
+    "details": {
+      "code": "csharpsquid:S5445",
+      "type": "VULNERABILITY",
+      "severity": "CRITICAL",
+      "rule_name": "csharpsquid:S5445"
+    },
+    "total_count": 3,
+    "projects": [
+      "ScreenToGif"
+    ],
+    "example": "'Path.GetTempFileName()' is insecure. Use 'Path.GetRandomFileName()' instead."
+  },
+  "external_roslyn:RCS1266": {
+    "details": {
+      "code": "external_roslyn:RCS1266",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:RCS1266"
+    },
+    "total_count": 3,
+    "projects": [
+      "spreadcheetah"
+    ],
+    "example": "Use raw string literal"
+  },
+  "external_roslyn:xUnit2032": {
+    "details": {
+      "code": "external_roslyn:xUnit2032",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:xUnit2032"
+    },
+    "total_count": 3,
+    "projects": [
+      "spreadcheetah"
+    ],
+    "example": "The naming of Assert.IsNotAssignableFrom can be confusing. An overload of Assert.IsNotType is available with an exact match flag which can be set to false to perform the same operation."
+  },
+  "csharpsquid:S2386": {
+    "details": {
+      "code": "csharpsquid:S2386",
+      "type": "CODE_SMELL",
+      "severity": "MINOR",
+      "rule_name": "csharpsquid:S2386"
+    },
+    "total_count": 2,
+    "projects": [
+      "Chloe",
+      "Riter"
+    ],
+    "example": "Use an immutable collection or reduce the accessibility of the public static field 'EmptyArray'."
+  },
+  "csharpsquid:S3218": {
+    "details": {
+      "code": "csharpsquid:S3218",
+      "type": "CODE_SMELL",
+      "severity": "CRITICAL",
+      "rule_name": "csharpsquid:S3218"
+    },
+    "total_count": 2,
+    "projects": [
+      "RestSharp",
+      "Chloe"
+    ],
+    "example": "Rename this method to not shadow the outer class' member with the same name."
+  },
+  "csharpsquid:S3261": {
+    "details": {
+      "code": "csharpsquid:S3261",
+      "type": "CODE_SMELL",
+      "severity": "MINOR",
+      "rule_name": "csharpsquid:S3261"
+    },
+    "total_count": 2,
+    "projects": [
+      "Chloe"
+    ],
+    "example": "Remove this empty namespace."
+  },
+  "csharpsquid:S3246": {
+    "details": {
+      "code": "csharpsquid:S3246",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "csharpsquid:S3246"
+    },
+    "total_count": 2,
+    "projects": [
+      "Chloe"
+    ],
+    "example": "Add the 'out' keyword to parameter 'T' to make it 'covariant'."
+  },
+  "external_roslyn:CA2016": {
+    "details": {
+      "code": "external_roslyn:CA2016",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:CA2016"
+    },
+    "total_count": 2,
+    "projects": [
+      "Chloe"
+    ],
+    "example": "Forward the 'cancellationToken' parameter to the '.ctor' method or pass in 'CancellationToken.None' explicitly to indicate intentionally not propagating the token"
+  },
+  "external_roslyn:CA1862": {
+    "details": {
+      "code": "external_roslyn:CA1862",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:CA1862"
+    },
+    "total_count": 2,
+    "projects": [
+      "Chloe"
+    ],
+    "example": "Prefer using 'string.Equals(string, StringComparison)' to perform a case-insensitive comparison, but keep in mind that this might cause subtle changes in behavior, so make sure to conduct thorough testing after applying the suggestion, or if culturally sensitive comparison is not required, consider using 'StringComparison.OrdinalIgnoreCase'"
+  },
+  "csharpsquid:S3971": {
+    "details": {
+      "code": "csharpsquid:S3971",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "csharpsquid:S3971"
+    },
+    "total_count": 2,
+    "projects": [
+      "Chloe"
+    ],
+    "example": "Do not call 'GC.SuppressFinalize'."
+  },
+  "csharpsquid:S3400": {
+    "details": {
+      "code": "csharpsquid:S3400",
+      "type": "CODE_SMELL",
+      "severity": "MINOR",
+      "rule_name": "csharpsquid:S3400"
+    },
+    "total_count": 2,
+    "projects": [
+      "Chloe"
+    ],
+    "example": "Remove this method and declare a constant for this value."
+  },
+  "csharpsquid:S2201": {
+    "details": {
+      "code": "csharpsquid:S2201",
+      "type": "BUG",
+      "severity": "MAJOR",
+      "rule_name": "csharpsquid:S2201"
+    },
+    "total_count": 2,
+    "projects": [
+      "Chloe"
+    ],
+    "example": "Use the return value of method 'First'."
+  },
+  "csharpsquid:S3236": {
+    "details": {
+      "code": "csharpsquid:S3236",
+      "type": "CODE_SMELL",
+      "severity": "MINOR",
+      "rule_name": "csharpsquid:S3236"
+    },
+    "total_count": 2,
+    "projects": [
+      "Foster"
+    ],
+    "example": "Remove this argument from the method call; it hides the caller information."
+  },
+  "csharpsquid:S4143": {
+    "details": {
+      "code": "csharpsquid:S4143",
+      "type": "BUG",
+      "severity": "MAJOR",
+      "rule_name": "csharpsquid:S4143"
+    },
+    "total_count": 2,
+    "projects": [
+      "lunr"
+    ],
+    "example": "Verify this is the index/key that was intended; a value has already been set for it."
+  },
+  "docker:S6584": {
+    "details": {
+      "code": "docker:S6584",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "docker:S6584"
+    },
+    "total_count": 2,
+    "projects": [
+      "RestSharp"
+    ],
+    "example": "Add consent flag so that this command doesn't require user confirmation."
+  },
+  "docker:S7020": {
+    "details": {
+      "code": "docker:S7020",
+      "type": "CODE_SMELL",
+      "severity": "MINOR",
+      "rule_name": "docker:S7020"
+    },
+    "total_count": 2,
+    "projects": [
+      "RestSharp",
+      "Saunter"
+    ],
+    "example": "Split this RUN instruction line into multiple lines."
+  },
+  "docker:S6570": {
+    "details": {
+      "code": "docker:S6570",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "docker:S6570"
+    },
+    "total_count": 2,
+    "projects": [
+      "Saunter"
+    ],
+    "example": "Surround this variable with double quotes; otherwise, it can lead to unexpected behavior."
+  },
+  "external_roslyn:CA1041": {
+    "details": {
+      "code": "external_roslyn:CA1041",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:CA1041"
+    },
+    "total_count": 2,
+    "projects": [
+      "ScreenToGif"
+    ],
+    "example": "Provide a message for the ObsoleteAttribute that marks GetFrames as Obsolete"
+  },
+  "external_roslyn:CS0618": {
+    "details": {
+      "code": "external_roslyn:CS0618",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "external_roslyn:CS0618"
+    },
+    "total_count": 2,
+    "projects": [
+      "ScreenToGif"
+    ],
+    "example": "'FormattedText.FormattedText(string, CultureInfo, FlowDirection, Typeface, double, Brush, NumberSubstitution, TextFormattingMode)' is obsolete: 'Use the PixelsPerDip override'"
+  },
+  "css:S125": {
+    "details": {
+      "code": "css:S125",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "css:S125"
+    },
+    "total_count": 2,
+    "projects": [
+      "ScreenToGif"
+    ],
+    "example": "Remove this commented out code."
+  },
+  "external_roslyn:CA1841": {
+    "details": {
+      "code": "external_roslyn:CA1841",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:CA1841"
+    },
+    "total_count": 2,
+    "projects": [
+      "ScreenToGif"
+    ],
+    "example": "Prefer 'ContainsKey' over 'Keys.Contains' for dictionary type 'Dictionary'"
+  },
+  "external_roslyn:MA0041": {
+    "details": {
+      "code": "external_roslyn:MA0041",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:MA0041"
+    },
+    "total_count": 2,
+    "projects": [
+      "spreadcheetah"
+    ],
+    "example": "Make property static (deprecated, use CA1822 instead)"
+  },
+  "external_roslyn:MA0001": {
+    "details": {
+      "code": "external_roslyn:MA0001",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:MA0001"
+    },
+    "total_count": 2,
+    "projects": [
+      "spreadcheetah"
+    ],
+    "example": "Use an overload of 'Replace' that has a StringComparison parameter"
+  },
+  "external_roslyn:EPS09": {
+    "details": {
+      "code": "external_roslyn:EPS09",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:EPS09"
+    },
+    "total_count": 1,
+    "projects": [
+      "Lynx"
+    ],
+    "example": "An argument for a parameter 'tt' may be passed explicitly"
+  },
+  "csharpsquid:S3444": {
+    "details": {
+      "code": "csharpsquid:S3444",
+      "type": "CODE_SMELL",
+      "severity": "MINOR",
+      "rule_name": "csharpsquid:S3444"
+    },
+    "total_count": 1,
+    "projects": [
+      "Chloe"
+    ],
+    "example": "Rename or add member 'Current.get' to this interface to resolve ambiguities."
+  },
+  "csharpsquid:S5034": {
+    "details": {
+      "code": "csharpsquid:S5034",
+      "type": "CODE_SMELL",
+      "severity": "CRITICAL",
+      "rule_name": "csharpsquid:S5034"
+    },
+    "total_count": 1,
+    "projects": [
+      "Chloe"
+    ],
+    "example": "Refactor this 'ValueTask' usage to consume the result only if the operation has completed successfully."
+  },
+  "csharpsquid:S2234": {
+    "details": {
+      "code": "csharpsquid:S2234",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "csharpsquid:S2234"
+    },
+    "total_count": 1,
+    "projects": [
+      "Chloe"
+    ],
+    "example": "Parameters to 'SafeCompareTo' have the same names but not the same order as the method arguments."
+  },
+  "csharpsquid:S1694": {
+    "details": {
+      "code": "csharpsquid:S1694",
+      "type": "CODE_SMELL",
+      "severity": "MINOR",
+      "rule_name": "csharpsquid:S1694"
+    },
+    "total_count": 1,
+    "projects": [
+      "Chloe"
+    ],
+    "example": "Convert this 'abstract' class to an interface."
+  },
+  "csharpsquid:S2326": {
+    "details": {
+      "code": "csharpsquid:S2326",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "csharpsquid:S2326"
+    },
+    "total_count": 1,
+    "projects": [
+      "Chloe"
+    ],
+    "example": "'TProperty' is not used in the interface."
+  },
+  "external_roslyn:CS0114": {
+    "details": {
+      "code": "external_roslyn:CS0114",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "external_roslyn:CS0114"
+    },
+    "total_count": 1,
+    "projects": [
+      "Chloe"
+    ],
+    "example": "'AddMonths_Handler.Process(DbMethodCallExpression, SqlGeneratorBase)' hides inherited member 'MethodHandlerBase.Process(DbMethodCallExpression, SqlGeneratorBase)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword."
+  },
+  "csharpsquid:S1699": {
+    "details": {
+      "code": "csharpsquid:S1699",
+      "type": "CODE_SMELL",
+      "severity": "CRITICAL",
+      "rule_name": "csharpsquid:S1699"
+    },
+    "total_count": 1,
+    "projects": [
+      "Chloe"
+    ],
+    "example": "Remove this call from a constructor to the overridable 'CreateDbContext' method."
+  },
+  "csharpsquid:S4015": {
+    "details": {
+      "code": "csharpsquid:S4015",
+      "type": "CODE_SMELL",
+      "severity": "CRITICAL",
+      "rule_name": "csharpsquid:S4015"
+    },
+    "total_count": 1,
+    "projects": [
+      "Chloe"
+    ],
+    "example": "This member hides 'Chloe.DbExpressions.DbExpressionVisitor.MakeNewExpression(Chloe.DbExpressions.DbExpression)'. Make it non-private or seal the class."
+  },
+  "external_roslyn:CS0108": {
+    "details": {
+      "code": "external_roslyn:CS0108",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "external_roslyn:CS0108"
+    },
+    "total_count": 1,
+    "projects": [
+      "Chloe"
+    ],
+    "example": "'EvaluableDbExpressionTransformer.MakeNewExpression(DbExpression)' hides inherited member 'DbExpressionVisitor.MakeNewExpression(DbExpression)'. Use the new keyword if hiding was intended."
+  },
+  "csharpsquid:S3415": {
+    "details": {
+      "code": "csharpsquid:S3415",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "csharpsquid:S3415"
+    },
+    "total_count": 1,
+    "projects": [
+      "lunr"
+    ],
+    "example": "Make sure these 2 arguments are in the correct order: expected value, actual value."
+  },
+  "csharpsquid:S1134": {
+    "details": {
+      "code": "csharpsquid:S1134",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "csharpsquid:S1134"
+    },
+    "total_count": 1,
+    "projects": [
+      "lunr"
+    ],
+    "example": "Take the required action to fix the issue indicated by this 'FIXME' comment."
+  },
+  "csharpsquid:S3376": {
+    "details": {
+      "code": "csharpsquid:S3376",
+      "type": "CODE_SMELL",
+      "severity": "MINOR",
+      "rule_name": "csharpsquid:S3376"
+    },
+    "total_count": 1,
+    "projects": [
+      "RestSharp"
+    ],
+    "example": "Make this class name end with 'Attribute'."
+  },
+  "typescript:S6759": {
+    "details": {
+      "code": "typescript:S6759",
+      "type": "CODE_SMELL",
+      "severity": "MINOR",
+      "rule_name": "typescript:S6759"
+    },
+    "total_count": 1,
+    "projects": [
+      "RestSharp"
+    ],
+    "example": "Mark the props of the component as read-only."
+  },
+  "typescript:S6479": {
+    "details": {
+      "code": "typescript:S6479",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "typescript:S6479"
+    },
+    "total_count": 1,
+    "projects": [
+      "RestSharp"
+    ],
+    "example": "Do not use Array index in keys"
+  },
+  "external_roslyn:CA2022": {
+    "details": {
+      "code": "external_roslyn:CA2022",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "external_roslyn:CA2022"
+    },
+    "total_count": 1,
+    "projects": [
+      "RestSharp"
+    ],
+    "example": "Avoid inexact read with 'System.IO.Stream.Read(byte[], int, int)'"
+  },
+  "csharpsquid:S4035": {
+    "details": {
+      "code": "csharpsquid:S4035",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "csharpsquid:S4035"
+    },
+    "total_count": 1,
+    "projects": [
+      "RestSharp"
+    ],
+    "example": "Seal class 'ContentType' or implement 'IEqualityComparer<T>' instead."
+  },
+  "external_roslyn:CA1850": {
+    "details": {
+      "code": "external_roslyn:CA1850",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:CA1850"
+    },
+    "total_count": 1,
+    "projects": [
+      "RestSharp"
+    ],
+    "example": "Prefer static 'System.Security.Cryptography.SHA1.HashData' method over 'ComputeHash'"
+  },
+  "external_roslyn:CA1829": {
+    "details": {
+      "code": "external_roslyn:CA1829",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:CA1829"
+    },
+    "total_count": 1,
+    "projects": [
+      "RestSharp"
+    ],
+    "example": "Use the \"Length\" property instead of Enumerable.Count()"
+  },
+  "docker:S7026": {
+    "details": {
+      "code": "docker:S7026",
+      "type": "CODE_SMELL",
+      "severity": "MINOR",
+      "rule_name": "docker:S7026"
+    },
+    "total_count": 1,
+    "projects": [
+      "RestSharp"
+    ],
+    "example": "Replace this invocation of \"wget\" with the ADD instruction."
+  },
+  "csharpsquid:S6588": {
+    "details": {
+      "code": "csharpsquid:S6588",
+      "type": "CODE_SMELL",
+      "severity": "MINOR",
+      "rule_name": "csharpsquid:S6588"
+    },
+    "total_count": 1,
+    "projects": [
+      "RestSharp"
+    ],
+    "example": "Use \"DateTime.UnixEpoch\" instead of creating DateTime instances that point to the unix epoch time"
+  },
+  "csharpsquid:S4426": {
+    "details": {
+      "code": "csharpsquid:S4426",
+      "type": "VULNERABILITY",
+      "severity": "CRITICAL",
+      "rule_name": "csharpsquid:S4426"
+    },
+    "total_count": 1,
+    "projects": [
+      "RestSharp"
+    ],
+    "example": "Use a key length of at least 2048 bits for RSA cipher algorithm."
+  },
+  "docker:S6596": {
+    "details": {
+      "code": "docker:S6596",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "docker:S6596"
+    },
+    "total_count": 1,
+    "projects": [
+      "Saunter"
+    ],
+    "example": "Use a specific version tag for the image."
+  },
+  "external_roslyn:SYSLIB0044": {
+    "details": {
+      "code": "external_roslyn:SYSLIB0044",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "external_roslyn:SYSLIB0044"
+    },
+    "total_count": 1,
+    "projects": [
+      "ScreenToGif"
+    ],
+    "example": "'AssemblyName.CodeBase' is obsolete: 'AssemblyName.CodeBase and AssemblyName.EscapedCodeBase are obsolete. Using them for loading an assembly is not supported.'"
+  },
+  "external_roslyn:CA1835": {
+    "details": {
+      "code": "external_roslyn:CA1835",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:CA1835"
+    },
+    "total_count": 1,
+    "projects": [
+      "ScreenToGif"
+    ],
+    "example": "Change the 'ReadAsync' method call to use the 'Stream.ReadAsync(Memory<byte>, CancellationToken)' overload"
+  },
+  "csharpsquid:S3925": {
+    "details": {
+      "code": "csharpsquid:S3925",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "csharpsquid:S3925"
+    },
+    "total_count": 1,
+    "projects": [
+      "ScreenToGif"
+    ],
+    "example": "Update this implementation of 'ISerializable' to conform to the recommended serialization pattern. Make the serialization constructor 'protected'."
+  },
+  "external_roslyn:SYSLIB0051": {
+    "details": {
+      "code": "external_roslyn:SYSLIB0051",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "external_roslyn:SYSLIB0051"
+    },
+    "total_count": 1,
+    "projects": [
+      "ScreenToGif"
+    ],
+    "example": "'Exception.Exception(SerializationInfo, StreamingContext)' is obsolete: 'This API supports obsolete formatter-based serialization. It should not be called or extended by application code.'"
+  },
+  "external_roslyn:CA1854": {
+    "details": {
+      "code": "external_roslyn:CA1854",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:CA1854"
+    },
+    "total_count": 1,
+    "projects": [
+      "ScreenToGif"
+    ],
+    "example": "Prefer a 'TryGetValue' call over a Dictionary indexer access guarded by a 'ContainsKey' check to avoid double lookup"
+  },
+  "csharpsquid:S1479": {
+    "details": {
+      "code": "csharpsquid:S1479",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "csharpsquid:S1479"
+    },
+    "total_count": 1,
+    "projects": [
+      "ScreenToGif"
+    ],
+    "example": "Consider reworking this 'switch' to reduce the number of 'case' clauses to at most 30 or have only one statement per 'case'."
+  },
+  "csharpsquid:S4456": {
+    "details": {
+      "code": "csharpsquid:S4456",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "csharpsquid:S4456"
+    },
+    "total_count": 1,
+    "projects": [
+      "ScreenToGif"
+    ],
+    "example": "Split this method into two, one handling parameters check and the other handling the iterator."
+  },
+  "external_roslyn:CS0649": {
+    "details": {
+      "code": "external_roslyn:CS0649",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "rule_name": "external_roslyn:CS0649"
+    },
+    "total_count": 1,
+    "projects": [
+      "ScreenToGif"
+    ],
+    "example": "Field 'SelectControlOld._rectGrid' is never assigned to, and will always have its default value null"
+  },
+  "external_roslyn:CS9236": {
+    "details": {
+      "code": "external_roslyn:CS9236",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:CS9236"
+    },
+    "total_count": 1,
+    "projects": [
+      "ScreenToGif"
+    ],
+    "example": "Compiling requires binding the lambda expression at least 100 times. Consider declaring the lambda expression with explicit parameter types, or if the containing method call is generic, consider using explicit type arguments."
+  },
+  "csharpsquid:S2437": {
+    "details": {
+      "code": "csharpsquid:S2437",
+      "type": "CODE_SMELL",
+      "severity": "BLOCKER",
+      "rule_name": "csharpsquid:S2437"
+    },
+    "total_count": 1,
+    "projects": [
+      "ScreenToGif"
+    ],
+    "example": "Remove this unnecessary bit operation."
+  },
+  "csharpsquid:S1994": {
+    "details": {
+      "code": "csharpsquid:S1994",
+      "type": "CODE_SMELL",
+      "severity": "CRITICAL",
+      "rule_name": "csharpsquid:S1994"
+    },
+    "total_count": 1,
+    "projects": [
+      "ScreenToGif"
+    ],
+    "example": "This loop's stop condition tests 'enumerator' but the incrementer updates 'i'."
+  },
+  "csharpsquid:S1210": {
+    "details": {
+      "code": "csharpsquid:S1210",
+      "type": "CODE_SMELL",
+      "severity": "MINOR",
+      "rule_name": "csharpsquid:S1210"
+    },
+    "total_count": 1,
+    "projects": [
+      "ScreenToGif"
+    ],
+    "example": "When implementing IComparable, you should also override Equals, ==, !=, <, <=, >, and >=."
+  },
+  "csharpsquid:S4052": {
+    "details": {
+      "code": "csharpsquid:S4052",
+      "type": "CODE_SMELL",
+      "severity": "MINOR",
+      "rule_name": "csharpsquid:S4052"
+    },
+    "total_count": 1,
+    "projects": [
+      "ScreenToGif"
+    ],
+    "example": "Refactor this type not to derive from an outdated type 'System.Collections.CollectionBase'."
+  },
+  "csharpsquid:S3343": {
+    "details": {
+      "code": "csharpsquid:S3343",
+      "type": "BUG",
+      "severity": "MAJOR",
+      "rule_name": "csharpsquid:S3343"
+    },
+    "total_count": 1,
+    "projects": [
+      "ScreenToGif"
+    ],
+    "example": "Move 'key' to the end of the parameter list."
+  },
+  "csharpsquid:S2328": {
+    "details": {
+      "code": "csharpsquid:S2328",
+      "type": "BUG",
+      "severity": "MINOR",
+      "rule_name": "csharpsquid:S2328"
+    },
+    "total_count": 1,
+    "projects": [
+      "ScreenToGif"
+    ],
+    "example": "Refactor 'GetHashCode' to not reference mutable fields."
+  },
+  "csharpsquid:S4423": {
+    "details": {
+      "code": "csharpsquid:S4423",
+      "type": "VULNERABILITY",
+      "severity": "CRITICAL",
+      "rule_name": "csharpsquid:S4423"
+    },
+    "total_count": 1,
+    "projects": [
+      "ScreenToGif"
+    ],
+    "example": "Change this code to use a stronger protocol."
+  },
+  "csharpsquid:S3458": {
+    "details": {
+      "code": "csharpsquid:S3458",
+      "type": "CODE_SMELL",
+      "severity": "MINOR",
+      "rule_name": "csharpsquid:S3458"
+    },
+    "total_count": 1,
+    "projects": [
+      "SoundFlow"
+    ],
+    "example": "Remove this empty 'case' clause."
+  },
+  "external_roslyn:RCS1118": {
+    "details": {
+      "code": "external_roslyn:RCS1118",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:RCS1118"
+    },
+    "total_count": 1,
+    "projects": [
+      "spreadcheetah"
+    ],
+    "example": "Mark local variable as const"
+  },
+  "external_roslyn:RCS1214": {
+    "details": {
+      "code": "external_roslyn:RCS1214",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:RCS1214"
+    },
+    "total_count": 1,
+    "projects": [
+      "spreadcheetah"
+    ],
+    "example": "Unnecessary interpolated string"
+  },
+  "external_roslyn:IDE0042": {
+    "details": {
+      "code": "external_roslyn:IDE0042",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:IDE0042"
+    },
+    "total_count": 1,
+    "projects": [
+      "spreadcheetah"
+    ],
+    "example": "Variable declaration can be deconstructed"
+  },
+  "external_roslyn:IDE0061": {
+    "details": {
+      "code": "external_roslyn:IDE0061",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:IDE0061"
+    },
+    "total_count": 1,
+    "projects": [
+      "spreadcheetah"
+    ],
+    "example": "Use expression body for local function"
+  },
+  "external_roslyn:RCS1158": {
+    "details": {
+      "code": "external_roslyn:RCS1158",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:RCS1158"
+    },
+    "total_count": 1,
+    "projects": [
+      "spreadcheetah"
+    ],
+    "example": "Static member in generic type should use a type parameter"
+  },
+  "external_roslyn:RCS1001": {
+    "details": {
+      "code": "external_roslyn:RCS1001",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:RCS1001"
+    },
+    "total_count": 1,
+    "projects": [
+      "spreadcheetah"
+    ],
+    "example": "Add braces to fixed statement (when expression spans over multiple lines)"
+  },
+  "external_roslyn:MA0075": {
+    "details": {
+      "code": "external_roslyn:MA0075",
+      "type": "CODE_SMELL",
+      "severity": "INFO",
+      "rule_name": "external_roslyn:MA0075"
+    },
+    "total_count": 1,
+    "projects": [
+      "spreadcheetah"
+    ],
+    "example": "Do not use implicit culture-sensitive ToString"
+  }
+}

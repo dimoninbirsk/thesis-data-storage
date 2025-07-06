@@ -1,0 +1,5 @@
+Key,Type,Severity,File,Line,Message,Effort,Debt,Rule,Tags
+0864688f-acdc-4eb5-821d-05d78172b846,BUG,MAJOR,Saunter:src/Saunter/Options/Filters/ChannelFilterContext.cs,4,Move 'ChannelFilterContext' into a named namespace.,5min,5min,csharpsquid:S3903,
+6bbd0bb9-283c-4537-8649-1028698a1ecb,BUG,MAJOR,Saunter:src/Saunter/Options/Filters/DocumentFilterContext.cs,4,Move 'DocumentFilterContext' into a named namespace.,5min,5min,csharpsquid:S3903,
+44a73973-8cb1-4b38-ab43-b630a13d33fa,BUG,MAJOR,Saunter:src/Saunter/Options/Filters/IChannelFilter.cs,3,Move 'IChannelFilter' into a named namespace.,5min,5min,csharpsquid:S3903,
+dde943ab-26db-4d12-8f50-2655ac1728de,BUG,MAJOR,Saunter:src/Saunter/Options/Filters/IOperationFilter.cs,4,Move 'IOperationFilter' into a named namespace.,5min,5min,csharpsquid:S3903,

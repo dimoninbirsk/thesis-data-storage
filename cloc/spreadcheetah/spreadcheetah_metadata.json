@@ -1,0 +1,74 @@
+{"header" : {
+  "cloc_url"           : "github.com/AlDanial/cloc",
+  "cloc_version"       : "2.04",
+  "elapsed_seconds"    : 2.27511787414551,
+  "n_files"            : 717,
+  "n_lines"            : 263400,
+  "files_per_second"   : 315.148506434767,
+  "lines_per_second"   : 115774.221192354,
+  "report_file"        : "C:\\Users\\dimoninbirsk\\source\\thesis\\cloc\\spreadcheetah\\metadata.json"},
+"JSON" :{
+  "nFiles": 60,
+  "blank": 0,
+  "comment": 0,
+  "code": 189078},
+"XML" :{
+  "nFiles": 81,
+  "blank": 39,
+  "comment": 150,
+  "code": 32569},
+"C#" :{
+  "nFiles": 461,
+  "blank": 4789,
+  "comment": 2446,
+  "code": 25009},
+"Text" :{
+  "nFiles": 59,
+  "blank": 11,
+  "comment": 0,
+  "code": 6390},
+"INI" :{
+  "nFiles": 21,
+  "blank": 25,
+  "comment": 0,
+  "code": 762},
+"Properties" :{
+  "nFiles": 1,
+  "blank": 23,
+  "comment": 0,
+  "code": 698},
+"MSBuild script" :{
+  "nFiles": 10,
+  "blank": 61,
+  "comment": 8,
+  "code": 312},
+"Markdown" :{
+  "nFiles": 3,
+  "blank": 88,
+  "comment": 0,
+  "code": 292},
+"C# Generated" :{
+  "nFiles": 15,
+  "blank": 60,
+  "comment": 149,
+  "code": 134},
+"C# Designer" :{
+  "nFiles": 2,
+  "blank": 21,
+  "comment": 61,
+  "code": 90},
+"Visual Studio Solution" :{
+  "nFiles": 1,
+  "blank": 1,
+  "comment": 1,
+  "code": 88},
+"YAML" :{
+  "nFiles": 3,
+  "blank": 5,
+  "comment": 2,
+  "code": 38},
+"SUM": {
+  "blank": 5123,
+  "comment": 2817,
+  "code": 255460,
+  "nFiles": 717} }

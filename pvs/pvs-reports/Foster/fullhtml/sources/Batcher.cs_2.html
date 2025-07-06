@@ -1,0 +1,1807 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII" />
+  <title>Batcher.cs</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <script src="../jquery-3.5.1.min.js"></script>
+</head>
+<body>
+<pre><code class = "cs">
+<a name="ln1">using System.Runtime.CompilerServices;</a>
+<a name="ln2">using System.Runtime.InteropServices;</a>
+<a name="ln3">using System.Numerics;</a>
+<a name="ln4"> </a>
+<a name="ln5">namespace Foster.Framework;</a>
+<a name="ln6"> </a>
+<a name="ln7">/// &lt;summary&gt;</a>
+<a name="ln8">/// A 2D Sprite Batcher.&lt;br/&gt;</a>
+<a name="ln9">/// &lt;br/&gt;</a>
+<a name="ln10">/// Constructs a &lt;see cref=&quot;Mesh&quot;/&gt; which can be drawn by calling Render.&lt;br/&gt;</a>
+<a name="ln11">/// &lt;br /&gt;</a>
+<a name="ln12">/// Note if you intend to re-use the Batcher over multiple frames, be sure to </a>
+<a name="ln13">/// call &lt;see cref=&quot;Clear&quot;/&gt; after you have rendered it so it's ready for the</a>
+<a name="ln14">/// next frame.</a>
+<a name="ln15">/// &lt;/summary&gt;</a>
+<a name="ln16">public class Batcher : IDisposable</a>
+<a name="ln17">{</a>
+<a name="ln18">	/// &lt;summary&gt;</a>
+<a name="ln19">	/// Sprite Batcher Texture Drawing Modes</a>
+<a name="ln20">	/// &lt;/summary&gt;</a>
+<a name="ln21">	public enum Modes</a>
+<a name="ln22">	{</a>
+<a name="ln23">		/// &lt;summary&gt;</a>
+<a name="ln24">		/// Renders Textures normally, Multiplied by the Vertex Color</a>
+<a name="ln25">		/// &lt;/summary&gt;</a>
+<a name="ln26">		Normal,</a>
+<a name="ln27"> </a>
+<a name="ln28">		/// &lt;summary&gt;</a>
+<a name="ln29">		/// Renders Textures washed using Vertex Colors, only using the Texture alpha channel.</a>
+<a name="ln30">		/// &lt;/summary&gt;</a>
+<a name="ln31">		Wash,</a>
+<a name="ln32"> </a>
+<a name="ln33">		/// &lt;summary&gt;</a>
+<a name="ln34">		/// Renders only using Vertex Colors, essentially ignoring the Texture data entirely.</a>
+<a name="ln35">		/// &lt;/summary&gt;</a>
+<a name="ln36">		Fill</a>
+<a name="ln37">	}</a>
+<a name="ln38"> </a>
+<a name="ln39">	/// &lt;summary&gt;</a>
+<a name="ln40">	/// The GraphicsDevice this Batcher was created with</a>
+<a name="ln41">	/// &lt;/summary&gt;</a>
+<a name="ln42">	public readonly GraphicsDevice GraphicsDevice;</a>
+<a name="ln43"> </a>
+<a name="ln44">	/// &lt;summary&gt;</a>
+<a name="ln45">	/// The Default shader used by the Batcher.</a>
+<a name="ln46">	/// TODO: this shouldn't be static, but should be shared between sprite batchers...</a>
+<a name="ln47">	/// &lt;/summary&gt;</a>
+<a name="ln48">	private static Shader? DefaultShader;</a>
+<a name="ln49"> </a>
+<a name="ln50">	/// &lt;summary&gt;</a>
+<a name="ln51">	/// The current Matrix Value of the Batcher</a>
+<a name="ln52">	/// &lt;/summary&gt;</a>
+<a name="ln53">	public Matrix3x2 Matrix = Matrix3x2.Identity;</a>
+<a name="ln54"> </a>
+<a name="ln55">	/// &lt;summary&gt;</a>
+<a name="ln56">	/// The current Scissor Value of the Batcher</a>
+<a name="ln57">	/// &lt;/summary&gt;</a>
+<a name="ln58">	public RectInt? Scissor =&gt; currentBatch.Scissor;</a>
+<a name="ln59"> </a>
+<a name="ln60">	/// &lt;summary&gt;</a>
+<a name="ln61">	/// The number of Triangles in the Batcher to be drawn</a>
+<a name="ln62">	/// &lt;/summary&gt;</a>
+<a name="ln63">	public int TriangleCount =&gt; indexCount / 3;</a>
+<a name="ln64"> </a>
+<a name="ln65">	/// &lt;summary&gt;</a>
+<a name="ln66">	/// The number of Vertices in the Batcher to be drawn</a>
+<a name="ln67">	/// &lt;/summary&gt;</a>
+<a name="ln68">	public int VertexCount =&gt; vertexCount;</a>
+<a name="ln69"> </a>
+<a name="ln70">	/// &lt;summary&gt;</a>
+<a name="ln71">	/// The number of vertex indices in the Batcher to be drawn</a>
+<a name="ln72">	/// &lt;/summary&gt;</a>
+<a name="ln73">	public int IndexCount =&gt; indexCount;</a>
+<a name="ln74"> </a>
+<a name="ln75">	/// &lt;summary&gt;</a>
+<a name="ln76">	/// The number of individual batches (draw calls).</a>
+<a name="ln77">	/// &lt;/summary&gt;</a>
+<a name="ln78">	public int BatchCount =&gt; batches.Count + (currentBatch.Elements &gt; 0 ? 1 : 0);</a>
+<a name="ln79"> </a>
+<a name="ln80">	private readonly Material defaultMaterial;</a>
+<a name="ln81">	private readonly Stack&lt;Matrix3x2&gt; matrixStack = [];</a>
+<a name="ln82">	private readonly Stack&lt;RectInt?&gt; scissorStack = [];</a>
+<a name="ln83">	private readonly Stack&lt;BlendMode&gt; blendStack = [];</a>
+<a name="ln84">	private readonly Stack&lt;TextureSampler&gt; samplerStack = [];</a>
+<a name="ln85">	private readonly Stack&lt;Material&gt; materialStack = [];</a>
+<a name="ln86">	private readonly Stack&lt;int&gt; layerStack = [];</a>
+<a name="ln87">	private readonly Stack&lt;Color&gt; modeStack = [];</a>
+<a name="ln88">	private readonly List&lt;Batch&gt; batches = [];</a>
+<a name="ln89">	private readonly List&lt;Material&gt; materialsUsed = [];</a>
+<a name="ln90">	private readonly Queue&lt;Material&gt; materialsPool = [];</a>
+<a name="ln91">	private readonly Mesh mesh;</a>
+<a name="ln92"> </a>
+<a name="ln93">	private Color mode = new(255, 0, 0, 0);</a>
+<a name="ln94">	private Batch currentBatch;</a>
+<a name="ln95">	private IntPtr vertexPtr = IntPtr.Zero;</a>
+<a name="ln96">	private IntPtr indexPtr = IntPtr.Zero;</a>
+<a name="ln97">	private int vertexCount = 0;</a>
+<a name="ln98">	private int vertexCapacity = 0;</a>
+<a name="ln99">	private int indexCount = 0;</a>
+<a name="ln100">	private int indexCapacity = 0;</a>
+<a name="ln101">	private int currentBatchInsert;</a>
+<a name="ln102">	private bool meshDirty;</a>
+<a name="ln103"> </a>
+<a name="ln104">	private struct Batch(GraphicsDevice graphicsDevice, Material material, BlendMode blend, Texture? texture, TextureSampler sampler, int offset, int elements)</a>
+<a name="ln105">	{</a>
+<a name="ln106">		public int Layer = 0;</a>
+<a name="ln107">		public Material Material = material;</a>
+<a name="ln108">		public BlendMode Blend = blend;</a>
+<a name="ln109">		public Texture? Texture = texture;</a>
+<a name="ln110">		public RectInt? Scissor = null;</a>
+<a name="ln111">		public TextureSampler Sampler = sampler;</a>
+<a name="ln112">		public int Offset = offset;</a>
+<a name="ln113">		public int Elements = elements;</a>
+<a name="ln114">		public bool FlipVerticalUV = (texture?.IsTargetAttachment ?? false) &amp;&amp; graphicsDevice.OriginBottomLeft;</a>
+<a name="ln115">	}</a>
+<a name="ln116"> </a>
+<a name="ln117">	public Batcher(GraphicsDevice graphicsDevice, string? name = null)</a>
+<a name="ln118">	{</a>
+<a name="ln119">		GraphicsDevice = graphicsDevice;</a>
+<a name="ln120">		defaultMaterial = new();</a>
+<a name="ln121">		mesh = new Mesh&lt;BatcherVertex&gt;(graphicsDevice, name: name);</a>
+<a name="ln122">		Clear();</a>
+<a name="ln123">	}</a>
+<a name="ln124"> </a>
+<a name="ln125">	~Batcher()</a>
+<a name="ln126">	{</a>
+<a name="ln127">		Dispose();</a>
+<a name="ln128">	}</a>
+<a name="ln129"> </a>
+<a name="ln130">	/// &lt;summary&gt;</a>
+<a name="ln131">	/// Uploads the current state of the internal Mesh to the GPU</a>
+<a name="ln132">	/// &lt;/summary&gt;</a>
+<a name="ln133">	public void Upload()</a>
+<a name="ln134">	{</a>
+<a name="ln135">		if (meshDirty &amp;&amp; indexPtr != IntPtr.Zero &amp;&amp; vertexPtr != IntPtr.Zero)</a>
+<a name="ln136">		{</a>
+<a name="ln137">			mesh.SetIndices(indexPtr, indexCount);</a>
+<a name="ln138">			mesh.SetVertices(vertexPtr, vertexCount);</a>
+<a name="ln139">			meshDirty = false;</a>
+<a name="ln140">		}</a>
+<a name="ln141">	}</a>
+<a name="ln142"> </a>
+<a name="ln143">	public void Dispose()</a>
+<a name="ln144">	{</a>
+<a name="ln145">		GC.SuppressFinalize(this);</a>
+<a name="ln146"> </a>
+<a name="ln147">		if (vertexPtr != IntPtr.Zero)</a>
+<a name="ln148">		{</a>
+<a name="ln149">			Marshal.FreeHGlobal(vertexPtr);</a>
+<a name="ln150">			vertexPtr = IntPtr.Zero;</a>
+<a name="ln151">			vertexCapacity = 0;</a>
+<a name="ln152">		}</a>
+<a name="ln153"> </a>
+<a name="ln154">		if (indexPtr != IntPtr.Zero)</a>
+<a name="ln155">		{</a>
+<a name="ln156">			Marshal.FreeHGlobal(indexPtr);</a>
+<a name="ln157">			indexPtr = IntPtr.Zero;</a>
+<a name="ln158">			indexCapacity = 0;</a>
+<a name="ln159">		}</a>
+<a name="ln160">	}</a>
+<a name="ln161"> </a>
+<a name="ln162">	/// &lt;summary&gt;</a>
+<a name="ln163">	/// Clears the Batcher.</a>
+<a name="ln164">	/// &lt;/summary&gt;</a>
+<a name="ln165">	public void Clear()</a>
+<a name="ln166">	{</a>
+<a name="ln167">		vertexCount = 0;</a>
+<a name="ln168">		indexCount = 0;</a>
+<a name="ln169">		currentBatchInsert = 0;</a>
+<a name="ln170">		currentBatch = new Batch(GraphicsDevice, defaultMaterial, BlendMode.Premultiply, null, new(), 0, 0);</a>
+<a name="ln171">		mode = new Color(255, 0, 0, 0);</a>
+<a name="ln172">		batches.Clear();</a>
+<a name="ln173">		matrixStack.Clear();</a>
+<a name="ln174">		scissorStack.Clear();</a>
+<a name="ln175">		blendStack.Clear();</a>
+<a name="ln176">		materialStack.Clear();</a>
+<a name="ln177">		layerStack.Clear();</a>
+<a name="ln178">		samplerStack.Clear();</a>
+<a name="ln179">		modeStack.Clear();</a>
+<a name="ln180">		</a>
+<a name="ln181">		foreach (var it in materialsUsed)</a>
+<a name="ln182">			materialsPool.Enqueue(it);</a>
+<a name="ln183">		materialsUsed.Clear();</a>
+<a name="ln184"> </a>
+<a name="ln185">		Matrix = Matrix3x2.Identity;</a>
+<a name="ln186">	}</a>
+<a name="ln187"> </a>
+<a name="ln188">	#region Rendering</a>
+<a name="ln189"> </a>
+<a name="ln190">	/// &lt;summary&gt;</a>
+<a name="ln191">	/// Draws the Batcher to the given Target</a>
+<a name="ln192">	/// &lt;/summary&gt;</a>
+<a name="ln193">	/// &lt;param name=&quot;target&quot;&gt;What Target to Draw to.&lt;br/&gt;The value should be either a &lt;see cref=&quot;Target&quot;/&gt; or &lt;see cref=&quot;Window&quot;/&gt;.&lt;/param&gt;</a>
+<a name="ln194">	/// &lt;param name=&quot;viewport&quot;&gt;Optional Viewport Rectangle&lt;/param&gt;</a>
+<a name="ln195">	/// &lt;param name=&quot;scissor&quot;&gt;Optional Scissor Rectangle, which will clip any Scissor rectangles pushed to the Batcher.&lt;/param&gt;</a>
+<a name="ln196">	public void Render(IDrawableTarget target, RectInt? viewport = null, RectInt? scissor = null)</a>
+<a name="ln197">	{</a>
+<a name="ln198">		Point2 size;</a>
+<a name="ln199"> </a>
+<a name="ln200">		if (viewport.HasValue)</a>
+<a name="ln201">			size = new Point2(viewport.Value.Width, viewport.Value.Height);</a>
+<a name="ln202">		else</a>
+<a name="ln203">			size = new Point2(target.WidthInPixels, target.HeightInPixels);</a>
+<a name="ln204"> </a>
+<a name="ln205">		var matrix = Matrix4x4.CreateOrthographicOffCenter(0, size.X, size.Y, 0, 0, float.MaxValue);</a>
+<a name="ln206">		Render(target, matrix, viewport, scissor);</a>
+<a name="ln207">	}</a>
+<a name="ln208"> </a>
+<a name="ln209">	/// &lt;summary&gt;</a>
+<a name="ln210">	/// Draws the Batcher to the given Target with the given Matrix Transformation</a>
+<a name="ln211">	/// &lt;/summary&gt;</a>
+<a name="ln212">	/// &lt;param name=&quot;target&quot;&gt;What Target to Draw to.&lt;br/&gt;The value should be either a &lt;see cref=&quot;Target&quot;/&gt; or &lt;see cref=&quot;Window&quot;/&gt;.&lt;/param&gt;</a>
+<a name="ln213">	/// &lt;param name=&quot;matrix&quot;&gt;Transforms the entire Batch&lt;/param&gt;</a>
+<a name="ln214">	/// &lt;param name=&quot;viewport&quot;&gt;Optional Viewport Rectangle&lt;/param&gt;</a>
+<a name="ln215">	/// &lt;param name=&quot;scissor&quot;&gt;Optional Scissor Rectangle, which will clip any Scissor rectangles pushed to the Batcher.&lt;/param&gt;</a>
+<a name="ln216">	public void Render(IDrawableTarget target, Matrix4x4 matrix, RectInt? viewport = null, RectInt? scissor = null)</a>
+<a name="ln217">	{</a>
+<a name="ln218">		if (target == null)</a>
+<a name="ln219">			throw new Exception(&quot;Target cannot be null&quot;);</a>
+<a name="ln220"> </a>
+<a name="ln221">		if (indexPtr == IntPtr.Zero || vertexPtr == IntPtr.Zero)</a>
+<a name="ln222">			return;</a>
+<a name="ln223"> </a>
+<a name="ln224">		if (batches.Count &lt;= 0 &amp;&amp; currentBatch.Elements &lt;= 0)</a>
+<a name="ln225">			return;</a>
+<a name="ln226"> </a>
+<a name="ln227">		// upload our data if we've been modified since the last time we rendered</a>
+<a name="ln228">		Upload();</a>
+<a name="ln229"> </a>
+<a name="ln230">		// make sure default shader and material are valid</a>
+<a name="ln231">		if (DefaultShader == null || DefaultShader.IsDisposed)</a>
+<a name="ln232">			DefaultShader = new BatcherShader(GraphicsDevice);</a>
+<a name="ln233">		defaultMaterial.Shader = DefaultShader;</a>
+<a name="ln234"> </a>
+<a name="ln235">		// render batches</a>
+<a name="ln236">		for (int i = 0; i &lt; batches.Count; i++)</a>
+<a name="ln237">		{</a>
+<a name="ln238">			// remaining elements in the current batch</a>
+<a name="ln239">			if (currentBatchInsert == i &amp;&amp; currentBatch.Elements &gt; 0)</a>
+<a name="ln240">				RenderBatch(target, currentBatch, matrix, viewport, scissor);</a>
+<a name="ln241"> </a>
+<a name="ln242">			// render the batch</a>
+<a name="ln243">			RenderBatch(target, batches[i], matrix, viewport, scissor);</a>
+<a name="ln244">		}</a>
+<a name="ln245"> </a>
+<a name="ln246">		// remaining elements in the current batch</a>
+<a name="ln247">		if (currentBatchInsert == batches.Count &amp;&amp; currentBatch.Elements &gt; 0)</a>
+<a name="ln248">			RenderBatch(target, currentBatch, matrix, viewport, scissor);</a>
+<a name="ln249">	}</a>
+<a name="ln250"> </a>
+<a name="ln251">	private void RenderBatch(IDrawableTarget target, in Batch batch, in Matrix4x4 matrix, in RectInt? viewport, in RectInt? scissor)</a>
+<a name="ln252">	{</a>
+<a name="ln253">		// get trimmed scissor value</a>
+<a name="ln254">		var trimmed = scissor;</a>
+<a name="ln255">		if (batch.Scissor.HasValue &amp;&amp; trimmed.HasValue)</a>
+<a name="ln256">			trimmed = batch.Scissor.Value.GetIntersection(trimmed.Value);</a>
+<a name="ln257">		else if (batch.Scissor.HasValue)</a>
+<a name="ln258">			trimmed = batch.Scissor;</a>
+<a name="ln259"> </a>
+<a name="ln260">		// don't render if we're going to clip the entire visible contents</a>
+<a name="ln261">		if (trimmed.HasValue &amp;&amp; (trimmed.Value.Width &lt;= 0 || trimmed.Value.Height &lt;= 0))</a>
+<a name="ln262">			return;</a>
+<a name="ln263"> </a>
+<a name="ln264">		var texture = batch.Texture != null &amp;&amp; !batch.Texture.IsDisposed ? batch.Texture : null;</a>
+<a name="ln265">		var mat = batch.Material;</a>
+<a name="ln266"> </a>
+<a name="ln267">		// set Fragment Sampler 0 to the texture to be drawn</a>
+<a name="ln268">		mat.Fragment.Samplers[0] = new(texture, batch.Sampler);</a>
+<a name="ln269"> </a>
+<a name="ln270">		// set Vertex Matrix, always assumed to be in slot 0 as the first data</a>
+<a name="ln271">		mat.Vertex.SetUniformBuffer(matrix);</a>
+<a name="ln272"> </a>
+<a name="ln273">		GraphicsDevice.Draw(new(target, mesh, mat)</a>
+<a name="ln274">		{</a>
+<a name="ln275">			Viewport = viewport,</a>
+<a name="ln276">			Scissor = trimmed,</a>
+<a name="ln277">			BlendMode = batch.Blend,</a>
+<a name="ln278">			MeshIndexStart = batch.Offset * 3,</a>
+<a name="ln279">			MeshIndexCount = batch.Elements * 3,</a>
+<a name="ln280">			DepthWriteEnabled = false,</a>
+<a name="ln281">			DepthTestEnabled = false,</a>
+<a name="ln282">			CullMode = CullMode.None</a>
+<a name="ln283">		});</a>
+<a name="ln284">	}</a>
+<a name="ln285"> </a>
+<a name="ln286">	#endregion</a>
+<a name="ln287"> </a>
+<a name="ln288">	#region Modify State</a>
+<a name="ln289"> </a>
+<a name="ln290">	private void SetTexture(Texture? texture)</a>
+<a name="ln291">	{</a>
+<a name="ln292">		if (currentBatch.Texture == null || currentBatch.Elements == 0)</a>
+<a name="ln293">		{</a>
+<a name="ln294">			currentBatch.Texture = texture;</a>
+<a name="ln295">			currentBatch.FlipVerticalUV = (texture?.IsTargetAttachment ?? false) &amp;&amp; GraphicsDevice.OriginBottomLeft;</a>
+<a name="ln296">		}</a>
+<a name="ln297">		else if (currentBatch.Texture != texture)</a>
+<a name="ln298">		{</a>
+<a name="ln299">			batches.Insert(currentBatchInsert, currentBatch);</a>
+<a name="ln300"> </a>
+<a name="ln301">			currentBatch.Texture = texture;</a>
+<a name="ln302">			currentBatch.FlipVerticalUV = (texture?.IsTargetAttachment ?? false) &amp;&amp; GraphicsDevice.OriginBottomLeft;</a>
+<a name="ln303">			currentBatch.Offset += currentBatch.Elements;</a>
+<a name="ln304">			currentBatch.Elements = 0;</a>
+<a name="ln305">			currentBatchInsert++;</a>
+<a name="ln306">		}</a>
+<a name="ln307">	}</a>
+<a name="ln308"> </a>
+<a name="ln309">	private void SetSampler(TextureSampler sampler)</a>
+<a name="ln310">	{</a>
+<a name="ln311">		if (currentBatch.Sampler == sampler || currentBatch.Elements == 0)</a>
+<a name="ln312">		{</a>
+<a name="ln313">			currentBatch.Sampler = sampler;</a>
+<a name="ln314">		}</a>
+<a name="ln315">		else if (currentBatch.Sampler != sampler)</a>
+<a name="ln316">		{</a>
+<a name="ln317">			batches.Insert(currentBatchInsert, currentBatch);</a>
+<a name="ln318"> </a>
+<a name="ln319">			currentBatch.Sampler = sampler;</a>
+<a name="ln320">			currentBatch.Offset += currentBatch.Elements;</a>
+<a name="ln321">			currentBatch.Elements = 0;</a>
+<a name="ln322">			currentBatchInsert++;</a>
+<a name="ln323">		}</a>
+<a name="ln324">	}</a>
+<a name="ln325"> </a>
+<a name="ln326">	private void SetLayer(int layer)</a>
+<a name="ln327">	{</a>
+<a name="ln328">		if (currentBatch.Layer == layer)</a>
+<a name="ln329">			return;</a>
+<a name="ln330"> </a>
+<a name="ln331">		// insert last batch</a>
+<a name="ln332">		if (currentBatch.Elements &gt; 0)</a>
+<a name="ln333">		{</a>
+<a name="ln334">			batches.Insert(currentBatchInsert, currentBatch);</a>
+<a name="ln335">			currentBatch.Offset += currentBatch.Elements;</a>
+<a name="ln336">			currentBatch.Elements = 0;</a>
+<a name="ln337">		}</a>
+<a name="ln338"> </a>
+<a name="ln339">		// find the point to insert us</a>
+<a name="ln340">		var insert = 0;</a>
+<a name="ln341">		while (insert &lt; batches.Count &amp;&amp; batches[insert].Layer &gt;= layer)</a>
+<a name="ln342">			insert++;</a>
+<a name="ln343"> </a>
+<a name="ln344">		currentBatch.Layer = layer;</a>
+<a name="ln345">		currentBatchInsert = insert;</a>
+<a name="ln346">	}</a>
+<a name="ln347"> </a>
+<a name="ln348">	private void SetMaterial(Material material)</a>
+<a name="ln349">	{</a>
+<a name="ln350">		if (currentBatch.Elements == 0)</a>
+<a name="ln351">		{</a>
+<a name="ln352">			currentBatch.Material = material;</a>
+<a name="ln353">		}</a>
+<a name="ln354">		else if (currentBatch.Material != material)</a>
+<a name="ln355">		{</a>
+<a name="ln356">			batches.Insert(currentBatchInsert, currentBatch);</a>
+<a name="ln357"> </a>
+<a name="ln358">			currentBatch.Material = material;</a>
+<a name="ln359">			currentBatch.Offset += currentBatch.Elements;</a>
+<a name="ln360">			currentBatch.Elements = 0;</a>
+<a name="ln361">			currentBatchInsert++;</a>
+<a name="ln362">		}</a>
+<a name="ln363">	}</a>
+<a name="ln364"> </a>
+<a name="ln365">	private void SetBlend(in BlendMode blend)</a>
+<a name="ln366">	{</a>
+<a name="ln367">		if (currentBatch.Elements == 0)</a>
+<a name="ln368">		{</a>
+<a name="ln369">			currentBatch.Blend = blend;</a>
+<a name="ln370">		}</a>
+<a name="ln371">		else if (currentBatch.Blend != blend)</a>
+<a name="ln372">		{</a>
+<a name="ln373">			batches.Insert(currentBatchInsert, currentBatch);</a>
+<a name="ln374"> </a>
+<a name="ln375">			currentBatch.Blend = blend;</a>
+<a name="ln376">			currentBatch.Offset += currentBatch.Elements;</a>
+<a name="ln377">			currentBatch.Elements = 0;</a>
+<a name="ln378">			currentBatchInsert++;</a>
+<a name="ln379">		}</a>
+<a name="ln380">	}</a>
+<a name="ln381"> </a>
+<a name="ln382">	private void SetScissor(RectInt? scissor)</a>
+<a name="ln383">	{</a>
+<a name="ln384">		if (currentBatch.Elements == 0)</a>
+<a name="ln385">		{</a>
+<a name="ln386">			currentBatch.Scissor = scissor;</a>
+<a name="ln387">		}</a>
+<a name="ln388">		else if (currentBatch.Scissor != scissor)</a>
+<a name="ln389">		{</a>
+<a name="ln390">			batches.Insert(currentBatchInsert, currentBatch);</a>
+<a name="ln391"> </a>
+<a name="ln392">			currentBatch.Scissor = scissor;</a>
+<a name="ln393">			currentBatch.Offset += currentBatch.Elements;</a>
+<a name="ln394">			currentBatch.Elements = 0;</a>
+<a name="ln395">			currentBatchInsert++;</a>
+<a name="ln396">		}</a>
+<a name="ln397">	}</a>
+<a name="ln398"> </a>
+<a name="ln399">	/// &lt;summary&gt;</a>
+<a name="ln400">	/// Pushes a relative draw layer, with lower values being rendered first.</a>
+<a name="ln401">	/// Note that this is not very performant and should generally be avoided.</a>
+<a name="ln402">	/// &lt;/summary&gt;</a>
+<a name="ln403">	public void PushLayer(int delta)</a>
+<a name="ln404">	{</a>
+<a name="ln405">		layerStack.Push(currentBatch.Layer);</a>
+<a name="ln406">		SetLayer(currentBatch.Layer + delta);</a>
+<a name="ln407">	}</a>
+<a name="ln408"> </a>
+<a name="ln409">	/// &lt;summary&gt;</a>
+<a name="ln410">	/// Pops the current Draw Layer</a>
+<a name="ln411">	/// &lt;/summary&gt;</a>
+<a name="ln412">	public void PopLayer()</a>
+<a name="ln413">	{</a>
+<a name="ln414">		SetLayer(layerStack.Pop());</a>
+<a name="ln415">	}</a>
+<a name="ln416"> </a>
+<a name="ln417">	/// &lt;summary&gt;</a>
+<a name="ln418">	/// Pushes a Material to draw with.&lt;br/&gt;</a>
+<a name="ln419">	/// &lt;br/&gt;</a>
+<a name="ln420">	/// This clones the state of the Material, so changing it after pushing it</a>
+<a name="ln421">	/// will not have an affect on the results.&lt;br/&gt;</a>
+<a name="ln422">	/// &lt;br/&gt;</a>
+<a name="ln423">	/// Note that the Batcher uses the first Fragment Sampler for its texture,</a>
+<a name="ln424">	/// and assumes that the first Vertex Uniform Buffer begins with a Matrix4x4.</a>
+<a name="ln425">	/// &lt;/summary&gt;</a>
+<a name="ln426">	public void PushMaterial(Material material)</a>
+<a name="ln427">	{</a>
+<a name="ln428">		if (material.Shader == null)</a>
+<a name="ln429">			throw new Exception(&quot;Material must have a Shader assigned&quot;);</a>
+<a name="ln430">		</a>
+<a name="ln431">		materialStack.Push(currentBatch.Material);</a>
+<a name="ln432">		if (!materialsPool.TryDequeue(out var copy))</a>
+<a name="ln433">			copy = new Material();</a>
+<a name="ln434">		materialsUsed.Add(copy);</a>
+<a name="ln435">		material.CopyTo(copy);</a>
+<a name="ln436">		SetMaterial(copy);</a>
+<a name="ln437">	}</a>
+<a name="ln438"> </a>
+<a name="ln439">	/// &lt;summary&gt;</a>
+<a name="ln440">	/// Pops the current Material</a>
+<a name="ln441">	/// &lt;/summary&gt;</a>
+<a name="ln442">	public void PopMaterial()</a>
+<a name="ln443">	{</a>
+<a name="ln444">		SetMaterial(materialStack.Pop());</a>
+<a name="ln445">	}</a>
+<a name="ln446"> </a>
+<a name="ln447">	/// &lt;summary&gt;</a>
+<a name="ln448">	/// Pushes a Texture Sampler to draw with</a>
+<a name="ln449">	/// &lt;/summary&gt;</a>
+<a name="ln450">	public void PushSampler(TextureSampler state)</a>
+<a name="ln451">	{</a>
+<a name="ln452">		samplerStack.Push(currentBatch.Sampler);</a>
+<a name="ln453">		SetSampler(state);</a>
+<a name="ln454">	}</a>
+<a name="ln455"> </a>
+<a name="ln456">	/// &lt;summary&gt;</a>
+<a name="ln457">	/// Pops the current Texture Sampler</a>
+<a name="ln458">	/// &lt;/summary&gt;</a>
+<a name="ln459">	public void PopSampler()</a>
+<a name="ln460">	{</a>
+<a name="ln461">		SetSampler(samplerStack.Pop());</a>
+<a name="ln462">	}</a>
+<a name="ln463"> </a>
+<a name="ln464">	/// &lt;summary&gt;</a>
+<a name="ln465">	/// Pushes a BlendMode to draw with</a>
+<a name="ln466">	/// &lt;/summary&gt;</a>
+<a name="ln467">	public void PushBlend(BlendMode blend)</a>
+<a name="ln468">	{</a>
+<a name="ln469">		blendStack.Push(currentBatch.Blend);</a>
+<a name="ln470">		SetBlend(blend);</a>
+<a name="ln471">	}</a>
+<a name="ln472"> </a>
+<a name="ln473">	/// &lt;summary&gt;</a>
+<a name="ln474">	/// Pops the current Blend Mode</a>
+<a name="ln475">	/// &lt;/summary&gt;</a>
+<a name="ln476">	public void PopBlend()</a>
+<a name="ln477">	{</a>
+<a name="ln478">		SetBlend(blendStack.Pop());</a>
+<a name="ln479">	}</a>
+<a name="ln480"> </a>
+<a name="ln481">	/// &lt;summary&gt;</a>
+<a name="ln482">	/// Pushes a Scissor Rectangle to draw with.</a>
+<a name="ln483">	/// Note this is in absolute coordinates, and ignores previous</a>
+<a name="ln484">	/// scissors that are in the stack.</a>
+<a name="ln485">	/// &lt;/summary&gt;</a>
+<a name="ln486">	public void PushScissor(RectInt? scissor)</a>
+<a name="ln487">	{</a>
+<a name="ln488">		scissorStack.Push(currentBatch.Scissor);</a>
+<a name="ln489">		SetScissor(scissor);</a>
+<a name="ln490">	}</a>
+<a name="ln491"> </a>
+<a name="ln492">	/// &lt;summary&gt;</a>
+<a name="ln493">	/// Pops the current Scissor Rectangle</a>
+<a name="ln494">	/// &lt;/summary&gt;</a>
+<a name="ln495">	public void PopScissor()</a>
+<a name="ln496">	{</a>
+<a name="ln497">		SetScissor(scissorStack.Pop());</a>
+<a name="ln498">	}</a>
+<a name="ln499"> </a>
+<a name="ln500">	/// &lt;summary&gt;</a>
+<a name="ln501">	/// Pushes a Matrix that will transform all future data</a>
+<a name="ln502">	/// &lt;/summary&gt;</a>
+<a name="ln503">	/// &lt;param name=&quot;position&quot;&gt;&lt;/param&gt;</a>
+<a name="ln504">	/// &lt;param name=&quot;scale&quot;&gt;&lt;/param&gt;</a>
+<a name="ln505">	/// &lt;param name=&quot;origin&quot;&gt;&lt;/param&gt;</a>
+<a name="ln506">	/// &lt;param name=&quot;rotation&quot;&gt;&lt;/param&gt;</a>
+<a name="ln507">	/// &lt;param name=&quot;relative&quot;&gt;If the Matrix should be relative to the previously pushed transformations&lt;/param&gt;</a>
+<a name="ln508">	/// &lt;returns&gt;&lt;/returns&gt;</a>
+<a name="ln509">	public Matrix3x2 PushMatrix(in Vector2 position, in Vector2 scale, in Vector2 origin, float rotation, bool relative = true)</a>
+<a name="ln510">	{</a>
+<a name="ln511">		return PushMatrix(Transform.CreateMatrix(position, origin, scale, rotation), relative);</a>
+<a name="ln512">	}</a>
+<a name="ln513"> </a>
+<a name="ln514">	/// &lt;summary&gt;</a>
+<a name="ln515">	/// Pushes a Matrix that will transform all future data</a>
+<a name="ln516">	/// &lt;/summary&gt;</a>
+<a name="ln517">	/// &lt;param name=&quot;transform&quot;&gt;&lt;/param&gt;</a>
+<a name="ln518">	/// &lt;param name=&quot;relative&quot;&gt;If the Matrix should be relative to the previously pushed transformations&lt;/param&gt;</a>
+<a name="ln519">	public Matrix3x2 PushMatrix(Transform transform, bool relative = true)</a>
+<a name="ln520">	{</a>
+<a name="ln521">		return PushMatrix(transform.Matrix, relative);</a>
+<a name="ln522">	}</a>
+<a name="ln523"> </a>
+<a name="ln524">	/// &lt;summary&gt;</a>
+<a name="ln525">	/// Pushes a Matrix that will transform all future data</a>
+<a name="ln526">	/// &lt;/summary&gt;</a>
+<a name="ln527">	/// &lt;param name=&quot;position&quot;&gt;&lt;/param&gt;</a>
+<a name="ln528">	/// &lt;param name=&quot;relative&quot;&gt;If the Matrix should be relative to the previously pushed transformations&lt;/param&gt;</a>
+<a name="ln529">	public Matrix3x2 PushMatrix(in Vector2 position, bool relative = true)</a>
+<a name="ln530">	{</a>
+<a name="ln531">		return PushMatrix(Matrix3x2.CreateTranslation(position.X, position.Y), relative);</a>
+<a name="ln532">	}</a>
+<a name="ln533"> </a>
+<a name="ln534">	/// &lt;summary&gt;</a>
+<a name="ln535">	/// Pushes a Matrix that will transform all future data</a>
+<a name="ln536">	/// &lt;/summary&gt;</a>
+<a name="ln537">	/// &lt;param name=&quot;matrix&quot;&gt;&lt;/param&gt;</a>
+<a name="ln538">	/// &lt;param name=&quot;relative&quot;&gt;If the Matrix should be relative to the previously pushed transformations&lt;/param&gt;</a>
+<a name="ln539">	public Matrix3x2 PushMatrix(in Matrix3x2 matrix, bool relative = true)</a>
+<a name="ln540">	{</a>
+<a name="ln541">		matrixStack.Push(Matrix);</a>
+<a name="ln542"> </a>
+<a name="ln543">		if (relative)</a>
+<a name="ln544">		{</a>
+<a name="ln545">			Matrix = matrix * Matrix;</a>
+<a name="ln546">		}</a>
+<a name="ln547">		else</a>
+<a name="ln548">		{</a>
+<a name="ln549">			Matrix = matrix;</a>
+<a name="ln550">		}</a>
+<a name="ln551"> </a>
+<a name="ln552">		return Matrix;</a>
+<a name="ln553">	}</a>
+<a name="ln554"> </a>
+<a name="ln555">	/// &lt;summary&gt;</a>
+<a name="ln556">	/// Pops the current Matrix used for drawing.</a>
+<a name="ln557">	/// &lt;/summary&gt;</a>
+<a name="ln558">	public Matrix3x2 PopMatrix()</a>
+<a name="ln559">	{</a>
+<a name="ln560">		Matrix = matrixStack.Pop();</a>
+<a name="ln561">		return Matrix;</a>
+<a name="ln562">	}</a>
+<a name="ln563"> </a>
+<a name="ln564">	/// &lt;summary&gt;</a>
+<a name="ln565">	/// Pushes a Texture Color Mode</a>
+<a name="ln566">	/// &lt;/summary&gt;</a>
+<a name="ln567">	public void PushMode(Modes mode)</a>
+<a name="ln568">	{</a>
+<a name="ln569">		var value = mode switch</a>
+<a name="ln570">		{</a>
+<a name="ln571">			Modes.Normal =&gt; new Color(255, 0, 0, 0),</a>
+<a name="ln572">			Modes.Wash =&gt; new Color(0, 255, 0, 0),</a>
+<a name="ln573">			Modes.Fill =&gt; new Color(0, 0, 255, 0),</a>
+<a name="ln574">			_ =&gt; throw new NotImplementedException()</a>
+<a name="ln575">		};</a>
+<a name="ln576"> </a>
+<a name="ln577">		modeStack.Push(this.mode);</a>
+<a name="ln578">		this.mode = value;</a>
+<a name="ln579">	}</a>
+<a name="ln580"> </a>
+<a name="ln581">	/// &lt;summary&gt;</a>
+<a name="ln582">	/// Pushes a Texture Color Mode, using the Raw value, in case you have a</a>
+<a name="ln583">	/// shader that utilizes this data for something else.</a>
+<a name="ln584">	/// &lt;/summary&gt;</a>
+<a name="ln585">	public void PushMode(Color mode)</a>
+<a name="ln586">	{</a>
+<a name="ln587">		modeStack.Push(this.mode);</a>
+<a name="ln588">		this.mode = mode;</a>
+<a name="ln589">	}</a>
+<a name="ln590"> </a>
+<a name="ln591">	/// &lt;summary&gt;</a>
+<a name="ln592">	/// Pops the current Color Mode</a>
+<a name="ln593">	/// &lt;/summary&gt;</a>
+<a name="ln594">	public void PopMode()</a>
+<a name="ln595">	{</a>
+<a name="ln596">		mode = modeStack.Pop();</a>
+<a name="ln597">	}</a>
+<a name="ln598"> </a>
+<a name="ln599">	#endregion</a>
+<a name="ln600"> </a>
+<a name="ln601">	#region Line</a>
+<a name="ln602"> </a>
+<a name="ln603">	public void Line(in Vector2 from, in Vector2 to, float thickness, in Color color)</a>
+<a name="ln604">	{</a>
+<a name="ln605">		var normal = (to - from).Normalized();</a>
+<a name="ln606">		var perp = new Vector2(-normal.Y, normal.X) * thickness * .5f;</a>
+<a name="ln607">		Quad(from + perp, from - perp, to - perp, to + perp, color);</a>
+<a name="ln608">	}</a>
+<a name="ln609"> </a>
+<a name="ln610">	public void Line(in Vector2 from, in Vector2 to, float thickness, in Color fromColor, in Color toColor)</a>
+<a name="ln611">	{</a>
+<a name="ln612">		var normal = (to - from).Normalized();</a>
+<a name="ln613">		var perp = new Vector2(-normal.Y, normal.X) * thickness * .5f;</a>
+<a name="ln614">		Quad(from + perp, from - perp, to - perp, to + perp, fromColor, fromColor, toColor, toColor);</a>
+<a name="ln615">	}</a>
+<a name="ln616"> </a>
+<a name="ln617">	#endregion</a>
+<a name="ln618"> </a>
+<a name="ln619">	#region Dashed Line</a>
+<a name="ln620"> </a>
+<a name="ln621">	public void LineDashed(Vector2 from, Vector2 to, float thickness, Color color, float dashLength, float offsetPercent)</a>
+<a name="ln622">	{</a>
+<a name="ln623">		var diff = to - from;</a>
+<a name="ln624">		var dist = diff.Length();</a>
+<a name="ln625">		var axis = diff.Normalized();</a>
+<a name="ln626">		var perp = axis.TurnLeft() * (thickness * 0.5f);</a>
+<a name="ln627">		offsetPercent = ((offsetPercent % 1f) + 1f) % 1f;</a>
+<a name="ln628"> </a>
+<a name="ln629">		var startD = dashLength * offsetPercent * 2f;</a>
+<a name="ln630">		if (startD &gt; dashLength)</a>
+<a name="ln631">			startD -= dashLength * 2f;</a>
+<a name="ln632"> </a>
+<a name="ln633">		for (float d = startD; d &lt; dist; d += dashLength * 2f)</a>
+<a name="ln634">		{</a>
+<a name="ln635">			var a = from + axis * Math.Max(d, 0f);</a>
+<a name="ln636">			var b = from + axis * Math.Min(d + dashLength, dist);</a>
+<a name="ln637">			Quad(a + perp, b + perp, b - perp, a - perp, color);</a>
+<a name="ln638">		}</a>
+<a name="ln639">	}</a>
+<a name="ln640"> </a>
+<a name="ln641">	#endregion</a>
+<a name="ln642"> </a>
+<a name="ln643">	#region Quad</a>
+<a name="ln644"> </a>
+<a name="ln645">	public void Quad(in Quad quad, Color color)</a>
+<a name="ln646">		=&gt; Quad(quad.A, quad.B, quad.C, quad.D, color);</a>
+<a name="ln647"> </a>
+<a name="ln648">	public void Quad(in Vector2 v0, in Vector2 v1, in Vector2 v2, in Vector2 v3, in Color color)</a>
+<a name="ln649">	{</a>
+<a name="ln650">		PushQuad();</a>
+<a name="ln651">		EnsureVertexCapacity(vertexCount + 4);</a>
+<a name="ln652"> </a>
+<a name="ln653">		unsafe</a>
+<a name="ln654">		{</a>
+<a name="ln655">			var mode = new Color(0, 0, 255, 0);</a>
+<a name="ln656">			var vertexArray = new Span&lt;BatcherVertex&gt;((BatcherVertex*)vertexPtr + vertexCount, 4);</a>
+<a name="ln657"> </a>
+<a name="ln658">			vertexArray[0].Pos = Vector2.Transform(v0, Matrix);</a>
+<a name="ln659">			vertexArray[1].Pos = Vector2.Transform(v1, Matrix);</a>
+<a name="ln660">			vertexArray[2].Pos = Vector2.Transform(v2, Matrix);</a>
+<a name="ln661">			vertexArray[3].Pos = Vector2.Transform(v3, Matrix);</a>
+<a name="ln662">			vertexArray[0].Col = color;</a>
+<a name="ln663">			vertexArray[1].Col = color;</a>
+<a name="ln664">			vertexArray[2].Col = color;</a>
+<a name="ln665">			vertexArray[3].Col = color;</a>
+<a name="ln666">			vertexArray[0].Mode = mode;</a>
+<a name="ln667">			vertexArray[1].Mode = mode;</a>
+<a name="ln668">			vertexArray[2].Mode = mode;</a>
+<a name="ln669">			vertexArray[3].Mode = mode;</a>
+<a name="ln670">		}</a>
+<a name="ln671"> </a>
+<a name="ln672">		vertexCount += 4;</a>
+<a name="ln673">	}</a>
+<a name="ln674"> </a>
+<a name="ln675">	public void Quad(Texture? texture, in Vector2 v0, in Vector2 v1, in Vector2 v2, in Vector2 v3, in Vector2 t0, in Vector2 t1, in Vector2 t2, in Vector2 t3, in Color color)</a>
+<a name="ln676">	{</a>
+<a name="ln677">		SetTexture(texture);</a>
+<a name="ln678">		PushQuad();</a>
+<a name="ln679">		EnsureVertexCapacity(vertexCount + 4);</a>
+<a name="ln680"> </a>
+<a name="ln681">		unsafe</a>
+<a name="ln682">		{</a>
+<a name="ln683">			var vertexArray = new Span&lt;BatcherVertex&gt;((BatcherVertex*)vertexPtr + vertexCount, 4);</a>
+<a name="ln684"> </a>
+<a name="ln685">			vertexArray[0].Pos = Vector2.Transform(v0, Matrix);</a>
+<a name="ln686">			vertexArray[1].Pos = Vector2.Transform(v1, Matrix);</a>
+<a name="ln687">			vertexArray[2].Pos = Vector2.Transform(v2, Matrix);</a>
+<a name="ln688">			vertexArray[3].Pos = Vector2.Transform(v3, Matrix);</a>
+<a name="ln689">			vertexArray[0].Tex = t0;</a>
+<a name="ln690">			vertexArray[1].Tex = t1;</a>
+<a name="ln691">			vertexArray[2].Tex = t2;</a>
+<a name="ln692">			vertexArray[3].Tex = t3;</a>
+<a name="ln693">			vertexArray[0].Col = color;</a>
+<a name="ln694">			vertexArray[1].Col = color;</a>
+<a name="ln695">			vertexArray[2].Col = color;</a>
+<a name="ln696">			vertexArray[3].Col = color;</a>
+<a name="ln697">			vertexArray[0].Mode = mode;</a>
+<a name="ln698">			vertexArray[1].Mode = mode;</a>
+<a name="ln699">			vertexArray[2].Mode = mode;</a>
+<a name="ln700">			vertexArray[3].Mode = mode;</a>
+<a name="ln701"> </a>
+<a name="ln702">			if (currentBatch.FlipVerticalUV)</a>
+<a name="ln703">				FlipVerticalUVs(vertexPtr, vertexCount, 4);</a>
+<a name="ln704">		}</a>
+<a name="ln705"> </a>
+<a name="ln706">		vertexCount += 4;</a>
+<a name="ln707">	}</a>
+<a name="ln708"> </a>
+<a name="ln709">	public void Quad(in Vector2 v0, in Vector2 v1, in Vector2 v2, in Vector2 v3, in Color c0, in Color c1, in Color c2, in Color c3)</a>
+<a name="ln710">	{</a>
+<a name="ln711">		PushQuad();</a>
+<a name="ln712">		EnsureVertexCapacity(vertexCount + 4);</a>
+<a name="ln713"> </a>
+<a name="ln714">		unsafe</a>
+<a name="ln715">		{</a>
+<a name="ln716">			var mode = new Color(0, 0, 255, 0);</a>
+<a name="ln717">			var vertexArray = new Span&lt;BatcherVertex&gt;((BatcherVertex*)vertexPtr + vertexCount, 4);</a>
+<a name="ln718"> </a>
+<a name="ln719">			vertexArray[0].Pos = Vector2.Transform(v0, Matrix);</a>
+<a name="ln720">			vertexArray[1].Pos = Vector2.Transform(v1, Matrix);</a>
+<a name="ln721">			vertexArray[2].Pos = Vector2.Transform(v2, Matrix);</a>
+<a name="ln722">			vertexArray[3].Pos = Vector2.Transform(v3, Matrix);</a>
+<a name="ln723">			vertexArray[0].Col = c0;</a>
+<a name="ln724">			vertexArray[1].Col = c1;</a>
+<a name="ln725">			vertexArray[2].Col = c2;</a>
+<a name="ln726">			vertexArray[3].Col = c3;</a>
+<a name="ln727">			vertexArray[0].Mode = mode;</a>
+<a name="ln728">			vertexArray[1].Mode = mode;</a>
+<a name="ln729">			vertexArray[2].Mode = mode;</a>
+<a name="ln730">			vertexArray[3].Mode = mode;</a>
+<a name="ln731">		}</a>
+<a name="ln732"> </a>
+<a name="ln733">		vertexCount += 4;</a>
+<a name="ln734">	}</a>
+<a name="ln735"> </a>
+<a name="ln736">	public void Quad(Texture? texture, in Vector2 v0, in Vector2 v1, in Vector2 v2, in Vector2 v3, in Vector2 t0, in Vector2 t1, in Vector2 t2, in Vector2 t3, Color c0, Color c1, Color c2, Color c3)</a>
+<a name="ln737">	{</a>
+<a name="ln738">		SetTexture(texture);</a>
+<a name="ln739">		PushQuad();</a>
+<a name="ln740">		EnsureVertexCapacity(vertexCount + 4);</a>
+<a name="ln741"> </a>
+<a name="ln742">		unsafe</a>
+<a name="ln743">		{</a>
+<a name="ln744">			var vertexArray = new Span&lt;BatcherVertex&gt;((BatcherVertex*)vertexPtr + vertexCount, 4);</a>
+<a name="ln745"> </a>
+<a name="ln746">			vertexArray[0].Pos = Vector2.Transform(v0, Matrix);</a>
+<a name="ln747">			vertexArray[1].Pos = Vector2.Transform(v1, Matrix);</a>
+<a name="ln748">			vertexArray[2].Pos = Vector2.Transform(v2, Matrix);</a>
+<a name="ln749">			vertexArray[3].Pos = Vector2.Transform(v3, Matrix);</a>
+<a name="ln750">			vertexArray[0].Tex = t0;</a>
+<a name="ln751">			vertexArray[1].Tex = t1;</a>
+<a name="ln752">			vertexArray[2].Tex = t2;</a>
+<a name="ln753">			vertexArray[3].Tex = t3;</a>
+<a name="ln754">			vertexArray[0].Col = c0;</a>
+<a name="ln755">			vertexArray[1].Col = c1;</a>
+<a name="ln756">			vertexArray[2].Col = c2;</a>
+<a name="ln757">			vertexArray[3].Col = c3;</a>
+<a name="ln758">			vertexArray[0].Mode = mode;</a>
+<a name="ln759">			vertexArray[1].Mode = mode;</a>
+<a name="ln760">			vertexArray[2].Mode = mode;</a>
+<a name="ln761">			vertexArray[3].Mode = mode;</a>
+<a name="ln762"> </a>
+<a name="ln763">			if (currentBatch.FlipVerticalUV)</a>
+<a name="ln764">				FlipVerticalUVs(vertexPtr, vertexCount, 4);</a>
+<a name="ln765">		}</a>
+<a name="ln766"> </a>
+<a name="ln767">		vertexCount += 4;</a>
+<a name="ln768">	}</a>
+<a name="ln769"> </a>
+<a name="ln770">	public void QuadLine(in Vector2 a, in Vector2 b, in Vector2 c, in Vector2 d, float thickness, in Color color)</a>
+<a name="ln771">	{</a>
+<a name="ln772">		Line(a, b, thickness, color);</a>
+<a name="ln773">		Line(b, c, thickness, color);</a>
+<a name="ln774">		Line(c, d, thickness, color);</a>
+<a name="ln775">		Line(d, a, thickness, color);</a>
+<a name="ln776">	}</a>
+<a name="ln777"> </a>
+<a name="ln778">	public void QuadLine(in Quad quad, float thickness, in Color color)</a>
+<a name="ln779">	{</a>
+<a name="ln780">		LineWithNormal(this, quad.A, quad.B, quad.NormalAB, thickness, color);</a>
+<a name="ln781">		LineWithNormal(this, quad.B, quad.C, quad.NormalBC, thickness, color);</a>
+<a name="ln782">		LineWithNormal(this, quad.C, quad.D, quad.NormalCD, thickness, color);</a>
+<a name="ln783">		LineWithNormal(this, quad.D, quad.A, quad.NormalDA, thickness, color);</a>
+<a name="ln784"> </a>
+<a name="ln785">		static void LineWithNormal(Batcher batcher, in Vector2 from, in Vector2 to, in Vector2 normal, float thickness, in Color color)</a>
+<a name="ln786">		{</a>
+<a name="ln787">			var perp = normal * thickness * .5f;</a>
+<a name="ln788">			batcher.Quad(from + perp, from - perp, to - perp, to + perp, color);</a>
+<a name="ln789">		}</a>
+<a name="ln790">	}</a>
+<a name="ln791"> </a>
+<a name="ln792">	[Obsolete(&quot;Use QuadLine instead&quot;)]</a>
+<a name="ln793">	public void QuadLines(in Vector2 a, in Vector2 b, in Vector2 c, in Vector2 d, float thickness, in Color color)</a>
+<a name="ln794">		=&gt; QuadLine(a, b, c, d, thickness, color);</a>
+<a name="ln795"> </a>
+<a name="ln796">	#endregion</a>
+<a name="ln797"> </a>
+<a name="ln798">	#region Triangle</a>
+<a name="ln799"> </a>
+<a name="ln800">	public void Triangle(in Vector2 v0, in Vector2 v1, in Vector2 v2, Color color)</a>
+<a name="ln801">	{</a>
+<a name="ln802">		PushTriangle();</a>
+<a name="ln803">		EnsureVertexCapacity(vertexCount + 3);</a>
+<a name="ln804"> </a>
+<a name="ln805">		unsafe</a>
+<a name="ln806">		{</a>
+<a name="ln807">			var mode = new Color(0, 0, 255, 0);</a>
+<a name="ln808">			var vertexArray = new Span&lt;BatcherVertex&gt;((BatcherVertex*)vertexPtr + vertexCount, 3);</a>
+<a name="ln809"> </a>
+<a name="ln810">			vertexArray[0].Pos = Vector2.Transform(v0, Matrix);</a>
+<a name="ln811">			vertexArray[1].Pos = Vector2.Transform(v1, Matrix);</a>
+<a name="ln812">			vertexArray[2].Pos = Vector2.Transform(v2, Matrix);</a>
+<a name="ln813">			vertexArray[0].Col = color;</a>
+<a name="ln814">			vertexArray[1].Col = color;</a>
+<a name="ln815">			vertexArray[2].Col = color;</a>
+<a name="ln816">			vertexArray[0].Mode = mode;</a>
+<a name="ln817">			vertexArray[1].Mode = mode;</a>
+<a name="ln818">			vertexArray[2].Mode = mode;</a>
+<a name="ln819">		}</a>
+<a name="ln820"> </a>
+<a name="ln821">		vertexCount += 3;</a>
+<a name="ln822">	}</a>
+<a name="ln823"> </a>
+<a name="ln824">	public void Triangle(Texture? texture, in Vector2 v0, in Vector2 v1, in Vector2 v2, in Vector2 t0, in Vector2 t1, in Vector2 t2, Color color)</a>
+<a name="ln825">	{</a>
+<a name="ln826">		SetTexture(texture);</a>
+<a name="ln827">		PushTriangle();</a>
+<a name="ln828">		EnsureVertexCapacity(vertexCount + 3);</a>
+<a name="ln829"> </a>
+<a name="ln830">		unsafe</a>
+<a name="ln831">		{</a>
+<a name="ln832">			var vertexArray = new Span&lt;BatcherVertex&gt;((BatcherVertex*)vertexPtr + vertexCount, 3);</a>
+<a name="ln833"> </a>
+<a name="ln834">			vertexArray[0].Pos = Vector2.Transform(v0, Matrix);</a>
+<a name="ln835">			vertexArray[1].Pos = Vector2.Transform(v1, Matrix);</a>
+<a name="ln836">			vertexArray[2].Pos = Vector2.Transform(v2, Matrix);</a>
+<a name="ln837">			vertexArray[0].Tex = t0;</a>
+<a name="ln838">			vertexArray[1].Tex = t1;</a>
+<a name="ln839">			vertexArray[2].Tex = t2;</a>
+<a name="ln840">			vertexArray[0].Col = color;</a>
+<a name="ln841">			vertexArray[1].Col = color;</a>
+<a name="ln842">			vertexArray[2].Col = color;</a>
+<a name="ln843">			vertexArray[0].Mode = mode;</a>
+<a name="ln844">			vertexArray[1].Mode = mode;</a>
+<a name="ln845">			vertexArray[2].Mode = mode;</a>
+<a name="ln846">			</a>
+<a name="ln847">			if (currentBatch.FlipVerticalUV)</a>
+<a name="ln848">				FlipVerticalUVs(vertexPtr, vertexCount, 4);</a>
+<a name="ln849">		}</a>
+<a name="ln850"> </a>
+<a name="ln851">		vertexCount += 3;</a>
+<a name="ln852">	}</a>
+<a name="ln853"> </a>
+<a name="ln854">	public void Triangle(in Vector2 v0, in Vector2 v1, in Vector2 v2, Color c0, Color c1, Color c2)</a>
+<a name="ln855">	{</a>
+<a name="ln856">		PushTriangle();</a>
+<a name="ln857">		EnsureVertexCapacity(vertexCount + 3);</a>
+<a name="ln858"> </a>
+<a name="ln859">		unsafe</a>
+<a name="ln860">		{</a>
+<a name="ln861">			var mode = new Color(0, 0, 255, 0);</a>
+<a name="ln862">			var vertexArray = new Span&lt;BatcherVertex&gt;((BatcherVertex*)vertexPtr + vertexCount, 3);</a>
+<a name="ln863"> </a>
+<a name="ln864">			vertexArray[0].Pos = Vector2.Transform(v0, Matrix);</a>
+<a name="ln865">			vertexArray[1].Pos = Vector2.Transform(v1, Matrix);</a>
+<a name="ln866">			vertexArray[2].Pos = Vector2.Transform(v2, Matrix);</a>
+<a name="ln867">			vertexArray[0].Col = c0;</a>
+<a name="ln868">			vertexArray[1].Col = c1;</a>
+<a name="ln869">			vertexArray[2].Col = c2;</a>
+<a name="ln870">			vertexArray[0].Mode = mode;</a>
+<a name="ln871">			vertexArray[1].Mode = mode;</a>
+<a name="ln872">			vertexArray[2].Mode = mode;</a>
+<a name="ln873">		}</a>
+<a name="ln874"> </a>
+<a name="ln875">		vertexCount += 3;</a>
+<a name="ln876">	}</a>
+<a name="ln877"> </a>
+<a name="ln878">	public void TriangleLine(in Vector2 v0, in Vector2 v1, in Vector2 v2, float thickness, in Color color)</a>
+<a name="ln879">	{</a>
+<a name="ln880">		Line(v0, v1, thickness, color);</a>
+<a name="ln881">		Line(v1, v2, thickness, color);</a>
+<a name="ln882">		Line(v2, v0, thickness, color);</a>
+<a name="ln883">	}</a>
+<a name="ln884"> </a>
+<a name="ln885">	#endregion</a>
+<a name="ln886"> </a>
+<a name="ln887">	#region Rect</a>
+<a name="ln888"> </a>
+<a name="ln889">	public void Rect(in Rect rect, Color color)</a>
+<a name="ln890">	{</a>
+<a name="ln891">		Quad(</a>
+<a name="ln892">			new Vector2(rect.X, rect.Y),</a>
+<a name="ln893">			new Vector2(rect.X + rect.Width, rect.Y),</a>
+<a name="ln894">			new Vector2(rect.X + rect.Width, rect.Y + rect.Height),</a>
+<a name="ln895">			new Vector2(rect.X, rect.Y + rect.Height),</a>
+<a name="ln896">			color);</a>
+<a name="ln897">	}</a>
+<a name="ln898"> </a>
+<a name="ln899">	public void Rect(in Vector2 position, in Vector2 size, Color color)</a>
+<a name="ln900">	{</a>
+<a name="ln901">		Quad(</a>
+<a name="ln902">			position,</a>
+<a name="ln903">			position + new Vector2(size.X, 0),</a>
+<a name="ln904">			position + new Vector2(size.X, size.Y),</a>
+<a name="ln905">			position + new Vector2(0, size.Y),</a>
+<a name="ln906">			color);</a>
+<a name="ln907">	}</a>
+<a name="ln908"> </a>
+<a name="ln909">	public void Rect(float x, float y, float width, float height, Color color)</a>
+<a name="ln910">	{</a>
+<a name="ln911">		Quad(</a>
+<a name="ln912">			new Vector2(x, y),</a>
+<a name="ln913">			new Vector2(x + width, y),</a>
+<a name="ln914">			new Vector2(x + width, y + height),</a>
+<a name="ln915">			new Vector2(x, y + height), color);</a>
+<a name="ln916">	}</a>
+<a name="ln917"> </a>
+<a name="ln918">	public void Rect(in Rect rect, Color c0, Color c1, Color c2, Color c3)</a>
+<a name="ln919">	{</a>
+<a name="ln920">		Quad(</a>
+<a name="ln921">			new Vector2(rect.X, rect.Y),</a>
+<a name="ln922">			new Vector2(rect.X + rect.Width, rect.Y),</a>
+<a name="ln923">			new Vector2(rect.X + rect.Width, rect.Y + rect.Height),</a>
+<a name="ln924">			new Vector2(rect.X, rect.Y + rect.Height),</a>
+<a name="ln925">			c0, c1, c2, c3);</a>
+<a name="ln926">	}</a>
+<a name="ln927"> </a>
+<a name="ln928">	public void Rect(in Vector2 position, in Vector2 size, Color c0, Color c1, Color c2, Color c3)</a>
+<a name="ln929">	{</a>
+<a name="ln930">		Quad(</a>
+<a name="ln931">			position,</a>
+<a name="ln932">			position + new Vector2(size.X, 0),</a>
+<a name="ln933">			position + new Vector2(size.X, size.Y),</a>
+<a name="ln934">			position + new Vector2(0, size.Y),</a>
+<a name="ln935">			c0, c1, c2, c3);</a>
+<a name="ln936">	}</a>
+<a name="ln937"> </a>
+<a name="ln938">	public void Rect(float x, float y, float width, float height, Color c0, Color c1, Color c2, Color c3)</a>
+<a name="ln939">	{</a>
+<a name="ln940">		Quad(</a>
+<a name="ln941">			new Vector2(x, y),</a>
+<a name="ln942">			new Vector2(x + width, y),</a>
+<a name="ln943">			new Vector2(x + width, y + height),</a>
+<a name="ln944">			new Vector2(x, y + height),</a>
+<a name="ln945">			c0, c1, c2, c3);</a>
+<a name="ln946">	}</a>
+<a name="ln947">	</a>
+<a name="ln948">	public void RectLine(in Rect rect, float t, Color color)</a>
+<a name="ln949">	{</a>
+<a name="ln950">		if (t &gt; 0)</a>
+<a name="ln951">		{</a>
+<a name="ln952">			var tx = Math.Min(t, rect.Width / 2f);</a>
+<a name="ln953">			var ty = Math.Min(t, rect.Height / 2f);</a>
+<a name="ln954"> </a>
+<a name="ln955">			Rect(rect.X, rect.Y, rect.Width, ty, color);</a>
+<a name="ln956">			Rect(rect.X, rect.Bottom - ty, rect.Width, ty, color);</a>
+<a name="ln957">			Rect(rect.X, rect.Y + ty, tx, rect.Height - ty * 2, color);</a>
+<a name="ln958">			Rect(rect.Right - tx, rect.Y + ty, tx, rect.Height - ty * 2, color);</a>
+<a name="ln959">		}</a>
+<a name="ln960">	}</a>
+<a name="ln961"> </a>
+<a name="ln962">	public void RectDashed(Rect rect, float thickness, in Color color, float dashLength, float dashOffset)</a>
+<a name="ln963">	{</a>
+<a name="ln964">		rect = rect.Inflate(-thickness / 2);</a>
+<a name="ln965">		LineDashed(rect.TopLeft, rect.TopRight, thickness, color, dashLength, dashOffset);</a>
+<a name="ln966">		LineDashed(rect.TopRight, rect.BottomRight, thickness, color, dashLength, dashOffset);</a>
+<a name="ln967">		LineDashed(rect.BottomRight, rect.BottomLeft, thickness, color, dashLength, dashOffset);</a>
+<a name="ln968">		LineDashed(rect.BottomLeft, rect.TopLeft, thickness, color, dashLength, dashOffset);</a>
+<a name="ln969">	}</a>
+<a name="ln970"> </a>
+<a name="ln971">	#endregion</a>
+<a name="ln972"> </a>
+<a name="ln973">	#region Rounded Rect</a>
+<a name="ln974"> </a>
+<a name="ln975">	public void RectRounded(float x, float y, float width, float height, float r0, float r1, float r2, float r3, Color color)</a>
+<a name="ln976">	{</a>
+<a name="ln977">		RectRounded(new Rect(x, y, width, height), r0, r1, r2, r3, color);</a>
+<a name="ln978">	}</a>
+<a name="ln979"> </a>
+<a name="ln980">	public void RectRounded(float x, float y, float width, float height, float radius, Color color)</a>
+<a name="ln981">	{</a>
+<a name="ln982">		RectRounded(new Rect(x, y, width, height), radius, radius, radius, radius, color);</a>
+<a name="ln983">	}</a>
+<a name="ln984"> </a>
+<a name="ln985">	public void RectRounded(in Rect rect, float radius, Color color)</a>
+<a name="ln986">	{</a>
+<a name="ln987">		RectRounded(rect, radius, radius, radius, radius, color);</a>
+<a name="ln988">	}</a>
+<a name="ln989"> </a>
+<a name="ln990">	public void RectRounded(in Rect rect, float r0, float r1, float r2, float r3, Color color)</a>
+<a name="ln991">	{</a>
+<a name="ln992">		// clamp</a>
+<a name="ln993">		r0 = Math.Min(Math.Min(Math.Max(0, r0), rect.Width / 2f), rect.Height / 2f);</a>
+<a name="ln994">		r1 = Math.Min(Math.Min(Math.Max(0, r1), rect.Width / 2f), rect.Height / 2f);</a>
+<a name="ln995">		r2 = Math.Min(Math.Min(Math.Max(0, r2), rect.Width / 2f), rect.Height / 2f);</a>
+<a name="ln996">		r3 = Math.Min(Math.Min(Math.Max(0, r3), rect.Width / 2f), rect.Height / 2f);</a>
+<a name="ln997"> </a>
+<a name="ln998">		if (r0 &lt;= 0 &amp;&amp; r1 &lt;= 0 &amp;&amp; r2 &lt;= 0 &amp;&amp; r3 &lt;= 0)</a>
+<a name="ln999">		{</a>
+<a name="ln1000">			Rect(rect, color);</a>
+<a name="ln1001">		}</a>
+<a name="ln1002">		else</a>
+<a name="ln1003">		{</a>
+<a name="ln1004">			// get corners</a>
+<a name="ln1005">			var r0_tl = rect.TopLeft;</a>
+<a name="ln1006">			var r0_tr = r0_tl + new Vector2(r0, 0);</a>
+<a name="ln1007">			var r0_br = r0_tl + new Vector2(r0, r0);</a>
+<a name="ln1008">			var r0_bl = r0_tl + new Vector2(0, r0);</a>
+<a name="ln1009"> </a>
+<a name="ln1010">			var r1_tl = rect.TopRight + new Vector2(-r1, 0);</a>
+<a name="ln1011">			var r1_tr = r1_tl + new Vector2(r1, 0);</a>
+<a name="ln1012">			var r1_br = r1_tl + new Vector2(r1, r1);</a>
+<a name="ln1013">			var r1_bl = r1_tl + new Vector2(0, r1);</a>
+<a name="ln1014"> </a>
+<a name="ln1015">			var r2_tl = rect.BottomRight + new Vector2(-r2, -r2);</a>
+<a name="ln1016">			var r2_tr = r2_tl + new Vector2(r2, 0);</a>
+<a name="ln1017">			var r2_bl = r2_tl + new Vector2(0, r2);</a>
+<a name="ln1018">			var r2_br = r2_tl + new Vector2(r2, r2);</a>
+<a name="ln1019"> </a>
+<a name="ln1020">			var r3_tl = rect.BottomLeft + new Vector2(0, -r3);</a>
+<a name="ln1021">			var r3_tr = r3_tl + new Vector2(r3, 0);</a>
+<a name="ln1022">			var r3_bl = r3_tl + new Vector2(0, r3);</a>
+<a name="ln1023">			var r3_br = r3_tl + new Vector2(r3, r3);</a>
+<a name="ln1024"> </a>
+<a name="ln1025">			// set tris</a>
+<a name="ln1026">			unsafe</a>
+<a name="ln1027">			{</a>
+<a name="ln1028">				EnsureIndexCapacity(indexCount + 30);</a>
+<a name="ln1029"> </a>
+<a name="ln1030">				var indexArray = new Span&lt;int&gt;((int*)indexPtr + indexCount, 30);</a>
+<a name="ln1031"> </a>
+<a name="ln1032">				// top quad</a>
+<a name="ln1033">				{</a>
+<a name="ln1034">					indexArray[00] = vertexCount + 00; // r0b</a>
+<a name="ln1035">					indexArray[01] = vertexCount + 03; // r1a</a>
+<a name="ln1036">					indexArray[02] = vertexCount + 05; // r1d</a>
+<a name="ln1037"> </a>
+<a name="ln1038">					indexArray[03] = vertexCount + 00; // r0b</a>
+<a name="ln1039">					indexArray[04] = vertexCount + 05; // r1d</a>
+<a name="ln1040">					indexArray[05] = vertexCount + 01; // r0c</a>
+<a name="ln1041">				}</a>
+<a name="ln1042"> </a>
+<a name="ln1043">				// left quad</a>
+<a name="ln1044">				{</a>
+<a name="ln1045">					indexArray[06] = vertexCount + 02; // r0d</a>
+<a name="ln1046">					indexArray[07] = vertexCount + 01; // r0c</a>
+<a name="ln1047">					indexArray[08] = vertexCount + 10; // r3b</a>
+<a name="ln1048"> </a>
+<a name="ln1049">					indexArray[09] = vertexCount + 02; // r0d</a>
+<a name="ln1050">					indexArray[10] = vertexCount + 10; // r3b</a>
+<a name="ln1051">					indexArray[11] = vertexCount + 09; // r3a</a>
+<a name="ln1052">				}</a>
+<a name="ln1053"> </a>
+<a name="ln1054">				// right quad</a>
+<a name="ln1055">				{</a>
+<a name="ln1056">					indexArray[12] = vertexCount + 05; // r1d</a>
+<a name="ln1057">					indexArray[13] = vertexCount + 04; // r1c</a>
+<a name="ln1058">					indexArray[14] = vertexCount + 07; // r2b</a>
+<a name="ln1059"> </a>
+<a name="ln1060">					indexArray[15] = vertexCount + 05; // r1d</a>
+<a name="ln1061">					indexArray[16] = vertexCount + 07; // r2b</a>
+<a name="ln1062">					indexArray[17] = vertexCount + 06; // r2a</a>
+<a name="ln1063">				}</a>
+<a name="ln1064"> </a>
+<a name="ln1065">				// bottom quad</a>
+<a name="ln1066">				{</a>
+<a name="ln1067">					indexArray[18] = vertexCount + 10; // r3b</a>
+<a name="ln1068">					indexArray[19] = vertexCount + 06; // r2a</a>
+<a name="ln1069">					indexArray[20] = vertexCount + 08; // r2d</a>
+<a name="ln1070"> </a>
+<a name="ln1071">					indexArray[21] = vertexCount + 10; // r3b</a>
+<a name="ln1072">					indexArray[22] = vertexCount + 08; // r2d</a>
+<a name="ln1073">					indexArray[23] = vertexCount + 11; // r3c</a>
+<a name="ln1074">				}</a>
+<a name="ln1075"> </a>
+<a name="ln1076">				// center quad</a>
+<a name="ln1077">				{</a>
+<a name="ln1078">					indexArray[24] = vertexCount + 01; // r0c</a>
+<a name="ln1079">					indexArray[25] = vertexCount + 05; // r1d</a>
+<a name="ln1080">					indexArray[26] = vertexCount + 06; // r2a</a>
+<a name="ln1081"> </a>
+<a name="ln1082">					indexArray[27] = vertexCount + 01; // r0c</a>
+<a name="ln1083">					indexArray[28] = vertexCount + 06; // r2a</a>
+<a name="ln1084">					indexArray[29] = vertexCount + 10; // r3b</a>
+<a name="ln1085">				}</a>
+<a name="ln1086"> </a>
+<a name="ln1087">				indexCount += 30;</a>
+<a name="ln1088">				currentBatch.Elements += 10;</a>
+<a name="ln1089">				meshDirty = true;</a>
+<a name="ln1090">			}</a>
+<a name="ln1091"> </a>
+<a name="ln1092">			// set verts</a>
+<a name="ln1093">			unsafe</a>
+<a name="ln1094">			{</a>
+<a name="ln1095">				EnsureVertexCapacity(vertexCount + 12);</a>
+<a name="ln1096"> </a>
+<a name="ln1097">				var vertexArray = new Span&lt;BatcherVertex&gt;((BatcherVertex*)vertexPtr + vertexCount, 12);</a>
+<a name="ln1098"> </a>
+<a name="ln1099">				var mode = new Color(0, 0, 255, 0);</a>
+<a name="ln1100"> </a>
+<a name="ln1101">				vertexArray[00].Pos = Vector2.Transform(r0_tr, Matrix); // 0</a>
+<a name="ln1102">				vertexArray[01].Pos = Vector2.Transform(r0_br, Matrix); // 1</a>
+<a name="ln1103">				vertexArray[02].Pos = Vector2.Transform(r0_bl, Matrix); // 2</a>
+<a name="ln1104"> </a>
+<a name="ln1105">				vertexArray[03].Pos = Vector2.Transform(r1_tl, Matrix); // 3</a>
+<a name="ln1106">				vertexArray[04].Pos = Vector2.Transform(r1_br, Matrix); // 4</a>
+<a name="ln1107">				vertexArray[05].Pos = Vector2.Transform(r1_bl, Matrix); // 5</a>
+<a name="ln1108"> </a>
+<a name="ln1109">				vertexArray[06].Pos = Vector2.Transform(r2_tl, Matrix); // 6</a>
+<a name="ln1110">				vertexArray[07].Pos = Vector2.Transform(r2_tr, Matrix); // 7</a>
+<a name="ln1111">				vertexArray[08].Pos = Vector2.Transform(r2_bl, Matrix); // 8</a>
+<a name="ln1112"> </a>
+<a name="ln1113">				vertexArray[09].Pos = Vector2.Transform(r3_tl, Matrix); // 9</a>
+<a name="ln1114">				vertexArray[10].Pos = Vector2.Transform(r3_tr, Matrix); // 10</a>
+<a name="ln1115">				vertexArray[11].Pos = Vector2.Transform(r3_br, Matrix); // 11</a>
+<a name="ln1116"> </a>
+<a name="ln1117">				for (int i = 0; i &lt; vertexArray.Length; i++)</a>
+<a name="ln1118">				{</a>
+<a name="ln1119">					vertexArray[i].Col = color;</a>
+<a name="ln1120">					vertexArray[i].Mode = mode;</a>
+<a name="ln1121">				}</a>
+<a name="ln1122"> </a>
+<a name="ln1123">				vertexCount += 12;</a>
+<a name="ln1124">			}</a>
+<a name="ln1125"> </a>
+<a name="ln1126">			var left = Calc.PI;</a>
+<a name="ln1127">			var right = 0.0f;</a>
+<a name="ln1128">			var up = -Calc.PI / 2;</a>
+<a name="ln1129">			var down = Calc.PI / 2;</a>
+<a name="ln1130"> </a>
+<a name="ln1131">			// top-left corner</a>
+<a name="ln1132">			if (r0 &gt; 0)</a>
+<a name="ln1133">				SemiCircle(r0_br, up, -left, r0, Math.Max(3, (int)(r0 / 4)), color);</a>
+<a name="ln1134">			else</a>
+<a name="ln1135">				Quad(r0_tl, r0_tr, r0_br, r0_bl, color);</a>
+<a name="ln1136"> </a>
+<a name="ln1137">			// top-right corner</a>
+<a name="ln1138">			if (r1 &gt; 0)</a>
+<a name="ln1139">				SemiCircle(r1_bl, up, right, r1, Math.Max(3, (int)(r1 / 4)), color);</a>
+<a name="ln1140">			else</a>
+<a name="ln1141">				Quad(r1_tl, r1_tr, r1_br, r1_bl, color);</a>
+<a name="ln1142"> </a>
+<a name="ln1143">			// bottom-right corner</a>
+<a name="ln1144">			if (r2 &gt; 0)</a>
+<a name="ln1145">				SemiCircle(r2_tl, right, down, r2, Math.Max(3, (int)(r2 / 4)), color);</a>
+<a name="ln1146">			else</a>
+<a name="ln1147">				Quad(r2_tl, r2_tr, r2_br, r2_bl, color);</a>
+<a name="ln1148"> </a>
+<a name="ln1149">			// bottom-left corner</a>
+<a name="ln1150">			if (r3 &gt; 0)</a>
+<a name="ln1151">				SemiCircle(r3_tr, down, left, r3, Math.Max(3, (int)(r3 / 4)), color);</a>
+<a name="ln1152">			else</a>
+<a name="ln1153">				Quad(r3_tl, r3_tr, r3_br, r3_bl, color);</a>
+<a name="ln1154">		}</a>
+<a name="ln1155"> </a>
+<a name="ln1156">	}</a>
+<a name="ln1157"> </a>
+<a name="ln1158">	public void RectRoundedLine(in Rect r, float rounding, float t, Color color)</a>
+<a name="ln1159">	{</a>
+<a name="ln1160">		RectRoundedLine(r, rounding, rounding, rounding, rounding, t, color);</a>
+<a name="ln1161">	}</a>
+<a name="ln1162"> </a>
+<a name="ln1163">	public void RectRoundedLine(in Rect r, float rtl, float rtr, float rbr, float rbl, float t, Color color)</a>
+<a name="ln1164">	{</a>
+<a name="ln1165">		// clamp</a>
+<a name="ln1166">		rtl = MathF.Min(MathF.Min(MathF.Max(0.0f, rtl), r.Width / 2.0f), r.Height / 2.0f);</a>
+<a name="ln1167">		rtr = MathF.Min(MathF.Min(MathF.Max(0.0f, rtr), r.Width / 2.0f), r.Height / 2.0f);</a>
+<a name="ln1168">		rbr = MathF.Min(MathF.Min(MathF.Max(0.0f, rbr), r.Width / 2.0f), r.Height / 2.0f);</a>
+<a name="ln1169">		rbl = MathF.Min(MathF.Min(MathF.Max(0.0f, rbl), r.Width / 2.0f), r.Height / 2.0f);</a>
+<a name="ln1170"> </a>
+<a name="ln1171">		if (rtl &lt;= 0 &amp;&amp; rtr &lt;= 0 &amp;&amp; rbr &lt;= 0 &amp;&amp; rbl &lt;= 0)</a>
+<a name="ln1172">		{</a>
+<a name="ln1173">			RectLine(r, t, color);</a>
+<a name="ln1174">		}</a>
+<a name="ln1175">		else</a>
+<a name="ln1176">		{</a>
+<a name="ln1177">			var rtlSteps = Math.Max(3, (int)(rtl / 4));</a>
+<a name="ln1178">			var rtrSteps = Math.Max(3, (int)(rtr / 4));</a>
+<a name="ln1179">			var rbrSteps = Math.Max(3, (int)(rbr / 4));</a>
+<a name="ln1180">			var rblSteps = Math.Max(3, (int)(rbl / 4));</a>
+<a name="ln1181"> </a>
+<a name="ln1182">			// rounded corners</a>
+<a name="ln1183">			SemiCircleLine(new Vector2(r.X + rtl, r.Y + rtl), Calc.Up, Calc.Left, rtl, rtlSteps, t, color);</a>
+<a name="ln1184">			SemiCircleLine(new Vector2(r.X + r.Width - rtr, r.Y + rtr), Calc.Up, Calc.Up + Calc.TAU * 0.25f, rtr, rtrSteps, t, color);</a>
+<a name="ln1185">			SemiCircleLine(new Vector2(r.X + rbl, r.Y + r.Height - rbl), Calc.Down, Calc.Left, rbl, rblSteps, t, color);</a>
+<a name="ln1186">			SemiCircleLine(new Vector2(r.X + r.Width - rbr, r.Y + r.Height - rbr), Calc.Down, Calc.Right, rbr, rbrSteps, t, color);</a>
+<a name="ln1187"> </a>
+<a name="ln1188">			// connect sides that aren't touching</a>
+<a name="ln1189">			if (r.Height &gt; rtl + rbl)</a>
+<a name="ln1190">				Rect(new Rect(r.X, r.Y + rtl, t, r.Height - rtl - rbl), color);</a>
+<a name="ln1191">			if (r.Height &gt; rtr + rbr)</a>
+<a name="ln1192">				Rect(new Rect(r.X + r.Width - t, r.Y + rtr, t, r.Height - rtr - rbr), color);</a>
+<a name="ln1193">			if (r.Width &gt; rtl + rtr)</a>
+<a name="ln1194">				Rect(new Rect(r.X + rtl, r.Y, r.Width - rtl - rtr, t), color);</a>
+<a name="ln1195">			if (r.Width &gt; rbl + rbr)</a>
+<a name="ln1196">				Rect(new Rect(r.X + rbl, r.Y + r.Height - t, r.Width - rbl - rbr, t), color);</a>
+<a name="ln1197">		}</a>
+<a name="ln1198">	}</a>
+<a name="ln1199"> </a>
+<a name="ln1200">	#endregion</a>
+<a name="ln1201"> </a>
+<a name="ln1202">	#region Circle</a>
+<a name="ln1203"> </a>
+<a name="ln1204">	public void SemiCircle(in Vector2 center, float startRadians, float endRadians, float radius, int steps, in Color color)</a>
+<a name="ln1205">	{</a>
+<a name="ln1206">		SemiCircle(center, startRadians, endRadians, radius, steps, color, color);</a>
+<a name="ln1207">	}</a>
+<a name="ln1208"> </a>
+<a name="ln1209">	public void SemiCircle(in Vector2 center, float startRadians, float endRadians, float radius, int steps, in Color centerColor, in Color edgeColor)</a>
+<a name="ln1210">	{</a>
+<a name="ln1211">		var last = Calc.AngleToVector(startRadians, radius);</a>
+<a name="ln1212"> </a>
+<a name="ln1213">		for (int i = 1; i &lt;= steps; i++)</a>
+<a name="ln1214">		{</a>
+<a name="ln1215">			var next = Calc.AngleToVector(startRadians + (endRadians - startRadians) * (i / (float)steps), radius);</a>
+<a name="ln1216">			Triangle(center + last, center + next, center, edgeColor, edgeColor, centerColor);</a>
+<a name="ln1217">			last = next;</a>
+<a name="ln1218">		}</a>
+<a name="ln1219">	}</a>
+<a name="ln1220"> </a>
+<a name="ln1221">	public void SemiCircleLine(in Vector2 center, float startRadians, float endRadians, float radius, int steps, float t, Color color)</a>
+<a name="ln1222">	{</a>
+<a name="ln1223">		if (t &gt;= radius)</a>
+<a name="ln1224">		{</a>
+<a name="ln1225">			SemiCircle(center, startRadians, endRadians, radius, steps, color, color);</a>
+<a name="ln1226">		}</a>
+<a name="ln1227">		else</a>
+<a name="ln1228">		{</a>
+<a name="ln1229">			var add = Calc.AngleDiff(startRadians, endRadians);</a>
+<a name="ln1230">			var lastInner = Calc.AngleToVector(startRadians, radius - t);</a>
+<a name="ln1231">			var lastOuter = Calc.AngleToVector(startRadians, radius);</a>
+<a name="ln1232"> </a>
+<a name="ln1233">			for (int i = 1; i &lt;= steps; i++)</a>
+<a name="ln1234">			{</a>
+<a name="ln1235">				var nextInner = Calc.AngleToVector(startRadians + add * (i / (float)steps), radius - t);</a>
+<a name="ln1236">				var nextOuter = Calc.AngleToVector(startRadians + add * (i / (float)steps), radius);</a>
+<a name="ln1237"> </a>
+<a name="ln1238">				Quad(center + lastInner, center + lastOuter, center + nextOuter, center + nextInner, color);</a>
+<a name="ln1239"> </a>
+<a name="ln1240">				lastInner = nextInner;</a>
+<a name="ln1241">				lastOuter = nextOuter;</a>
+<a name="ln1242">			}</a>
+<a name="ln1243">		}</a>
+<a name="ln1244">	}</a>
+<a name="ln1245"> </a>
+<a name="ln1246">	public void Circle(in Vector2 center, float radius, int steps, in Color color)</a>
+<a name="ln1247">		=&gt; Circle(center, radius, steps, color, color);</a>
+<a name="ln1248"> </a>
+<a name="ln1249">	public void Circle(in Vector2 center, float radius, int steps, in Color centerColor, in Color edgeColor)</a>
+<a name="ln1250">	{</a>
+<a name="ln1251">		var last = Calc.AngleToVector(0, radius);</a>
+<a name="ln1252"> </a>
+<a name="ln1253">		for (int i = 1; i &lt;= steps; i++)</a>
+<a name="ln1254">		{</a>
+<a name="ln1255">			var next = Calc.AngleToVector((i / (float)steps) * Calc.TAU, radius);</a>
+<a name="ln1256">			Triangle(center + last, center + next, center, edgeColor, edgeColor, centerColor);</a>
+<a name="ln1257">			last = next;</a>
+<a name="ln1258">		}</a>
+<a name="ln1259">	}</a>
+<a name="ln1260"> </a>
+<a name="ln1261">	public void Circle(in Circle circle, int steps, in Color color)</a>
+<a name="ln1262">		=&gt; Circle(circle.Position, circle.Radius, steps, color, color);</a>
+<a name="ln1263"> </a>
+<a name="ln1264">	public void CircleLine(in Vector2 center, float radius, float thickness, int steps, in Color color)</a>
+<a name="ln1265">	{</a>
+<a name="ln1266">		var innerRadius = radius - thickness;</a>
+<a name="ln1267">		if (innerRadius &lt;= 0)</a>
+<a name="ln1268">		{</a>
+<a name="ln1269">			Circle(center, radius, steps, color);</a>
+<a name="ln1270">			return;</a>
+<a name="ln1271">		}</a>
+<a name="ln1272"> </a>
+<a name="ln1273">		var last = Calc.AngleToVector(0);</a>
+<a name="ln1274">		for (int i = 1; i &lt;= steps; i++)</a>
+<a name="ln1275">		{</a>
+<a name="ln1276">			var next = Calc.AngleToVector((i / (float)steps) * Calc.TAU);</a>
+<a name="ln1277">			Quad(</a>
+<a name="ln1278">				center + last * innerRadius, center + last * radius,</a>
+<a name="ln1279">				center + next * radius, center + next * innerRadius,</a>
+<a name="ln1280">				color);</a>
+<a name="ln1281">			last = next;</a>
+<a name="ln1282">		}</a>
+<a name="ln1283">	}</a>
+<a name="ln1284"> </a>
+<a name="ln1285">	public void CircleLine(in Circle circle, float thickness, int steps, in Color color)</a>
+<a name="ln1286">		=&gt; CircleLine(circle.Position, circle.Radius, thickness, steps, color);</a>
+<a name="ln1287"> </a>
+<a name="ln1288">	public void CircleDashed(in Vector2 center, float radius, float thickness, int steps, in Color color, float dashLength, float dashOffset)</a>
+<a name="ln1289">	{</a>
+<a name="ln1290">		var last = Calc.AngleToVector(0, radius);</a>
+<a name="ln1291">		var segmentLength = (last - Calc.AngleToVector(Calc.TAU / steps, radius)).Length();</a>
+<a name="ln1292"> </a>
+<a name="ln1293">		for (int i = 1; i &lt;= steps; i++)</a>
+<a name="ln1294">		{</a>
+<a name="ln1295">			var next = Calc.AngleToVector((i / (float)steps) * Calc.TAU, radius);</a>
+<a name="ln1296">			LineDashed(center + last, center + next, thickness, color, dashLength, dashOffset);</a>
+<a name="ln1297">			dashOffset += segmentLength;</a>
+<a name="ln1298">			last = next;</a>
+<a name="ln1299">		}</a>
+<a name="ln1300">	}</a>
+<a name="ln1301"> </a>
+<a name="ln1302">	public void CircleDashed(in Circle circle, float thickness, int steps, in Color color, float dashLength, float dashOffset)</a>
+<a name="ln1303">		=&gt; CircleDashed(circle.Position, circle.Radius, thickness, steps, color, dashLength, dashOffset);</a>
+<a name="ln1304"> </a>
+<a name="ln1305">	#endregion</a>
+<a name="ln1306"> </a>
+<a name="ln1307">	#region Radial Bar</a>
+<a name="ln1308"> </a>
+<a name="ln1309">	public void RadialBar(in Vector2 position, float percent, float inner_radius, float outer_radius, in Color color)</a>
+<a name="ln1310">	{</a>
+<a name="ln1311">		if (percent &lt;= 0)</a>
+<a name="ln1312">			return;</a>
+<a name="ln1313"> </a>
+<a name="ln1314">		const int segments = 64;</a>
+<a name="ln1315">		const float single_segment = 1f / segments;</a>
+<a name="ln1316">		float bar_radius = (outer_radius - inner_radius) / 2;</a>
+<a name="ln1317"> </a>
+<a name="ln1318">		PushMatrix(Matrix3x2.CreateTranslation(position));</a>
+<a name="ln1319"> </a>
+<a name="ln1320">		if (percent &lt; single_segment)</a>
+<a name="ln1321">		{</a>
+<a name="ln1322">			float scale = Calc.ClampedMap(percent, 0, single_segment, 0, 1);</a>
+<a name="ln1323">			Circle(Vector2.UnitX * (inner_radius + outer_radius) / 2, bar_radius * scale, 16, color);</a>
+<a name="ln1324">		}</a>
+<a name="ln1325">		else</a>
+<a name="ln1326">		{</a>
+<a name="ln1327">			for (int i = 0; i &lt; segments; i++)</a>
+<a name="ln1328">			{</a>
+<a name="ln1329">				float prev = (i / (float)segments);</a>
+<a name="ln1330">				float next = MathF.Min(percent, ((i + 1) / (float)segments));</a>
+<a name="ln1331"> </a>
+<a name="ln1332">				Vector2 prev_angle = Calc.AngleToVector(prev * Calc.TAU);</a>
+<a name="ln1333">				Vector2 next_angle = Calc.AngleToVector(next * Calc.TAU);</a>
+<a name="ln1334"> </a>
+<a name="ln1335">				Vector2 prev_inner = prev_angle * inner_radius;</a>
+<a name="ln1336">				Vector2 prev_outer = prev_angle * outer_radius;</a>
+<a name="ln1337">				Vector2 next_inner = next_angle * inner_radius;</a>
+<a name="ln1338">				Vector2 next_outer = next_angle * outer_radius;</a>
+<a name="ln1339"> </a>
+<a name="ln1340">				if (percent &lt; 0.99f)</a>
+<a name="ln1341">				{</a>
+<a name="ln1342">					if (prev &lt;= 0)</a>
+<a name="ln1343">						Circle((prev_inner + prev_outer) / 2, bar_radius, 16, color);</a>
+<a name="ln1344">					if (next &gt;= percent)</a>
+<a name="ln1345">						Circle((next_inner + next_outer) / 2, bar_radius, 16, color);</a>
+<a name="ln1346">				}</a>
+<a name="ln1347"> </a>
+<a name="ln1348">				Quad(prev_inner, prev_outer, next_outer, next_inner, color);</a>
+<a name="ln1349"> </a>
+<a name="ln1350">				if (next &gt;= percent)</a>
+<a name="ln1351">					break;</a>
+<a name="ln1352">			}</a>
+<a name="ln1353">		}</a>
+<a name="ln1354"> </a>
+<a name="ln1355">		PopMatrix();</a>
+<a name="ln1356">	}</a>
+<a name="ln1357"> </a>
+<a name="ln1358">	#endregion</a>
+<a name="ln1359"> </a>
+<a name="ln1360">	#region Image</a>
+<a name="ln1361"> </a>
+<a name="ln1362">	public void Image(Texture texture,</a>
+<a name="ln1363">		in Vector2 pos0, in Vector2 pos1, in Vector2 pos2, in Vector2 pos3,</a>
+<a name="ln1364">		in Vector2 t0, in Vector2 t1, in Vector2 t2, in Vector2 uv3,</a>
+<a name="ln1365">		Color col0, Color col1, Color col2, Color col3)</a>
+<a name="ln1366">	{</a>
+<a name="ln1367">		Quad(texture, pos0, pos1, pos2, pos3, t0, t1, t2, uv3, col0, col1, col2, col3);</a>
+<a name="ln1368">	}</a>
+<a name="ln1369"> </a>
+<a name="ln1370">	public void Image(Texture texture,</a>
+<a name="ln1371">		in Vector2 pos0, in Vector2 pos1, in Vector2 pos2, in Vector2 pos3,</a>
+<a name="ln1372">		in Vector2 t0, in Vector2 t1, in Vector2 t2, in Vector2 uv3,</a>
+<a name="ln1373">		Color color)</a>
+<a name="ln1374">	{</a>
+<a name="ln1375">		Quad(texture, pos0, pos1, pos2, pos3, t0, t1, t2, uv3, color);</a>
+<a name="ln1376">	}</a>
+<a name="ln1377"> </a>
+<a name="ln1378">	public void Image(Texture texture, Color color)</a>
+<a name="ln1379">	{</a>
+<a name="ln1380">		Quad(texture,</a>
+<a name="ln1381">			new Vector2(0, 0),</a>
+<a name="ln1382">			new Vector2(texture.Width, 0),</a>
+<a name="ln1383">			new Vector2(texture.Width, texture.Height),</a>
+<a name="ln1384">			new Vector2(0, texture.Height),</a>
+<a name="ln1385">			new Vector2(0, 0),</a>
+<a name="ln1386">			Vector2.UnitX,</a>
+<a name="ln1387">			new Vector2(1, 1),</a>
+<a name="ln1388">			Vector2.UnitY,</a>
+<a name="ln1389">			color);</a>
+<a name="ln1390">	}</a>
+<a name="ln1391"> </a>
+<a name="ln1392">	public void Image(Texture texture, in Vector2 position, Color color)</a>
+<a name="ln1393">	{</a>
+<a name="ln1394">		Quad(texture,</a>
+<a name="ln1395">			position,</a>
+<a name="ln1396">			position + new Vector2(texture.Width, 0),</a>
+<a name="ln1397">			position + new Vector2(texture.Width, texture.Height),</a>
+<a name="ln1398">			position + new Vector2(0, texture.Height),</a>
+<a name="ln1399">			new Vector2(0, 0),</a>
+<a name="ln1400">			Vector2.UnitX,</a>
+<a name="ln1401">			new Vector2(1, 1),</a>
+<a name="ln1402">			Vector2.UnitY,</a>
+<a name="ln1403">			color);</a>
+<a name="ln1404">	}</a>
+<a name="ln1405"> </a>
+<a name="ln1406">	public void Image(Texture texture, in Vector2 position, in Vector2 origin, in Vector2 scale, float rotation, Color color)</a>
+<a name="ln1407">	{</a>
+<a name="ln1408">		var was = Matrix;</a>
+<a name="ln1409"> </a>
+<a name="ln1410">		Matrix = Transform.CreateMatrix(position, origin, scale, rotation) * Matrix;</a>
+<a name="ln1411"> </a>
+<a name="ln1412">		Quad(texture,</a>
+<a name="ln1413">			new Vector2(0, 0),</a>
+<a name="ln1414">			new Vector2(texture.Width, 0),</a>
+<a name="ln1415">			new Vector2(texture.Width, texture.Height),</a>
+<a name="ln1416">			new Vector2(0, texture.Height),</a>
+<a name="ln1417">			new Vector2(0, 0),</a>
+<a name="ln1418">			Vector2.UnitX,</a>
+<a name="ln1419">			new Vector2(1, 1),</a>
+<a name="ln1420">			Vector2.UnitY,</a>
+<a name="ln1421">			color);</a>
+<a name="ln1422"> </a>
+<a name="ln1423">		Matrix = was;</a>
+<a name="ln1424">	}</a>
+<a name="ln1425"> </a>
+<a name="ln1426">	public void Image(Texture texture, in Rect clip, in Vector2 position, Color color)</a>
+<a name="ln1427">	{</a>
+<a name="ln1428">		var tx0 = clip.X / texture.Width;</a>
+<a name="ln1429">		var ty0 = clip.Y / texture.Height;</a>
+<a name="ln1430">		var tx1 = clip.Right / texture.Width;</a>
+<a name="ln1431">		var ty1 = clip.Bottom / texture.Height;</a>
+<a name="ln1432"> </a>
+<a name="ln1433">		Quad(texture,</a>
+<a name="ln1434">			position,</a>
+<a name="ln1435">			position + new Vector2(clip.Width, 0),</a>
+<a name="ln1436">			position + new Vector2(clip.Width, clip.Height),</a>
+<a name="ln1437">			position + new Vector2(0, clip.Height),</a>
+<a name="ln1438">			new Vector2(tx0, ty0),</a>
+<a name="ln1439">			new Vector2(tx1, ty0),</a>
+<a name="ln1440">			new Vector2(tx1, ty1),</a>
+<a name="ln1441">			new Vector2(tx0, ty1), color);</a>
+<a name="ln1442">	}</a>
+<a name="ln1443"> </a>
+<a name="ln1444">	public void Image(Texture texture, in Rect clip, in Vector2 position, in Vector2 origin, in Vector2 scale, float rotation, Color color)</a>
+<a name="ln1445">	{</a>
+<a name="ln1446">		var was = Matrix;</a>
+<a name="ln1447"> </a>
+<a name="ln1448">		Matrix = Transform.CreateMatrix(position, origin, scale, rotation) * Matrix;</a>
+<a name="ln1449"> </a>
+<a name="ln1450">		var tx0 = clip.X / texture.Width;</a>
+<a name="ln1451">		var ty0 = clip.Y / texture.Height;</a>
+<a name="ln1452">		var tx1 = clip.Right / texture.Width;</a>
+<a name="ln1453">		var ty1 = clip.Bottom / texture.Height;</a>
+<a name="ln1454"> </a>
+<a name="ln1455">		Quad(texture,</a>
+<a name="ln1456">			new Vector2(0, 0),</a>
+<a name="ln1457">			new Vector2(clip.Width, 0),</a>
+<a name="ln1458">			new Vector2(clip.Width, clip.Height),</a>
+<a name="ln1459">			new Vector2(0, clip.Height),</a>
+<a name="ln1460">			new Vector2(tx0, ty0),</a>
+<a name="ln1461">			new Vector2(tx1, ty0),</a>
+<a name="ln1462">			new Vector2(tx1, ty1),</a>
+<a name="ln1463">			new Vector2(tx0, ty1),</a>
+<a name="ln1464">			color);</a>
+<a name="ln1465"> </a>
+<a name="ln1466">		Matrix = was;</a>
+<a name="ln1467">	}</a>
+<a name="ln1468"> </a>
+<a name="ln1469">	public void Image(in Subtexture subtex, Color color)</a>
+<a name="ln1470">	{</a>
+<a name="ln1471">		Quad(subtex.Texture,</a>
+<a name="ln1472">			subtex.DrawCoords[0], subtex.DrawCoords[1], subtex.DrawCoords[2], subtex.DrawCoords[3],</a>
+<a name="ln1473">			subtex.TexCoords[0], subtex.TexCoords[1], subtex.TexCoords[2], subtex.TexCoords[3],</a>
+<a name="ln1474">			color);</a>
+<a name="ln1475">	}</a>
+<a name="ln1476"> </a>
+<a name="ln1477">	public void Image(in Subtexture subtex, in Vector2 position, Color color)</a>
+<a name="ln1478">	{</a>
+<a name="ln1479">		Quad(subtex.Texture,</a>
+<a name="ln1480">			position + subtex.DrawCoords[0], position + subtex.DrawCoords[1], position + subtex.DrawCoords[2], position + subtex.DrawCoords[3],</a>
+<a name="ln1481">			subtex.TexCoords[0], subtex.TexCoords[1], subtex.TexCoords[2], subtex.TexCoords[3],</a>
+<a name="ln1482">			color);</a>
+<a name="ln1483">	}</a>
+<a name="ln1484"> </a>
+<a name="ln1485">	public void Image(in Subtexture subtex, in Vector2 position, in Vector2 origin, in Vector2 scale, float rotation, Color color)</a>
+<a name="ln1486">	{</a>
+<a name="ln1487">		var was = Matrix;</a>
+<a name="ln1488"> </a>
+<a name="ln1489">		Matrix = Transform.CreateMatrix(position, origin, scale, rotation) * Matrix;</a>
+<a name="ln1490"> </a>
+<a name="ln1491">		Quad(subtex.Texture,</a>
+<a name="ln1492">			subtex.DrawCoords[0], subtex.DrawCoords[1], subtex.DrawCoords[2], subtex.DrawCoords[3],</a>
+<a name="ln1493">			subtex.TexCoords[0], subtex.TexCoords[1], subtex.TexCoords[2], subtex.TexCoords[3],</a>
+<a name="ln1494">			color);</a>
+<a name="ln1495"> </a>
+<a name="ln1496">		Matrix = was;</a>
+<a name="ln1497">	}</a>
+<a name="ln1498"> </a>
+<a name="ln1499">	public void Image(in Subtexture subtex, in Vector2 position, in Vector2 origin, in Vector2 scale, float rotation, Color c0, Color c1, Color c2, Color c3)</a>
+<a name="ln1500">	{</a>
+<a name="ln1501">		var was = Matrix;</a>
+<a name="ln1502"> </a>
+<a name="ln1503">		Matrix = Transform.CreateMatrix(position, origin, scale, rotation) * Matrix;</a>
+<a name="ln1504"> </a>
+<a name="ln1505">		Quad(subtex.Texture,</a>
+<a name="ln1506">			subtex.DrawCoords[0], subtex.DrawCoords[1], subtex.DrawCoords[2], subtex.DrawCoords[3],</a>
+<a name="ln1507">			subtex.TexCoords[0], subtex.TexCoords[1], subtex.TexCoords[2], subtex.TexCoords[3],</a>
+<a name="ln1508">			c0, c1, c2, c3);</a>
+<a name="ln1509"> </a>
+<a name="ln1510">		Matrix = was;</a>
+<a name="ln1511">	}</a>
+<a name="ln1512"> </a>
+<a name="ln1513">	public void Image(in Subtexture subtex, in Rect clip, in Vector2 position, in Vector2 origin, in Vector2 scale, float rotation, Color color)</a>
+<a name="ln1514">	{</a>
+<a name="ln1515">		var (source, frame) = subtex.GetClip(clip);</a>
+<a name="ln1516">		var tex = subtex.Texture;</a>
+<a name="ln1517">		var was = Matrix;</a>
+<a name="ln1518"> </a>
+<a name="ln1519">		Matrix = Transform.CreateMatrix(position, origin, scale, rotation) * Matrix;</a>
+<a name="ln1520"> </a>
+<a name="ln1521">		var px0 = -frame.X;</a>
+<a name="ln1522">		var py0 = -frame.Y;</a>
+<a name="ln1523">		var px1 = -frame.X + source.Width;</a>
+<a name="ln1524">		var py1 = -frame.Y + source.Height;</a>
+<a name="ln1525"> </a>
+<a name="ln1526">		var tx0 = 0f;</a>
+<a name="ln1527">		var ty0 = 0f;</a>
+<a name="ln1528">		var tx1 = 0f;</a>
+<a name="ln1529">		var ty1 = 0f;</a>
+<a name="ln1530"> </a>
+<a name="ln1531">		if (tex != null)</a>
+<a name="ln1532">		{</a>
+<a name="ln1533">			tx0 = source.Left / tex.Width;</a>
+<a name="ln1534">			ty0 = source.Top / tex.Height;</a>
+<a name="ln1535">			tx1 = source.Right / tex.Width;</a>
+<a name="ln1536">			ty1 = source.Bottom / tex.Height;</a>
+<a name="ln1537">		}</a>
+<a name="ln1538"> </a>
+<a name="ln1539">		Quad(subtex.Texture,</a>
+<a name="ln1540">			new Vector2(px0, py0), new Vector2(px1, py0), new Vector2(px1, py1), new Vector2(px0, py1),</a>
+<a name="ln1541">			new Vector2(tx0, ty0), new Vector2(tx1, ty0), new Vector2(tx1, ty1), new Vector2(tx0, ty1),</a>
+<a name="ln1542">			color);</a>
+<a name="ln1543"> </a>
+<a name="ln1544">		Matrix = was;</a>
+<a name="ln1545">	}</a>
+<a name="ln1546"> </a>
+<a name="ln1547">	public void ImageStretch(in Subtexture subtex, in Rect rect, Color color)</a>
+<a name="ln1548">	{</a>
+<a name="ln1549">		Quad(subtex.Texture,</a>
+<a name="ln1550">			rect.TopLeft, rect.TopRight, rect.BottomRight, rect.BottomLeft,</a>
+<a name="ln1551">			subtex.TexCoords[0], subtex.TexCoords[1], subtex.TexCoords[2], subtex.TexCoords[3],</a>
+<a name="ln1552">			color);</a>
+<a name="ln1553">	}</a>
+<a name="ln1554"> </a>
+<a name="ln1555">	public void ImageStretch(in Subtexture subtex, in Rect rect, in Vector2 origin, in Vector2 scale, float rotation, Color color)</a>
+<a name="ln1556">	{</a>
+<a name="ln1557">		var was = Matrix;</a>
+<a name="ln1558"> </a>
+<a name="ln1559">		var pos = rect.Position;</a>
+<a name="ln1560">		Matrix = Transform.CreateMatrix(pos, origin, scale, rotation) * Matrix;</a>
+<a name="ln1561"> </a>
+<a name="ln1562">		Quad(subtex.Texture,</a>
+<a name="ln1563">			Vector2.Zero, rect.TopRight - pos, rect.BottomRight - pos, rect.BottomLeft - pos,</a>
+<a name="ln1564">			subtex.TexCoords[0], subtex.TexCoords[1], subtex.TexCoords[2], subtex.TexCoords[3],</a>
+<a name="ln1565">			color);</a>
+<a name="ln1566"> </a>
+<a name="ln1567">		Matrix = was;</a>
+<a name="ln1568">	}</a>
+<a name="ln1569"> </a>
+<a name="ln1570">	public void ImageStretch(in Subtexture subtex, in Rect rect, Color c0, Color c1, Color c2, Color c3)</a>
+<a name="ln1571">	{</a>
+<a name="ln1572">		Quad(subtex.Texture,</a>
+<a name="ln1573">			rect.TopLeft, rect.TopRight, rect.BottomRight, rect.BottomLeft,</a>
+<a name="ln1574">			subtex.TexCoords[0], subtex.TexCoords[1], subtex.TexCoords[2], subtex.TexCoords[3],</a>
+<a name="ln1575">			c0, c1, c2, c3);</a>
+<a name="ln1576">	}</a>
+<a name="ln1577"> </a>
+<a name="ln1578">	public void ImageStretch(in Subtexture subtex, in Rect rect, in Vector2 origin, in Vector2 scale, float rotation, Color c0, Color c1, Color c2, Color c3)</a>
+<a name="ln1579">	{</a>
+<a name="ln1580">		var was = Matrix;</a>
+<a name="ln1581"> </a>
+<a name="ln1582">		var pos = rect.Position;</a>
+<a name="ln1583">		Matrix = Transform.CreateMatrix(pos, origin, scale, rotation) * Matrix;</a>
+<a name="ln1584"> </a>
+<a name="ln1585">		Quad(subtex.Texture,</a>
+<a name="ln1586">			Vector2.Zero, rect.TopRight - pos, rect.BottomRight - pos, rect.BottomLeft - pos,</a>
+<a name="ln1587">			subtex.TexCoords[0], subtex.TexCoords[1], subtex.TexCoords[2], subtex.TexCoords[3],</a>
+<a name="ln1588">			c0, c1, c2, c3);</a>
+<a name="ln1589"> </a>
+<a name="ln1590">		Matrix = was;</a>
+<a name="ln1591">	}</a>
+<a name="ln1592"> </a>
+<a name="ln1593">	public void ImageFit(in Subtexture subtex, in Rect rect, in Vector2 justify, Color color, bool flipX, bool flipY)</a>
+<a name="ln1594">	{</a>
+<a name="ln1595">		if (subtex.Texture == null)</a>
+<a name="ln1596">			return;</a>
+<a name="ln1597"> </a>
+<a name="ln1598">		var bounds = rect;</a>
+<a name="ln1599">		if (bounds.Width == 0)</a>
+<a name="ln1600">			bounds.Width = subtex.Width;</a>
+<a name="ln1601">		if (bounds.Height == 0)</a>
+<a name="ln1602">			bounds.Height = subtex.Height;</a>
+<a name="ln1603"> </a>
+<a name="ln1604">		var scale = Calc.Min(bounds.Width / subtex.Width, bounds.Height / subtex.Height);</a>
+<a name="ln1605">		var at = new Vector2(bounds.X + bounds.Width * justify.X, bounds.Y + bounds.Height * justify.Y);</a>
+<a name="ln1606">		var orig = new Vector2(subtex.Width, subtex.Height) * justify;</a>
+<a name="ln1607"> </a>
+<a name="ln1608">		Image(subtex, at, orig, new Vector2(flipX ? -1 : 1, flipY ? -1 : 1) * scale, 0, color);</a>
+<a name="ln1609">	}</a>
+<a name="ln1610"> </a>
+<a name="ln1611">	public void ImageFit(in Subtexture subtex, in Rect rect, in Vector2 justify, Color c0, Color c1, Color c2, Color c3, bool flipX, bool flipY)</a>
+<a name="ln1612">	{</a>
+<a name="ln1613">		if (subtex.Texture == null)</a>
+<a name="ln1614">			return;</a>
+<a name="ln1615"> </a>
+<a name="ln1616">		var bounds = rect;</a>
+<a name="ln1617">		if (bounds.Width == 0)</a>
+<a name="ln1618">			bounds.Width = subtex.Width;</a>
+<a name="ln1619">		if (bounds.Height == 0)</a>
+<a name="ln1620">			bounds.Height = subtex.Height;</a>
+<a name="ln1621"> </a>
+<a name="ln1622">		var scale = Calc.Min(bounds.Width / subtex.Width, bounds.Height / subtex.Height);</a>
+<a name="ln1623">		var at = new Vector2(bounds.X + bounds.Width * justify.X, bounds.Y + bounds.Height * justify.Y);</a>
+<a name="ln1624">		var orig = new Vector2(subtex.Width, subtex.Height) * justify;</a>
+<a name="ln1625"> </a>
+<a name="ln1626">		Image(subtex, at, orig, new Vector2(flipX ? -1 : 1, flipY ? -1 : 1) * scale, 0, c0, c1, c2, c3);</a>
+<a name="ln1627">	}</a>
+<a name="ln1628"> </a>
+<a name="ln1629">	#endregion</a>
+<a name="ln1630"> </a>
+<a name="ln1631">	#region Misc.</a>
+<a name="ln1632"> </a>
+<a name="ln1633">	/// &lt;summary&gt;</a>
+<a name="ln1634">	/// Draws a checkered pattern.</a>
+<a name="ln1635">	/// This is fine for small a amount of grid cells, but larger areas should use a custom shader for performance.</a>
+<a name="ln1636">	/// &lt;/summary&gt;</a>
+<a name="ln1637">	public void CheckeredPattern(in Rect bounds, float cellWidth, float cellHeight, Color a, Color b)</a>
+<a name="ln1638">	{</a>
+<a name="ln1639">		var odd = false;</a>
+<a name="ln1640"> </a>
+<a name="ln1641">		for (float y = bounds.Top; y &lt; bounds.Bottom; y += cellHeight)</a>
+<a name="ln1642">		{</a>
+<a name="ln1643">			var cells = 0;</a>
+<a name="ln1644">			for (float x = bounds.Left; x &lt; bounds.Right; x += cellWidth)</a>
+<a name="ln1645">			{</a>
+<a name="ln1646">				var color = (odd ? a : b);</a>
+<a name="ln1647">				if (color.A &gt; 0)</a>
+<a name="ln1648">					Rect(x, y, Math.Min(bounds.Right - x, cellWidth), Math.Min(bounds.Bottom - y, cellHeight), color);</a>
+<a name="ln1649"> </a>
+<a name="ln1650">				odd = !odd;</a>
+<a name="ln1651">				cells++;</a>
+<a name="ln1652">			}</a>
+<a name="ln1653"> </a>
+<a name="ln1654">			if (cells % 2 == 0)</a>
+<a name="ln1655">				odd = !odd;</a>
+<a name="ln1656">		}</a>
+<a name="ln1657">	}</a>
+<a name="ln1658"> </a>
+<a name="ln1659">	#endregion</a>
+<a name="ln1660"> </a>
+<a name="ln1661">	#region Internal Utils</a>
+<a name="ln1662"> </a>
+<a name="ln1663">	[MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1664">	private void PushTriangle()</a>
+<a name="ln1665">	{</a>
+<a name="ln1666">		EnsureIndexCapacity(indexCount + 3);</a>
+<a name="ln1667"> </a>
+<a name="ln1668">		unsafe</a>
+<a name="ln1669">		{</a>
+<a name="ln1670">			var indexArray = new Span&lt;int&gt;((int*)indexPtr + indexCount, 3);</a>
+<a name="ln1671"> </a>
+<a name="ln1672">			indexArray[0] = vertexCount + 0;</a>
+<a name="ln1673">			indexArray[1] = vertexCount + 1;</a>
+<a name="ln1674">			indexArray[2] = vertexCount + 2;</a>
+<a name="ln1675">		}</a>
+<a name="ln1676"> </a>
+<a name="ln1677">		indexCount += 3;</a>
+<a name="ln1678">		currentBatch.Elements++;</a>
+<a name="ln1679">		meshDirty = true;</a>
+<a name="ln1680">	}</a>
+<a name="ln1681"> </a>
+<a name="ln1682">	[MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1683">	private void PushQuad()</a>
+<a name="ln1684">	{</a>
+<a name="ln1685">		EnsureIndexCapacity(indexCount + 6);</a>
+<a name="ln1686"> </a>
+<a name="ln1687">		unsafe</a>
+<a name="ln1688">		{</a>
+<a name="ln1689">			var indexArray = new Span&lt;int&gt;((int*)indexPtr + indexCount, 6);</a>
+<a name="ln1690"> </a>
+<a name="ln1691">			indexArray[0] = vertexCount + 0;</a>
+<a name="ln1692">			indexArray[1] = vertexCount + 1;</a>
+<a name="ln1693">			indexArray[2] = vertexCount + 2;</a>
+<a name="ln1694">			indexArray[3] = vertexCount + 0;</a>
+<a name="ln1695">			indexArray[4] = vertexCount + 2;</a>
+<a name="ln1696">			indexArray[5] = vertexCount + 3;</a>
+<a name="ln1697">		}</a>
+<a name="ln1698"> </a>
+<a name="ln1699">		indexCount += 6;</a>
+<a name="ln1700">		currentBatch.Elements += 2;</a>
+<a name="ln1701">		meshDirty = true;</a>
+<a name="ln1702">	}</a>
+<a name="ln1703"> </a>
+<a name="ln1704">	[MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1705">	private unsafe void EnsureIndexCapacity(int index)</a>
+<a name="ln1706">	{</a>
+<a name="ln1707">		if (index &gt;= indexCapacity)</a>
+<a name="ln1708">		{</a>
+<a name="ln1709">			if (indexCapacity == 0)</a>
+<a name="ln1710">				indexCapacity = 32;</a>
+<a name="ln1711"> </a>
+<a name="ln1712">			while (index &gt;= indexCapacity)</a>
+<a name="ln1713">				indexCapacity *= 2;</a>
+<a name="ln1714"> </a>
+<a name="ln1715">			var newPtr = Marshal.AllocHGlobal(sizeof(int) * indexCapacity);</a>
+<a name="ln1716"> </a>
+<a name="ln1717">			if (indexCount &gt; 0)</a>
+<a name="ln1718">				Buffer.MemoryCopy((void*)indexPtr, (void*)newPtr, indexCapacity * sizeof(int), indexCount * sizeof(int));</a>
+<a name="ln1719"> </a>
+<a name="ln1720">			if (indexPtr != IntPtr.Zero)</a>
+<a name="ln1721">				Marshal.FreeHGlobal(indexPtr);</a>
+<a name="ln1722"> </a>
+<a name="ln1723">			indexPtr = newPtr;</a>
+<a name="ln1724">		}</a>
+<a name="ln1725">	}</a>
+<a name="ln1726"> </a>
+<a name="ln1727">	[MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1728">	private unsafe void EnsureVertexCapacity(int index)</a>
+<a name="ln1729">	{</a>
+<a name="ln1730">		if (index &gt;= vertexCapacity)</a>
+<a name="ln1731">		{</a>
+<a name="ln1732">			if (vertexCapacity == 0)</a>
+<a name="ln1733">				vertexCapacity = 32;</a>
+<a name="ln1734"> </a>
+<a name="ln1735">			while (index &gt;= vertexCapacity)</a>
+<a name="ln1736">				vertexCapacity *= 2;</a>
+<a name="ln1737"> </a>
+<a name="ln1738">			var newPtr = Marshal.AllocHGlobal(sizeof(BatcherVertex) * vertexCapacity);</a>
+<a name="ln1739"> </a>
+<a name="ln1740">			if (vertexCount &gt; 0)</a>
+<a name="ln1741">				Buffer.MemoryCopy((void*)vertexPtr, (void*)newPtr, vertexCapacity * sizeof(BatcherVertex), vertexCount * sizeof(BatcherVertex));</a>
+<a name="ln1742"> </a>
+<a name="ln1743">			if (vertexPtr != IntPtr.Zero)</a>
+<a name="ln1744">				Marshal.FreeHGlobal(vertexPtr);</a>
+<a name="ln1745"> </a>
+<a name="ln1746">			vertexPtr = newPtr;</a>
+<a name="ln1747">		}</a>
+<a name="ln1748">	}</a>
+<a name="ln1749"> </a>
+<a name="ln1750">	[MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln1751">	private unsafe void FlipVerticalUVs(IntPtr ptr, int start, int count)</a>
+<a name="ln1752">	{</a>
+<a name="ln1753">		BatcherVertex* it = (BatcherVertex*)ptr + start;</a>
+<a name="ln1754">		BatcherVertex* end = it + count;</a>
+<a name="ln1755">		while (it &lt; end)</a>
+<a name="ln1756">		{</a>
+<a name="ln1757">			it-&gt;Tex.Y = 1.0f - it-&gt;Tex.Y;</a>
+<a name="ln1758">			it++;</a>
+<a name="ln1759">		}</a>
+<a name="ln1760">	}</a>
+<a name="ln1761"> </a>
+<a name="ln1762">	#endregion</a>
+<a name="ln1763">}</a>
+</code></pre>
+<div class="balloon" rel="16"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3073/" target="_blank">V3073</a> Not all IDisposable members are properly disposed. Call 'Dispose' when disposing 'Batcher' class. Inspect: mesh.</p></div>
+<div class="balloon" rel="1599"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3024/" target="_blank">V3024</a> An odd precise comparison: bounds.Width == 0. Consider using a comparison with defined precision: Math.Abs(A - B) &lt; Epsilon.</p></div>
+<div class="balloon" rel="1601"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3024/" target="_blank">V3024</a> An odd precise comparison: bounds.Height == 0. Consider using a comparison with defined precision: Math.Abs(A - B) &lt; Epsilon.</p></div>
+<div class="balloon" rel="1617"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3024/" target="_blank">V3024</a> An odd precise comparison: bounds.Width == 0. Consider using a comparison with defined precision: Math.Abs(A - B) &lt; Epsilon.</p></div>
+<div class="balloon" rel="1619"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3024/" target="_blank">V3024</a> An odd precise comparison: bounds.Height == 0. Consider using a comparison with defined precision: Math.Abs(A - B) &lt; Epsilon.</p></div>
+<link rel="stylesheet" href="highlight.css">
+<script src="highlight.pack.js"></script>
+<script src="highlightjs-line-numbers.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script>hljs.initLineNumbersOnLoad();</script>
+<script>
+  $(document).ready(function() {
+      $('.balloon').each(function () {
+          var bl = $(this);
+          var line = bl.attr('rel');
+          var text = $('a[name="ln'+line+'"]').text();
+
+          var space_count = 0;
+          for(var i = 0; i<text.length; i++){
+              var char = text[i];
+              if((char !== ' ')&&(char !== '\t'))break;
+              if(char === '\t')space_count++;
+              space_count++;
+          }
+
+          bl.css('margin-left', space_count*8);
+          $('a[name="ln'+line+'"]').after(bl);
+      });
+
+      window.location = window.location;
+  });
+</script>
+</body>
+</html>

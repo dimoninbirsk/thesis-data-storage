@@ -1,0 +1,492 @@
+{
+  "version": 3,
+  "warnings": [
+    {
+      "code": "Renew",
+      "cwe": 0,
+      "level": 1,
+      "positions": [
+        {
+          "file": "",
+          "line": 1,
+          "endLine": 1,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 0,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [],
+      "message": "Your license will expire in 29 days. Click 'Renew' to learn more or contact us via Feedback form on our website. This is an information message. You can continue using the analyzer with your current license. To hide this message, use the '--disableLicenseExpirationCheck' flag.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V5606",
+      "cwe": 1069,
+      "sastId": "OWASP-7.4.2",
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\RestSharp\\src\\RestSharp\\Extensions\\CookieContainerExtensions.cs",
+          "line": 24,
+          "endLine": 24,
+          "navigation": {
+            "previousLine": 125,
+            "currentLine": 288242553,
+            "nextLine": 779059555,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "RestSharp"
+      ],
+      "message": "An empty exception handler. Silent suppression of exceptions may hide the presence of bugs or vulnerabilities.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3167",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\RestSharp\\src\\RestSharp\\Extensions\\HttpResponseExtensions.cs",
+          "line": 49,
+          "endLine": 49,
+          "navigation": {
+            "previousLine": 1510237295,
+            "currentLine": 544440279,
+            "nextLine": 41,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "RestSharp"
+      ],
+      "message": "Parameter of the 'CancellationToken' type is not utilized inside a method. Ignoring the parameter can cause application to be unresponsive to cancellation events.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V5613",
+      "cwe": 328,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\RestSharp\\src\\RestSharp\\Authenticators\\OAuth\\OAuthTools.cs",
+          "line": 216,
+          "endLine": 216,
+          "navigation": {
+            "previousLine": -1221979532,
+            "currentLine": 104952045,
+            "nextLine": -809660100,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "RestSharp"
+      ],
+      "message": "Use of 'HMACSHA1' hash algorithm is not recommended. Such code may cause the exposure of sensitive data.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V5613",
+      "cwe": 328,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\RestSharp\\src\\RestSharp\\Authenticators\\OAuth\\OAuthTools.cs",
+          "line": 238,
+          "endLine": 238,
+          "navigation": {
+            "previousLine": 43,
+            "currentLine": 701193153,
+            "nextLine": -1267817402,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "RestSharp"
+      ],
+      "message": "Use of 'SHA1' hash algorithm is not recommended. Such code may cause the exposure of sensitive data.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3146",
+      "cwe": 476,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\RestSharp\\gen\\SourceGenerator\\InheritedCloneGenerator.cs",
+          "line": 43,
+          "endLine": 43,
+          "navigation": {
+            "previousLine": -778200281,
+            "currentLine": -406231869,
+            "nextLine": -1946885554,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\RestSharp\\gen\\SourceGenerator\\InheritedCloneGenerator.cs",
+          "line": 42,
+          "endLine": 42
+        }
+      ],
+      "projects": [
+        "SourceGenerator"
+      ],
+      "message": "Possible null dereference of 'attributeData'. The 'FirstOrDefault' can return default null value.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3063",
+      "cwe": 571,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\RestSharp\\src\\RestSharp\\Parameters\\ObjectParser.cs",
+          "line": 73,
+          "endLine": 73,
+          "navigation": {
+            "previousLine": 1629495748,
+            "currentLine": -524247863,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "RestSharp"
+      ],
+      "message": "A part of conditional expression is always true if it is evaluated: includedProperties.Length > 0.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3022",
+      "cwe": 571,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\RestSharp\\src\\RestSharp\\Response\\RestResponseExtensions.cs",
+          "line": 36,
+          "endLine": 36,
+          "navigation": {
+            "previousLine": 205910557,
+            "currentLine": -559990174,
+            "nextLine": 37013,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "RestSharp"
+      ],
+      "message": "Expression 'x.Value.ToString()' is always not null. The operator '??' is excessive.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3022",
+      "cwe": 571,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\RestSharp\\src\\RestSharp\\Response\\RestResponseExtensions.cs",
+          "line": 58,
+          "endLine": 58,
+          "navigation": {
+            "previousLine": 205910557,
+            "currentLine": -559990174,
+            "nextLine": 37013,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "RestSharp"
+      ],
+      "message": "Expression 'x.Value.ToString()' is always not null. The operator '??' is excessive.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V5606",
+      "cwe": 1069,
+      "sastId": "OWASP-7.4.2",
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\RestSharp\\src\\RestSharp\\Request\\RequestContent.cs",
+          "line": 229,
+          "endLine": 229,
+          "navigation": {
+            "previousLine": 125,
+            "currentLine": -8218099,
+            "nextLine": 2121274,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "RestSharp"
+      ],
+      "message": "An empty exception handler. Silent suppression of exceptions may hide the presence of bugs or vulnerabilities.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3072",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\RestSharp\\test\\RestSharp.Tests\\Auth\\OAuth1SignatureTests.cs",
+          "line": 6,
+          "endLine": 6,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": -1953933464,
+            "nextLine": -1230778770,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\RestSharp\\test\\RestSharp.Tests\\Auth\\OAuth1SignatureTests.cs",
+          "line": 19,
+          "endLine": 19
+        }
+      ],
+      "projects": [
+        "RestSharp.Tests"
+      ],
+      "message": "The 'OAuth1SignatureTests' class containing IDisposable members does not itself implement IDisposable. Inspect: _client.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V5601",
+      "cwe": 798,
+      "sastId": "OWASP-2.10.4",
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\RestSharp\\test\\RestSharp.Tests\\Auth\\OAuth1AuthTests.cs",
+          "line": 9,
+          "endLine": 9,
+          "navigation": {
+            "previousLine": -1039724488,
+            "currentLine": -1103380981,
+            "nextLine": -1007551771,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "RestSharp.Tests"
+      ],
+      "message": "Suspicious string literal could be a password: 'ClientPassword'. Storing credentials inside source code can lead to security issues.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3013",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\RestSharp\\test\\RestSharp.Tests\\UrlBuilderTests.Get.cs",
+          "line": 30,
+          "endLine": 30,
+          "navigation": {
+            "previousLine": 3377,
+            "currentLine": 707107092,
+            "nextLine": -2041711557,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\RestSharp\\test\\RestSharp.Tests\\UrlBuilderTests.Get.cs",
+          "line": 41,
+          "endLine": 41
+        }
+      ],
+      "projects": [
+        "RestSharp.Tests"
+      ],
+      "message": "It is odd that the body of 'GET_with_empty_request' function is fully equivalent to the body of 'GET_with_empty_request_and_bare_hostname' function.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V5621",
+      "cwe": 535,
+      "sastId": "OWASP-8.3.5",
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\RestSharp\\test\\RestSharp.Tests.Shared\\Fixtures\\WebServer.cs",
+          "line": 34,
+          "endLine": 34,
+          "navigation": {
+            "previousLine": 8980253,
+            "currentLine": -1544476849,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "RestSharp.Tests.Shared"
+      ],
+      "message": "Error message contains potentially sensitive data, in 'e.ToString()', that may be exposed.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V5621",
+      "cwe": 535,
+      "sastId": "OWASP-8.3.5",
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\RestSharp\\test\\RestSharp.Tests.Shared\\Fixtures\\WebServer.cs",
+          "line": 39,
+          "endLine": 39,
+          "navigation": {
+            "previousLine": 8980253,
+            "currentLine": -1544476849,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "RestSharp.Tests.Shared"
+      ],
+      "message": "Error message contains potentially sensitive data, in 'e.ToString()', that may be exposed.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3138",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\RestSharp\\test\\RestSharp.InteractiveTests\\TwitterClient.cs",
+          "line": 39,
+          "endLine": 39,
+          "navigation": {
+            "previousLine": -866491298,
+            "currentLine": 828707836,
+            "nextLine": 19429,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "RestSharp.InteractiveTests"
+      ],
+      "message": "String literal contains potential interpolated expression. Consider inspecting: user.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3013",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\RestSharp\\test\\RestSharp.Tests.Serializers.Xml\\XmlAttributeDeserializerTests.cs",
+          "line": 334,
+          "endLine": 334,
+          "navigation": {
+            "previousLine": 3377,
+            "currentLine": -2034448119,
+            "nextLine": 1397299769,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\RestSharp\\test\\RestSharp.Tests.Serializers.Xml\\XmlAttributeDeserializerTests.cs",
+          "line": 386,
+          "endLine": 386
+        }
+      ],
+      "projects": [
+        "RestSharp.Tests.Serializers.Xml"
+      ],
+      "message": "It is odd that the body of 'Can_Deserialize_Names_With_Dashes_On_Default_Root' function is fully equivalent to the body of 'Can_Deserialize_Lower_Cased_Root_Elements_With_Dashes' function.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3013",
+      "cwe": 0,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\RestSharp\\test\\RestSharp.Tests.Serializers.Xml\\XmlDeserializerTests.cs",
+          "line": 726,
+          "endLine": 726,
+          "navigation": {
+            "previousLine": 3377,
+            "currentLine": -1719120666,
+            "nextLine": 1397299769,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\RestSharp\\test\\RestSharp.Tests.Serializers.Xml\\XmlDeserializerTests.cs",
+          "line": 763,
+          "endLine": 763
+        }
+      ],
+      "projects": [
+        "RestSharp.Tests.Serializers.Xml"
+      ],
+      "message": "It is odd that the body of 'Can_Deserialize_Lower_Cased_Root_Elements_With_Dashes' function is fully equivalent to the body of 'Can_Deserialize_Names_With_Dashes_On_Default_Root' function.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V5625",
+      "cwe": 0,
+      "level": 2,
+      "positions": [
+        {
+          "file": "",
+          "line": 1,
+          "endLine": 1,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 0,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "RestSharp.Tests.Serializers.Csv",
+        "RestSharp.Tests.Serializers.Json",
+        "RestSharp.Tests.Shared",
+        "RestSharp.Tests.Integrated"
+      ],
+      "message": "Referenced package WireMock.Net depends on assembly System.Linq.Dynamic.Core 1.3.12.0 from the System.Linq.Dynamic.Core package which contains vulnerability according to CVE-2024-51417: Property reflection in System.Linq.Dynamic.Core.",
+      "favorite": false,
+      "falseAlarm": false
+    }
+  ]
+}

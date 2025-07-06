@@ -1,0 +1,164 @@
+﻿[
+    {
+        "Status":  "Outdated",
+        "PackageID":  "System.ValueTuple",
+        "CurrentVersion":  "4.5.0",
+        "LatestVersion":  "4.6.1",
+        "Reason":  "New version available",
+        "Solution":  "src",
+        "Timestamp":  "20250416_175601"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Microsoft.Bcl.AsyncInterfaces",
+        "CurrentVersion":  "8.0.0",
+        "LatestVersion":  "9.0.4",
+        "Reason":  "New version available",
+        "Solution":  "src",
+        "Timestamp":  "20250416_175601"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "System.Threading.Tasks.Extensions",
+        "CurrentVersion":  "4.5.4",
+        "LatestVersion":  "4.6.3",
+        "Reason":  "New version available",
+        "Solution":  "src",
+        "Timestamp":  "20250416_175601"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "System.Data.SqlClient",
+        "CurrentVersion":  "4.8.6",
+        "LatestVersion":  "4.9.0",
+        "Reason":  "New version available",
+        "Solution":  "src",
+        "Timestamp":  "20250416_175601"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Microsoft.Data.SqlClient",
+        "CurrentVersion":  "5.2.0",
+        "LatestVersion":  "6.0.1",
+        "Reason":  "New version available",
+        "Solution":  "src",
+        "Timestamp":  "20250416_175601"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Microsoft.Data.SqlClient",
+        "CurrentVersion":  "5.2.0",
+        "LatestVersion":  "6.0.1",
+        "Reason":  "New version available",
+        "Solution":  "src",
+        "Timestamp":  "20250416_175601"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Microsoft.Extensions.Primitives",
+        "CurrentVersion":  "8.0.0",
+        "LatestVersion":  "9.0.4",
+        "Reason":  "New version available",
+        "Solution":  "src",
+        "Timestamp":  "20250416_175601"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "MySqlConnector",
+        "CurrentVersion":  "2.3.7",
+        "LatestVersion":  "2.4.0",
+        "Reason":  "New version available",
+        "Solution":  "src",
+        "Timestamp":  "20250416_175601"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Npgsql",
+        "CurrentVersion":  "8.0.3",
+        "LatestVersion":  "9.0.3",
+        "Reason":  "New version available",
+        "Solution":  "src",
+        "Timestamp":  "20250416_175601"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "System.Data.Odbc",
+        "CurrentVersion":  "8.0.0",
+        "LatestVersion":  "9.0.4",
+        "Reason":  "New version available",
+        "Solution":  "src",
+        "Timestamp":  "20250416_175601"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "System.Diagnostics.DiagnosticSource",
+        "CurrentVersion":  "8.0.0",
+        "LatestVersion":  "9.0.4",
+        "Reason":  "New version available",
+        "Solution":  "src",
+        "Timestamp":  "20250416_175601"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Microsoft.Data.Sqlite",
+        "CurrentVersion":  "8.0.0",
+        "LatestVersion":  "9.0.4",
+        "Reason":  "New version available",
+        "Solution":  "src",
+        "Timestamp":  "20250416_175601"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Microsoft.Extensions.Primitives",
+        "CurrentVersion":  "8.0.0",
+        "LatestVersion":  "9.0.4",
+        "Reason":  "New version available",
+        "Solution":  "src",
+        "Timestamp":  "20250416_175601"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "MySqlConnector",
+        "CurrentVersion":  "2.3.7",
+        "LatestVersion":  "2.4.0",
+        "Reason":  "New version available",
+        "Solution":  "src",
+        "Timestamp":  "20250416_175601"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Npgsql",
+        "CurrentVersion":  "8.0.3",
+        "LatestVersion":  "9.0.3",
+        "Reason":  "New version available",
+        "Solution":  "src",
+        "Timestamp":  "20250416_175601"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Oracle.ManagedDataAccess.Core",
+        "CurrentVersion":  "23.4.0",
+        "LatestVersion":  "23.8.0",
+        "Reason":  "New version available",
+        "Solution":  "src",
+        "Timestamp":  "20250416_175601"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "System.Data.Odbc",
+        "CurrentVersion":  "8.0.0",
+        "LatestVersion":  "9.0.4",
+        "Reason":  "New version available",
+        "Solution":  "src",
+        "Timestamp":  "20250416_175601"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "System.Diagnostics.DiagnosticSource",
+        "CurrentVersion":  "8.0.0",
+        "LatestVersion":  "9.0.4",
+        "Reason":  "New version available",
+        "Solution":  "src",
+        "Timestamp":  "20250416_175601"
+    }
+]

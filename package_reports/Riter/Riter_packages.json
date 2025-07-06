@@ -1,0 +1,56 @@
+﻿[
+    {
+        "Status":  "Outdated",
+        "PackageID":  "FluentAssertions",
+        "CurrentVersion":  "7.0.0",
+        "LatestVersion":  "8.2.0",
+        "Reason":  "New version available",
+        "Solution":  "Riter",
+        "Timestamp":  "20250416_175804"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Xunit.StaFact",
+        "CurrentVersion":  "1.2.69",
+        "LatestVersion":  "2.1.7",
+        "Reason":  "New version available",
+        "Solution":  "Riter",
+        "Timestamp":  "20250416_175804"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Microsoft.Extensions.Configuration.Abstractions",
+        "CurrentVersion":  "9.0.3",
+        "LatestVersion":  "9.0.4",
+        "Reason":  "New version available",
+        "Solution":  "Riter",
+        "Timestamp":  "20250416_175804"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Microsoft.Extensions.Configuration.Json",
+        "CurrentVersion":  "8.0.1",
+        "LatestVersion":  "9.0.4",
+        "Reason":  "New version available",
+        "Solution":  "Riter",
+        "Timestamp":  "20250416_175804"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Microsoft.Extensions.DependencyInjection",
+        "CurrentVersion":  "9.0.3",
+        "LatestVersion":  "9.0.4",
+        "Reason":  "New version available",
+        "Solution":  "Riter",
+        "Timestamp":  "20250416_175804"
+    },
+    {
+        "Status":  "Outdated",
+        "PackageID":  "Microsoft.Extensions.Options.ConfigurationExtensions",
+        "CurrentVersion":  "9.0.0",
+        "LatestVersion":  "9.0.4",
+        "Reason":  "New version available",
+        "Solution":  "Riter",
+        "Timestamp":  "20250416_175804"
+    }
+]

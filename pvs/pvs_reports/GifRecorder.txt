@@ -1,0 +1,718 @@
+PVS-Studio Report: GifRecorder
+================================================================================
+
+┌─[ID: V3148]
+├─ CWE: 476
+├─ SAST: None
+├─ Level: 2
+└─ Occurrences: 277
+
+Common pattern:
+Casting potential 'null' value of 'GetValue()' to a value type can lead to NullReferenceException.
+
+Message:
+• Casting potential 'null' value of 'GetValue()' to a value type can lead to NullReferenceException.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3024]
+├─ CWE: 682
+├─ SAST: None
+├─ Level: 3
+└─ Occurrences: 43
+
+Common pattern:
+An odd precise comparison . Consider using a comparison with defined precision: Math.Abs(A - B)   Epsilon.
+
+Examples:
+• An odd precise comparison. Consider using a comparison with defined precision: Math.Abs(A - B) > Epsilon.
+• An odd precise comparison: Monitor?.Scale != monitor.Scale. Consider using a comparison with defined precision: Math.Abs(A - B) > Epsilon.
+• An odd precise comparison: a == 0. Consider using a comparison with defined precision: Math.Abs(A - B) < Epsilon.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V5606]
+├─ CWE: 1069
+├─ SAST: OWASP-7.4.2
+├─ Level: 3
+└─ Occurrences: 33
+
+Common pattern:
+An empty exception handler. Silent suppression of exceptions may hide the presence of bugs or vulnerabilities.
+
+Message:
+• An empty exception handler. Silent suppression of exceptions may hide the presence of bugs or vulnerabilities.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3022]
+├─ CWE: 571
+├─ SAST: None
+├─ Level: 1
+└─ Occurrences: 20
+
+Common pattern:
+Expression 'box.MainKey' is always not null. The operator '??' is excessive.
+
+Examples:
+• Expression '!IsFirstFrame || UseGlobalColorTable || UseFullTransparency' is always true.
+• Expression 'Content?.Length' is always not null. The operator '??' is excessive.
+• Expression 'Gifv' is always not null. The operator '??' is excessive.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3002]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 2
+└─ Occurrences: 19
+
+Common pattern:
+The switch statement does not cover all values of the ' ' enum: 
+
+Examples:
+• The switch statement does not cover all values of the 'EncodingStatus' enum: Canceled, FileDeletedOrMoved.
+• The switch statement does not cover all values of the 'ExportFormats' enum: Bpg, Zip.
+• The switch statement does not cover all values of the 'ExportFormats' enum: Zip.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3095]
+├─ CWE: 476
+├─ SAST: None
+├─ Level: 1
+└─ Occurrences: 18
+
+Common pattern:
+The ' ' object was used before it was verified against null. Check lines: 
+
+Examples:
+• The 'Capture' object was used before it was verified against null. Check lines: 1306, 1307.
+• The 'Capture' object was used before it was verified against null. Check lines: 1856, 1857.
+• The 'Device.ImmediateContext' object was used before it was verified against null. Check lines: 132, 157.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3125]
+├─ CWE: 476
+├─ SAST: None
+├─ Level: 2
+└─ Occurrences: 16
+
+Common pattern:
+The ' ' object was used after it was verified against null. Check lines: 
+
+Examples:
+• The 'Frames' object was used after it was verified against null. Check lines: 4155, 4153.
+• The '_pen' object was used after it was verified against null. Check lines: 196, 185.
+• The 'color' object was used after it was verified against null. Check lines: 29, 22.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3156]
+├─ CWE: 628
+├─ SAST: None
+├─ Level: 2
+└─ Occurrences: 16
+
+Common pattern:
+The f  argument of the ' ' metho d is not expected to be null.
+
+Examples:
+• The first argument of the 'Format' method is not expected to be null.
+• The first argument of the 'Format' method is not expected to be null. Potential null value: processing.
+• The first argument of the 'GetString' method is not expected to be null. Potential null value: dataBytes.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V5609]
+├─ CWE: 22
+├─ SAST: OWASP-12.3.1
+├─ Level: 3
+└─ Occurrences: 15
+
+Common pattern:
+Possible path traversal vulnerability otentially tainted data   used as path.
+
+Examples:
+• Possible path traversal vulnerability inside method. The first argument 'path' contains potentially tainted data used as path.
+• Possible path traversal vulnerability inside method. The second argument 'path' contains potentially tainted data used as path.
+• Possible path traversal vulnerability. Potentially tainted data from the 'fileName' variable is used as path.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3063]
+├─ CWE: 570
+├─ SAST: None
+├─ Level: 2
+└─ Occurrences: 13
+
+Common pattern:
+A part of conditional expression is always  e if it is evaluated: 
+
+Examples:
+• A part of conditional expression is always false if it is evaluated: chunk == null.
+• A part of conditional expression is always false if it is evaluated: e.Key == Key.Enter.
+• A part of conditional expression is always false if it is evaluated: e.Key == Key.Return.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3080]
+├─ CWE: 476
+├─ SAST: None
+├─ Level: 2
+└─ Occurrences: 12
+
+Common pattern:
+Possible null dereference . Consider inspecting
+
+Examples:
+• Possible null dereference inside method at 'args.Any'. Consider inspecting the 2nd argument: args.
+• Possible null dereference inside property at '_icon.Handle'. Consider inspecting: value.ToIcon().
+• Possible null dereference. Consider inspecting 'image'.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3144]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 1
+└─ Occurrences: 8
+
+Common pattern:
+This file is marked with copyleft license, which requires you to open the derived source code.
+
+Message:
+• This file is marked with copyleft license, which requires you to open the derived source code.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3139]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 3
+└─ Occurrences: 7
+
+Common pattern:
+Two or more case-branches perform the same actions.
+
+Message:
+• Two or more case-branches perform the same actions.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3149]
+├─ CWE: 476
+├─ SAST: None
+├─ Level: 3
+└─ Occurrences: 6
+
+Common pattern:
+Dereferencing the result of 'as' operator  can lead to NullReferenceException. Consider inspecting 
+
+Examples:
+• Dereferencing the result of 'as' operator can lead to NullReferenceException. Consider inspecting 'hwndSource'.
+• Dereferencing the result of 'as' operator can lead to NullReferenceException. Consider inspecting 'source'.
+• Dereferencing the result of 'as' operator inside method can lead to NullReferenceException. Consider inspecting 1st argument.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3203]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 3
+└─ Occurrences: 6
+
+Common pattern:
+Method parameter is not used: 
+
+Examples:
+• Method parameter is not used: hdc.
+• Method parameter is not used: optional.
+• Method parameter is not used: pasteIndex.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3013]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 3
+└─ Occurrences: 5
+
+Common pattern:
+It is odd that the body of ' ' function is fully equivalent to the body of ' ' function
+
+Examples:
+• It is odd that the body of 'Convert' function is fully equivalent to the body of 'ConvertBack' function (10, line 18).
+• It is odd that the body of 'Delete_CanExecute' function is fully equivalent to the body of 'Image_CanExecute' function (1534, line 1995).
+• It is odd that the body of 'IsAdornerVisible_PropertyChanged' function is fully equivalent to the body of 'AdornerContent_PropertyChanged' function.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3130]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 3
+└─ Occurrences: 5
+
+Common pattern:
+Priority of the '&&' operator is higher than that of the '||' operator. Possible missing parentheses.
+
+Message:
+• Priority of the '&&' operator is higher than that of the '||' operator. Possible missing parentheses.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3117]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 2
+└─ Occurrences: 5
+
+Common pattern:
+Constructor parameter  not used.
+
+Examples:
+• Constructor parameter 'filler' is not used.
+• Constructor parameters 'width', 'height' are not used.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3043]
+├─ CWE: 483
+├─ SAST: None
+├─ Level: 1
+└─ Occurrences: 4
+
+Common pattern:
+The code's operational logic does not correspond with its formatting. The statement is indented to the right, but it is always executed. It is possible that curly brackets are missing.
+
+Message:
+• The code's operational logic does not correspond with its formatting. The statement is indented to the right, but it is always executed. It is possible that curly brackets are missing.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V5616]
+├─ CWE: 77
+├─ SAST: OWASP-5.3.8
+├─ Level: 3
+└─ Occurrences: 4
+
+Common pattern:
+Possible command injection. Potentially tainted data in the 'info' variable is used to create an OS command.
+
+Message:
+• Possible command injection. Potentially tainted data in the 'info' variable is used to create an OS command.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3032]
+├─ CWE: 835
+├─ SAST: None
+├─ Level: 2
+└─ Occurrences: 3
+
+Common pattern:
+Waiting on this expression is unreliable, as compiler may optimize some of the variables. Use volatile variable(s) or synchronization primitives to avoid this.
+
+Message:
+• Waiting on this expression is unreliable, as compiler may optimize some of the variables. Use volatile variable(s) or synchronization primitives to avoid this.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3047]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 1
+└─ Occurrences: 3
+
+Common pattern:
+WPF: a class containing registered property does not correspond with a type that is passed as the ownerType.
+
+Message:
+• WPF: a class containing registered property does not correspond with a type that is passed as the ownerType.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3090]
+├─ CWE: 833
+├─ SAST: None
+├─ Level: 3
+└─ Occurrences: 3
+
+Common pattern:
+Unsafe locking on   in class '
+
+Examples:
+• Unsafe locking on 'this' instance in class 'NotifyIcon'.
+• Unsafe locking on public member 'ActivateLock' in class 'Editor'.
+• Unsafe locking on public member 'Lock' in class 'UserSettings'.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3106]
+├─ CWE: 125
+├─ SAST: None
+├─ Level: 3
+└─ Occurrences: 3
+
+Common pattern:
+Possible negative index value. The value of ' ndex ' index could reach -1.
+
+Examples:
+• Possible negative index value. The value of 'closestNeuronIndex' index could reach -1.
+• Possible negative index value. The value of 'index - 1' index could reach -1.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3008]
+├─ CWE: 563
+├─ SAST: None
+├─ Level: 3
+└─ Occurrences: 2
+
+Common pattern:
+The '_ignore' variable is assigned values twice successively. Perhaps this is a mistake. Check lines: 1
+
+Examples:
+• The '_ignore' variable is assigned values twice successively. Perhaps this is a mistake. Check lines: 139, 123.
+• The '_ignore' variable is assigned values twice successively. Perhaps this is a mistake. Check lines: 170, 154.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3142]
+├─ CWE: 561
+├─ SAST: None
+├─ Level: 2
+└─ Occurrences: 2
+
+Common pattern:
+Unreachable code detected. It is possible that an error is present.
+
+Message:
+• Unreachable code detected. It is possible that an error is present.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3064]
+├─ CWE: 369
+├─ SAST: None
+├─ Level: 2
+└─ Occurrences: 2
+
+Common pattern:
+Potential division by zero. Consider inspecting denominator '
+
+Examples:
+• Potential division by zero. Consider inspecting denominator '(MaxColorsWithTransparency - 1)'.
+• Potential division by zero. Consider inspecting denominator 'mult'.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3020]
+├─ CWE: 670
+├─ SAST: None
+├─ Level: 2
+└─ Occurrences: 2
+
+Common pattern:
+An unconditional 'break' within a loop.
+
+Message:
+• An unconditional 'break' within a loop.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3023]
+├─ CWE: 571
+├─ SAST: None
+├─ Level: 1
+└─ Occurrences: 2
+
+Common pattern:
+Consider inspecting this expression. The expression is excessive or contains a misprint.
+
+Message:
+• Consider inspecting this expression. The expression is excessive or contains a misprint.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: Renew]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 1
+└─ Occurrences: 1
+
+Common pattern:
+Your license will expire in 29 days. Click 'Renew' to learn more or contact us via Feedback form on our website. This is an information message. You can continue using the analyzer with your current license. To hide this message, use the '--disableLicenseExpirationCheck' flag.
+
+Message:
+• Your license will expire in 29 days. Click 'Renew' to learn more or contact us via Feedback form on our website. This is an information message. You can continue using the analyzer with your current license. To hide this message, use the '--disableLicenseExpirationCheck' flag.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3072]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 2
+└─ Occurrences: 1
+
+Common pattern:
+The 'BaseScreenRecorder' class containing IDisposable members does not itself implement IDisposable. Inspect: GarbageTimer.
+
+Message:
+• The 'BaseScreenRecorder' class containing IDisposable members does not itself implement IDisposable. Inspect: GarbageTimer.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3054]
+├─ CWE: 609
+├─ SAST: None
+├─ Level: 2
+└─ Occurrences: 1
+
+Common pattern:
+Potentially unsafe double-checked locking. Use volatile variable(s) or synchronization primitives to avoid this.
+
+Message:
+• Potentially unsafe double-checked locking. Use volatile variable(s) or synchronization primitives to avoid this.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V5604]
+├─ CWE: 609
+├─ SAST: OWASP-11.1.6, OWASP-1.11.3
+├─ Level: 2
+└─ Occurrences: 1
+
+Common pattern:
+Potentially unsafe double-checked locking. Use volatile variable(s) or synchronization primitives to avoid this.
+
+Message:
+• Potentially unsafe double-checked locking. Use volatile variable(s) or synchronization primitives to avoid this.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V5612]
+├─ CWE: 326
+├─ SAST: None
+├─ Level: 2
+└─ Occurrences: 1
+
+Common pattern:
+Do not use old versions of SSL/TLS protocols as it may cause security issues. Insecure protocols: TLS 1.1.
+
+Message:
+• Do not use old versions of SSL/TLS protocols as it may cause security issues. Insecure protocols: TLS 1.1.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3073]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 2
+└─ Occurrences: 1
+
+Common pattern:
+Not all IDisposable members are properly disposed. Call 'Dispose' when disposing 'DirectImageCapture' class. Inspect: TransformTexture.
+
+Message:
+• Not all IDisposable members are properly disposed. Call 'Dispose' when disposing 'DirectImageCapture' class. Inspect: TransformTexture.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3062]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 2
+└─ Occurrences: 1
+
+Common pattern:
+An object 'split' is used as an argument to its own method. Consider checking the first actual argument of the 'PrepareMainAction' method.
+
+Message:
+• An object 'split' is used as an argument to its own method. Consider checking the first actual argument of the 'PrepareMainAction' method.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V5621]
+├─ CWE: 535
+├─ SAST: OWASP-8.3.5
+├─ Level: 3
+└─ Occurrences: 1
+
+Common pattern:
+Error message contains potentially sensitive data, in 'e.Message', that may be exposed.
+
+Message:
+• Error message contains potentially sensitive data, in 'e.Message', that may be exposed.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3137]
+├─ CWE: 563
+├─ SAST: None
+├─ Level: 2
+└─ Occurrences: 1
+
+Common pattern:
+The 'hr' variable is assigned but is not used by the end of the function.
+
+Message:
+• The 'hr' variable is assigned but is not used by the end of the function.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3146]
+├─ CWE: 476
+├─ SAST: None
+├─ Level: 2
+└─ Occurrences: 1
+
+Common pattern:
+Possible null dereference of the 1st argument 'upload' inside method. The 'FirstOrDefault' can return default null value.
+
+Message:
+• Possible null dereference of the 1st argument 'upload' inside method. The 'FirstOrDefault' can return default null value.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3083]
+├─ CWE: 367
+├─ SAST: None
+├─ Level: 2
+└─ Occurrences: 1
+
+Common pattern:
+Unsafe invocation of event 'MouseEventReceived', NullReferenceException is possible. Consider assigning event to a local variable before invoking it.
+
+Message:
+• Unsafe invocation of event 'MouseEventReceived', NullReferenceException is possible. Consider assigning event to a local variable before invoking it.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V5605]
+├─ CWE: 367
+├─ SAST: OWASP-1.11.3, OWASP-11.1.6
+├─ Level: 2
+└─ Occurrences: 1
+
+Common pattern:
+Unsafe invocation of event 'MouseEventReceived', NullReferenceException is possible. Consider assigning event to a local variable before invoking it.
+
+Message:
+• Unsafe invocation of event 'MouseEventReceived', NullReferenceException is possible. Consider assigning event to a local variable before invoking it.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3097]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 3
+└─ Occurrences: 1
+
+Common pattern:
+Possible exception: the 'WindowPlacement' type marked by [Serializable] contains non-serializable members not marked by [NonSerialized].
+
+Message:
+• Possible exception: the 'WindowPlacement' type marked by [Serializable] contains non-serializable members not marked by [NonSerialized].
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3171]
+├─ CWE: 839
+├─ SAST: None
+├─ Level: 2
+└─ Occurrences: 1
+
+Common pattern:
+The parameter corresponding to the 1st argument 'length - 4' could reach the value of -4 inside method when used as the size of an array.
+
+Message:
+• The parameter corresponding to the 1st argument 'length - 4' could reach the value of -4 inside method when used as the size of an array.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3057]
+├─ CWE: 628
+├─ SAST: None
+├─ Level: 2
+└─ Occurrences: 1
+
+Common pattern:
+The 1st argument 'length - 4' has a possibly negative value, but is expected to be non-negative inside method, in 'ms.Read(buffer, 0, (int)count)'.
+
+Message:
+• The 1st argument 'length - 4' has a possibly negative value, but is expected to be non-negative inside method, in 'ms.Read(buffer, 0, (int)count)'.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3207]
+├─ CWE: 670
+├─ SAST: None
+├─ Level: 1
+└─ Occurrences: 1
+
+Common pattern:
+The 'not ExportFormats.Gif or ExportFormats.Apng' logical pattern may not work as expected. The 'not' pattern is matched only to the first expression from the 'or' pattern.
+
+Message:
+• The 'not ExportFormats.Gif or ExportFormats.Apng' logical pattern may not work as expected. The 'not' pattern is matched only to the first expression from the 'or' pattern.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3111]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 3
+└─ Occurrences: 1
+
+Common pattern:
+Checking value of 'message' for null will always return false when generic type is instantiated with a value type.
+
+Message:
+• Checking value of 'message' for null will always return false when generic type is instantiated with a value type.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3168]
+├─ CWE: 476
+├─ SAST: None
+├─ Level: 2
+└─ Occurrences: 1
+
+Common pattern:
+Awaiting on the 'GetResponse(HttpMethod.Get, url, headers)' expression with potential null value can lead to NullReferenceException.
+
+Message:
+• Awaiting on the 'GetResponse(HttpMethod.Get, url, headers)' expression with potential null value can lead to NullReferenceException.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3052]
+├─ CWE: 390
+├─ SAST: None
+├─ Level: 2
+└─ Occurrences: 1
+
+Common pattern:
+The original exception object 'u' was swallowed. Stack of original exception could be lost.
+
+Message:
+• The original exception object 'u' was swallowed. Stack of original exception could be lost.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V5603]
+├─ CWE: 390
+├─ SAST: OWASP-11.1.8
+├─ Level: 2
+└─ Occurrences: 1
+
+Common pattern:
+The original exception object 'u' was swallowed. Stack of original exception could be lost.
+
+Message:
+• The original exception object 'u' was swallowed. Stack of original exception could be lost.
+
+────────────────────────────────────────────────────────────────────────────────

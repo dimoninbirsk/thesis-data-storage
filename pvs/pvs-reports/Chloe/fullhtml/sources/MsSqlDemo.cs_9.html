@@ -1,0 +1,164 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>MsSqlDemo.cs</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <script src="../jquery-3.5.1.min.js"></script>
+</head>
+<body>
+<pre><code class = "cs">
+<a name="ln1">﻿using Chloe;</a>
+<a name="ln2">using Chloe.Core;</a>
+<a name="ln3">using Chloe.Descriptors;</a>
+<a name="ln4">using Chloe.Infrastructure;</a>
+<a name="ln5">using Chloe.SqlServer;</a>
+<a name="ln6">using Chloe.Reflection;</a>
+<a name="ln7">using System;</a>
+<a name="ln8">using System.Collections.Generic;</a>
+<a name="ln9">using System.Data;</a>
+<a name="ln10">using System.Linq;</a>
+<a name="ln11">using System.Linq.Expressions;</a>
+<a name="ln12">using System.Text;</a>
+<a name="ln13">using System.Threading.Tasks;</a>
+<a name="ln14">using Chloe.SqlServer.DDL;</a>
+<a name="ln15">using Chloe.RDBMS.DDL;</a>
+<a name="ln16"> </a>
+<a name="ln17">namespace ChloeDemo</a>
+<a name="ln18">{</a>
+<a name="ln19">    class MsSqlDemo : DemoBase</a>
+<a name="ln20">    {</a>
+<a name="ln21">        public MsSqlDemo()</a>
+<a name="ln22">        {</a>
+<a name="ln23">            DbConfiguration.UseTypeBuilders(typeof(TestEntityMap));</a>
+<a name="ln24">        }</a>
+<a name="ln25"> </a>
+<a name="ln26">        protected override IDbContext CreateDbContext()</a>
+<a name="ln27">        {</a>
+<a name="ln28">            MsSqlContext dbContext = new MsSqlContext(&quot;Data Source = .;Initial Catalog = Chloe;Integrated Security = SSPI;TrustServerCertificate=true&quot;);</a>
+<a name="ln29">            dbContext.Options.PagingMode = PagingMode.OFFSET_FETCH;</a>
+<a name="ln30"> </a>
+<a name="ln31">            return dbContext;</a>
+<a name="ln32">        }</a>
+<a name="ln33"> </a>
+<a name="ln34">        public override void InitDatabase()</a>
+<a name="ln35">        {</a>
+<a name="ln36">            new SqlServerTableGenerator(this.DbContext).CreateTables(TableCreateMode.CreateNew);</a>
+<a name="ln37">        }</a>
+<a name="ln38"> </a>
+<a name="ln39">        public override void Method()</a>
+<a name="ln40">        {</a>
+<a name="ln41">            IQuery&lt;Person&gt; q = this.DbContext.Query&lt;Person&gt;();</a>
+<a name="ln42"> </a>
+<a name="ln43">            var space = new char[] { ' ' };</a>
+<a name="ln44"> </a>
+<a name="ln45">            DateTime startTime = DateTime.Now;</a>
+<a name="ln46">            DateTime endTime = DateTime.Now.AddDays(1);</a>
+<a name="ln47">            q.Select(a =&gt; new</a>
+<a name="ln48">            {</a>
+<a name="ln49">                Id = a.Id,</a>
+<a name="ln50"> </a>
+<a name="ln51">                //CustomFunction = DbFunctions.MyFunction(a.Id), //自定义函数</a>
+<a name="ln52"> </a>
+<a name="ln53">                String_Length = (int?)a.Name.Length,//LEN([Person].[Name])</a>
+<a name="ln54">                Substring = a.Name.Substring(0),//SUBSTRING([Person].[Name],0 + 1,LEN([Person].[Name]))</a>
+<a name="ln55">                Substring1 = a.Name.Substring(1),//SUBSTRING([Person].[Name],1 + 1,LEN([Person].[Name]))</a>
+<a name="ln56">                Substring1_2 = a.Name.Substring(1, 2),//SUBSTRING([Person].[Name],1 + 1,2)</a>
+<a name="ln57">                ToLower = a.Name.ToLower(),//LOWER([Person].[Name])</a>
+<a name="ln58">                ToUpper = a.Name.ToUpper(),//UPPER([Person].[Name])</a>
+<a name="ln59">                IsNullOrEmpty = string.IsNullOrEmpty(a.Name),//too long</a>
+<a name="ln60">                Contains = (bool?)a.Name.Contains(&quot;s&quot;),//</a>
+<a name="ln61">                Trim = a.Name.Trim(),//RTRIM(LTRIM([Person].[Name]))</a>
+<a name="ln62">                TrimStart = a.Name.TrimStart(space),//LTRIM([Person].[Name])</a>
+<a name="ln63">                TrimEnd = a.Name.TrimEnd(space),//RTRIM([Person].[Name])</a>
+<a name="ln64">                StartsWith = (bool?)a.Name.StartsWith(&quot;s&quot;),//</a>
+<a name="ln65">                EndsWith = (bool?)a.Name.EndsWith(&quot;s&quot;),//</a>
+<a name="ln66">                Replace = a.Name.Replace(&quot;l&quot;, &quot;L&quot;),</a>
+<a name="ln67"> </a>
+<a name="ln68">                DiffYears = Sql.DiffYears(startTime, endTime),//DATEDIFF(YEAR,@P_0,@P_1)</a>
+<a name="ln69">                DiffMonths = Sql.DiffMonths(startTime, endTime),//DATEDIFF(MONTH,@P_0,@P_1)</a>
+<a name="ln70">                DiffDays = Sql.DiffDays(startTime, endTime),//DATEDIFF(DAY,@P_0,@P_1)</a>
+<a name="ln71">                DiffHours = Sql.DiffHours(startTime, endTime),//DATEDIFF(HOUR,@P_0,@P_1)</a>
+<a name="ln72">                DiffMinutes = Sql.DiffMinutes(startTime, endTime),//DATEDIFF(MINUTE,@P_0,@P_1)</a>
+<a name="ln73">                DiffSeconds = Sql.DiffSeconds(startTime, endTime),//DATEDIFF(SECOND,@P_0,@P_1)</a>
+<a name="ln74">                DiffMilliseconds = Sql.DiffMilliseconds(startTime, endTime),//DATEDIFF(MILLISECOND,@P_0,@P_1)</a>
+<a name="ln75">                //DiffMicroseconds = Sql.DiffMicroseconds(startTime, endTime),//DATEDIFF(MICROSECOND,@P_0,@P_1)  Exception</a>
+<a name="ln76"> </a>
+<a name="ln77">                /* No longer support method 'DateTime.Subtract(DateTime d)', instead of using 'Sql.DiffXX' */</a>
+<a name="ln78">                //SubtractTotalDays = endTime.Subtract(startTime).TotalDays,//CAST(DATEDIFF(DAY,@P_0,@P_1)</a>
+<a name="ln79">                //SubtractTotalHours = endTime.Subtract(startTime).TotalHours,//CAST(DATEDIFF(HOUR,@P_0,@P_1)</a>
+<a name="ln80">                //SubtractTotalMinutes = endTime.Subtract(startTime).TotalMinutes,//CAST(DATEDIFF(MINUTE,@P_0,@P_1)</a>
+<a name="ln81">                //SubtractTotalSeconds = endTime.Subtract(startTime).TotalSeconds,//CAST(DATEDIFF(SECOND,@P_0,@P_1)</a>
+<a name="ln82">                //SubtractTotalMilliseconds = endTime.Subtract(startTime).TotalMilliseconds,//CAST(DATEDIFF(MILLISECOND,@P_0,@P_1)</a>
+<a name="ln83"> </a>
+<a name="ln84">                AddYears = startTime.AddYears(1),//DATEADD(YEAR,1,@P_0)</a>
+<a name="ln85">                AddMonths = startTime.AddMonths(1),//DATEADD(MONTH,1,@P_0)</a>
+<a name="ln86">                AddDays = startTime.AddDays(1),//DATEADD(DAY,1,@P_0)</a>
+<a name="ln87">                AddHours = startTime.AddHours(1),//DATEADD(HOUR,1,@P_0)</a>
+<a name="ln88">                AddMinutes = startTime.AddMinutes(2),//DATEADD(MINUTE,2,@P_0)</a>
+<a name="ln89">                AddSeconds = startTime.AddSeconds(120),//DATEADD(SECOND,120,@P_0)</a>
+<a name="ln90">                AddMilliseconds = startTime.AddMilliseconds(20000),//DATEADD(MILLISECOND,20000,@P_0)</a>
+<a name="ln91"> </a>
+<a name="ln92">                Now = DateTime.Now,//GETDATE()</a>
+<a name="ln93">                UtcNow = DateTime.UtcNow,//GETUTCDATE()</a>
+<a name="ln94">                Today = DateTime.Today,//CAST(GETDATE() AS DATE)</a>
+<a name="ln95">                Date = DateTime.Now.Date,//CAST(GETDATE() AS DATE)</a>
+<a name="ln96">                Year = DateTime.Now.Year,//DATEPART(YEAR,GETDATE())</a>
+<a name="ln97">                Month = DateTime.Now.Month,//DATEPART(MONTH,GETDATE())</a>
+<a name="ln98">                Day = DateTime.Now.Day,//DATEPART(DAY,GETDATE())</a>
+<a name="ln99">                Hour = DateTime.Now.Hour,//DATEPART(HOUR,GETDATE())</a>
+<a name="ln100">                Minute = DateTime.Now.Minute,//DATEPART(MINUTE,GETDATE())</a>
+<a name="ln101">                Second = DateTime.Now.Second,//DATEPART(SECOND,GETDATE())</a>
+<a name="ln102">                Millisecond = DateTime.Now.Millisecond,//DATEPART(MILLISECOND,GETDATE())</a>
+<a name="ln103">                DayOfWeek = DateTime.Now.DayOfWeek,//(DATEPART(WEEKDAY,GETDATE()) - 1)</a>
+<a name="ln104"> </a>
+<a name="ln105">                Int_Parse = int.Parse(&quot;1&quot;),//CAST(N'1' AS INT)</a>
+<a name="ln106">                Int16_Parse = Int16.Parse(&quot;11&quot;),//CAST(N'11' AS SMALLINT)</a>
+<a name="ln107">                Long_Parse = long.Parse(&quot;2&quot;),//CAST(N'2' AS BIGINT)</a>
+<a name="ln108">                Double_Parse = double.Parse(&quot;3&quot;),//CAST(N'3' AS FLOAT)</a>
+<a name="ln109">                Float_Parse = float.Parse(&quot;4&quot;),//CAST(N'4' AS REAL)</a>
+<a name="ln110">                //Decimal_Parse = decimal.Parse(&quot;5&quot;),//CAST(N'5' AS DECIMAL)  ps: 'Decimal.Parse(string s)' is not supported now,because we don't know the precision and scale information.</a>
+<a name="ln111">                Guid_Parse = Guid.Parse(&quot;D544BC4C-739E-4CD3-A3D3-7BF803FCE179&quot;),//CAST(N'D544BC4C-739E-4CD3-A3D3-7BF803FCE179' AS UNIQUEIDENTIFIER) AS [Guid_Parse]</a>
+<a name="ln112"> </a>
+<a name="ln113">                Bool_Parse = bool.Parse(&quot;1&quot;),//CASE WHEN CAST(N'1' AS BIT) = CAST(1 AS BIT) THEN CAST(1 AS BIT) WHEN NOT (CAST(N'1' AS BIT) = CAST(1 AS BIT)) THEN CAST(0 AS BIT) ELSE NULL END AS [Bool_Parse]</a>
+<a name="ln114">                DateTime_Parse = DateTime.Parse(&quot;1992-1-16&quot;),//CAST(N'1992-1-16' AS DATETIME) AS [DateTime_Parse]</a>
+<a name="ln115"> </a>
+<a name="ln116">                B = a.Age == null ? false : a.Age &gt; 1, //三元表达式</a>
+<a name="ln117">                CaseWhen = Case.When(a.Id &gt; 100).Then(1).Else(0) //case when</a>
+<a name="ln118">            }).ToList();</a>
+<a name="ln119"> </a>
+<a name="ln120">            ConsoleHelper.WriteLineAndReadKey(&quot;MsSqlDemo.Method over...&quot;);</a>
+<a name="ln121">        }</a>
+<a name="ln122">    }</a>
+<a name="ln123">}</a>
+</code></pre>
+<div class="balloon" rel="58"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3095/" target="_blank">V3095</a> The 'a.Name' object was used before it was verified against null. Check lines: 58, 59.</p></div>
+<div class="balloon" rel="60"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3125/" target="_blank">V3125</a> The 'a.Name' object was used after it was verified against null. Check lines: 60, 59.</p></div>
+<link rel="stylesheet" href="highlight.css">
+<script src="highlight.pack.js"></script>
+<script src="highlightjs-line-numbers.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script>hljs.initLineNumbersOnLoad();</script>
+<script>
+  $(document).ready(function() {
+      $('.balloon').each(function () {
+          var bl = $(this);
+          var line = bl.attr('rel');
+          var text = $('a[name="ln'+line+'"]').text();
+
+          var space_count = 0;
+          for(var i = 0; i<text.length; i++){
+              var char = text[i];
+              if((char !== ' ')&&(char !== '\t'))break;
+              if(char === '\t')space_count++;
+              space_count++;
+          }
+
+          bl.css('margin-left', space_count*8);
+          $('a[name="ln'+line+'"]').after(bl);
+      });
+
+      window.location = window.location;
+  });
+</script>
+</body>
+</html>

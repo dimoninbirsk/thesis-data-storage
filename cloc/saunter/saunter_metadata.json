@@ -1,0 +1,79 @@
+{"header" : {
+  "cloc_url"           : "github.com/AlDanial/cloc",
+  "cloc_version"       : "2.04",
+  "elapsed_seconds"    : 0.428506851196289,
+  "n_files"            : 163,
+  "n_lines"            : 37076,
+  "files_per_second"   : 380.390650802765,
+  "lines_per_second"   : 86523.7041052964,
+  "report_file"        : "C:\\Users\\dimoninbirsk\\source\\thesis\\cloc\\saunter\\metadata.json"},
+"JSON" :{
+  "nFiles": 33,
+  "blank": 0,
+  "comment": 0,
+  "code": 27395},
+"XML" :{
+  "nFiles": 33,
+  "blank": 0,
+  "comment": 0,
+  "code": 3697},
+"C#" :{
+  "nFiles": 48,
+  "blank": 548,
+  "comment": 249,
+  "code": 2965},
+"Markdown" :{
+  "nFiles": 5,
+  "blank": 131,
+  "comment": 5,
+  "code": 560},
+"Text" :{
+  "nFiles": 17,
+  "blank": 4,
+  "comment": 0,
+  "code": 371},
+"INI" :{
+  "nFiles": 7,
+  "blank": 69,
+  "comment": 0,
+  "code": 323},
+"Properties" :{
+  "nFiles": 1,
+  "blank": 13,
+  "comment": 0,
+  "code": 163},
+"Visual Studio Solution" :{
+  "nFiles": 1,
+  "blank": 1,
+  "comment": 1,
+  "code": 129},
+"MSBuild script" :{
+  "nFiles": 5,
+  "blank": 28,
+  "comment": 2,
+  "code": 125},
+"YAML" :{
+  "nFiles": 5,
+  "blank": 12,
+  "comment": 3,
+  "code": 105},
+"C# Generated" :{
+  "nFiles": 5,
+  "blank": 20,
+  "comment": 49,
+  "code": 49},
+"HTML" :{
+  "nFiles": 1,
+  "blank": 3,
+  "comment": 0,
+  "code": 31},
+"Dockerfile" :{
+  "nFiles": 2,
+  "blank": 3,
+  "comment": 0,
+  "code": 22},
+"SUM": {
+  "blank": 832,
+  "comment": 309,
+  "code": 35935,
+  "nFiles": 163} }

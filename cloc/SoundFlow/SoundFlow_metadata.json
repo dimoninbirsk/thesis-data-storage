@@ -1,0 +1,84 @@
+{"header" : {
+  "cloc_url"           : "github.com/AlDanial/cloc",
+  "cloc_version"       : "2.04",
+  "elapsed_seconds"    : 0.333829164505005,
+  "n_files"            : 132,
+  "n_lines"            : 25496,
+  "files_per_second"   : 395.411827470877,
+  "lines_per_second"   : 76374.3935848294,
+  "report_file"        : "C:\\Users\\dimoninbirsk\\source\\thesis\\cloc\\SoundFlow\\metadata.json"},
+"JSON" :{
+  "nFiles": 18,
+  "blank": 0,
+  "comment": 0,
+  "code": 6818},
+"C#" :{
+  "nFiles": 67,
+  "blank": 1566,
+  "comment": 2304,
+  "code": 6682},
+"XML" :{
+  "nFiles": 17,
+  "blank": 0,
+  "comment": 0,
+  "code": 6616},
+"YAML" :{
+  "nFiles": 4,
+  "blank": 55,
+  "comment": 19,
+  "code": 324},
+"Text" :{
+  "nFiles": 10,
+  "blank": 0,
+  "comment": 0,
+  "code": 184},
+"C++" :{
+  "nFiles": 1,
+  "blank": 43,
+  "comment": 34,
+  "code": 148},
+"Properties" :{
+  "nFiles": 1,
+  "blank": 9,
+  "comment": 0,
+  "code": 139},
+"Markdown" :{
+  "nFiles": 2,
+  "blank": 63,
+  "comment": 0,
+  "code": 121},
+"CMake" :{
+  "nFiles": 1,
+  "blank": 14,
+  "comment": 10,
+  "code": 65},
+"MSBuild script" :{
+  "nFiles": 3,
+  "blank": 9,
+  "comment": 0,
+  "code": 56},
+"INI" :{
+  "nFiles": 3,
+  "blank": 0,
+  "comment": 0,
+  "code": 45},
+"Visual Studio Solution" :{
+  "nFiles": 1,
+  "blank": 1,
+  "comment": 0,
+  "code": 36},
+"C/C++ Header" :{
+  "nFiles": 1,
+  "blank": 15,
+  "comment": 11,
+  "code": 35},
+"C# Generated" :{
+  "nFiles": 3,
+  "blank": 12,
+  "comment": 30,
+  "code": 32},
+"SUM": {
+  "blank": 1787,
+  "comment": 2408,
+  "code": 21301,
+  "nFiles": 132} }

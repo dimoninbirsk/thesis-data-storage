@@ -1,0 +1,154 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>StrokeHistoryServiceTests.cs</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <script src="../jquery-3.5.1.min.js"></script>
+</head>
+<body>
+<pre><code class = "cs">
+<a name="ln1">﻿using System.Windows.Ink;</a>
+<a name="ln2">using Moq;</a>
+<a name="ln3">using Riter.Core.Drawing;</a>
+<a name="ln4">using Riter.Core.Enum;</a>
+<a name="ln5">using Riter.Services;</a>
+<a name="ln6"> </a>
+<a name="ln7">namespace Riter.Tests.Services;</a>
+<a name="ln8">public class StrokeHistoryServiceTests</a>
+<a name="ln9">{</a>
+<a name="ln10">    private readonly StrokeHistoryService _service;</a>
+<a name="ln11">    private readonly Mock&lt;InkCanvas&gt; _mockInkCanvas;</a>
+<a name="ln12"> </a>
+<a name="ln13">    public StrokeHistoryServiceTests()</a>
+<a name="ln14">    {</a>
+<a name="ln15">        _mockInkCanvas = new Mock&lt;InkCanvas&gt;();</a>
+<a name="ln16">        _service = new StrokeHistoryService();</a>
+<a name="ln17">        _service.SetMainElementToRedoAndUndo(_mockInkCanvas.Object);</a>
+<a name="ln18">    }</a>
+<a name="ln19"> </a>
+<a name="ln20">    private static StrokesHistoryNode CreateHistoryNode(StrokesHistoryNodeType type, StrokeCollection strokes = null)</a>
+<a name="ln21">        =&gt; type == StrokesHistoryNodeType.Added</a>
+<a name="ln22">            ? StrokesHistoryNode.CreateAddedType(strokes, false, 500)</a>
+<a name="ln23">            : StrokesHistoryNode.CreateAddedType(strokes, false, 500);</a>
+<a name="ln24"> </a>
+<a name="ln25">    [WpfFact]</a>
+<a name="ln26">    public void Push_ShouldAddNodeToHistory()</a>
+<a name="ln27">    {</a>
+<a name="ln28">        StrokesHistoryNode node = CreateHistoryNode(StrokesHistoryNodeType.Added);</a>
+<a name="ln29">        _service.Push(node);</a>
+<a name="ln30">        StrokesHistoryNode poppedNode = _service.Pop();</a>
+<a name="ln31">        poppedNode.Should().BeSameAs(node, &quot;because the node should be pushed to the undo history&quot;);</a>
+<a name="ln32">    }</a>
+<a name="ln33"> </a>
+<a name="ln34">    [WpfFact]</a>
+<a name="ln35">    public void Clear_ShouldResetAllHistoriesAndStrokes()</a>
+<a name="ln36">    {</a>
+<a name="ln37">        StrokeCollection strokes = new();</a>
+<a name="ln38">        StrokesHistoryNode node = CreateHistoryNode(StrokesHistoryNodeType.Added, strokes);</a>
+<a name="ln39">        _service.Push(node);</a>
+<a name="ln40"> </a>
+<a name="ln41">        _service.Clear();</a>
+<a name="ln42"> </a>
+<a name="ln43">        _mockInkCanvas.Object.Strokes.Should().BeEmpty(&quot;because the clear operation should remove all strokes&quot;);</a>
+<a name="ln44">        _service.CanUndo().Should().BeFalse(&quot;because the undo history should be cleared&quot;);</a>
+<a name="ln45">        _service.CanRedo().Should().BeFalse(&quot;because the redo history should be cleared&quot;);</a>
+<a name="ln46">    }</a>
+<a name="ln47"> </a>
+<a name="ln48">    [WpfFact]</a>
+<a name="ln49">    public void Push_ShouldAddHistoryNode_ToUndoStack()</a>
+<a name="ln50">    {</a>
+<a name="ln51">        StrokesHistoryNode node = CreateHistoryNode(StrokesHistoryNodeType.Added);</a>
+<a name="ln52"> </a>
+<a name="ln53">        _service.Push(node);</a>
+<a name="ln54">        StrokesHistoryNode result = _service.Pop();</a>
+<a name="ln55"> </a>
+<a name="ln56">        Assert.Equal(node, result);</a>
+<a name="ln57">    }</a>
+<a name="ln58"> </a>
+<a name="ln59">    [WpfFact]</a>
+<a name="ln60">    public void CanUndo_ShouldReturnTrue_WhenHistoryStackIsNotEmpty()</a>
+<a name="ln61">    {</a>
+<a name="ln62">        StrokesHistoryNode node = CreateHistoryNode(StrokesHistoryNodeType.Added);</a>
+<a name="ln63">        _service.Push(node);</a>
+<a name="ln64"> </a>
+<a name="ln65">        Assert.True(_service.CanUndo());</a>
+<a name="ln66">    }</a>
+<a name="ln67"> </a>
+<a name="ln68">    [WpfFact]</a>
+<a name="ln69">    public void CanUndo_ShouldReturnFalse_WhenHistoryStackIsEmpty() =&gt; Assert.False(_service.CanUndo());</a>
+<a name="ln70"> </a>
+<a name="ln71">    [WpfFact]</a>
+<a name="ln72">    public void CanRedo_ShouldReturnFalse_WhenRedoStackIsEmpty() =&gt; Assert.False(_service.CanRedo());</a>
+<a name="ln73"> </a>
+<a name="ln74">    [WpfFact]</a>
+<a name="ln75">    public void Undo_ShouldMoveNode_FromHistoryToRedoStack()</a>
+<a name="ln76">    {</a>
+<a name="ln77">        StrokeCollection strokes = new();</a>
+<a name="ln78">        StrokesHistoryNode node = CreateHistoryNode(StrokesHistoryNodeType.Added, strokes);</a>
+<a name="ln79"> </a>
+<a name="ln80">        _service.Push(node);</a>
+<a name="ln81">        _service.Undo();</a>
+<a name="ln82"> </a>
+<a name="ln83">        Assert.False(_service.CanUndo());</a>
+<a name="ln84">        Assert.True(_service.CanRedo());</a>
+<a name="ln85">    }</a>
+<a name="ln86"> </a>
+<a name="ln87">    [WpfFact]</a>
+<a name="ln88">    public void Redo_ShouldMoveNode_FromRedoToHistoryStack()</a>
+<a name="ln89">    {</a>
+<a name="ln90">        StrokeCollection strokes = new();</a>
+<a name="ln91">        StrokesHistoryNode node = CreateHistoryNode(StrokesHistoryNodeType.Removed, strokes);</a>
+<a name="ln92"> </a>
+<a name="ln93">        _service.Push(node);</a>
+<a name="ln94">        _service.Undo();</a>
+<a name="ln95">        _service.Redo();</a>
+<a name="ln96"> </a>
+<a name="ln97">        Assert.False(_service.CanRedo());</a>
+<a name="ln98">        Assert.True(_service.CanUndo());</a>
+<a name="ln99">    }</a>
+<a name="ln100"> </a>
+<a name="ln101">    [WpfFact]</a>
+<a name="ln102">    public void ClearRedoHistory_ShouldOnlyClearRedoStack()</a>
+<a name="ln103">    {</a>
+<a name="ln104">        StrokeCollection strokes = new();</a>
+<a name="ln105">        StrokesHistoryNode node = CreateHistoryNode(StrokesHistoryNodeType.Added, strokes);</a>
+<a name="ln106"> </a>
+<a name="ln107">        _service.Push(node);</a>
+<a name="ln108">        _service.Undo();</a>
+<a name="ln109">        _service.ClearRedoHistory();</a>
+<a name="ln110"> </a>
+<a name="ln111">        Assert.False(_service.CanRedo());</a>
+<a name="ln112">        Assert.False(_service.CanUndo());</a>
+<a name="ln113">    }</a>
+<a name="ln114">}</a>
+</code></pre>
+<div class="balloon" rel="21"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3012/" target="_blank">V3012</a> The '?:' operator, regardless of its conditional expression, always returns one and the same value.</p></div>
+<link rel="stylesheet" href="highlight.css">
+<script src="highlight.pack.js"></script>
+<script src="highlightjs-line-numbers.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script>hljs.initLineNumbersOnLoad();</script>
+<script>
+  $(document).ready(function() {
+      $('.balloon').each(function () {
+          var bl = $(this);
+          var line = bl.attr('rel');
+          var text = $('a[name="ln'+line+'"]').text();
+
+          var space_count = 0;
+          for(var i = 0; i<text.length; i++){
+              var char = text[i];
+              if((char !== ' ')&&(char !== '\t'))break;
+              if(char === '\t')space_count++;
+              space_count++;
+          }
+
+          bl.css('margin-left', space_count*8);
+          $('a[name="ln'+line+'"]').after(bl);
+      });
+
+      window.location = window.location;
+  });
+</script>
+</body>
+</html>

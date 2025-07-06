@@ -1,0 +1,1083 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>PositionTest.cs</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <script src="../jquery-3.5.1.min.js"></script>
+</head>
+<body>
+<pre><code class = "cs">
+<a name="ln1">﻿using Lynx.Model;</a>
+<a name="ln2">using NUnit.Framework;</a>
+<a name="ln3"> </a>
+<a name="ln4">using static Lynx.EvaluationConstants;</a>
+<a name="ln5">using static Lynx.EvaluationParams;</a>
+<a name="ln6">using static Lynx.Utils;</a>
+<a name="ln7"> </a>
+<a name="ln8">namespace Lynx.Test.Model;</a>
+<a name="ln9"> </a>
+<a name="ln10">public class PositionTest</a>
+<a name="ln11">{</a>
+<a name="ln12">    [TestCase(Constants.InitialPositionFEN)]</a>
+<a name="ln13">    [TestCase(Constants.TrickyTestPositionFEN)]</a>
+<a name="ln14">    [TestCase(Constants.TrickyTestPositionReversedFEN)]</a>
+<a name="ln15">    [TestCase(Constants.KillerTestPositionFEN)]</a>
+<a name="ln16">    [TestCase(&quot;r2q1rk1/ppp2ppp/2n1bn2/2b1p3/3pP3/3P1NPP/PPP1NPB1/R1BQ1RK1 b - - 0 1&quot;)]</a>
+<a name="ln17">    public void FEN(string fen)</a>
+<a name="ln18">    {</a>
+<a name="ln19">        var position = new Position(fen);</a>
+<a name="ln20">        Assert.AreEqual(fen, position.FEN());</a>
+<a name="ln21"> </a>
+<a name="ln22">        var newPosition = new Position(position);</a>
+<a name="ln23">        Assert.AreEqual(fen, newPosition.FEN());</a>
+<a name="ln24">    }</a>
+<a name="ln25"> </a>
+<a name="ln26">    [TestCase(Constants.InitialPositionFEN)]</a>
+<a name="ln27">    [TestCase(Constants.TrickyTestPositionFEN)]</a>
+<a name="ln28">    [TestCase(Constants.TrickyTestPositionReversedFEN)]</a>
+<a name="ln29">    [TestCase(Constants.KillerTestPositionFEN)]</a>
+<a name="ln30">    [TestCase(Constants.CmkTestPositionFEN)]</a>
+<a name="ln31">    public void CloneConstructor(string fen)</a>
+<a name="ln32">    {</a>
+<a name="ln33">        // Arrange</a>
+<a name="ln34">        var position = new Position(fen);</a>
+<a name="ln35"> </a>
+<a name="ln36">        // Act</a>
+<a name="ln37">        var clonedPosition = new Position(position);</a>
+<a name="ln38"> </a>
+<a name="ln39">        // Assert</a>
+<a name="ln40">        Assert.AreEqual(position.FEN(), clonedPosition.FEN());</a>
+<a name="ln41">        Assert.AreEqual(position.UniqueIdentifier, clonedPosition.UniqueIdentifier);</a>
+<a name="ln42">        Assert.AreEqual(position.Side, clonedPosition.Side);</a>
+<a name="ln43">        Assert.AreEqual(position.Castle, clonedPosition.Castle);</a>
+<a name="ln44">        Assert.AreEqual(position.EnPassant, clonedPosition.EnPassant);</a>
+<a name="ln45"> </a>
+<a name="ln46">        for (int piece = 0; piece &lt; position.PieceBitBoards.Length; ++piece)</a>
+<a name="ln47">        {</a>
+<a name="ln48">            Assert.AreEqual(position.PieceBitBoards[piece], clonedPosition.PieceBitBoards[piece]);</a>
+<a name="ln49">        }</a>
+<a name="ln50"> </a>
+<a name="ln51">        for (int occupancy = 0; occupancy &lt; position.OccupancyBitBoards.Length; ++occupancy)</a>
+<a name="ln52">        {</a>
+<a name="ln53">            Assert.AreEqual(position.OccupancyBitBoards[occupancy], clonedPosition.OccupancyBitBoards[occupancy]);</a>
+<a name="ln54">        }</a>
+<a name="ln55"> </a>
+<a name="ln56">        // Act: modify original, to ensure they're not sharing references to the same memory object</a>
+<a name="ln57">        for (int piece = 0; piece &lt; position.PieceBitBoards.Length; ++piece)</a>
+<a name="ln58">        {</a>
+<a name="ln59">            position.PieceBitBoards[piece].ResetLS1B();</a>
+<a name="ln60">            position.PieceBitBoards[piece].SetBit((int)BoardSquare.e5 + piece);</a>
+<a name="ln61">        }</a>
+<a name="ln62"> </a>
+<a name="ln63">        for (int occupancy = 0; occupancy &lt; position.OccupancyBitBoards.Length; ++occupancy)</a>
+<a name="ln64">        {</a>
+<a name="ln65">            position.OccupancyBitBoards[occupancy].ResetLS1B();</a>
+<a name="ln66">            position.OccupancyBitBoards[occupancy].SetBit((int)BoardSquare.g7 + occupancy);</a>
+<a name="ln67">        }</a>
+<a name="ln68"> </a>
+<a name="ln69">        // Assert</a>
+<a name="ln70">        for (int piece = 0; piece &lt; position.PieceBitBoards.Length; ++piece)</a>
+<a name="ln71">        {</a>
+<a name="ln72">            Assert.AreNotEqual(position.PieceBitBoards[piece], clonedPosition.PieceBitBoards[piece]);</a>
+<a name="ln73">        }</a>
+<a name="ln74"> </a>
+<a name="ln75">        for (int occupancy = 0; occupancy &lt; position.OccupancyBitBoards.Length; ++occupancy)</a>
+<a name="ln76">        {</a>
+<a name="ln77">            Assert.AreNotEqual(position.OccupancyBitBoards[occupancy], clonedPosition.OccupancyBitBoards[occupancy]);</a>
+<a name="ln78">        }</a>
+<a name="ln79">    }</a>
+<a name="ln80"> </a>
+<a name="ln81">    [TestCase(Constants.EmptyBoardFEN)]</a>
+<a name="ln82">    [TestCase(&quot;K/8/8/8/8/8/8/8 w - - 0 1&quot;)]</a>
+<a name="ln83">    [TestCase(&quot;K/8/8/8/8/8/8/8 b - - 0 1&quot;)]</a>
+<a name="ln84">    [TestCase(&quot;k/8/8/8/8/8/8/8 w - - 0 1&quot;)]</a>
+<a name="ln85">    [TestCase(&quot;k/8/8/8/8/8/8/8 b - - 0 1&quot;)]</a>
+<a name="ln86">    public void MissingKings(string fen)</a>
+<a name="ln87">    {</a>
+<a name="ln88">        Assert.Throws&lt;LynxException&gt;(() =&gt; new Position(fen));</a>
+<a name="ln89">    }</a>
+<a name="ln90"> </a>
+<a name="ln91">    [TestCase(Constants.InitialPositionFEN, true)]</a>
+<a name="ln92">    [TestCase(&quot;r1k5/1K6/8/8/8/8/8/8 w - - 0 1&quot;, false)]</a>
+<a name="ln93">    [TestCase(&quot;r1bqkbnr/pppp2pp/2n2p2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 0 1&quot;, false)]</a>
+<a name="ln94">    [TestCase(&quot;r1bqkbnr/pppp2pp/2n2p2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR b KQkq - 0 1&quot;, true)]</a>
+<a name="ln95">    [TestCase(&quot;r1bqk1nr/pppp2pp/2n2p2/4p3/1bB1P3/3P4/PPP2PPP/RNBQK1NR b KQkq - 0 1&quot;, false)]</a>
+<a name="ln96">    [TestCase(&quot;r1bqk1nr/pppp2pp/2n2p2/4p3/1bB1P3/3P4/PPP2PPP/RNBQK1NR w KQkq - 0 1&quot;, true)]</a>
+<a name="ln97">    [TestCase(&quot;r1k5/1K6/8/8/8/8/8/8 w - - 0 1&quot;, false)]</a>
+<a name="ln98">    public void IsValid(string fen, bool shouldBeValid)</a>
+<a name="ln99">    {</a>
+<a name="ln100">        Assert.AreEqual(shouldBeValid, new Position(fen).IsValid());</a>
+<a name="ln101">    }</a>
+<a name="ln102"> </a>
+<a name="ln103">    [TestCase(Constants.EmptyBoardFEN, false, Ignore = &quot;WasProduceByAValidMove doesn't check the presence of both kings on the board&quot;)]</a>
+<a name="ln104">    [TestCase(&quot;K/8/8/8/8/8/8/8 w - - 0 1&quot;, false, Ignore = &quot;WasProduceByAValidMove doesn't check the presence of both kings on the board&quot;)]</a>
+<a name="ln105">    [TestCase(&quot;K/8/8/8/8/8/8/8 b - - 0 1&quot;, false, Ignore = &quot;WasProduceByAValidMove doesn't check the presence of both kings on the board&quot;)]</a>
+<a name="ln106">    [TestCase(&quot;k/8/8/8/8/8/8/8 w - - 0 1&quot;, false, Ignore = &quot;WasProduceByAValidMove doesn't check the presence of both kings on the board&quot;)]</a>
+<a name="ln107">    [TestCase(&quot;k/8/8/8/8/8/8/8 b - - 0 1&quot;, false, Ignore = &quot;WasProduceByAValidMove doesn't check the presence of both kings on the board&quot;)]</a>
+<a name="ln108">    [TestCase(Constants.InitialPositionFEN, true)]</a>
+<a name="ln109">    [TestCase(&quot;r1bqkbnr/pppp2pp/2n2p2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 0 1&quot;, false)]</a>
+<a name="ln110">    [TestCase(&quot;r1bqkbnr/pppp2pp/2n2p2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR b KQkq - 0 1&quot;, true)]</a>
+<a name="ln111">    [TestCase(&quot;r1bqk1nr/pppp2pp/2n2p2/4p3/1bB1P3/3P4/PPP2PPP/RNBQK1NR b KQkq - 0 1&quot;, false)]</a>
+<a name="ln112">    [TestCase(&quot;r1bqk1nr/pppp2pp/2n2p2/4p3/1bB1P3/3P4/PPP2PPP/RNBQK1NR w KQkq - 0 1&quot;, true)]</a>
+<a name="ln113">    public void WasProduceByAValidMove(string fen, bool shouldBeValid)</a>
+<a name="ln114">    {</a>
+<a name="ln115">        Assert.AreEqual(shouldBeValid, new Position(fen).WasProduceByAValidMove());</a>
+<a name="ln116">    }</a>
+<a name="ln117"> </a>
+<a name="ln118">    [TestCase(&quot;rnbqkbnr/ppp1pppp/3p4/1B6/8/4P3/PPPP1PPP/RNBQK1NR b KQkq - 1 2&quot;, true)]</a>
+<a name="ln119">    [TestCase(&quot;rnbqkbnr/ppp1pppp/3p4/1B6/8/4P3/PPPP1PPP/RNBQK1NR w KQkq - 1 2&quot;, false)]</a>
+<a name="ln120">    [TestCase(&quot;rnbqk1nr/pppp1ppp/4p3/8/1b6/3P1N2/PPP1PPPP/RNBQKB1R w KQkq - 2 3&quot;, true)]</a>
+<a name="ln121">    [TestCase(&quot;rnbqk1nr/pppp1ppp/4p3/8/1b6/3P1N2/PPP1PPPP/RNBQKB1R b KQkq - 2 3&quot;, false)]</a>
+<a name="ln122"> </a>
+<a name="ln123">    [TestCase(&quot;rnb1k1nr/pppp1ppp/4p3/8/1b6/3P3P/PPP1PPP1/RNB1KBNR w KQkq - 1 3&quot;, true)]</a>
+<a name="ln124">    [TestCase(&quot;rnb1k1nr/pppp1ppp/4p3/8/1b6/3P3P/PPP1PPP1/RNB1KBNR b KQkq - 1 3&quot;, false)]</a>
+<a name="ln125">    [TestCase(&quot;rnb1k1nr/pppp1ppp/4p3/8/1b6/3P3P/PPP1PPP1/RNB1KBNR w KQkq - 1 3&quot;, true)]</a>
+<a name="ln126">    [TestCase(&quot;rnb1k1nr/pppp1ppp/4p3/8/1b6/3P3P/PPP1PPP1/RNB1KBNR b KQkq - 1 3&quot;, false)]</a>
+<a name="ln127">    public void IsInCheck(string fen, bool positionInCheck)</a>
+<a name="ln128">    {</a>
+<a name="ln129">        var position = new Position(fen);</a>
+<a name="ln130"> </a>
+<a name="ln131">        Assert.AreEqual(positionInCheck, position.IsInCheck());</a>
+<a name="ln132">    }</a>
+<a name="ln133"> </a>
+<a name="ln134">    [TestCase(&quot;7k/8/8/8/8/3B4/1K6/6Q1 b - - 0 1&quot;, 0)]</a>
+<a name="ln135">    [TestCase(&quot;7K/8/8/8/8/3b4/1k6/6q1 w - - 0 1&quot;, 0)]</a>
+<a name="ln136">    [TestCase(&quot;8/5K2/7p/6pk/6p1/6P1/7P/8 b - - 0 1&quot;, 0)]</a>
+<a name="ln137">    [TestCase(&quot;8/7p/6p1/6P1/6PK/5k1P/8/8 w - - 0 1&quot;, 0)]</a>
+<a name="ln138">    [TestCase(&quot;7k/8/8/8/8/8/1K5R/6R1 b - - 0 1&quot;, -CheckMateBaseEvaluation)]</a>
+<a name="ln139">    [TestCase(&quot;7K/8/8/8/8/8/1k5r/6r1 w - - 0 1&quot;, -CheckMateBaseEvaluation)]</a>
+<a name="ln140">    public void EvaluateFinalPosition(string fen, int expectedEvaluationValue)</a>
+<a name="ln141">    {</a>
+<a name="ln142">        // Arrange</a>
+<a name="ln143">        var position = new Position(fen);</a>
+<a name="ln144">        Assert.IsEmpty(MoveGenerator.GenerateAllMoves(position).Where(move =&gt;</a>
+<a name="ln145">        {</a>
+<a name="ln146">            var newPosition = new Position(position);</a>
+<a name="ln147">            newPosition.MakeMove(move);</a>
+<a name="ln148">            return newPosition.IsValid();</a>
+<a name="ln149">        }));</a>
+<a name="ln150">        var isInCheck = position.IsInCheck();</a>
+<a name="ln151"> </a>
+<a name="ln152">        // Act</a>
+<a name="ln153">        var noDepthResult = Position.EvaluateFinalPosition(default, isInCheck);</a>
+<a name="ln154">        var depthOneResult = Position.EvaluateFinalPosition(1, isInCheck);</a>
+<a name="ln155">        var depthTwoResult = Position.EvaluateFinalPosition(2, isInCheck);</a>
+<a name="ln156"> </a>
+<a name="ln157">        if (expectedEvaluationValue &lt; 0)</a>
+<a name="ln158">        {</a>
+<a name="ln159">            Assert.AreEqual(expectedEvaluationValue, noDepthResult);</a>
+<a name="ln160"> </a>
+<a name="ln161">            Assert.True(noDepthResult &lt; depthOneResult);</a>
+<a name="ln162">            Assert.True(depthOneResult &lt; depthTwoResult);</a>
+<a name="ln163">        }</a>
+<a name="ln164">    }</a>
+<a name="ln165"> </a>
+<a name="ln166">    [TestCase(&quot;k7/8/8/3B4/8/8/8/7K w - - 0 1&quot;, Description = &quot;B&quot;)]</a>
+<a name="ln167">    [TestCase(&quot;k7/8/8/3b4/8/8/8/7K w - - 0 1&quot;, Description = &quot;b&quot;)]</a>
+<a name="ln168">    [TestCase(&quot;k7/8/8/3N4/8/8/8/7K w - - 0 1&quot;, Description = &quot;N&quot;)]</a>
+<a name="ln169">    [TestCase(&quot;k7/8/8/3N4/8/8/8/7K w - - 0 1&quot;, Description = &quot;n&quot;)]</a>
+<a name="ln170">    [TestCase(&quot;k7/8/8/2NN4/8/8/8/7K w - - 0 1&quot;, Description = &quot;N+N&quot;)]</a>
+<a name="ln171">    [TestCase(&quot;k7/8/8/2nn4/8/8/8/7K w - - 0 1&quot;, Description = &quot;n+n&quot;)]</a>
+<a name="ln172">    [TestCase(&quot;k7/8/8/3B4/8/8/8/7K b - - 0 1&quot;, Description = &quot;B&quot;)]</a>
+<a name="ln173">    [TestCase(&quot;k7/8/8/3b4/8/8/8/7K b - - 0 1&quot;, Description = &quot;b&quot;)]</a>
+<a name="ln174">    [TestCase(&quot;k7/8/8/3N4/8/8/8/7K b - - 0 1&quot;, Description = &quot;N&quot;)]</a>
+<a name="ln175">    [TestCase(&quot;k7/8/8/3N4/8/8/8/7K b - - 0 1&quot;, Description = &quot;n&quot;)]</a>
+<a name="ln176">    [TestCase(&quot;k7/8/8/2NN4/8/8/8/7K b - - 0 1&quot;, Description = &quot;N+N&quot;)]</a>
+<a name="ln177">    [TestCase(&quot;k7/8/8/2nn4/8/8/8/7K b - - 0 1&quot;, Description = &quot;n+n&quot;)]</a>
+<a name="ln178">    public void StaticEvaluation_DrawDueToLackOfMaterial(string fen)</a>
+<a name="ln179">    {</a>
+<a name="ln180">        var position = new Position(fen);</a>
+<a name="ln181"> </a>
+<a name="ln182">        Assert.AreEqual(0, position.StaticEvaluation().Score);</a>
+<a name="ln183">    }</a>
+<a name="ln184"> </a>
+<a name="ln185">    [TestCase(&quot;4k3/8/8/7Q/7q/8/4K3/8 w - - 0 1&quot;, &quot;4k3/8/8/7Q/7q/8/8/4K3 w - - 0 1&quot;, Description = &quot;King in 7th rank with queens &gt; King in 8th rank with queens&quot;, IgnoreReason = &quot;Can't understand PSQT any more&quot;)]</a>
+<a name="ln186">    [TestCase(&quot;4k3/p7/8/8/8/8/P3K3/8 w - - 0 1&quot;, &quot;4k3/p7/8/8/8/8/P7/4K3 w - - 0 1&quot;, Description = &quot;King in 7th rank without queens &gt; King in 8th rank without queens&quot;, IgnoreReason = &quot;Can't understand PSQT any more&quot;)]</a>
+<a name="ln187">    [TestCase(&quot;4k3/7p/8/8/4K3/8/7P/8 w - - 0 1&quot;, &quot;4k3/7p/8/q7/4K3/Q7/7P/8 w - - 0 1&quot;, Description = &quot;King in the center without queens &gt; King in the center with queens&quot;, IgnoreReason = &quot;Can't understand PSQT any more&quot;)]</a>
+<a name="ln188">    public void StaticEvaluation_KingEndgame(string fen1, string fen2)</a>
+<a name="ln189">    {</a>
+<a name="ln190">        Assert.Greater(new Position(fen1).StaticEvaluation().Score, new Position(fen2).StaticEvaluation().Score);</a>
+<a name="ln191">    }</a>
+<a name="ln192"> </a>
+<a name="ln193">    /// &lt;summary&gt;</a>
+<a name="ln194">    /// 8   . . . . k . . .</a>
+<a name="ln195">    /// 7   . p p p . . . .</a>
+<a name="ln196">    /// 6   . . . . . . . .</a>
+<a name="ln197">    /// 5   . . . . . . . .</a>
+<a name="ln198">    /// 4   . . . . . . . .</a>
+<a name="ln199">    /// 3   . . . . . . . .</a>
+<a name="ln200">    /// 2   P P . P . . . .</a>
+<a name="ln201">    /// 1   . . . . K . . .</a>
+<a name="ln202">    ///     a b c d e f g h</a>
+<a name="ln203">    /// &lt;/summary&gt;</a>
+<a name="ln204">    [TestCase(&quot;7k/1ppp2pp/8/8/8/8/PP1P2PP/7K w - - 0 1&quot;)]</a>
+<a name="ln205">    /// &lt;summary&gt;</a>
+<a name="ln206">    /// Previous one mirrored</a>
+<a name="ln207">    /// &lt;/summary&gt;</a>
+<a name="ln208">    [TestCase(&quot;3k4/4p1pp/8/8/8/8/4PPP1/3K4 b - - 0 1&quot;)]</a>
+<a name="ln209">    public void StaticEvaluation_IsolatedPawnPenalty(string fen)</a>
+<a name="ln210">    {</a>
+<a name="ln211">        Position position = new Position(fen);</a>
+<a name="ln212">        int evaluation = AdditionalPieceEvaluation(position, Piece.P)</a>
+<a name="ln213">            - AdditionalPieceEvaluation(position, Piece.p);</a>
+<a name="ln214"> </a>
+<a name="ln215">        if (position.Side == Side.Black)</a>
+<a name="ln216">        {</a>
+<a name="ln217">            evaluation = -evaluation;</a>
+<a name="ln218">        }</a>
+<a name="ln219"> </a>
+<a name="ln220">        var expectedEval = UnpackMG(IsolatedPawnPenalty) - UnpackMG(PawnPhalanxBonus[1]);</a>
+<a name="ln221"> </a>
+<a name="ln222">        Assert.AreEqual(expectedEval, evaluation);</a>
+<a name="ln223">    }</a>
+<a name="ln224"> </a>
+<a name="ln225">    /// &lt;summary&gt;</a>
+<a name="ln226">    /// 8   . . . . k . . .</a>
+<a name="ln227">    /// 7   p p p . . . . .</a>
+<a name="ln228">    /// 6   . . . . . . . .</a>
+<a name="ln229">    /// 5   . . . . . . . .</a>
+<a name="ln230">    /// 4   . . . . . . . .</a>
+<a name="ln231">    /// 3   P . . . . . . .</a>
+<a name="ln232">    /// 2   P P . . . . . .</a>
+<a name="ln233">    /// 1   . . . . K . . .</a>
+<a name="ln234">    ///     a b c d e f g h</a>
+<a name="ln235">    /// &lt;/summary&gt;</a>
+<a name="ln236">    //[TestCase(&quot;4k3/ppp5/8/8/8/P7/PP6/4K3 w - - 0 1&quot;)]</a>
+<a name="ln237">    ///// &lt;summary&gt;</a>
+<a name="ln238">    ///// Previous one mirrored</a>
+<a name="ln239">    ///// &lt;/summary&gt;</a>
+<a name="ln240">    ///// &lt;param name=&quot;fen&quot;&gt;&lt;/param&gt;</a>
+<a name="ln241">    //[TestCase(&quot;3k4/6pp/7p/8/8/8/5PPP/3K4 b - - 0 1&quot;)]</a>
+<a name="ln242">    //public void StaticEvaluation_DoublePawnPenalty(string fen)</a>
+<a name="ln243">    //{</a>
+<a name="ln244">    //    Position position = new Position(fen);</a>
+<a name="ln245">    //    int evaluation = AdditionalPieceEvaluation(position, Piece.P)</a>
+<a name="ln246">    //        - AdditionalPieceEvaluation(position, Piece.p);</a>
+<a name="ln247"> </a>
+<a name="ln248">    //    if (position.Side == Side.Black)</a>
+<a name="ln249">    //    {</a>
+<a name="ln250">    //        evaluation = -evaluation;</a>
+<a name="ln251">    //    }</a>
+<a name="ln252"> </a>
+<a name="ln253">    //    Assert.AreEqual(4 * Configuration.EngineSettings.DoubledPawnPenalty.MG, evaluation);</a>
+<a name="ln254">    //}</a>
+<a name="ln255"> </a>
+<a name="ln256">    /// &lt;summary&gt;</a>
+<a name="ln257">    /// Illegal position, but avoids any positional bonuses</a>
+<a name="ln258">    /// 8   . . . . k . . .</a>
+<a name="ln259">    /// 7   p p p . . p p p</a>
+<a name="ln260">    /// 6   . . . . . . . .</a>
+<a name="ln261">    /// 5   . . . . . . . .</a>
+<a name="ln262">    /// 4   . . . . . . . .</a>
+<a name="ln263">    /// 3   P . . . . . . .</a>
+<a name="ln264">    /// 2   P P . . . . P P</a>
+<a name="ln265">    /// 1   P . . . K . . .</a>
+<a name="ln266">    ///     a b c d e f g h</a>
+<a name="ln267">    /// &lt;/summary&gt;</a>
+<a name="ln268">    //[TestCase(&quot;7k/ppp2ppp/8/8/8/P7/PP4PP/P6K w - - 0 1&quot;)]</a>
+<a name="ln269">    ///// &lt;summary&gt;</a>
+<a name="ln270">    ///// Previous one mirrored</a>
+<a name="ln271">    ///// &lt;/summary&gt;</a>
+<a name="ln272">    ///// &lt;param name=&quot;fen&quot;&gt;&lt;/param&gt;</a>
+<a name="ln273">    //[TestCase(&quot;k6p/pp4pp/7p/8/8/8/PPP2PPP/K7 b - - 0 1&quot;)]</a>
+<a name="ln274">    //public void StaticEvaluation_TriplePawnPenalty(string fen)</a>
+<a name="ln275">    //{</a>
+<a name="ln276">    //    Position position = new Position(fen);</a>
+<a name="ln277">    //    int evaluation = AdditionalPieceEvaluation(position, Piece.P)</a>
+<a name="ln278">    //        - AdditionalPieceEvaluation(position, Piece.p);</a>
+<a name="ln279"> </a>
+<a name="ln280">    //    if (position.Side == Side.Black)</a>
+<a name="ln281">    //    {</a>
+<a name="ln282">    //        evaluation = -evaluation;</a>
+<a name="ln283">    //    }</a>
+<a name="ln284"> </a>
+<a name="ln285">    //    Assert.AreEqual(9 * Configuration.EngineSettings.DoubledPawnPenalty.MG, evaluation);</a>
+<a name="ln286">    //}</a>
+<a name="ln287"> </a>
+<a name="ln288">    /// &lt;summary&gt;</a>
+<a name="ln289">    /// 8   . . . . . . k .</a>
+<a name="ln290">    /// 7   p p . . . . . .</a>
+<a name="ln291">    /// 6   p . . . . . . .</a>
+<a name="ln292">    /// 5   . . . . . . . .</a>
+<a name="ln293">    /// 4   . . . . . . . .</a>
+<a name="ln294">    /// 3   . . . . . . . .</a>
+<a name="ln295">    /// 2   P P . P . . . .</a>
+<a name="ln296">    /// 1   . . . . . . K .</a>
+<a name="ln297">    ///     a b c d e f g h</a>
+<a name="ln298">    /// &lt;/summary&gt;</a>
+<a name="ln299">    [TestCase(&quot;6k1/pp6/p7/8/8/8/PP1P4/6K1 w - - 0 1&quot;, BoardSquare.d2)]</a>
+<a name="ln300">    /// &lt;summary&gt;</a>
+<a name="ln301">    /// Previous one mirrored</a>
+<a name="ln302">    /// &lt;/summary&gt;</a>
+<a name="ln303">    [TestCase(&quot;1k6/4p1pp/8/8/8/7P/6PP/1K6 b - - 0 1&quot;, BoardSquare.e7)]</a>
+<a name="ln304"> </a>
+<a name="ln305">    /// &lt;summary&gt;</a>
+<a name="ln306">    /// 8   . . . . . . k .</a>
+<a name="ln307">    /// 7   p p . . . . . .</a>
+<a name="ln308">    /// 6   p . . . . . . .</a>
+<a name="ln309">    /// 5   . . . . . . . .</a>
+<a name="ln310">    /// 4   . . . . . . . .</a>
+<a name="ln311">    /// 3   . . . P . . . .</a>
+<a name="ln312">    /// 2   P P . . . . . .</a>
+<a name="ln313">    /// 1   . . . . . . K .</a>
+<a name="ln314">    ///     a b c d e f g h</a>
+<a name="ln315">    /// &lt;/summary&gt;</a>
+<a name="ln316">    [TestCase(&quot;6k1/pp6/p7/8/8/3P4/PP6/6K1 w - - 0 1&quot;, BoardSquare.d3)]</a>
+<a name="ln317">    /// &lt;summary&gt;</a>
+<a name="ln318">    /// Previous one mirrored</a>
+<a name="ln319">    /// &lt;/summary&gt;</a>
+<a name="ln320">    [TestCase(&quot;1k6/6pp/4p3/8/8/7P/6PP/1K6 b - - 0 1&quot;, BoardSquare.e6)]</a>
+<a name="ln321"> </a>
+<a name="ln322">    /// &lt;summary&gt;</a>
+<a name="ln323">    /// 8   . . . . . . k .</a>
+<a name="ln324">    /// 7   p p . . . . . .</a>
+<a name="ln325">    /// 6   p . . . . . . .</a>
+<a name="ln326">    /// 5   . . . . . . . .</a>
+<a name="ln327">    /// 4   . . . P . . . .</a>
+<a name="ln328">    /// 3   . . . . . . . .</a>
+<a name="ln329">    /// 2   P P . . . . . .</a>
+<a name="ln330">    /// 1   . . . . . . K .</a>
+<a name="ln331">    ///     a b c d e f g h</a>
+<a name="ln332">    /// &lt;/summary&gt;</a>
+<a name="ln333">    [TestCase(&quot;6k1/pp6/p7/8/3P4/8/PP6/6K1 w - - 0 1&quot;, BoardSquare.d4)]</a>
+<a name="ln334">    /// &lt;summary&gt;</a>
+<a name="ln335">    /// Previous one mirrored</a>
+<a name="ln336">    /// &lt;/summary&gt;</a>
+<a name="ln337">    [TestCase(&quot;1k6/6pp/8/4p3/8/7P/6PP/1K6 b - - 0 1&quot;, BoardSquare.e5)]</a>
+<a name="ln338"> </a>
+<a name="ln339">    /// &lt;summary&gt;</a>
+<a name="ln340">    /// 8   . . . . . . k .</a>
+<a name="ln341">    /// 7   p p . . . . . .</a>
+<a name="ln342">    /// 6   p . . . . . . .</a>
+<a name="ln343">    /// 5   . . . P . . . .</a>
+<a name="ln344">    /// 4   . . . . . . . .</a>
+<a name="ln345">    /// 3   . . . . . . . .</a>
+<a name="ln346">    /// 2   P P . . . . . .</a>
+<a name="ln347">    /// 1   . . . . . . K .</a>
+<a name="ln348">    ///     a b c d e f g h</a>
+<a name="ln349">    /// &lt;/summary&gt;</a>
+<a name="ln350">    [TestCase(&quot;6k1/pp6/p7/3P4/8/8/PP6/6K1 w - - 0 1&quot;, BoardSquare.d5)]</a>
+<a name="ln351">    /// &lt;summary&gt;</a>
+<a name="ln352">    /// Previous one mirrored</a>
+<a name="ln353">    /// &lt;/summary&gt;</a>
+<a name="ln354">    [TestCase(&quot;1k6/6pp/8/8/4p3/7P/6PP/1K6 b - - 0 1&quot;, BoardSquare.e4)]</a>
+<a name="ln355"> </a>
+<a name="ln356">    /// &lt;summary&gt;</a>
+<a name="ln357">    /// 8   . . . . . . k .</a>
+<a name="ln358">    /// 7   p p . . . . . .</a>
+<a name="ln359">    /// 6   p . . P . . . .</a>
+<a name="ln360">    /// 5   . . . . . . . .</a>
+<a name="ln361">    /// 4   . . . . . . . .</a>
+<a name="ln362">    /// 3   . . . . . . . .</a>
+<a name="ln363">    /// 2   P P . . . . . .</a>
+<a name="ln364">    /// 1   . . . . . . K .</a>
+<a name="ln365">    ///     a b c d e f g h</a>
+<a name="ln366">    /// &lt;/summary&gt;</a>
+<a name="ln367">    [TestCase(&quot;6k1/pp6/p2P4/8/8/8/PP6/6K1 w - - 0 1&quot;, BoardSquare.d6)]</a>
+<a name="ln368">    /// &lt;summary&gt;</a>
+<a name="ln369">    /// Previous one mirrored</a>
+<a name="ln370">    /// &lt;/summary&gt;</a>
+<a name="ln371">    [TestCase(&quot;1k6/6pp/8/8/8/4p2P/6PP/1K6 b - - 0 1&quot;, BoardSquare.e3)]</a>
+<a name="ln372"> </a>
+<a name="ln373">    /// &lt;summary&gt;</a>
+<a name="ln374">    /// 8   . . . . . . k .</a>
+<a name="ln375">    /// 7   p p . P . . . .</a>
+<a name="ln376">    /// 6   p . . . . . . .</a>
+<a name="ln377">    /// 5   . . . . . . . .</a>
+<a name="ln378">    /// 4   . . . . . . . .</a>
+<a name="ln379">    /// 3   . . . . . . . .</a>
+<a name="ln380">    /// 2   P P . . . . . .</a>
+<a name="ln381">    /// 1   . . . . . . K .</a>
+<a name="ln382">    ///     a b c d e f g h</a>
+<a name="ln383">    /// &lt;/summary&gt;</a>
+<a name="ln384">    [TestCase(&quot;6k1/pp1P4/p7/8/8/8/PP6/6K1 w - - 0 1&quot;, BoardSquare.d7)]</a>
+<a name="ln385">    /// &lt;summary&gt;</a>
+<a name="ln386">    /// Previous one mirrored</a>
+<a name="ln387">    /// &lt;/summary&gt;</a>
+<a name="ln388">    [TestCase(&quot;1k6/6pp/8/8/8/7P/4p1PP/1K6 b - - 0 1&quot;, BoardSquare.e2)]</a>
+<a name="ln389">    public void StaticEvaluation_PassedPawnBonus(string fen, BoardSquare square)</a>
+<a name="ln390">    {</a>
+<a name="ln391">        var position = new Position(fen);</a>
+<a name="ln392">        int evaluation = AdditionalPieceEvaluation(position, Piece.P)</a>
+<a name="ln393">            - AdditionalPieceEvaluation(position, Piece.p);</a>
+<a name="ln394"> </a>
+<a name="ln395">        var rank = Constants.Rank[(int)square];</a>
+<a name="ln396">        var passedPawnsMask = Masks.WhitePassedPawnMasks[(int)square];</a>
+<a name="ln397"> </a>
+<a name="ln398">        if (position.Side == Side.Black)</a>
+<a name="ln399">        {</a>
+<a name="ln400">            evaluation = -evaluation;</a>
+<a name="ln401">            rank = 7 - rank;</a>
+<a name="ln402">            passedPawnsMask = Masks.BlackPassedPawnMasks[(int)square];</a>
+<a name="ln403">        }</a>
+<a name="ln404"> </a>
+<a name="ln405">        var whiteKingDistance = Constants.ChebyshevDistance[(int)square][position.PieceBitBoards[(int)Piece.K].GetLS1BIndex()];</a>
+<a name="ln406">        var blackKingDistance = Constants.ChebyshevDistance[(int)square][position.PieceBitBoards[(int)Piece.k].GetLS1BIndex()];</a>
+<a name="ln407"> </a>
+<a name="ln408">        var friendlyKingDistance = position.Side == Side.White</a>
+<a name="ln409">            ? whiteKingDistance</a>
+<a name="ln410">            : blackKingDistance;</a>
+<a name="ln411"> </a>
+<a name="ln412">        var enemyKingDistance = position.Side == Side.White</a>
+<a name="ln413">            ? blackKingDistance</a>
+<a name="ln414">            : whiteKingDistance;</a>
+<a name="ln415"> </a>
+<a name="ln416">        var expectedEval = 0;</a>
+<a name="ln417">        if ((passedPawnsMask &amp; position.OccupancyBitBoards[OppositeSide(position.Side)]) == 0)</a>
+<a name="ln418">        {</a>
+<a name="ln419">            expectedEval += UnpackMG(PassedPawnBonusNoEnemiesAheadBonus[0][rank]);</a>
+<a name="ln420">            expectedEval += UnpackMG(PassedPawnBonusNoEnemiesAheadEnemyBonus[0][rank]);</a>
+<a name="ln421">        }</a>
+<a name="ln422"> </a>
+<a name="ln423">        Assert.AreEqual(</a>
+<a name="ln424">            expectedEval</a>
+<a name="ln425">            //(-4 * Configuration.EngineSettings.DoubledPawnPenalty.MG)</a>
+<a name="ln426">            + UnpackMG(IsolatedPawnPenalty)</a>
+<a name="ln427">            + UnpackMG(PassedPawnBonus[0][rank])</a>
+<a name="ln428">            + UnpackMG(PassedPawnEnemyBonus[0][rank])</a>
+<a name="ln429">            + UnpackMG(FriendlyKingDistanceToPassedPawnBonus[friendlyKingDistance])</a>
+<a name="ln430">            + UnpackMG(EnemyKingDistanceToPassedPawnPenalty[enemyKingDistance]),</a>
+<a name="ln431"> </a>
+<a name="ln432">            evaluation);</a>
+<a name="ln433">    }</a>
+<a name="ln434"> </a>
+<a name="ln435">    /// &lt;summary&gt;</a>
+<a name="ln436">    /// 8   . . . . k . . r</a>
+<a name="ln437">    /// 7   p . . . . . . p</a>
+<a name="ln438">    /// 6   . . . . . . . .</a>
+<a name="ln439">    /// 5   . . . . . . . .</a>
+<a name="ln440">    /// 4   . . . . . . . .</a>
+<a name="ln441">    /// 3   . . . . . . . .</a>
+<a name="ln442">    /// 2   . . P . . . . P</a>
+<a name="ln443">    /// 1   R . . . K . . .</a>
+<a name="ln444">    ///     a b c d e f g h</a>
+<a name="ln445">    /// &lt;/summary&gt;</a>
+<a name="ln446">    [TestCase(&quot;4k2r/p6p/8/8/8/8/2P4P/R3K3 w - - 0 1&quot;, 9, 2)]</a>
+<a name="ln447">    /// &lt;summary&gt;</a>
+<a name="ln448">    /// Previous one mirrored</a>
+<a name="ln449">    /// &lt;/summary&gt;</a>
+<a name="ln450">    [TestCase(&quot;3k3r/p4p2/8/8/8/8/P6P/R2K4 b - - 0 1&quot;, 9, 2)]</a>
+<a name="ln451">    public void StaticEvaluation_SemiOpenFileRookBonus(string fen, int rookMobilitySideToMove, int rookMobilitySideNotToMove)</a>
+<a name="ln452">    {</a>
+<a name="ln453">        Position position = new Position(fen);</a>
+<a name="ln454">        int evaluation = AdditionalPieceEvaluation(position, Piece.R)</a>
+<a name="ln455">            - AdditionalPieceEvaluation(position, Piece.r);</a>
+<a name="ln456"> </a>
+<a name="ln457">        if (position.Side == Side.Black)</a>
+<a name="ln458">        {</a>
+<a name="ln459">            evaluation = -evaluation;</a>
+<a name="ln460">        }</a>
+<a name="ln461"> </a>
+<a name="ln462">        Assert.AreEqual(UnpackMG(SemiOpenFileRookBonus)</a>
+<a name="ln463">                + UnpackMG(RookMobilityBonus[rookMobilitySideToMove]) - UnpackMG(RookMobilityBonus[rookMobilitySideNotToMove]),</a>
+<a name="ln464">            evaluation);</a>
+<a name="ln465">    }</a>
+<a name="ln466"> </a>
+<a name="ln467">    /// &lt;summary&gt;</a>
+<a name="ln468">    /// 8   . . . . k . . r</a>
+<a name="ln469">    /// 7   p . . . . . . p</a>
+<a name="ln470">    /// 6   . . . . . . . .</a>
+<a name="ln471">    /// 5   . . . . . . . .</a>
+<a name="ln472">    /// 4   . . . . . . . .</a>
+<a name="ln473">    /// 3   . . . . . . . .</a>
+<a name="ln474">    /// 2   . . P . . . . P</a>
+<a name="ln475">    /// 1   . R . . K . . .</a>
+<a name="ln476">    ///     a b c d e f g h</a>
+<a name="ln477">    /// &lt;/summary&gt;</a>
+<a name="ln478">    [TestCase(&quot;7r/2p1k2p/8/8/8/8/2P1K2P/1R6 w - - 0 1&quot;, 13, 7)]</a>
+<a name="ln479">    /// &lt;summary&gt;</a>
+<a name="ln480">    /// Previous one mirrored</a>
+<a name="ln481">    /// &lt;/summary&gt;</a>
+<a name="ln482">    [TestCase(&quot;6r1/p2k1p2/8/8/8/8/P2K1P2/R7 b - - 0 1&quot;, 13, 7)]</a>
+<a name="ln483">    public void StaticEvaluation_OpenFileRookBonus(string fen, int rookMobilitySideToMove, int rookMobilitySideNotToMove)</a>
+<a name="ln484">    {</a>
+<a name="ln485">        Position position = new Position(fen);</a>
+<a name="ln486">        int evaluation = AdditionalPieceEvaluation(position, Piece.R)</a>
+<a name="ln487">            - AdditionalPieceEvaluation(position, Piece.r);</a>
+<a name="ln488"> </a>
+<a name="ln489">        if (position.Side == Side.Black)</a>
+<a name="ln490">        {</a>
+<a name="ln491">            evaluation = -evaluation;</a>
+<a name="ln492">        }</a>
+<a name="ln493">        Assert.AreEqual(UnpackMG(OpenFileRookBonus)</a>
+<a name="ln494">            + UnpackMG(RookMobilityBonus[rookMobilitySideToMove]) - UnpackMG(RookMobilityBonus[rookMobilitySideNotToMove]),</a>
+<a name="ln495">            evaluation);</a>
+<a name="ln496">    }</a>
+<a name="ln497"> </a>
+<a name="ln498">    /// &lt;summary&gt;</a>
+<a name="ln499">    /// 8   . . . . k. .r</a>
+<a name="ln500">    /// 7   p. . . . . .r</a>
+<a name="ln501">    /// 6   . . . . . . . p</a>
+<a name="ln502">    /// 5   . . . . . . . .</a>
+<a name="ln503">    /// 4   . . . . . . . .</a>
+<a name="ln504">    /// 3   . . . . . . . .</a>
+<a name="ln505">    /// 2   R. .P. . .P</a>
+<a name="ln506">    /// 1   R. .K. . . .</a>
+<a name="ln507">    ///     a b c d e f g h</a>
+<a name="ln508">    /// &lt;/summary&gt;</a>
+<a name="ln509">    [TestCase(&quot;4k2r/p6r/7p/8/8/8/R2P3P/R2K4 w - - 0 1&quot;, 7, 6)]</a>
+<a name="ln510">    /// &lt;summary&gt;</a>
+<a name="ln511">    /// Previous one mirrored</a>
+<a name="ln512">    /// &lt;/summary&gt;</a>
+<a name="ln513">    [TestCase(&quot;4k2r/p3p2r/8/8/8/P7/R6P/R2K4 b - - 0 1&quot;, 7, 6)]</a>
+<a name="ln514">    public void StaticEvaluation_DoubleSemiOpenFileRookBonus(string fen, int rookMobilitySideToMove, int rookMobilitySideNotToMove)</a>
+<a name="ln515">    {</a>
+<a name="ln516">        Position position = new Position(fen);</a>
+<a name="ln517">        int evaluation = AdditionalPieceEvaluation(position, Piece.R)</a>
+<a name="ln518">            - AdditionalPieceEvaluation(position, Piece.r);</a>
+<a name="ln519"> </a>
+<a name="ln520">        if (position.Side == Side.Black)</a>
+<a name="ln521">        {</a>
+<a name="ln522">            evaluation = -evaluation;</a>
+<a name="ln523">        }</a>
+<a name="ln524"> </a>
+<a name="ln525">        Assert.AreEqual((2 * UnpackMG(SemiOpenFileRookBonus))</a>
+<a name="ln526">            + UnpackMG(RookMobilityBonus[rookMobilitySideToMove]) - UnpackMG(RookMobilityBonus[rookMobilitySideNotToMove]),</a>
+<a name="ln527">        evaluation);</a>
+<a name="ln528">    }</a>
+<a name="ln529"> </a>
+<a name="ln530">    /// &lt;summary&gt;</a>
+<a name="ln531">    /// 8   . r . . k . . .</a>
+<a name="ln532">    /// 7   . r . . . . . p</a>
+<a name="ln533">    /// 6   p . . . . . . .</a>
+<a name="ln534">    /// 5   . . . . . . . .</a>
+<a name="ln535">    /// 4   . . . . . . . .</a>
+<a name="ln536">    /// 3   P . . . . . . .</a>
+<a name="ln537">    /// 2   R . . . . . . P</a>
+<a name="ln538">    /// 1   R . . . K . . .</a>
+<a name="ln539">    ///     a b c d e f g h</a>
+<a name="ln540">    /// &lt;/summary&gt;</a>
+<a name="ln541">    [TestCase(&quot;1r5k/1r5p/2p5/8/8/2P5/2R4P/2R4K w - - 0 1&quot;, 6, 11)]</a>
+<a name="ln542">    /// &lt;summary&gt;</a>
+<a name="ln543">    /// Previous one mirrored</a>
+<a name="ln544">    /// &lt;/summary&gt;</a>
+<a name="ln545">    [TestCase(&quot;k4r2/p4r2/5p2/8/8/5P2/P5R1/K5R1 b - - 0 1&quot;, 6, 11)]</a>
+<a name="ln546">    public void StaticEvaluation_DoubleOpenFileRookBonus(string fen, int rookMobilitySideToMove, int rookMobilitySideNotToMove)</a>
+<a name="ln547">    {</a>
+<a name="ln548">        Position position = new Position(fen);</a>
+<a name="ln549">        int evaluation = AdditionalPieceEvaluation(position, Piece.R)</a>
+<a name="ln550">            - AdditionalPieceEvaluation(position, Piece.r);</a>
+<a name="ln551"> </a>
+<a name="ln552">        if (position.Side == Side.Black)</a>
+<a name="ln553">        {</a>
+<a name="ln554">            evaluation = -evaluation;</a>
+<a name="ln555">        }</a>
+<a name="ln556"> </a>
+<a name="ln557">        Assert.AreEqual((-2 * UnpackMG(OpenFileRookBonus))</a>
+<a name="ln558">            + UnpackMG(RookMobilityBonus[rookMobilitySideToMove])</a>
+<a name="ln559">            - UnpackMG(RookMobilityBonus[rookMobilitySideNotToMove]),</a>
+<a name="ln560">            evaluation);</a>
+<a name="ln561">    }</a>
+<a name="ln562"> </a>
+<a name="ln563">    /// &lt;summary&gt;</a>
+<a name="ln564">    /// 8   . . . r . . k .</a>
+<a name="ln565">    /// 7   p p . p . . p p</a>
+<a name="ln566">    /// 6   . . . . . . . .</a>
+<a name="ln567">    /// 5   . . . . . . . .</a>
+<a name="ln568">    /// 4   . . . . . . . .</a>
+<a name="ln569">    /// 3   . . . . . . . .</a>
+<a name="ln570">    /// 2   P . P P . . P P</a>
+<a name="ln571">    /// 1   . K . R . . . .</a>
+<a name="ln572">    ///     a b c d e f g h</a>
+<a name="ln573">    /// &lt;/summary&gt;</a>
+<a name="ln574">    [TestCase(&quot;3r2k1/pp1p2pp/8/8/8/8/P1PP2PP/1K1R4 w - - 0 1&quot;)]</a>
+<a name="ln575">    /// &lt;summary&gt;</a>
+<a name="ln576">    /// Previous one mirrored</a>
+<a name="ln577">    /// &lt;/summary&gt;</a>
+<a name="ln578">    [TestCase(&quot;4r1k1/pp2pp1p/8/8/8/8/PP2P1PP/1K2R3 b - - 0 1&quot;)]</a>
+<a name="ln579">    [Ignore(&quot;Broken by virtual king mobility&quot;)]</a>
+<a name="ln580">    public void StaticEvaluation_SemiOpenFileKingPenalty(string fen)</a>
+<a name="ln581">    {</a>
+<a name="ln582">        Position position = new Position(fen);</a>
+<a name="ln583">        int evaluation = AdditionalKingEvaluation(position, Piece.K)</a>
+<a name="ln584">            - AdditionalKingEvaluation(position, Piece.k);</a>
+<a name="ln585"> </a>
+<a name="ln586">        if (position.Side == Side.Black)</a>
+<a name="ln587">        {</a>
+<a name="ln588">            evaluation = -evaluation;</a>
+<a name="ln589">        }</a>
+<a name="ln590"> </a>
+<a name="ln591">        Assert.AreEqual(UnpackEG(SemiOpenFileKingPenalty), evaluation);</a>
+<a name="ln592">    }</a>
+<a name="ln593"> </a>
+<a name="ln594">    /// &lt;summary&gt;</a>
+<a name="ln595">    /// 8   . . . r . . k .</a>
+<a name="ln596">    /// 7   p . p p . . p p</a>
+<a name="ln597">    /// 6   . . . . . . . .</a>
+<a name="ln598">    /// 5   . . . . . . . .</a>
+<a name="ln599">    /// 4   . . . . . . . .</a>
+<a name="ln600">    /// 3   . . . . . . . .</a>
+<a name="ln601">    /// 2   P . P P . . P P</a>
+<a name="ln602">    /// 1   . K . R . . . .</a>
+<a name="ln603">    ///     a b c d e f g h</a>
+<a name="ln604">    /// &lt;/summary&gt;</a>
+<a name="ln605">    [TestCase(&quot;3r2k1/p1pp2pp/8/8/8/8/P1PP2PP/1K1R4 w - - 0 1&quot;)]</a>
+<a name="ln606">    /// &lt;summary&gt;</a>
+<a name="ln607">    /// Previous one mirrored</a>
+<a name="ln608">    /// &lt;/summary&gt;</a>
+<a name="ln609">    [TestCase(&quot;4r1k1/pp2pp1p/8/8/8/8/PP2PP1P/1K2R3 b - - 0 1&quot;)]</a>
+<a name="ln610">    public void StaticEvaluation_OpenFileKingPenalty(string fen)</a>
+<a name="ln611">    {</a>
+<a name="ln612">        Position position = new Position(fen);</a>
+<a name="ln613">        int evaluation = AdditionalKingEvaluation(position, Piece.K)</a>
+<a name="ln614">            - AdditionalKingEvaluation(position, Piece.k);</a>
+<a name="ln615"> </a>
+<a name="ln616">        if (position.Side == Side.Black)</a>
+<a name="ln617">        {</a>
+<a name="ln618">            evaluation = -evaluation;</a>
+<a name="ln619">        }</a>
+<a name="ln620"> </a>
+<a name="ln621">        Assert.AreEqual(UnpackEG(OpenFileKingPenalty), evaluation);</a>
+<a name="ln622">    }</a>
+<a name="ln623"> </a>
+<a name="ln624">    /// &lt;summary&gt;</a>
+<a name="ln625">    /// No rooks = no bonus or penalty</a>
+<a name="ln626">    /// 8   . . . . . . k .</a>
+<a name="ln627">    /// 7   p . p . . . p p</a>
+<a name="ln628">    /// 6   . . . . . . . .</a>
+<a name="ln629">    /// 5   . . . . . . . .</a>
+<a name="ln630">    /// 4   . . . . . . . .</a>
+<a name="ln631">    /// 3   . . . . . . . .</a>
+<a name="ln632">    /// 2   P . P . . . P P</a>
+<a name="ln633">    /// 1   . K . . . . . .</a>
+<a name="ln634">    ///     a b c d e f g h</a>
+<a name="ln635">    /// &lt;/summary&gt;</a>
+<a name="ln636">    [TestCase(&quot;6k1/p1p3pp/8/8/8/8/P1P3PP/1K6 w - - 0 1&quot;)]</a>
+<a name="ln637">    /// &lt;summary&gt;</a>
+<a name="ln638">    /// Previous one mirrored</a>
+<a name="ln639">    /// &lt;/summary&gt;</a>
+<a name="ln640">    [TestCase(&quot;6k1/pp3p1p/8/8/8/8/PP3P1P/1K6 b - - 0 1&quot;)]</a>
+<a name="ln641">    [Ignore(&quot;Broken by virtual king mobility&quot;)]</a>
+<a name="ln642">    public void StaticEvaluation_NoOpenFileKingPenalty(string fen)</a>
+<a name="ln643">    {</a>
+<a name="ln644">        Position position = new Position(fen);</a>
+<a name="ln645">        int evaluation = AdditionalKingEvaluation(position, Piece.K)</a>
+<a name="ln646">            - AdditionalKingEvaluation(position, Piece.k);</a>
+<a name="ln647"> </a>
+<a name="ln648">        if (position.Side == Side.Black)</a>
+<a name="ln649">        {</a>
+<a name="ln650">            evaluation = -evaluation;</a>
+<a name="ln651">        }</a>
+<a name="ln652"> </a>
+<a name="ln653">        Assert.AreEqual(0, evaluation);</a>
+<a name="ln654">    }</a>
+<a name="ln655"> </a>
+<a name="ln656">#pragma warning disable S4144 // Methods should not have identical implementations</a>
+<a name="ln657">    /// &lt;summary&gt;</a>
+<a name="ln658">    /// No rooks = no bonus or penalty</a>
+<a name="ln659">    /// 8   . . . . . . k .</a>
+<a name="ln660">    /// 7   p . p . . . p p</a>
+<a name="ln661">    /// 6   . . . . . . . .</a>
+<a name="ln662">    /// 5   . . . . . . . .</a>
+<a name="ln663">    /// 4   . . . . . . . .</a>
+<a name="ln664">    /// 3   . . . . . . . .</a>
+<a name="ln665">    /// 2   P . P . . . P P</a>
+<a name="ln666">    /// 1   . K . . . . . .</a>
+<a name="ln667">    ///     a b c d e f g h</a>
+<a name="ln668">    /// &lt;/summary&gt;</a>
+<a name="ln669">    [TestCase(&quot;6k1/pp1p2pp/8/8/8/8/P1PP2PP/1K6 w - - 0 1&quot;)]</a>
+<a name="ln670">    /// &lt;summary&gt;</a>
+<a name="ln671">    /// Previous one mirrored</a>
+<a name="ln672">    /// &lt;/summary&gt;</a>
+<a name="ln673">    [TestCase(&quot;6k1/pp2pp1p/8/8/8/8/PP2P1PP/1K6 b - - 0 1&quot;)]</a>
+<a name="ln674">    public void StaticEvaluation_NoSemiOpenFileKingPenalty(string fen)</a>
+<a name="ln675">    {</a>
+<a name="ln676">        Position position = new Position(fen);</a>
+<a name="ln677">        int evaluation = AdditionalKingEvaluation(position, Piece.K)</a>
+<a name="ln678">            - AdditionalKingEvaluation(position, Piece.k);</a>
+<a name="ln679"> </a>
+<a name="ln680">        if (position.Side == Side.Black)</a>
+<a name="ln681">        {</a>
+<a name="ln682">            evaluation = -evaluation;</a>
+<a name="ln683">        }</a>
+<a name="ln684"> </a>
+<a name="ln685">        Assert.AreEqual(0, evaluation);</a>
+<a name="ln686">    }</a>
+<a name="ln687">#pragma warning restore S4144 // Methods should not have identical implementations</a>
+<a name="ln688"> </a>
+<a name="ln689">    /// &lt;summary&gt;</a>
+<a name="ln690">    /// 8   . k . . . . . n</a>
+<a name="ln691">    /// 7   . . . . . p p p</a>
+<a name="ln692">    /// 6   . . . . . . . .</a>
+<a name="ln693">    /// 5   . . . . . . . .</a>
+<a name="ln694">    /// 4   . . . . . . . .</a>
+<a name="ln695">    /// 3   . . . . . . . .</a>
+<a name="ln696">    /// 2   P P P . . . . .</a>
+<a name="ln697">    /// 1   . K . . . . . N</a>
+<a name="ln698">    ///     a b c d e f g h</a>
+<a name="ln699">    /// &lt;/summary&gt;</a>
+<a name="ln700">    [TestCase(&quot;1k5n/5ppp/8/8/8/8/PPP5/1K5N w - - 0 1&quot;, 3)]</a>
+<a name="ln701">    /// &lt;summary&gt;</a>
+<a name="ln702">    /// Previous one mirrored</a>
+<a name="ln703">    /// &lt;/summary&gt;</a>
+<a name="ln704">    [TestCase(&quot;n5k1/5ppp/8/8/8/8/PPP5/N5K1 b - - 0 1&quot;, 3)]</a>
+<a name="ln705">    /// &lt;summary&gt;</a>
+<a name="ln706">    /// 8   . k . . . b . b</a>
+<a name="ln707">    /// 7   . . . . . n n n</a>
+<a name="ln708">    /// 6   . . . . . . . .</a>
+<a name="ln709">    /// 5   . . . . . . . .</a>
+<a name="ln710">    /// 4   . . . . . . . .</a>
+<a name="ln711">    /// 3   . . . . . . . .</a>
+<a name="ln712">    /// 2   N N N . . . . .</a>
+<a name="ln713">    /// 1   B K B . . . . .</a>
+<a name="ln714">    ///     a b c d e f g h</a>
+<a name="ln715">    /// &lt;/summary&gt;</a>
+<a name="ln716">    [TestCase(&quot;1k3b1b/5nnn/8/8/8/8/NNN5/BKB5 w - - 0 1&quot;, 5)]</a>
+<a name="ln717">    /// &lt;summary&gt;</a>
+<a name="ln718">    /// Previous one mirrored</a>
+<a name="ln719">    /// &lt;/summary&gt;</a>
+<a name="ln720">    [TestCase(&quot;5bkb/5nnn/8/8/8/8/NNN5/B1B3K1 b - - 0 1&quot;, 5)]</a>
+<a name="ln721">    [Ignore(&quot;Broken by virtual king mobility&quot;)]</a>
+<a name="ln722">    public void StaticEvaluation_KingShieldBonus(string fen, int surroundingPieces)</a>
+<a name="ln723">    {</a>
+<a name="ln724">        Position position = new Position(fen);</a>
+<a name="ln725">        int evaluation = AdditionalKingEvaluation(position, Piece.K)</a>
+<a name="ln726">            - AdditionalKingEvaluation(position, Piece.k);</a>
+<a name="ln727"> </a>
+<a name="ln728">        if (position.Side == Side.Black)</a>
+<a name="ln729">        {</a>
+<a name="ln730">            evaluation = -evaluation;</a>
+<a name="ln731">        }</a>
+<a name="ln732"> </a>
+<a name="ln733">        Assert.AreEqual(surroundingPieces * UnpackEG(KingShieldBonus), evaluation);</a>
+<a name="ln734">    }</a>
+<a name="ln735"> </a>
+<a name="ln736">    /// &lt;summary&gt;</a>
+<a name="ln737">    /// 8   n . . . k . . .</a>
+<a name="ln738">    /// 7   . p . . . . . .</a>
+<a name="ln739">    /// 6   . . . . . . . .</a>
+<a name="ln740">    /// 5   . . . b . . . .</a>
+<a name="ln741">    /// 4   . . . B . . . .</a>
+<a name="ln742">    /// 3   . . . . . . . .</a>
+<a name="ln743">    /// 2   . . . . . . P .</a>
+<a name="ln744">    /// 1   . . . . K . . N</a>
+<a name="ln745">    ///     a b c d e f g h</a>
+<a name="ln746">    /// &lt;/summary&gt;</a>
+<a name="ln747">    [TestCase(&quot;n3k3/1n6/8/3b4/3B4/8/6N1/4K2N w - - 0 1&quot;, 13, 10)]</a>
+<a name="ln748">    /// &lt;summary&gt;</a>
+<a name="ln749">    /// Previous one mirrored</a>
+<a name="ln750">    /// &lt;/summary&gt;</a>
+<a name="ln751">    [TestCase(&quot;n2k4/1n6/8/4b3/4B3/8/6N1/3K3N b - - 0 1&quot;, 13, 10)]</a>
+<a name="ln752">    /// &lt;summary&gt;</a>
+<a name="ln753">    /// 8   . . . . k . . .</a>
+<a name="ln754">    /// 7   . p . . . . . .</a>
+<a name="ln755">    /// 6   . .  p. . . . .</a>
+<a name="ln756">    /// 5   . . . b . . . .</a>
+<a name="ln757">    /// 4   . . . B . . . .</a>
+<a name="ln758">    /// 3   . . . . . P . .</a>
+<a name="ln759">    /// 2   . . . . . . P .</a>
+<a name="ln760">    /// 1   . . . . K . . .</a>
+<a name="ln761">    ///     a b c d e f g h</a>
+<a name="ln762">    /// &lt;/summary&gt;</a>
+<a name="ln763">    [TestCase(&quot;4k3/1n6/2n5/3b4/3B4/5N2/6N1/4K3 w - - 0 1&quot;, 13, 8)]</a>
+<a name="ln764">    /// &lt;summary&gt;</a>
+<a name="ln765">    /// Previous one mirrored</a>
+<a name="ln766">    /// &lt;/summary&gt;</a>
+<a name="ln767">    [TestCase(&quot;3k4/1n6/2n5/4b3/4B3/5N2/6N1/3K4 b - - 0 1&quot;, 13, 8)]</a>
+<a name="ln768">    public void StaticEvaluation_BishopMobility(string fen, int sideToMoveMobilityCount, int nonSideToMoveMobilityCount)</a>
+<a name="ln769">    {</a>
+<a name="ln770">        Position position = new Position(fen);</a>
+<a name="ln771">        int evaluation = AdditionalPieceEvaluation(position, Piece.B)</a>
+<a name="ln772">            - AdditionalPieceEvaluation(position, Piece.b);</a>
+<a name="ln773"> </a>
+<a name="ln774">        if (position.Side == Side.Black)</a>
+<a name="ln775">        {</a>
+<a name="ln776">            evaluation = -evaluation;</a>
+<a name="ln777">        }</a>
+<a name="ln778"> </a>
+<a name="ln779">        Assert.AreEqual(UnpackMG(BishopMobilityBonus[sideToMoveMobilityCount]) - UnpackMG(BishopMobilityBonus[nonSideToMoveMobilityCount]), evaluation);</a>
+<a name="ln780">    }</a>
+<a name="ln781"> </a>
+<a name="ln782">    /// &lt;summary&gt;</a>
+<a name="ln783">    /// 8   n . . . k . . .</a>
+<a name="ln784">    /// 7   . p . . . . . .</a>
+<a name="ln785">    /// 6   . . . . . . . .</a>
+<a name="ln786">    /// 5   . . . q . . . .</a>
+<a name="ln787">    /// 4   . . . Q . . . .</a>
+<a name="ln788">    /// 3   . . . . . . . .</a>
+<a name="ln789">    /// 2   . . . . . . P .</a>
+<a name="ln790">    /// 1   . . . . K . . N</a>
+<a name="ln791">    ///     a b c d e f g h</a>
+<a name="ln792">    /// &lt;/summary&gt;</a>
+<a name="ln793">    [TestCase(&quot;n7/1p6/3k4/3q4/3Q4/3K4/6P1/7N w - - 0 1&quot;)]</a>
+<a name="ln794">    /// &lt;summary&gt;</a>
+<a name="ln795">    /// Previous one mirrored</a>
+<a name="ln796">    /// &lt;/summary&gt;</a>
+<a name="ln797">    [TestCase(&quot;n7/1p6/4k3/4q3/4Q3/4K3/6P1/7N b - - 0 1&quot;)]</a>
+<a name="ln798">    /// &lt;summary&gt;</a>
+<a name="ln799">    /// 8   . . . . k . . .</a>
+<a name="ln800">    /// 7   . p . . . . . .</a>
+<a name="ln801">    /// 6   . . p . . . . .</a>
+<a name="ln802">    /// 5   . . . q . . . .</a>
+<a name="ln803">    /// 4   . . . Q . . . .</a>
+<a name="ln804">    /// 3   . . . . . P . .</a>
+<a name="ln805">    /// 2   . . . . . . P .</a>
+<a name="ln806">    /// 1   . . . . K . . .</a>
+<a name="ln807">    ///     a b c d e f g h</a>
+<a name="ln808">    /// &lt;/summary&gt;</a>
+<a name="ln809">    [TestCase(&quot;4k3/1p6/2p5/3q4/3Q4/5P2/6P1/4K3 w - - 0 1&quot;)]</a>
+<a name="ln810">    /// &lt;summary&gt;</a>
+<a name="ln811">    /// Previous one mirrored</a>
+<a name="ln812">    /// &lt;/summary&gt;</a>
+<a name="ln813">    [TestCase(&quot;3k4/1p6/2p5/4q3/4Q3/5P2/6P1/3K4 b - - 0 1&quot;)]</a>
+<a name="ln814">    /// &lt;summary&gt;</a>
+<a name="ln815">    /// 8   n . . . k . . .</a>
+<a name="ln816">    /// 7   . p . . . . . .</a>
+<a name="ln817">    /// 6   . . . . . . . .</a>
+<a name="ln818">    /// 5   . . . q . . . .</a>
+<a name="ln819">    /// 4   . . . Q . . . .</a>
+<a name="ln820">    /// 3   . . . . . . . .</a>
+<a name="ln821">    /// 2   . . . . . . P .</a>
+<a name="ln822">    /// 1   . . . . K . . N</a>
+<a name="ln823">    ///     a b c d e f g h</a>
+<a name="ln824">    /// &lt;/summary&gt;</a>
+<a name="ln825">    [TestCase(&quot;n7/1p6/3k4/3q4/3Q4/3K4/6P1/7N w - - 0 1&quot;)]</a>
+<a name="ln826">    /// &lt;summary&gt;</a>
+<a name="ln827">    /// Previous one mirrored</a>
+<a name="ln828">    /// &lt;/summary&gt;</a>
+<a name="ln829">    [TestCase(&quot;n7/1p6/4k3/4q3/4Q3/4K3/6P1/7N b - - 0 1&quot;)]</a>
+<a name="ln830">    /// &lt;summary&gt;</a>
+<a name="ln831">    /// 8   . . . . k . . .</a>
+<a name="ln832">    /// 7   . p . . . . . .</a>
+<a name="ln833">    /// 6   . . p . . . . .</a>
+<a name="ln834">    /// 5   . . . q . . . .</a>
+<a name="ln835">    /// 4   . . . Q . . . .</a>
+<a name="ln836">    /// 3   . . . . . P . .</a>
+<a name="ln837">    /// 2   . . . . . . P .</a>
+<a name="ln838">    /// 1   . . . . K . . .</a>
+<a name="ln839">    ///     a b c d e f g h</a>
+<a name="ln840">    /// &lt;/summary&gt;</a>
+<a name="ln841">    [TestCase(&quot;4k3/1p6/2p5/3q4/3Q4/5P2/6P1/4K3 w - - 0 1&quot;)]</a>
+<a name="ln842">    /// &lt;summary&gt;</a>
+<a name="ln843">    /// Previous one mirrored</a>
+<a name="ln844">    /// &lt;/summary&gt;</a>
+<a name="ln845">    [TestCase(&quot;3k4/1p6/2p5/4q3/4Q3/5P2/6P1/3K4 b - - 0 1&quot;)]</a>
+<a name="ln846">    /// &lt;summary&gt;</a>
+<a name="ln847">    /// 8   n . . . k . . .</a>
+<a name="ln848">    /// 7   . . . . . . . .</a>
+<a name="ln849">    /// 6   . . p . . . . .</a>
+<a name="ln850">    /// 5   . r . q . . . R</a>
+<a name="ln851">    /// 4   . . . Q . . . .</a>
+<a name="ln852">    /// 3   . . . . . P . .</a>
+<a name="ln853">    /// 2   . . . . . . . .</a>
+<a name="ln854">    /// 1   . . . . K . . N</a>
+<a name="ln855">    ///     a b c d e f g h</a>
+<a name="ln856">    /// &lt;/summary&gt;</a>
+<a name="ln857">    [TestCase(&quot;2n1kn2/4n3/2p5/1r1q3R/3Q4/5P2/6NN/7K w - - 0 1&quot;)]</a>
+<a name="ln858">    /// &lt;summary&gt;</a>
+<a name="ln859">    /// Previous one mirrored</a>
+<a name="ln860">    /// &lt;/summary&gt;</a>
+<a name="ln861">    [TestCase(&quot;n7/k7/2p5/4q3/r3Q1R1/5P2/8/3K3N b - - 0 1&quot;)]</a>
+<a name="ln862">    public void StaticEvaluation_QueenMobility(string fen)</a>
+<a name="ln863">    {</a>
+<a name="ln864">        Position position = new Position(fen);</a>
+<a name="ln865">        int evaluation = AdditionalPieceEvaluation(position, Piece.Q)</a>
+<a name="ln866">            - AdditionalPieceEvaluation(position, Piece.q);</a>
+<a name="ln867"> </a>
+<a name="ln868">        BitBoard whitePawnAttacks = position.PieceBitBoards[(int)Piece.P].ShiftUpRight() | position.PieceBitBoards[(int)Piece.P].ShiftUpLeft();</a>
+<a name="ln869">        BitBoard blackPawnAttacks = position.PieceBitBoards[(int)Piece.p].ShiftDownRight() | position.PieceBitBoards[(int)Piece.p].ShiftDownLeft();</a>
+<a name="ln870"> </a>
+<a name="ln871">        var whiteMobility =</a>
+<a name="ln872">            (Attacks.QueenAttacks(position.PieceBitBoards[(int)Piece.Q].GetLS1BIndex(), position.OccupancyBitBoards[(int)Side.Both])</a>
+<a name="ln873">                &amp; (~(position.OccupancyBitBoards[(int)Side.White] | blackPawnAttacks)))</a>
+<a name="ln874">            .CountBits();</a>
+<a name="ln875"> </a>
+<a name="ln876">        var blackMobility =</a>
+<a name="ln877">            (Attacks.QueenAttacks(position.PieceBitBoards[(int)Piece.q].GetLS1BIndex(), position.OccupancyBitBoards[(int)Side.Both])</a>
+<a name="ln878">                &amp; (~(position.OccupancyBitBoards[(int)Side.Black] | whitePawnAttacks)))</a>
+<a name="ln879">            .CountBits();</a>
+<a name="ln880"> </a>
+<a name="ln881">        var expectedEvaluation = QueenMobilityBonus[whiteMobility] - QueenMobilityBonus[blackMobility];</a>
+<a name="ln882"> </a>
+<a name="ln883">        Assert.AreEqual(UnpackMG(expectedEvaluation), evaluation);</a>
+<a name="ln884">    }</a>
+<a name="ln885"> </a>
+<a name="ln886">    /// &lt;summary&gt;</a>
+<a name="ln887">    /// https://github.com/lynx-chess/Lynx/pull/510</a>
+<a name="ln888">    /// &lt;/summary&gt;</a>
+<a name="ln889">    [TestCase(&quot;QQQQQQQQ/QQQQQQQQ/QQQQQQQQ/QQQQQQQQ/QQQQQQQQ/QQQQQQQQ/QPPPPPPP/K6k b - - 0 1&quot;, MinStaticEval, IgnoreReason = &quot;Packed eval reduces max eval to a short, so over Short.MaxValue it overflows and produces unexpected results&quot;)]</a>
+<a name="ln890">    [TestCase(&quot;QQQQQQQQ/QQQQQQQQ/QQQQQQQQ/QQQQQQQQ/QQQQQQQQ/QQQQQQQQ/QPPPPPPP/K5k1 w - - 0 1&quot;, MaxStaticEval, IgnoreReason = &quot;Packed eval reduces max eval to a short, so over Short.MaxValue it overflows and produces unexpected results&quot;)]</a>
+<a name="ln891">    [TestCase(&quot;8/QQQQQQ1/QQQQQQQQ/QQQQQQQQ/QQQQQQQQ/QQQQQQQQ/QQ6/K6k b - - 0 1&quot;, MinStaticEval, IgnoreReason = &quot;It's just a pain to maintain this with bucketed PSQT tuning&quot;)]</a>
+<a name="ln892">    [TestCase(&quot;8/QQQQQQ1/QQQQQQQQ/QQQQQQQQ/QQQQQQQQ/QQQQQQQQ/QQ6/K5k1 w - - 0 1&quot;, MaxStaticEval, IgnoreReason = &quot;It's just a pain to maintain this with bucketed PSQT tuning&quot;)]</a>
+<a name="ln893">    public void StaticEvaluation_Clamp(string fen, int expectedStaticEvaluation)</a>
+<a name="ln894">    {</a>
+<a name="ln895">        var position = new Position(fen);</a>
+<a name="ln896"> </a>
+<a name="ln897">        Assert.AreEqual(expectedStaticEvaluation, position.StaticEvaluation().Score);</a>
+<a name="ln898">    }</a>
+<a name="ln899"> </a>
+<a name="ln900">    [TestCase(&quot;k7/8/8/3K4/8/8/8/8 w - - 0 1&quot;, true, &quot;K vs k&quot;)]</a>
+<a name="ln901">    [TestCase(&quot;8/8/8/8/3k4/8/8/K7 w - - 0 1&quot;, true, &quot;K vs k&quot;)]</a>
+<a name="ln902">    public void StaticEvaluation_PawnlessEndgames_KingVsKing(string fen, bool isDrawExpected, string _)</a>
+<a name="ln903">    {</a>
+<a name="ln904">        EvaluateDrawOrNotDraw(fen, isDrawExpected, 0);</a>
+<a name="ln905">    }</a>
+<a name="ln906"> </a>
+<a name="ln907">    [TestCase(&quot;1k6/8/8/8/8/8/1B6/1K6 w - - 0 1&quot;, true, 1, &quot;B&quot;)]</a>
+<a name="ln908">    [TestCase(&quot;1k6/1b6/8/8/8/8/8/1K6 w - - 0 1&quot;, true, 1, &quot;b&quot;)]</a>
+<a name="ln909">    [TestCase(&quot;1k6/8/8/8/8/8/1N6/1K6 w - - 0 1&quot;, true, 1, &quot;N&quot;)]</a>
+<a name="ln910">    [TestCase(&quot;1k6/1n6/8/8/8/8/8/1K6 w - - 0 1&quot;, true, 1, &quot;n&quot;)]</a>
+<a name="ln911">    [TestCase(&quot;1k6/8/8/8/8/8/1R6/1K6 w - - 0 1&quot;, false, 2, &quot;R&quot;)]</a>
+<a name="ln912">    [TestCase(&quot;rk6/8/8/8/8/8/8/1K6 w - - 0 1&quot;, false, 2, &quot;r&quot;)]</a>
+<a name="ln913">    [TestCase(&quot;1k6/8/8/8/8/8/1Q6/1K6 w - - 0 1&quot;, false, 4, &quot;Q&quot;)]</a>
+<a name="ln914">    [TestCase(&quot;qk6/8/8/8/8/8/8/1K6 w - - 0 1&quot;, false, 4, &quot;q&quot;)]</a>
+<a name="ln915">    public void StaticEvaluation_PawnlessEndgames_SinglePiece(string fen, bool isDrawExpected, int expectedPhase, string _)</a>
+<a name="ln916">    {</a>
+<a name="ln917">        EvaluateDrawOrNotDraw(fen, isDrawExpected, expectedPhase);</a>
+<a name="ln918">    }</a>
+<a name="ln919"> </a>
+<a name="ln920">    [TestCase(&quot;1k6/n7/8/8/8/8/N7/1K6 w - - 0 1&quot;, true, &quot;N vs n&quot;)]</a>
+<a name="ln921">    [TestCase(&quot;1k6/b7/8/8/8/8/B7/1K6 w - - 0 1&quot;, true, &quot;B vs b&quot;)]</a>
+<a name="ln922">    [TestCase(&quot;1k6/n7/8/8/8/8/B7/1K6 w - - 0 1&quot;, true, &quot;B vs n&quot;)]</a>
+<a name="ln923">    [TestCase(&quot;1k6/b7/8/8/8/8/N7/1K6 w - - 0 1&quot;, true, &quot;N vs b&quot;)]</a>
+<a name="ln924">    [TestCase(&quot;1k6/8/8/8/8/8/NB6/1K6 w - - 0 1&quot;, false, &quot;BN&quot;)]</a>
+<a name="ln925">    [TestCase(&quot;1k6/8/8/8/8/8/BB6/1K6 w - - 0 1&quot;, false, &quot;BB&quot;)]</a>
+<a name="ln926">    [TestCase(&quot;1k6/bb6/8/8/8/8/8/1K6 w - - 0 1&quot;, false, &quot;bb&quot;)]</a>
+<a name="ln927">    [TestCase(&quot;1k6/bn6/8/8/8/8/8/1K6 w - - 0 1&quot;, false, &quot;bn&quot;)]</a>
+<a name="ln928">    [TestCase(&quot;1k6/8/8/8/8/8/NN6/1K6 w - - 0 1&quot;, true, &quot;NN&quot;)]</a>
+<a name="ln929">    [TestCase(&quot;1k6/nn6/8/8/8/8/8/1K6 w - - 0 1&quot;, true, &quot;nn&quot;)]</a>
+<a name="ln930">    public void StaticEvaluation_PawnlessEndgames_TwoMinorPieces(string fen, bool isDrawExpected, string _)</a>
+<a name="ln931">    {</a>
+<a name="ln932">        EvaluateDrawOrNotDraw(fen, isDrawExpected, 2);</a>
+<a name="ln933">    }</a>
+<a name="ln934"> </a>
+<a name="ln935">    [TestCase(&quot;8/8/3kb3/8/8/2NN4/3K4/8 w - - 0 1&quot;, true, &quot;NN vs b&quot;)]</a>
+<a name="ln936">    [TestCase(&quot;8/8/3knn2/8/8/3B4/3K4/8 w - - 0 1&quot;, true, &quot;B vs nn&quot;)]</a>
+<a name="ln937">    [TestCase(&quot;8/8/3kn3/8/8/2NN4/3K4/8 w - - 0 1&quot;, true, &quot;NN vs n&quot;)]</a>
+<a name="ln938">    [TestCase(&quot;8/8/3knn2/8/8/3N4/3K4/8 w - - 0 1&quot;, true, &quot;N vs nn&quot;)]</a>
+<a name="ln939">    public void StaticEvaluation_PawnlessEndgames_TwoMinorPiecesVsOne(string fen, bool isDrawExpected, string _)</a>
+<a name="ln940">    {</a>
+<a name="ln941">        EvaluateDrawOrNotDraw(fen, isDrawExpected, 3);</a>
+<a name="ln942">    }</a>
+<a name="ln943"> </a>
+<a name="ln944">    [TestCase(0, 0)]</a>
+<a name="ln945">    [TestCase(0, 100)]</a>
+<a name="ln946">    [TestCase(100, 100)]</a>
+<a name="ln947">    [TestCase(100, 200)]</a>
+<a name="ln948">    public void TaperedEvaluation(int mg, int eg)</a>
+<a name="ln949">    {</a>
+<a name="ln950">        Assert.AreEqual(mg, Position.TaperedEvaluation(Pack((short)mg, (short)eg), 24));</a>
+<a name="ln951">        Assert.AreEqual(eg, Position.TaperedEvaluation(Pack((short)mg, (short)eg), 0));</a>
+<a name="ln952">    }</a>
+<a name="ln953"> </a>
+<a name="ln954">    [Test]</a>
+<a name="ln955">    public void ScaleEvalWith50MovesDrawDistance()</a>
+<a name="ln956">    {</a>
+<a name="ln957">        const string queenVsRookPosition = &quot;8/4k3/4r3/3Q4/3K4/8/8/8 w - - 0 1&quot;;</a>
+<a name="ln958"> </a>
+<a name="ln959">        var position = new Position(queenVsRookPosition);</a>
+<a name="ln960"> </a>
+<a name="ln961">        Assert.Greater(position.StaticEvaluation(0), position.StaticEvaluation(10));</a>
+<a name="ln962">        Assert.AreEqual((int)(0.5 * position.StaticEvaluation(0).Score), position.StaticEvaluation(100).Score);</a>
+<a name="ln963">        Assert.AreEqual((int)(0.75 * position.StaticEvaluation(0).Score), position.StaticEvaluation(50).Score);</a>
+<a name="ln964">    }</a>
+<a name="ln965"> </a>
+<a name="ln966">    private static int AdditionalPieceEvaluation(Position position, Piece piece)</a>
+<a name="ln967">    {</a>
+<a name="ln968">        var whiteKing = position.PieceBitBoards[(int)Piece.K].GetLS1BIndex();</a>
+<a name="ln969">        var blackKing = position.PieceBitBoards[(int)Piece.k].GetLS1BIndex();</a>
+<a name="ln970"> </a>
+<a name="ln971">        var sameSideKingSquare = piece &lt;= Piece.K</a>
+<a name="ln972">            ? whiteKing</a>
+<a name="ln973">            : blackKing;</a>
+<a name="ln974"> </a>
+<a name="ln975">        var oppositeSideKingSquare = piece &lt;= Piece.K</a>
+<a name="ln976">            ? blackKing</a>
+<a name="ln977">            : whiteKing;</a>
+<a name="ln978"> </a>
+<a name="ln979">        BitBoard whitePawnAttacks = position.PieceBitBoards[(int)Piece.P].ShiftUpRight() | position.PieceBitBoards[(int)Piece.P].ShiftUpLeft();</a>
+<a name="ln980">        BitBoard blackPawnAttacks = position.PieceBitBoards[(int)Piece.p].ShiftDownRight() | position.PieceBitBoards[(int)Piece.p].ShiftDownLeft();</a>
+<a name="ln981"> </a>
+<a name="ln982">        var oppositeSidePawnAttacks = piece &lt;= Piece.K</a>
+<a name="ln983">            ? blackPawnAttacks</a>
+<a name="ln984">            : whitePawnAttacks;</a>
+<a name="ln985"> </a>
+<a name="ln986">        var pieceSide = (int)piece &lt;= (int)Piece.K</a>
+<a name="ln987">            ? (int)Side.White</a>
+<a name="ln988">            : (int)Side.Black;</a>
+<a name="ln989"> </a>
+<a name="ln990">        var bitBoard = position.PieceBitBoards[(int)piece];</a>
+<a name="ln991">        int eval = 0;</a>
+<a name="ln992"> </a>
+<a name="ln993">        while (!bitBoard.Empty())</a>
+<a name="ln994">        {</a>
+<a name="ln995">            var pieceSquareIndex = bitBoard.GetLS1BIndex();</a>
+<a name="ln996">            bitBoard.ResetLS1B();</a>
+<a name="ln997">            eval += UnpackMG(position.AdditionalPieceEvaluation(0, 0, pieceSquareIndex, (int)piece, pieceSide, sameSideKingSquare, oppositeSideKingSquare, oppositeSidePawnAttacks));</a>
+<a name="ln998">        }</a>
+<a name="ln999"> </a>
+<a name="ln1000">        return eval;</a>
+<a name="ln1001">    }</a>
+<a name="ln1002"> </a>
+<a name="ln1003">    private static int AdditionalKingEvaluation(Position position, Piece piece)</a>
+<a name="ln1004">    {</a>
+<a name="ln1005">        for (int pieceIndex = (int)Piece.P; pieceIndex &lt;= (int)Piece.k; ++pieceIndex)</a>
+<a name="ln1006">        {</a>
+<a name="ln1007">            var bitboard = position.PieceBitBoards[pieceIndex];</a>
+<a name="ln1008"> </a>
+<a name="ln1009">            while (bitboard != default)</a>
+<a name="ln1010">            {</a>
+<a name="ln1011">                bitboard.ResetLS1B();</a>
+<a name="ln1012">            }</a>
+<a name="ln1013">        }</a>
+<a name="ln1014"> </a>
+<a name="ln1015">        BitBoard whitePawnAttacks = position.PieceBitBoards[(int)Piece.P].ShiftUpRight() | position.PieceBitBoards[(int)Piece.P].ShiftUpLeft();</a>
+<a name="ln1016">        BitBoard blackPawnAttacks = position.PieceBitBoards[(int)Piece.p].ShiftDownRight() | position.PieceBitBoards[(int)Piece.p].ShiftDownLeft();</a>
+<a name="ln1017"> </a>
+<a name="ln1018">        var bitBoard = position.PieceBitBoards[(int)piece].GetLS1BIndex();</a>
+<a name="ln1019"> </a>
+<a name="ln1020">        return UnpackEG(piece == Piece.K</a>
+<a name="ln1021">            ? position.KingAdditionalEvaluation(bitBoard, (int)Side.White, blackPawnAttacks)</a>
+<a name="ln1022">            : position.KingAdditionalEvaluation(bitBoard, (int)Side.Black, whitePawnAttacks));</a>
+<a name="ln1023">    }</a>
+<a name="ln1024"> </a>
+<a name="ln1025">    private static void EvaluateDrawOrNotDraw(string fen, bool isDrawExpected, int expectedPhase)</a>
+<a name="ln1026">    {</a>
+<a name="ln1027">        var position = new Position(fen);</a>
+<a name="ln1028">        var (score, phase) = position.StaticEvaluation();</a>
+<a name="ln1029"> </a>
+<a name="ln1030">        Assert.AreEqual(expectedPhase, phase);</a>
+<a name="ln1031"> </a>
+<a name="ln1032">        if (isDrawExpected)</a>
+<a name="ln1033">        {</a>
+<a name="ln1034">            Assert.AreEqual(0, score);</a>
+<a name="ln1035">        }</a>
+<a name="ln1036">        else</a>
+<a name="ln1037">        {</a>
+<a name="ln1038">            Assert.AreNotEqual(0, score);</a>
+<a name="ln1039">        }</a>
+<a name="ln1040">    }</a>
+<a name="ln1041">}</a>
+</code></pre>
+<div class="balloon" rel="1009"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3120/" target="_blank">V3120</a> Potentially infinite loop. The 'bitboard' variable from the loop exit condition does not change its value between iterations.</p></div>
+<div class="balloon" rel="1027"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3114/" target="_blank">V3114</a> IDisposable object 'position' is not disposed before method returns.</p></div>
+<div class="balloon" rel="1009"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3150/" target="_blank">V3150</a> Loop break conditions do not depend on the number of iterations.</p></div>
+<link rel="stylesheet" href="highlight.css">
+<script src="highlight.pack.js"></script>
+<script src="highlightjs-line-numbers.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script>hljs.initLineNumbersOnLoad();</script>
+<script>
+  $(document).ready(function() {
+      $('.balloon').each(function () {
+          var bl = $(this);
+          var line = bl.attr('rel');
+          var text = $('a[name="ln'+line+'"]').text();
+
+          var space_count = 0;
+          for(var i = 0; i<text.length; i++){
+              var char = text[i];
+              if((char !== ' ')&&(char !== '\t'))break;
+              if(char === '\t')space_count++;
+              space_count++;
+          }
+
+          bl.css('margin-left', space_count*8);
+          $('a[name="ln'+line+'"]').after(bl);
+      });
+
+      window.location = window.location;
+  });
+</script>
+</body>
+</html>

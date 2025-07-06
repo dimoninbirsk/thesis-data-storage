@@ -1,0 +1,542 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>Query`.cs</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <script src="../jquery-3.5.1.min.js"></script>
+</head>
+<body>
+<pre><code class = "cs">
+<a name="ln1">﻿using Chloe.Descriptors;</a>
+<a name="ln2">using Chloe.Infrastructure;</a>
+<a name="ln3">using Chloe.QueryExpressions;</a>
+<a name="ln4">using Chloe.Reflection;</a>
+<a name="ln5">using System.Linq.Expressions;</a>
+<a name="ln6">using System.Reflection;</a>
+<a name="ln7"> </a>
+<a name="ln8">namespace Chloe.Query</a>
+<a name="ln9">{</a>
+<a name="ln10">    partial class Query&lt;T&gt; : IQuery&lt;T&gt;, IQuery</a>
+<a name="ln11">    {</a>
+<a name="ln12">        DbContextProvider _dbContextProvider;</a>
+<a name="ln13">        QueryExpression _expression;</a>
+<a name="ln14"> </a>
+<a name="ln15">        public DbContextProvider DbContextProvider { get { return this._dbContextProvider; } }</a>
+<a name="ln16"> </a>
+<a name="ln17">        Type IQuery.ElementType { get { return typeof(T); } }</a>
+<a name="ln18">        public QueryExpression QueryExpression { get { return this._expression; } }</a>
+<a name="ln19"> </a>
+<a name="ln20">        static RootQueryExpression CreateRootQueryExpression(DbContextProvider dbContextProvider, string explicitTable, LockType @lock)</a>
+<a name="ln21">        {</a>
+<a name="ln22">            Type entityType = typeof(T);</a>
+<a name="ln23">            TypeDescriptor typeDescriptor = EntityTypeContainer.GetDescriptor(entityType);</a>
+<a name="ln24"> </a>
+<a name="ln25">            RootQueryExpression ret = new RootQueryExpression(entityType, explicitTable, @lock);</a>
+<a name="ln26"> </a>
+<a name="ln27">            List&lt;LambdaExpression&gt; contextFilters = dbContextProvider.QueryFilters.FindValue(entityType);</a>
+<a name="ln28">            if (contextFilters != null)</a>
+<a name="ln29">            {</a>
+<a name="ln30">                ret.ContextFilters.Capacity = contextFilters.Count;</a>
+<a name="ln31">                for (int i = 0; i &lt; contextFilters.Count; i++)</a>
+<a name="ln32">                {</a>
+<a name="ln33">                    ret.ContextFilters.Add(contextFilters[i]);</a>
+<a name="ln34">                }</a>
+<a name="ln35">            }</a>
+<a name="ln36"> </a>
+<a name="ln37">            ret.GlobalFilters.Capacity = typeDescriptor.Definition.Filters.Count;</a>
+<a name="ln38">            for (int i = 0; i &lt; typeDescriptor.Definition.Filters.Count; i++)</a>
+<a name="ln39">            {</a>
+<a name="ln40">                ret.GlobalFilters.Add(typeDescriptor.Definition.Filters[i]);</a>
+<a name="ln41">            }</a>
+<a name="ln42"> </a>
+<a name="ln43">            return ret;</a>
+<a name="ln44">        }</a>
+<a name="ln45">        public Query(DbContextProvider dbContextProvider, string explicitTable, LockType @lock) : this(dbContextProvider, CreateRootQueryExpression(dbContextProvider, explicitTable, @lock))</a>
+<a name="ln46">        {</a>
+<a name="ln47"> </a>
+<a name="ln48">        }</a>
+<a name="ln49">        public Query(DbContextProvider dbContextProvider, QueryExpression exp)</a>
+<a name="ln50">        {</a>
+<a name="ln51">            this._dbContextProvider = dbContextProvider;</a>
+<a name="ln52">            this._expression = exp;</a>
+<a name="ln53">        }</a>
+<a name="ln54"> </a>
+<a name="ln55">        public IQuery&lt;T&gt; AsTracking()</a>
+<a name="ln56">        {</a>
+<a name="ln57">            TrackingExpression e = new TrackingExpression(this.QueryExpression);</a>
+<a name="ln58">            return new Query&lt;T&gt;(this._dbContextProvider, e);</a>
+<a name="ln59">        }</a>
+<a name="ln60">        public IEnumerable&lt;T&gt; AsEnumerable()</a>
+<a name="ln61">        {</a>
+<a name="ln62">            return this.GenerateIterator();</a>
+<a name="ln63">        }</a>
+<a name="ln64"> </a>
+<a name="ln65">        public IQuery&lt;TResult&gt; Select&lt;TResult&gt;(Expression&lt;Func&lt;T, TResult&gt;&gt; selector)</a>
+<a name="ln66">        {</a>
+<a name="ln67">            PublicHelper.CheckNull(selector);</a>
+<a name="ln68">            SelectExpression e = new SelectExpression(typeof(TResult), _expression, selector);</a>
+<a name="ln69">            return new Query&lt;TResult&gt;(this._dbContextProvider, e);</a>
+<a name="ln70">        }</a>
+<a name="ln71"> </a>
+<a name="ln72">        public IQuery&lt;T&gt; IncludeAll()</a>
+<a name="ln73">        {</a>
+<a name="ln74">            TypeDescriptor typeDescriptor = EntityTypeContainer.GetDescriptor(typeof(T));</a>
+<a name="ln75"> </a>
+<a name="ln76">            object lastQuery = this;</a>
+<a name="ln77">            List&lt;Type&gt; chains = new List&lt;Type&gt;(2) { typeof(T) }; //用于记录 Include 链路，避免循环依赖导致无限递归</a>
+<a name="ln78">            for (int i = 0; i &lt; typeDescriptor.NavigationPropertyDescriptors.Count; i++)</a>
+<a name="ln79">            {</a>
+<a name="ln80">                PropertyDescriptor propertyDescriptor = typeDescriptor.NavigationPropertyDescriptors[i];</a>
+<a name="ln81">                lastQuery = this.Include(typeDescriptor, lastQuery, propertyDescriptor, chains);</a>
+<a name="ln82">            }</a>
+<a name="ln83"> </a>
+<a name="ln84">            return (IQuery&lt;T&gt;)lastQuery;</a>
+<a name="ln85">        }</a>
+<a name="ln86">        object Include(TypeDescriptor typeDescriptor, object lastQuery, PropertyDescriptor propertyDescriptor, List&lt;Type&gt; chains)</a>
+<a name="ln87">        {</a>
+<a name="ln88">            //entity.TOther or entity.List</a>
+<a name="ln89">            TypeDescriptor navTypeDescriptor = propertyDescriptor.GetPropertyTypeDescriptor();</a>
+<a name="ln90"> </a>
+<a name="ln91">            Func&lt;object, object&gt; queryBuilder = query =&gt;</a>
+<a name="ln92">            {</a>
+<a name="ln93">                return this.CallIncludeMethod(query, propertyDescriptor);</a>
+<a name="ln94">            };</a>
+<a name="ln95"> </a>
+<a name="ln96">            chains.Add(navTypeDescriptor.EntityType);</a>
+<a name="ln97">            lastQuery = this.ThenInclude(navTypeDescriptor, queryBuilder(lastQuery), typeDescriptor, queryBuilder, chains);</a>
+<a name="ln98">            chains.RemoveAt(chains.Count - 1);</a>
+<a name="ln99"> </a>
+<a name="ln100">            return lastQuery;</a>
+<a name="ln101">        }</a>
+<a name="ln102">        object ThenInclude(TypeDescriptor typeDescriptor, object lastQuery, TypeDescriptor declaringTypeDescriptor, Func&lt;object, object&gt; queryBuilder, List&lt;Type&gt; chains)</a>
+<a name="ln103">        {</a>
+<a name="ln104">            int navCount = typeDescriptor.NavigationPropertyDescriptors.Count;</a>
+<a name="ln105"> </a>
+<a name="ln106">            bool needRebuildQuery = false;</a>
+<a name="ln107">            for (int i = 0; i &lt; typeDescriptor.NavigationPropertyDescriptors.Count; i++)</a>
+<a name="ln108">            {</a>
+<a name="ln109">                //entity.TOther</a>
+<a name="ln110">                PropertyDescriptor propertyDescriptor = typeDescriptor.NavigationPropertyDescriptors[i];</a>
+<a name="ln111">                TypeDescriptor navTypeDescriptor = propertyDescriptor.GetPropertyTypeDescriptor();</a>
+<a name="ln112">                if (declaringTypeDescriptor != null &amp;&amp; navTypeDescriptor == declaringTypeDescriptor)</a>
+<a name="ln113">                {</a>
+<a name="ln114">                    continue;</a>
+<a name="ln115">                }</a>
+<a name="ln116"> </a>
+<a name="ln117">                //避免循环依赖导致无限递归</a>
+<a name="ln118">                if (chains.Any(a =&gt; a == navTypeDescriptor.EntityType))</a>
+<a name="ln119">                {</a>
+<a name="ln120">                    continue;</a>
+<a name="ln121">                }</a>
+<a name="ln122"> </a>
+<a name="ln123">                Func&lt;object, object&gt; includableQueryBuilder = query =&gt;</a>
+<a name="ln124">                {</a>
+<a name="ln125">                    return this.CallThenIncludeMethod(queryBuilder(query), propertyDescriptor);</a>
+<a name="ln126">                };</a>
+<a name="ln127"> </a>
+<a name="ln128">                if (needRebuildQuery)</a>
+<a name="ln129">                    lastQuery = queryBuilder(lastQuery);</a>
+<a name="ln130"> </a>
+<a name="ln131">                //lastQuery = lastQuery.ThenInclude(a =&gt; a.propertyDescriptor);</a>
+<a name="ln132">                lastQuery = this.CallThenIncludeMethod(lastQuery, propertyDescriptor);</a>
+<a name="ln133"> </a>
+<a name="ln134">                chains.Add(navTypeDescriptor.EntityType);</a>
+<a name="ln135">                lastQuery = this.ThenInclude(navTypeDescriptor, lastQuery, typeDescriptor, includableQueryBuilder, chains);</a>
+<a name="ln136">                chains.RemoveAt(chains.Count - 1);</a>
+<a name="ln137"> </a>
+<a name="ln138">                needRebuildQuery = true;</a>
+<a name="ln139">            }</a>
+<a name="ln140"> </a>
+<a name="ln141">            return lastQuery;</a>
+<a name="ln142">        }</a>
+<a name="ln143">        object CallIncludeMethod(object query, PropertyDescriptor propertyDescriptor)</a>
+<a name="ln144">        {</a>
+<a name="ln145">            Type queryType = typeof(IQuery&lt;T&gt;);</a>
+<a name="ln146">            MethodInfo includeMethod;</a>
+<a name="ln147">            if (propertyDescriptor is ComplexPropertyDescriptor)</a>
+<a name="ln148">            {</a>
+<a name="ln149">                includeMethod = queryType.GetMethod(&quot;Include&quot;);</a>
+<a name="ln150">                includeMethod = includeMethod.MakeGenericMethod(propertyDescriptor.PropertyType);</a>
+<a name="ln151">            }</a>
+<a name="ln152">            else</a>
+<a name="ln153">            {</a>
+<a name="ln154">                includeMethod = queryType.GetMethod(&quot;IncludeMany&quot;);</a>
+<a name="ln155">                includeMethod = includeMethod.MakeGenericMethod((propertyDescriptor as CollectionPropertyDescriptor).ElementType);</a>
+<a name="ln156">            }</a>
+<a name="ln157"> </a>
+<a name="ln158">            var includeMethodArgument = this.MakeIncludeMethodArgument(includeMethod, typeof(T), propertyDescriptor.Property);</a>
+<a name="ln159"> </a>
+<a name="ln160">            // query.Include&lt;property&gt;(a =&gt; a.property)</a>
+<a name="ln161">            var includableQuery = includeMethod.FastInvoke(query, new object[] { includeMethodArgument });</a>
+<a name="ln162">            return includableQuery;</a>
+<a name="ln163">        }</a>
+<a name="ln164">        object CallThenIncludeMethod(object includableQuery, PropertyDescriptor propertyDescriptor)</a>
+<a name="ln165">        {</a>
+<a name="ln166">            Type includableQueryType = includableQuery.GetType();</a>
+<a name="ln167">            MethodInfo thenIncludeMethod;</a>
+<a name="ln168">            if (propertyDescriptor is ComplexPropertyDescriptor)</a>
+<a name="ln169">            {</a>
+<a name="ln170">                thenIncludeMethod = includableQueryType.GetMethod(&quot;ThenInclude&quot;);</a>
+<a name="ln171">                thenIncludeMethod = thenIncludeMethod.MakeGenericMethod(propertyDescriptor.PropertyType);</a>
+<a name="ln172">            }</a>
+<a name="ln173">            else</a>
+<a name="ln174">            {</a>
+<a name="ln175">                thenIncludeMethod = includableQueryType.GetMethod(&quot;ThenIncludeMany&quot;);</a>
+<a name="ln176">                thenIncludeMethod = thenIncludeMethod.MakeGenericMethod((propertyDescriptor as CollectionPropertyDescriptor).ElementType);</a>
+<a name="ln177">            }</a>
+<a name="ln178"> </a>
+<a name="ln179">            var lambdaParameterType = includableQueryType.GetGenericArguments()[1];</a>
+<a name="ln180">            var includeMethodArgument = this.MakeIncludeMethodArgument(thenIncludeMethod, lambdaParameterType, propertyDescriptor.Property);</a>
+<a name="ln181"> </a>
+<a name="ln182">            // includableQuery.ThenInclude&lt;property&gt;(a =&gt; a.property)</a>
+<a name="ln183">            includableQuery = thenIncludeMethod.FastInvoke(includableQuery, new object[] { includeMethodArgument });</a>
+<a name="ln184">            return includableQuery;</a>
+<a name="ln185">        }</a>
+<a name="ln186">        LambdaExpression MakeIncludeMethodArgument(MethodInfo includeMethod, Type lambdaParameterType, PropertyInfo includeProperty)</a>
+<a name="ln187">        {</a>
+<a name="ln188">            var p = Expression.Parameter(lambdaParameterType, &quot;a&quot;);</a>
+<a name="ln189">            var propertyAccess = Expression.MakeMemberAccess(p, includeProperty);</a>
+<a name="ln190">            Type funcType = includeMethod.GetParameters()[0].ParameterType.GetGenericArguments()[0];</a>
+<a name="ln191">            var lambda = Expression.Lambda(funcType, propertyAccess, p);</a>
+<a name="ln192"> </a>
+<a name="ln193">            return lambda;</a>
+<a name="ln194">        }</a>
+<a name="ln195"> </a>
+<a name="ln196">        public IIncludedObjectQuery&lt;T, TProperty&gt; Include&lt;TProperty&gt;(Expression&lt;Func&lt;T, TProperty&gt;&gt; navigationPath)</a>
+<a name="ln197">        {</a>
+<a name="ln198">            return new IncludedObjectQuery&lt;T, TProperty&gt;(this._dbContextProvider, this.QueryExpression, navigationPath);</a>
+<a name="ln199">        }</a>
+<a name="ln200">        public IIncludedCollectionQuery&lt;T, TCollectionItem&gt; IncludeMany&lt;TCollectionItem&gt;(Expression&lt;Func&lt;T, IEnumerable&lt;TCollectionItem&gt;&gt;&gt; navigationPath)</a>
+<a name="ln201">        {</a>
+<a name="ln202">            return new IncludedCollectionQuery&lt;T, TCollectionItem&gt;(this._dbContextProvider, this.QueryExpression, navigationPath);</a>
+<a name="ln203">        }</a>
+<a name="ln204"> </a>
+<a name="ln205">        public IQuery&lt;T&gt; BindTwoWay()</a>
+<a name="ln206">        {</a>
+<a name="ln207">            BindTwoWayExpression e = new BindTwoWayExpression(this.QueryExpression);</a>
+<a name="ln208">            return new Query&lt;T&gt;(this._dbContextProvider, e);</a>
+<a name="ln209">        }</a>
+<a name="ln210"> </a>
+<a name="ln211">        public IQuery&lt;T&gt; SplitQuery()</a>
+<a name="ln212">        {</a>
+<a name="ln213">            SplitQueryExpression e = new SplitQueryExpression(this.QueryExpression);</a>
+<a name="ln214">            return new Query&lt;T&gt;(this._dbContextProvider, e);</a>
+<a name="ln215">        }</a>
+<a name="ln216"> </a>
+<a name="ln217">        public IQuery&lt;T&gt; Exclude&lt;TField&gt;(Expression&lt;Func&lt;T, TField&gt;&gt; field)</a>
+<a name="ln218">        {</a>
+<a name="ln219">            PublicHelper.CheckNull(field);</a>
+<a name="ln220">            ExcludeExpression e = new ExcludeExpression(typeof(T), this._expression, field);</a>
+<a name="ln221">            return new Query&lt;T&gt;(this._dbContextProvider, e);</a>
+<a name="ln222">        }</a>
+<a name="ln223"> </a>
+<a name="ln224">        public IQuery&lt;T&gt; Where(Expression&lt;Func&lt;T, bool&gt;&gt; predicate)</a>
+<a name="ln225">        {</a>
+<a name="ln226">            PublicHelper.CheckNull(predicate);</a>
+<a name="ln227">            WhereExpression e = new WhereExpression(typeof(T), this._expression, predicate);</a>
+<a name="ln228">            return new Query&lt;T&gt;(this._dbContextProvider, e);</a>
+<a name="ln229">        }</a>
+<a name="ln230">        public IOrderedQuery&lt;T&gt; OrderBy&lt;K&gt;(Expression&lt;Func&lt;T, K&gt;&gt; keySelector)</a>
+<a name="ln231">        {</a>
+<a name="ln232">            PublicHelper.CheckNull(keySelector);</a>
+<a name="ln233">            OrderExpression e = new OrderExpression(typeof(T), this._expression, QueryExpressionType.OrderBy, keySelector);</a>
+<a name="ln234">            return new OrderedQuery&lt;T&gt;(this._dbContextProvider, e);</a>
+<a name="ln235">        }</a>
+<a name="ln236">        public IOrderedQuery&lt;T&gt; OrderByDesc&lt;K&gt;(Expression&lt;Func&lt;T, K&gt;&gt; keySelector)</a>
+<a name="ln237">        {</a>
+<a name="ln238">            PublicHelper.CheckNull(keySelector);</a>
+<a name="ln239">            OrderExpression e = new OrderExpression(typeof(T), this._expression, QueryExpressionType.OrderByDesc, keySelector);</a>
+<a name="ln240">            return new OrderedQuery&lt;T&gt;(this._dbContextProvider, e);</a>
+<a name="ln241">        }</a>
+<a name="ln242">        public IQuery&lt;T&gt; Skip(int count)</a>
+<a name="ln243">        {</a>
+<a name="ln244">            SkipExpression e = new SkipExpression(typeof(T), this._expression, count);</a>
+<a name="ln245">            return new Query&lt;T&gt;(this._dbContextProvider, e);</a>
+<a name="ln246">        }</a>
+<a name="ln247">        public IQuery&lt;T&gt; Take(int count)</a>
+<a name="ln248">        {</a>
+<a name="ln249">            TakeExpression e = new TakeExpression(typeof(T), this._expression, count);</a>
+<a name="ln250">            return new Query&lt;T&gt;(this._dbContextProvider, e);</a>
+<a name="ln251">        }</a>
+<a name="ln252">        public IQuery&lt;T&gt; TakePage(int pageNumber, int pageSize)</a>
+<a name="ln253">        {</a>
+<a name="ln254">            int skipCount = (pageNumber - 1) * pageSize;</a>
+<a name="ln255">            int takeCount = pageSize;</a>
+<a name="ln256"> </a>
+<a name="ln257">            IQuery&lt;T&gt; q = this.Skip(skipCount).Take(takeCount);</a>
+<a name="ln258">            return q;</a>
+<a name="ln259">        }</a>
+<a name="ln260">        public PagingResult&lt;T&gt; Paging(int pageNumber, int pageSize)</a>
+<a name="ln261">        {</a>
+<a name="ln262">            PagingResult&lt;T&gt; result = new PagingResult&lt;T&gt;();</a>
+<a name="ln263">            result.Totals = this.Count();</a>
+<a name="ln264">            result.DataList = this.TakePage(pageNumber, pageSize).ToList();</a>
+<a name="ln265"> </a>
+<a name="ln266">            return result;</a>
+<a name="ln267">        }</a>
+<a name="ln268">        public async Task&lt;PagingResult&lt;T&gt;&gt; PagingAsync(int pageNumber, int pageSize)</a>
+<a name="ln269">        {</a>
+<a name="ln270">            PagingResult&lt;T&gt; result = new PagingResult&lt;T&gt;();</a>
+<a name="ln271">            result.Totals = await this.CountAsync();</a>
+<a name="ln272">            result.DataList = await this.TakePage(pageNumber, pageSize).ToListAsync();</a>
+<a name="ln273"> </a>
+<a name="ln274">            return result;</a>
+<a name="ln275">        }</a>
+<a name="ln276"> </a>
+<a name="ln277">        public IGroupingQuery&lt;T&gt; GroupBy&lt;K&gt;(Expression&lt;Func&lt;T, K&gt;&gt; keySelector)</a>
+<a name="ln278">        {</a>
+<a name="ln279">            PublicHelper.CheckNull(keySelector);</a>
+<a name="ln280">            return new GroupingQuery&lt;T&gt;(this, keySelector);</a>
+<a name="ln281">        }</a>
+<a name="ln282">        public IQuery&lt;T&gt; Distinct()</a>
+<a name="ln283">        {</a>
+<a name="ln284">            DistinctExpression e = new DistinctExpression(typeof(T), this._expression);</a>
+<a name="ln285">            return new Query&lt;T&gt;(this._dbContextProvider, e);</a>
+<a name="ln286">        }</a>
+<a name="ln287">        public IQuery&lt;T&gt; IgnoreAllFilters()</a>
+<a name="ln288">        {</a>
+<a name="ln289">            IgnoreAllFiltersExpression e = new IgnoreAllFiltersExpression(this._expression);</a>
+<a name="ln290">            return new Query&lt;T&gt;(this._dbContextProvider, e);</a>
+<a name="ln291">        }</a>
+<a name="ln292"> </a>
+<a name="ln293">        public IJoinQuery&lt;T, TOther&gt; Join&lt;TOther&gt;(JoinType joinType, Expression&lt;Func&lt;T, TOther, bool&gt;&gt; on)</a>
+<a name="ln294">        {</a>
+<a name="ln295">            IDbContextProvider dbContextProvider = this._dbContextProvider;</a>
+<a name="ln296">            return this.Join&lt;TOther&gt;(dbContextProvider.Query&lt;TOther&gt;(), joinType, on);</a>
+<a name="ln297">        }</a>
+<a name="ln298">        public IJoinQuery&lt;T, TOther&gt; Join&lt;TOther&gt;(IQuery&lt;TOther&gt; q, JoinType joinType, Expression&lt;Func&lt;T, TOther, bool&gt;&gt; on)</a>
+<a name="ln299">        {</a>
+<a name="ln300">            PublicHelper.CheckNull(q);</a>
+<a name="ln301">            PublicHelper.CheckNull(on);</a>
+<a name="ln302">            return new JoinQuery&lt;T, TOther&gt;(this, (Query&lt;TOther&gt;)q, joinType, on);</a>
+<a name="ln303">        }</a>
+<a name="ln304"> </a>
+<a name="ln305">        public IJoinQuery&lt;T, TOther&gt; InnerJoin&lt;TOther&gt;(Expression&lt;Func&lt;T, TOther, bool&gt;&gt; on)</a>
+<a name="ln306">        {</a>
+<a name="ln307">            IDbContextProvider dbContextProvider = this._dbContextProvider;</a>
+<a name="ln308">            return this.InnerJoin&lt;TOther&gt;(dbContextProvider.Query&lt;TOther&gt;(), on);</a>
+<a name="ln309">        }</a>
+<a name="ln310">        public IJoinQuery&lt;T, TOther&gt; LeftJoin&lt;TOther&gt;(Expression&lt;Func&lt;T, TOther, bool&gt;&gt; on)</a>
+<a name="ln311">        {</a>
+<a name="ln312">            IDbContextProvider dbContextProvider = this._dbContextProvider;</a>
+<a name="ln313">            return this.LeftJoin&lt;TOther&gt;(dbContextProvider.Query&lt;TOther&gt;(), on);</a>
+<a name="ln314">        }</a>
+<a name="ln315">        public IJoinQuery&lt;T, TOther&gt; RightJoin&lt;TOther&gt;(Expression&lt;Func&lt;T, TOther, bool&gt;&gt; on)</a>
+<a name="ln316">        {</a>
+<a name="ln317">            IDbContextProvider dbContextProvider = this._dbContextProvider;</a>
+<a name="ln318">            return this.RightJoin&lt;TOther&gt;(dbContextProvider.Query&lt;TOther&gt;(), on);</a>
+<a name="ln319">        }</a>
+<a name="ln320">        public IJoinQuery&lt;T, TOther&gt; FullJoin&lt;TOther&gt;(Expression&lt;Func&lt;T, TOther, bool&gt;&gt; on)</a>
+<a name="ln321">        {</a>
+<a name="ln322">            IDbContextProvider dbContextProvider = this._dbContextProvider;</a>
+<a name="ln323">            return this.FullJoin&lt;TOther&gt;(dbContextProvider.Query&lt;TOther&gt;(), on);</a>
+<a name="ln324">        }</a>
+<a name="ln325"> </a>
+<a name="ln326">        public IJoinQuery&lt;T, TOther&gt; InnerJoin&lt;TOther&gt;(IQuery&lt;TOther&gt; q, Expression&lt;Func&lt;T, TOther, bool&gt;&gt; on)</a>
+<a name="ln327">        {</a>
+<a name="ln328">            return this.Join&lt;TOther&gt;(q, JoinType.InnerJoin, on);</a>
+<a name="ln329">        }</a>
+<a name="ln330">        public IJoinQuery&lt;T, TOther&gt; LeftJoin&lt;TOther&gt;(IQuery&lt;TOther&gt; q, Expression&lt;Func&lt;T, TOther, bool&gt;&gt; on)</a>
+<a name="ln331">        {</a>
+<a name="ln332">            return this.Join&lt;TOther&gt;(q, JoinType.LeftJoin, on);</a>
+<a name="ln333">        }</a>
+<a name="ln334">        public IJoinQuery&lt;T, TOther&gt; RightJoin&lt;TOther&gt;(IQuery&lt;TOther&gt; q, Expression&lt;Func&lt;T, TOther, bool&gt;&gt; on)</a>
+<a name="ln335">        {</a>
+<a name="ln336">            return this.Join&lt;TOther&gt;(q, JoinType.RightJoin, on);</a>
+<a name="ln337">        }</a>
+<a name="ln338">        public IJoinQuery&lt;T, TOther&gt; FullJoin&lt;TOther&gt;(IQuery&lt;TOther&gt; q, Expression&lt;Func&lt;T, TOther, bool&gt;&gt; on)</a>
+<a name="ln339">        {</a>
+<a name="ln340">            return this.Join&lt;TOther&gt;(q, JoinType.FullJoin, on);</a>
+<a name="ln341">        }</a>
+<a name="ln342"> </a>
+<a name="ln343">        public T First()</a>
+<a name="ln344">        {</a>
+<a name="ln345">            var q = (Query&lt;T&gt;)this.Take(1);</a>
+<a name="ln346">            IEnumerable&lt;T&gt; iterator = q.GenerateIterator();</a>
+<a name="ln347">            return iterator.First();</a>
+<a name="ln348">        }</a>
+<a name="ln349">        public T First(Expression&lt;Func&lt;T, bool&gt;&gt; predicate)</a>
+<a name="ln350">        {</a>
+<a name="ln351">            return this.Where(predicate).First();</a>
+<a name="ln352">        }</a>
+<a name="ln353">        public T FirstOrDefault()</a>
+<a name="ln354">        {</a>
+<a name="ln355">            var q = (Query&lt;T&gt;)this.Take(1);</a>
+<a name="ln356">            IEnumerable&lt;T&gt; iterator = q.GenerateIterator();</a>
+<a name="ln357">            return iterator.FirstOrDefault();</a>
+<a name="ln358">        }</a>
+<a name="ln359">        public T FirstOrDefault(Expression&lt;Func&lt;T, bool&gt;&gt; predicate)</a>
+<a name="ln360">        {</a>
+<a name="ln361">            return this.Where(predicate).FirstOrDefault();</a>
+<a name="ln362">        }</a>
+<a name="ln363"> </a>
+<a name="ln364">        public List&lt;T&gt; ToList()</a>
+<a name="ln365">        {</a>
+<a name="ln366">            IEnumerable&lt;T&gt; iterator = this.GenerateIterator();</a>
+<a name="ln367">            return iterator.ToList();</a>
+<a name="ln368">        }</a>
+<a name="ln369"> </a>
+<a name="ln370">        public bool Any()</a>
+<a name="ln371">        {</a>
+<a name="ln372">            string v = &quot;1&quot;;</a>
+<a name="ln373">            var q = (Query&lt;string&gt;)this.Select(a =&gt; v).Take(1);</a>
+<a name="ln374">            return q.GenerateIterator().Any();</a>
+<a name="ln375">        }</a>
+<a name="ln376">        public bool Any(Expression&lt;Func&lt;T, bool&gt;&gt; predicate)</a>
+<a name="ln377">        {</a>
+<a name="ln378">            return this.Where(predicate).Any();</a>
+<a name="ln379">        }</a>
+<a name="ln380"> </a>
+<a name="ln381">        public int Count()</a>
+<a name="ln382">        {</a>
+<a name="ln383">            return this.ExecuteAggregateQuery&lt;int&gt;(GetCalledMethod(() =&gt; default(IQuery&lt;T&gt;).Count()), null, false);</a>
+<a name="ln384">        }</a>
+<a name="ln385">        public long LongCount()</a>
+<a name="ln386">        {</a>
+<a name="ln387">            return this.ExecuteAggregateQuery&lt;long&gt;(GetCalledMethod(() =&gt; default(IQuery&lt;T&gt;).LongCount()), null, false);</a>
+<a name="ln388">        }</a>
+<a name="ln389"> </a>
+<a name="ln390">        public TResult Max&lt;TResult&gt;(Expression&lt;Func&lt;T, TResult&gt;&gt; selector)</a>
+<a name="ln391">        {</a>
+<a name="ln392">            return this.ExecuteAggregateQuery&lt;TResult&gt;(GetCalledMethod(() =&gt; default(IQuery&lt;T&gt;).Max(default(Expression&lt;Func&lt;T, TResult&gt;&gt;))), selector);</a>
+<a name="ln393">        }</a>
+<a name="ln394">        public TResult Min&lt;TResult&gt;(Expression&lt;Func&lt;T, TResult&gt;&gt; selector)</a>
+<a name="ln395">        {</a>
+<a name="ln396">            return this.ExecuteAggregateQuery&lt;TResult&gt;(GetCalledMethod(() =&gt; default(IQuery&lt;T&gt;).Min(default(Expression&lt;Func&lt;T, TResult&gt;&gt;))), selector);</a>
+<a name="ln397">        }</a>
+<a name="ln398"> </a>
+<a name="ln399">        public int? Sum(Expression&lt;Func&lt;T, int&gt;&gt; selector)</a>
+<a name="ln400">        {</a>
+<a name="ln401">            return this.ExecuteAggregateQuery&lt;int?&gt;(GetCalledMethod(() =&gt; default(IQuery&lt;T&gt;).Sum(default(Expression&lt;Func&lt;T, int&gt;&gt;))), selector);</a>
+<a name="ln402">        }</a>
+<a name="ln403">        public int? Sum(Expression&lt;Func&lt;T, int?&gt;&gt; selector)</a>
+<a name="ln404">        {</a>
+<a name="ln405">            return this.ExecuteAggregateQuery&lt;int?&gt;(GetCalledMethod(() =&gt; default(IQuery&lt;T&gt;).Sum(default(Expression&lt;Func&lt;T, int?&gt;&gt;))), selector);</a>
+<a name="ln406">        }</a>
+<a name="ln407">        public long? Sum(Expression&lt;Func&lt;T, long&gt;&gt; selector)</a>
+<a name="ln408">        {</a>
+<a name="ln409">            return this.ExecuteAggregateQuery&lt;long?&gt;(GetCalledMethod(() =&gt; default(IQuery&lt;T&gt;).Sum(default(Expression&lt;Func&lt;T, long&gt;&gt;))), selector);</a>
+<a name="ln410">        }</a>
+<a name="ln411">        public long? Sum(Expression&lt;Func&lt;T, long?&gt;&gt; selector)</a>
+<a name="ln412">        {</a>
+<a name="ln413">            return this.ExecuteAggregateQuery&lt;long?&gt;(GetCalledMethod(() =&gt; default(IQuery&lt;T&gt;).Sum(default(Expression&lt;Func&lt;T, long?&gt;&gt;))), selector);</a>
+<a name="ln414">        }</a>
+<a name="ln415">        public decimal? Sum(Expression&lt;Func&lt;T, decimal&gt;&gt; selector)</a>
+<a name="ln416">        {</a>
+<a name="ln417">            return this.ExecuteAggregateQuery&lt;decimal?&gt;(GetCalledMethod(() =&gt; default(IQuery&lt;T&gt;).Sum(default(Expression&lt;Func&lt;T, decimal&gt;&gt;))), selector);</a>
+<a name="ln418">        }</a>
+<a name="ln419">        public decimal? Sum(Expression&lt;Func&lt;T, decimal?&gt;&gt; selector)</a>
+<a name="ln420">        {</a>
+<a name="ln421">            return this.ExecuteAggregateQuery&lt;decimal?&gt;(GetCalledMethod(() =&gt; default(IQuery&lt;T&gt;).Sum(default(Expression&lt;Func&lt;T, decimal?&gt;&gt;))), selector);</a>
+<a name="ln422">        }</a>
+<a name="ln423">        public double? Sum(Expression&lt;Func&lt;T, double&gt;&gt; selector)</a>
+<a name="ln424">        {</a>
+<a name="ln425">            return this.ExecuteAggregateQuery&lt;double?&gt;(GetCalledMethod(() =&gt; default(IQuery&lt;T&gt;).Sum(default(Expression&lt;Func&lt;T, double&gt;&gt;))), selector);</a>
+<a name="ln426">        }</a>
+<a name="ln427">        public double? Sum(Expression&lt;Func&lt;T, double?&gt;&gt; selector)</a>
+<a name="ln428">        {</a>
+<a name="ln429">            return this.ExecuteAggregateQuery&lt;double?&gt;(GetCalledMethod(() =&gt; default(IQuery&lt;T&gt;).Sum(default(Expression&lt;Func&lt;T, double?&gt;&gt;))), selector);</a>
+<a name="ln430">        }</a>
+<a name="ln431">        public float? Sum(Expression&lt;Func&lt;T, float&gt;&gt; selector)</a>
+<a name="ln432">        {</a>
+<a name="ln433">            return this.ExecuteAggregateQuery&lt;float?&gt;(GetCalledMethod(() =&gt; default(IQuery&lt;T&gt;).Sum(default(Expression&lt;Func&lt;T, float&gt;&gt;))), selector);</a>
+<a name="ln434">        }</a>
+<a name="ln435">        public float? Sum(Expression&lt;Func&lt;T, float?&gt;&gt; selector)</a>
+<a name="ln436">        {</a>
+<a name="ln437">            return this.ExecuteAggregateQuery&lt;float?&gt;(GetCalledMethod(() =&gt; default(IQuery&lt;T&gt;).Sum(default(Expression&lt;Func&lt;T, float?&gt;&gt;))), selector);</a>
+<a name="ln438">        }</a>
+<a name="ln439"> </a>
+<a name="ln440">        public double? Average(Expression&lt;Func&lt;T, int&gt;&gt; selector)</a>
+<a name="ln441">        {</a>
+<a name="ln442">            return this.ExecuteAggregateQuery&lt;double?&gt;(GetCalledMethod(() =&gt; default(IQuery&lt;T&gt;).Average(default(Expression&lt;Func&lt;T, int&gt;&gt;))), selector);</a>
+<a name="ln443">        }</a>
+<a name="ln444">        public double? Average(Expression&lt;Func&lt;T, int?&gt;&gt; selector)</a>
+<a name="ln445">        {</a>
+<a name="ln446">            return this.ExecuteAggregateQuery&lt;double?&gt;(GetCalledMethod(() =&gt; default(IQuery&lt;T&gt;).Average(default(Expression&lt;Func&lt;T, int?&gt;&gt;))), selector);</a>
+<a name="ln447">        }</a>
+<a name="ln448">        public double? Average(Expression&lt;Func&lt;T, long&gt;&gt; selector)</a>
+<a name="ln449">        {</a>
+<a name="ln450">            return this.ExecuteAggregateQuery&lt;double?&gt;(GetCalledMethod(() =&gt; default(IQuery&lt;T&gt;).Average(default(Expression&lt;Func&lt;T, long&gt;&gt;))), selector);</a>
+<a name="ln451">        }</a>
+<a name="ln452">        public double? Average(Expression&lt;Func&lt;T, long?&gt;&gt; selector)</a>
+<a name="ln453">        {</a>
+<a name="ln454">            return this.ExecuteAggregateQuery&lt;double?&gt;(GetCalledMethod(() =&gt; default(IQuery&lt;T&gt;).Average(default(Expression&lt;Func&lt;T, long?&gt;&gt;))), selector);</a>
+<a name="ln455">        }</a>
+<a name="ln456">        public decimal? Average(Expression&lt;Func&lt;T, decimal&gt;&gt; selector)</a>
+<a name="ln457">        {</a>
+<a name="ln458">            return this.ExecuteAggregateQuery&lt;decimal?&gt;(GetCalledMethod(() =&gt; default(IQuery&lt;T&gt;).Average(default(Expression&lt;Func&lt;T, decimal&gt;&gt;))), selector);</a>
+<a name="ln459">        }</a>
+<a name="ln460">        public decimal? Average(Expression&lt;Func&lt;T, decimal?&gt;&gt; selector)</a>
+<a name="ln461">        {</a>
+<a name="ln462">            return this.ExecuteAggregateQuery&lt;decimal?&gt;(GetCalledMethod(() =&gt; default(IQuery&lt;T&gt;).Average(default(Expression&lt;Func&lt;T, decimal?&gt;&gt;))), selector);</a>
+<a name="ln463">        }</a>
+<a name="ln464">        public double? Average(Expression&lt;Func&lt;T, double&gt;&gt; selector)</a>
+<a name="ln465">        {</a>
+<a name="ln466">            return this.ExecuteAggregateQuery&lt;double?&gt;(GetCalledMethod(() =&gt; default(IQuery&lt;T&gt;).Average(default(Expression&lt;Func&lt;T, double&gt;&gt;))), selector);</a>
+<a name="ln467">        }</a>
+<a name="ln468">        public double? Average(Expression&lt;Func&lt;T, double?&gt;&gt; selector)</a>
+<a name="ln469">        {</a>
+<a name="ln470">            return this.ExecuteAggregateQuery&lt;double?&gt;(GetCalledMethod(() =&gt; default(IQuery&lt;T&gt;).Average(default(Expression&lt;Func&lt;T, double?&gt;&gt;))), selector);</a>
+<a name="ln471">        }</a>
+<a name="ln472">        public float? Average(Expression&lt;Func&lt;T, float&gt;&gt; selector)</a>
+<a name="ln473">        {</a>
+<a name="ln474">            return this.ExecuteAggregateQuery&lt;float?&gt;(GetCalledMethod(() =&gt; default(IQuery&lt;T&gt;).Average(default(Expression&lt;Func&lt;T, float&gt;&gt;))), selector);</a>
+<a name="ln475">        }</a>
+<a name="ln476">        public float? Average(Expression&lt;Func&lt;T, float?&gt;&gt; selector)</a>
+<a name="ln477">        {</a>
+<a name="ln478">            return this.ExecuteAggregateQuery&lt;float?&gt;(GetCalledMethod(() =&gt; default(IQuery&lt;T&gt;).Average(default(Expression&lt;Func&lt;T, float?&gt;&gt;))), selector);</a>
+<a name="ln479">        }</a>
+<a name="ln480">    }</a>
+<a name="ln481">}</a>
+</code></pre>
+<div class="balloon" rel="392"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3062/" target="_blank">V3062</a> An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Max' method.</p></div>
+<div class="balloon" rel="396"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3062/" target="_blank">V3062</a> An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Min' method.</p></div>
+<div class="balloon" rel="401"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3062/" target="_blank">V3062</a> An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Sum' method.</p></div>
+<div class="balloon" rel="405"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3062/" target="_blank">V3062</a> An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Sum' method.</p></div>
+<div class="balloon" rel="409"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3062/" target="_blank">V3062</a> An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Sum' method.</p></div>
+<div class="balloon" rel="413"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3062/" target="_blank">V3062</a> An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Sum' method.</p></div>
+<div class="balloon" rel="417"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3062/" target="_blank">V3062</a> An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Sum' method.</p></div>
+<div class="balloon" rel="421"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3062/" target="_blank">V3062</a> An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Sum' method.</p></div>
+<div class="balloon" rel="425"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3062/" target="_blank">V3062</a> An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Sum' method.</p></div>
+<div class="balloon" rel="429"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3062/" target="_blank">V3062</a> An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Sum' method.</p></div>
+<div class="balloon" rel="433"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3062/" target="_blank">V3062</a> An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Sum' method.</p></div>
+<div class="balloon" rel="437"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3062/" target="_blank">V3062</a> An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Sum' method.</p></div>
+<div class="balloon" rel="442"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3062/" target="_blank">V3062</a> An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.</p></div>
+<div class="balloon" rel="446"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3062/" target="_blank">V3062</a> An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.</p></div>
+<div class="balloon" rel="450"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3062/" target="_blank">V3062</a> An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.</p></div>
+<div class="balloon" rel="454"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3062/" target="_blank">V3062</a> An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.</p></div>
+<div class="balloon" rel="458"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3062/" target="_blank">V3062</a> An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.</p></div>
+<div class="balloon" rel="462"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3062/" target="_blank">V3062</a> An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.</p></div>
+<div class="balloon" rel="466"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3062/" target="_blank">V3062</a> An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.</p></div>
+<div class="balloon" rel="470"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3062/" target="_blank">V3062</a> An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.</p></div>
+<div class="balloon" rel="474"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3062/" target="_blank">V3062</a> An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.</p></div>
+<div class="balloon" rel="478"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3062/" target="_blank">V3062</a> An object 'default(IQuery&lt;T&gt;)' is used as an argument to its own method. Consider checking the first actual argument of the 'Average' method.</p></div>
+<link rel="stylesheet" href="highlight.css">
+<script src="highlight.pack.js"></script>
+<script src="highlightjs-line-numbers.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script>hljs.initLineNumbersOnLoad();</script>
+<script>
+  $(document).ready(function() {
+      $('.balloon').each(function () {
+          var bl = $(this);
+          var line = bl.attr('rel');
+          var text = $('a[name="ln'+line+'"]').text();
+
+          var space_count = 0;
+          for(var i = 0; i<text.length; i++){
+              var char = text[i];
+              if((char !== ' ')&&(char !== '\t'))break;
+              if(char === '\t')space_count++;
+              space_count++;
+          }
+
+          bl.css('margin-left', space_count*8);
+          $('a[name="ln'+line+'"]').after(bl);
+      });
+
+      window.location = window.location;
+  });
+</script>
+</body>
+</html>

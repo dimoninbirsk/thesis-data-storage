@@ -1,0 +1,239 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII" />
+  <title>Monitor.cs</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <script src="../jquery-3.5.1.min.js"></script>
+</head>
+<body>
+<pre><code class = "cs">
+<a name="ln1">using System.Collections;</a>
+<a name="ln2">using System.Runtime.InteropServices;</a>
+<a name="ln3">using System.Windows;</a>
+<a name="ln4">using ScreenToGif.Domain.Enums.Native;</a>
+<a name="ln5">using ScreenToGif.Native.External;</a>
+<a name="ln6">using ScreenToGif.Native.Structs;</a>
+<a name="ln7">using ScreenToGif.Util;</a>
+<a name="ln8">using Monitor = ScreenToGif.Domain.Models.Native.Monitor;</a>
+<a name="ln9"> </a>
+<a name="ln10">namespace ScreenToGif.Native.Helpers;</a>
+<a name="ln11"> </a>
+<a name="ln12">public static class MonitorHelper</a>
+<a name="ln13">{</a>
+<a name="ln14">    private static Monitor ParseMonitor(IntPtr monitorHandle, IntPtr hdc)</a>
+<a name="ln15">    {</a>
+<a name="ln16">        var info = new MonitorInfoEx(); //TODO: MonitorInfo not getting filled with data.</a>
+<a name="ln17">        var a = User32.GetMonitorInfo(new HandleRef(null, monitorHandle), info);</a>
+<a name="ln18"> </a>
+<a name="ln19">        var name = new string(info.Device).TrimEnd((char)0);</a>
+<a name="ln20"> </a>
+<a name="ln21">        var monitor = new Monitor</a>
+<a name="ln22">        {</a>
+<a name="ln23">            Handle = monitorHandle,</a>
+<a name="ln24">            Name = name,</a>
+<a name="ln25">            FriendlyName = name,</a>
+<a name="ln26">            NativeBounds = new Rect(info.Monitor.Left, info.Monitor.Top,</a>
+<a name="ln27">                info.Monitor.Right - info.Monitor.Left,</a>
+<a name="ln28">                info.Monitor.Bottom - info.Monitor.Top),</a>
+<a name="ln29">            Bounds = new Rect(info.Monitor.Left, info.Monitor.Top,</a>
+<a name="ln30">                info.Monitor.Right - info.Monitor.Left,</a>
+<a name="ln31">                info.Monitor.Bottom - info.Monitor.Top),</a>
+<a name="ln32">            WorkingArea = new Rect(info.Work.Left, info.Work.Top,</a>
+<a name="ln33">                info.Work.Right - info.Work.Left,</a>
+<a name="ln34">                info.Work.Bottom - info.Work.Top),</a>
+<a name="ln35">            IsPrimary = (info.Flags &amp; Constants.MonitorinfoPrimary) != 0</a>
+<a name="ln36">        };</a>
+<a name="ln37"> </a>
+<a name="ln38">        #region Extra details</a>
+<a name="ln39"> </a>
+<a name="ln40">        try</a>
+<a name="ln41">        {</a>
+<a name="ln42">            var display = new DisplayDevices(true);</a>
+<a name="ln43"> </a>
+<a name="ln44">            for (uint id = 0; User32.EnumDisplayDevices(null, id, ref display, 0); id++)</a>
+<a name="ln45">            {</a>
+<a name="ln46">                var found = display.DeviceName == monitor.Name;</a>
+<a name="ln47">                var adapter = display.DeviceString;</a>
+<a name="ln48"> </a>
+<a name="ln49">                User32.EnumDisplayDevices(display.DeviceName, id, ref display, 0);</a>
+<a name="ln50"> </a>
+<a name="ln51">                if (!found)</a>
+<a name="ln52">                    continue;</a>
+<a name="ln53"> </a>
+<a name="ln54">                monitor.AdapterName = adapter;</a>
+<a name="ln55">                monitor.FriendlyName = string.IsNullOrWhiteSpace(display.DeviceString) ? LocalizationHelper.Get(&quot;S.Recorder.Screen.Name.Internal&quot;) :</a>
+<a name="ln56">                    display.DeviceString == &quot;Generic PnP Monitor&quot; ? LocalizationHelper.Get(&quot;S.Recorder.Screen.Name.Generic&quot;) : display.DeviceString;</a>
+<a name="ln57">                break;</a>
+<a name="ln58">            }</a>
+<a name="ln59">        }</a>
+<a name="ln60">        catch (Exception ex)</a>
+<a name="ln61">        {</a>
+<a name="ln62">            LogWriter.Log(ex, &quot;Impossible to get extra details of screen.&quot;);</a>
+<a name="ln63">        }</a>
+<a name="ln64"> </a>
+<a name="ln65">        #endregion</a>
+<a name="ln66"> </a>
+<a name="ln67">        #region Screen DPI</a>
+<a name="ln68"> </a>
+<a name="ln69">        try</a>
+<a name="ln70">        {</a>
+<a name="ln71">            ShCore.GetDpiForMonitor(monitorHandle, DpiTypes.Effective, out var aux, out _);</a>
+<a name="ln72">            monitor.Dpi = aux &gt; 0 ? (int)aux : 96;</a>
+<a name="ln73">        }</a>
+<a name="ln74">        catch (Exception ex)</a>
+<a name="ln75">        {</a>
+<a name="ln76">            LogWriter.Log(ex, &quot;Impossible to detect screen DPI.&quot;);</a>
+<a name="ln77"> </a>
+<a name="ln78">            try</a>
+<a name="ln79">            {</a>
+<a name="ln80">                var h = Gdi32.CreateCompatibleDC(IntPtr.Zero);</a>
+<a name="ln81">                monitor.Dpi = Gdi32.GetDeviceCaps(h, (int)DeviceCaps.LogPixelsX);</a>
+<a name="ln82">                Gdi32.DeleteDC(h);</a>
+<a name="ln83">            }</a>
+<a name="ln84">            catch (Exception e)</a>
+<a name="ln85">            {</a>
+<a name="ln86">                LogWriter.Log(e, &quot;Error getting fallback of screen DPI.&quot;);</a>
+<a name="ln87">            }</a>
+<a name="ln88">        }</a>
+<a name="ln89"> </a>
+<a name="ln90">        #endregion</a>
+<a name="ln91"> </a>
+<a name="ln92">        return monitor;</a>
+<a name="ln93">    }</a>
+<a name="ln94"> </a>
+<a name="ln95">    public static List&lt;Monitor&gt; AllMonitors</a>
+<a name="ln96">    {</a>
+<a name="ln97">        get</a>
+<a name="ln98">        {</a>
+<a name="ln99">            var closure = new MonitorEnumCallback();</a>
+<a name="ln100">            var proc = new Delegates.MonitorEnumProc(closure.Callback);</a>
+<a name="ln101"> </a>
+<a name="ln102">            User32.EnumDisplayMonitors(Constants.NullHandleRef, IntPtr.Zero, proc, IntPtr.Zero);</a>
+<a name="ln103"> </a>
+<a name="ln104">            return closure.Monitors.Cast&lt;Monitor&gt;().ToList();</a>
+<a name="ln105">        }</a>
+<a name="ln106">    }</a>
+<a name="ln107"> </a>
+<a name="ln108">    public static List&lt;Monitor&gt; AllMonitorsScaled(double scale, bool offset = false)</a>
+<a name="ln109">    {</a>
+<a name="ln110">        //TODO: I should probably take each monitor scale.</a>
+<a name="ln111">        var monitors = AllMonitors;</a>
+<a name="ln112"> </a>
+<a name="ln113">        if (offset)</a>
+<a name="ln114">        {</a>
+<a name="ln115">            foreach (var monitor in monitors)</a>
+<a name="ln116">            {</a>
+<a name="ln117">                monitor.Bounds = new Rect(monitor.Bounds.X / scale - SystemParameters.VirtualScreenLeft, monitor.Bounds.Y / scale - SystemParameters.VirtualScreenTop, monitor.Bounds.Width / scale, monitor.Bounds.Height / scale);</a>
+<a name="ln118">                monitor.WorkingArea = new Rect(monitor.WorkingArea.X / scale - SystemParameters.VirtualScreenLeft, monitor.WorkingArea.Y / scale - SystemParameters.VirtualScreenTop, monitor.WorkingArea.Width / scale, monitor.WorkingArea.Height / scale);</a>
+<a name="ln119">            }</a>
+<a name="ln120"> </a>
+<a name="ln121">            return monitors;</a>
+<a name="ln122">        }</a>
+<a name="ln123"> </a>
+<a name="ln124">        foreach (var monitor in monitors)</a>
+<a name="ln125">        {</a>
+<a name="ln126">            monitor.Bounds = new Rect(monitor.Bounds.X / scale, monitor.Bounds.Y / scale, monitor.Bounds.Width / scale, monitor.Bounds.Height / scale);</a>
+<a name="ln127">            monitor.WorkingArea = new Rect(monitor.WorkingArea.X / scale, monitor.WorkingArea.Y / scale, monitor.WorkingArea.Width / scale, monitor.WorkingArea.Height / scale);</a>
+<a name="ln128">        }</a>
+<a name="ln129"> </a>
+<a name="ln130">        return monitors;</a>
+<a name="ln131">    }</a>
+<a name="ln132"> </a>
+<a name="ln133">    public static List&lt;Monitor&gt; AllMonitorsGranular(bool offset = false)</a>
+<a name="ln134">    {</a>
+<a name="ln135">        var monitors = AllMonitors;</a>
+<a name="ln136"> </a>
+<a name="ln137">        if (offset)</a>
+<a name="ln138">        {</a>
+<a name="ln139">            foreach (var monitor in monitors)</a>
+<a name="ln140">            {</a>
+<a name="ln141">                monitor.NativeBounds = new Rect(monitor.Bounds.X - SystemParameters.VirtualScreenLeft, monitor.Bounds.Y - SystemParameters.VirtualScreenTop, monitor.Bounds.Width, monitor.Bounds.Height);</a>
+<a name="ln142">                monitor.Bounds = new Rect(monitor.Bounds.X / monitor.Scale - SystemParameters.VirtualScreenLeft, monitor.Bounds.Y / monitor.Scale - SystemParameters.VirtualScreenTop, monitor.Bounds.Width / monitor.Scale, monitor.Bounds.Height / monitor.Scale);</a>
+<a name="ln143">                monitor.WorkingArea = new Rect(monitor.WorkingArea.X / monitor.Scale - SystemParameters.VirtualScreenLeft, monitor.WorkingArea.Y / monitor.Scale - SystemParameters.VirtualScreenTop, monitor.WorkingArea.Width / monitor.Scale, monitor.WorkingArea.Height / monitor.Scale);</a>
+<a name="ln144">            }</a>
+<a name="ln145"> </a>
+<a name="ln146">            return monitors;</a>
+<a name="ln147">        }</a>
+<a name="ln148"> </a>
+<a name="ln149">        foreach (var monitor in monitors)</a>
+<a name="ln150">        {</a>
+<a name="ln151">            monitor.Bounds = new Rect(monitor.Bounds.X / monitor.Scale, monitor.Bounds.Y / monitor.Scale, monitor.Bounds.Width / monitor.Scale, monitor.Bounds.Height / monitor.Scale);</a>
+<a name="ln152">            monitor.WorkingArea = new Rect(monitor.WorkingArea.X / monitor.Scale, monitor.WorkingArea.Y / monitor.Scale, monitor.WorkingArea.Width / monitor.Scale, monitor.WorkingArea.Height / monitor.Scale);</a>
+<a name="ln153">        }</a>
+<a name="ln154"> </a>
+<a name="ln155">        return monitors;</a>
+<a name="ln156">    }</a>
+<a name="ln157"> </a>
+<a name="ln158">    public static Monitor FromPoint(int left, int top)</a>
+<a name="ln159">    {</a>
+<a name="ln160">        var handle = User32.MonitorFromPoint(new PointW { X = left, Y = top }, Constants.MonitorDefaultToNearest);</a>
+<a name="ln161"> </a>
+<a name="ln162">        return ParseMonitor(handle, IntPtr.Zero);</a>
+<a name="ln163">    }</a>
+<a name="ln164"> </a>
+<a name="ln165">    public static Monitor MostIntersected(List&lt;Monitor&gt; monitors, Rect region)</a>
+<a name="ln166">    {</a>
+<a name="ln167">        return monitors.OrderByDescending(f =&gt;</a>
+<a name="ln168">        {</a>
+<a name="ln169">            //var inter = Rect.Intersect(region, f.NativeBounds);</a>
+<a name="ln170">            //This methods does not work properly with multi DPI.</a>
+<a name="ln171"> </a>
+<a name="ln172">            var x = Math.Max(region.Left, f.NativeBounds.Left);</a>
+<a name="ln173">            var num1 = Math.Min(region.Left + region.Width, f.NativeBounds.Right);</a>
+<a name="ln174">            var y = Math.Max(region.Top, f.NativeBounds.Top);</a>
+<a name="ln175">            var num2 = Math.Min(region.Top + region.Height, f.NativeBounds.Bottom);</a>
+<a name="ln176"> </a>
+<a name="ln177">            if (num1 &gt;= x &amp;&amp; num2 &gt;= y)</a>
+<a name="ln178">                return num1 - x + num2 - y;</a>
+<a name="ln179"> </a>
+<a name="ln180">            return 0;</a>
+<a name="ln181">        }).ThenBy(t =&gt; t.IsPrimary).FirstOrDefault();</a>
+<a name="ln182">    }</a>
+<a name="ln183"> </a>
+<a name="ln184">    private class MonitorEnumCallback</a>
+<a name="ln185">    {</a>
+<a name="ln186">        public ArrayList Monitors { get; private set; }</a>
+<a name="ln187"> </a>
+<a name="ln188">        public MonitorEnumCallback()</a>
+<a name="ln189">        {</a>
+<a name="ln190">            Monitors = new ArrayList();</a>
+<a name="ln191">        }</a>
+<a name="ln192"> </a>
+<a name="ln193">        public bool Callback(IntPtr monitor, IntPtr hdc, IntPtr lprcMonitor, IntPtr lparam)</a>
+<a name="ln194">        {</a>
+<a name="ln195">            Monitors.Add(ParseMonitor(monitor, hdc));</a>
+<a name="ln196">            return true;</a>
+<a name="ln197">        }</a>
+<a name="ln198">    }</a>
+<a name="ln199">}</a>
+</code></pre>
+<div class="balloon" rel="14"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3203/" target="_blank">V3203</a> Method parameter is not used: hdc.</p></div>
+<link rel="stylesheet" href="highlight.css">
+<script src="highlight.pack.js"></script>
+<script src="highlightjs-line-numbers.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script>hljs.initLineNumbersOnLoad();</script>
+<script>
+  $(document).ready(function() {
+      $('.balloon').each(function () {
+          var bl = $(this);
+          var line = bl.attr('rel');
+          var text = $('a[name="ln'+line+'"]').text();
+
+          var space_count = 0;
+          for(var i = 0; i<text.length; i++){
+              var char = text[i];
+              if((char !== ' ')&&(char !== '\t'))break;
+              if(char === '\t')space_count++;
+              space_count++;
+          }
+
+          bl.css('margin-left', space_count*8);
+          $('a[name="ln'+line+'"]').after(bl);
+      });
+
+      window.location = window.location;
+  });
+</script>
+</body>
+</html>

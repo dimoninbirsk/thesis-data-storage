@@ -1,0 +1,1494 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII" />
+  <title>ApplicationViewModel.cs</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <script src="../jquery-3.5.1.min.js"></script>
+</head>
+<body>
+<pre><code class = "cs">
+<a name="ln1">using System;</a>
+<a name="ln2">using System.Collections.Generic;</a>
+<a name="ln3">using System.Diagnostics;</a>
+<a name="ln4">using System.IO;</a>
+<a name="ln5">using System.Linq;</a>
+<a name="ln6">using System.Net.Http;</a>
+<a name="ln7">using System.Reflection;</a>
+<a name="ln8">using System.Runtime.InteropServices;</a>
+<a name="ln9">using System.Runtime.Serialization.Json;</a>
+<a name="ln10">using System.Text;</a>
+<a name="ln11">using System.Threading.Tasks;</a>
+<a name="ln12">using System.Windows;</a>
+<a name="ln13">using System.Windows.Input;</a>
+<a name="ln14">using System.Xml.Linq;</a>
+<a name="ln15">using System.Xml.XPath;</a>
+<a name="ln16">using ScreenToGif.Controls;</a>
+<a name="ln17">using ScreenToGif.Domain.Enums;</a>
+<a name="ln18">using ScreenToGif.Model;</a>
+<a name="ln19">using ScreenToGif.Util;</a>
+<a name="ln20">using ScreenToGif.Util.Settings;</a>
+<a name="ln21">using ScreenToGif.Windows;</a>
+<a name="ln22">using ScreenToGif.Windows.Other;</a>
+<a name="ln23"> </a>
+<a name="ln24">namespace ScreenToGif.ViewModel;</a>
+<a name="ln25"> </a>
+<a name="ln26">internal class ApplicationViewModel : ApplicationBaseViewModel</a>
+<a name="ln27">{</a>
+<a name="ln28">    #region Commands</a>
+<a name="ln29"> </a>
+<a name="ln30">    public IExtendedCommand&lt;int, bool&gt; Open</a>
+<a name="ln31">    {</a>
+<a name="ln32">        get</a>
+<a name="ln33">        {</a>
+<a name="ln34">            return new AdvancedRelayCommand&lt;int, bool&gt;</a>
+<a name="ln35">            {</a>
+<a name="ln36">                ExecuteAction = (startup, fromConsole) =&gt;</a>
+<a name="ln37">                {</a>
+<a name="ln38">                    if (!fromConsole &amp;&amp; UserSettings.All.StartMinimized)</a>
+<a name="ln39">                        startup = -1;</a>
+<a name="ln40"> </a>
+<a name="ln41">                    //If files are being sent via parameter, force the editor to open.</a>
+<a name="ln42">                    if (!fromConsole &amp;&amp; Arguments.FileNames.Any())</a>
+<a name="ln43">                        startup = 4;</a>
+<a name="ln44"> </a>
+<a name="ln45">                    switch (startup)</a>
+<a name="ln46">                    {</a>
+<a name="ln47">                        case -1: //Minimized.</a>
+<a name="ln48">                        {</a>
+<a name="ln49">                            return;</a>
+<a name="ln50">                        }</a>
+<a name="ln51"> </a>
+<a name="ln52">                        case 1: //Screen recorder.</a>
+<a name="ln53">                        {</a>
+<a name="ln54">                            if (OpenRecorder.CanExecute(null))</a>
+<a name="ln55">                                OpenRecorder.Execute(null);</a>
+<a name="ln56">                            return;</a>
+<a name="ln57">                        }</a>
+<a name="ln58"> </a>
+<a name="ln59">                        case 2: //Webcam recorder.</a>
+<a name="ln60">                        {</a>
+<a name="ln61">                            if (OpenWebcamRecorder.CanExecute(null))</a>
+<a name="ln62">                                OpenWebcamRecorder.Execute(null);</a>
+<a name="ln63">                            return;</a>
+<a name="ln64">                        }</a>
+<a name="ln65"> </a>
+<a name="ln66">                        case 3: //Board recorder.</a>
+<a name="ln67">                        {</a>
+<a name="ln68">                            if (OpenBoardRecorder.CanExecute(null))</a>
+<a name="ln69">                                OpenBoardRecorder.Execute(null);</a>
+<a name="ln70">                            return;</a>
+<a name="ln71">                        }</a>
+<a name="ln72"> </a>
+<a name="ln73">                        case 4: //Editor.</a>
+<a name="ln74">                        {</a>
+<a name="ln75">                            OpenEditor.Execute(null);</a>
+<a name="ln76">                            return;</a>
+<a name="ln77">                        }</a>
+<a name="ln78"> </a>
+<a name="ln79">                        case 5: //Options.</a>
+<a name="ln80">                        {</a>
+<a name="ln81">                            OpenOptions.Execute(null);</a>
+<a name="ln82">                            return;</a>
+<a name="ln83">                        }</a>
+<a name="ln84"> </a>
+<a name="ln85">                        default: //Startup.</a>
+<a name="ln86">                        {</a>
+<a name="ln87">                            OpenLauncher.Execute(null);</a>
+<a name="ln88">                            return;</a>
+<a name="ln89">                        }</a>
+<a name="ln90">                    }</a>
+<a name="ln91">                }</a>
+<a name="ln92">            };</a>
+<a name="ln93">        }</a>
+<a name="ln94">    }</a>
+<a name="ln95"> </a>
+<a name="ln96">    public ICommand OpenLauncher</a>
+<a name="ln97">    {</a>
+<a name="ln98">        get</a>
+<a name="ln99">        {</a>
+<a name="ln100">            return new RelayCommand</a>
+<a name="ln101">            {</a>
+<a name="ln102">                ExecuteAction = a =&gt;</a>
+<a name="ln103">                {</a>
+<a name="ln104">                    var startup = Application.Current.Windows.OfType&lt;Startup&gt;().FirstOrDefault();</a>
+<a name="ln105"> </a>
+<a name="ln106">                    if (startup == null)</a>
+<a name="ln107">                    {</a>
+<a name="ln108">                        startup = new Startup();</a>
+<a name="ln109">                        startup.Closed += (sender, args) =&gt; { CloseOrNot(); };</a>
+<a name="ln110"> </a>
+<a name="ln111">                        startup.Show();</a>
+<a name="ln112">                    }</a>
+<a name="ln113">                    else</a>
+<a name="ln114">                    {</a>
+<a name="ln115">                        if (startup.WindowState == WindowState.Minimized)</a>
+<a name="ln116">                            startup.WindowState = WindowState.Normal;</a>
+<a name="ln117"> </a>
+<a name="ln118">                        startup.Activate();</a>
+<a name="ln119">                    }</a>
+<a name="ln120">                }</a>
+<a name="ln121">            };</a>
+<a name="ln122">        }</a>
+<a name="ln123">    }</a>
+<a name="ln124"> </a>
+<a name="ln125">    public ICommand OpenRecorder</a>
+<a name="ln126">    {</a>
+<a name="ln127">        get</a>
+<a name="ln128">        {</a>
+<a name="ln129">            return new RelayCommand</a>
+<a name="ln130">            {</a>
+<a name="ln131">                CanExecutePredicate = o =&gt;</a>
+<a name="ln132">                {</a>
+<a name="ln133">                    //True if all windows are not Recorders.</a>
+<a name="ln134">                    return Application.Current?.Windows.OfType&lt;Window&gt;().All(a =&gt; !(a is BaseRecorder)) ?? false;</a>
+<a name="ln135">                },</a>
+<a name="ln136">                ExecuteAction = a =&gt;</a>
+<a name="ln137">                {</a>
+<a name="ln138">                    var caller = a as Window;</a>
+<a name="ln139">                    var editor = a as Editor;</a>
+<a name="ln140"> </a>
+<a name="ln141">                    if (editor == null)</a>
+<a name="ln142">                        caller?.Hide();</a>
+<a name="ln143"> </a>
+<a name="ln144">                    if (UserSettings.All.NewRecorder)</a>
+<a name="ln145">                    {</a>
+<a name="ln146">                        var recorderNew = new NewRecorder();</a>
+<a name="ln147">                        recorderNew.Closed += (sender, args) =&gt;</a>
+<a name="ln148">                        {</a>
+<a name="ln149">                            var window = sender as NewRecorder;</a>
+<a name="ln150"> </a>
+<a name="ln151">                            if (window?.Project != null &amp;&amp; window.Project.Any)</a>
+<a name="ln152">                            {</a>
+<a name="ln153">                                if (editor == null)</a>
+<a name="ln154">                                {</a>
+<a name="ln155">                                    ShowEditor(window.Project);</a>
+<a name="ln156">                                    caller?.Close();</a>
+<a name="ln157">                                }</a>
+<a name="ln158">                                else</a>
+<a name="ln159">                                    editor.RecorderCallback(window.Project);</a>
+<a name="ln160">                            }</a>
+<a name="ln161">                            else</a>
+<a name="ln162">                            {</a>
+<a name="ln163">                                if (editor == null)</a>
+<a name="ln164">                                {</a>
+<a name="ln165">                                    caller?.Show();</a>
+<a name="ln166">                                    CloseOrNot();</a>
+<a name="ln167">                                }</a>
+<a name="ln168">                                else</a>
+<a name="ln169">                                    editor.RecorderCallback(null);</a>
+<a name="ln170">                            }</a>
+<a name="ln171">                        };</a>
+<a name="ln172"> </a>
+<a name="ln173">                        Application.Current.MainWindow = recorderNew;</a>
+<a name="ln174">                        recorderNew.Show();</a>
+<a name="ln175"> </a>
+<a name="ln176">                        return;</a>
+<a name="ln177">                    }</a>
+<a name="ln178"> </a>
+<a name="ln179">                    var recorder = new Recorder();</a>
+<a name="ln180">                    recorder.Closed += (sender, args) =&gt;</a>
+<a name="ln181">                    {</a>
+<a name="ln182">                        var window = sender as Recorder;</a>
+<a name="ln183"> </a>
+<a name="ln184">                        if (window?.Project != null &amp;&amp; window.Project.Any)</a>
+<a name="ln185">                        {</a>
+<a name="ln186">                            if (editor == null)</a>
+<a name="ln187">                            {</a>
+<a name="ln188">                                ShowEditor(window.Project);</a>
+<a name="ln189">                                caller?.Close();</a>
+<a name="ln190">                            }</a>
+<a name="ln191">                            else</a>
+<a name="ln192">                                editor.RecorderCallback(window.Project);</a>
+<a name="ln193">                        }</a>
+<a name="ln194">                        else</a>
+<a name="ln195">                        {</a>
+<a name="ln196">                            if (editor == null)</a>
+<a name="ln197">                            {</a>
+<a name="ln198">                                caller?.Show();</a>
+<a name="ln199">                                CloseOrNot();</a>
+<a name="ln200">                            }</a>
+<a name="ln201">                            else</a>
+<a name="ln202">                                editor.RecorderCallback(null);</a>
+<a name="ln203">                        }</a>
+<a name="ln204">                    };</a>
+<a name="ln205"> </a>
+<a name="ln206">                    Application.Current.MainWindow = recorder;</a>
+<a name="ln207">                    recorder.Show();</a>
+<a name="ln208">                }</a>
+<a name="ln209">            };</a>
+<a name="ln210">        }</a>
+<a name="ln211">    }</a>
+<a name="ln212"> </a>
+<a name="ln213">    public ICommand OpenWebcamRecorder</a>
+<a name="ln214">    {</a>
+<a name="ln215">        get</a>
+<a name="ln216">        {</a>
+<a name="ln217">            return new RelayCommand</a>
+<a name="ln218">            {</a>
+<a name="ln219">                CanExecutePredicate = o =&gt;</a>
+<a name="ln220">                {</a>
+<a name="ln221">                    //True if all windows are not Recorders.</a>
+<a name="ln222">                    return Application.Current?.Windows.OfType&lt;Window&gt;().All(a =&gt; !(a is BaseRecorder)) ?? false;</a>
+<a name="ln223">                },</a>
+<a name="ln224">                ExecuteAction = a =&gt;</a>
+<a name="ln225">                {</a>
+<a name="ln226">                    var caller = a as Window;</a>
+<a name="ln227">                    var editor = a as Editor;</a>
+<a name="ln228"> </a>
+<a name="ln229">                    if (editor == null)</a>
+<a name="ln230">                        caller?.Hide();</a>
+<a name="ln231"> </a>
+<a name="ln232">                    var recorder = new Windows.Webcam();</a>
+<a name="ln233">                    recorder.Closed += (sender, args) =&gt;</a>
+<a name="ln234">                    {</a>
+<a name="ln235">                        var window = sender as Windows.Webcam;</a>
+<a name="ln236"> </a>
+<a name="ln237">                        if (window?.Project != null &amp;&amp; window.Project.Any)</a>
+<a name="ln238">                        {</a>
+<a name="ln239">                            if (editor == null)</a>
+<a name="ln240">                            {</a>
+<a name="ln241">                                ShowEditor(window.Project);</a>
+<a name="ln242">                                caller?.Close();</a>
+<a name="ln243">                            }</a>
+<a name="ln244">                            else</a>
+<a name="ln245">                                editor.RecorderCallback(window.Project);</a>
+<a name="ln246">                        }</a>
+<a name="ln247">                        else</a>
+<a name="ln248">                        {</a>
+<a name="ln249">                            if (editor == null)</a>
+<a name="ln250">                            {</a>
+<a name="ln251">                                caller?.Show();</a>
+<a name="ln252">                                CloseOrNot();</a>
+<a name="ln253">                            }</a>
+<a name="ln254">                            else</a>
+<a name="ln255">                                editor.RecorderCallback(null);</a>
+<a name="ln256">                        }</a>
+<a name="ln257">                    };</a>
+<a name="ln258"> </a>
+<a name="ln259">                    Application.Current.MainWindow = recorder;</a>
+<a name="ln260">                    recorder.Show();</a>
+<a name="ln261">                }</a>
+<a name="ln262">            };</a>
+<a name="ln263">        }</a>
+<a name="ln264">    }</a>
+<a name="ln265"> </a>
+<a name="ln266">    public ICommand OpenBoardRecorder</a>
+<a name="ln267">    {</a>
+<a name="ln268">        get</a>
+<a name="ln269">        {</a>
+<a name="ln270">            return new RelayCommand</a>
+<a name="ln271">            {</a>
+<a name="ln272">                CanExecutePredicate = o =&gt;</a>
+<a name="ln273">                {</a>
+<a name="ln274">                    //True if all windows are not Recorders.</a>
+<a name="ln275">                    return Application.Current?.Windows.OfType&lt;Window&gt;().All(a =&gt; !(a is BaseRecorder)) ?? false;</a>
+<a name="ln276">                },</a>
+<a name="ln277">                ExecuteAction = a =&gt;</a>
+<a name="ln278">                {</a>
+<a name="ln279">                    var caller = a as Window;</a>
+<a name="ln280">                    var editor = a as Editor;</a>
+<a name="ln281"> </a>
+<a name="ln282">                    if (editor == null)</a>
+<a name="ln283">                        caller?.Hide();</a>
+<a name="ln284"> </a>
+<a name="ln285">                    var recorder = new Board();</a>
+<a name="ln286">                    recorder.Closed += (sender, args) =&gt;</a>
+<a name="ln287">                    {</a>
+<a name="ln288">                        var window = sender as Board;</a>
+<a name="ln289"> </a>
+<a name="ln290">                        if (window?.Project != null &amp;&amp; window.Project.Any)</a>
+<a name="ln291">                        {</a>
+<a name="ln292">                            if (editor == null)</a>
+<a name="ln293">                            {</a>
+<a name="ln294">                                ShowEditor(window.Project);</a>
+<a name="ln295">                                caller?.Close();</a>
+<a name="ln296">                            }</a>
+<a name="ln297">                            else</a>
+<a name="ln298">                                editor.RecorderCallback(window.Project);</a>
+<a name="ln299">                        }</a>
+<a name="ln300">                        else</a>
+<a name="ln301">                        {</a>
+<a name="ln302">                            if (editor == null)</a>
+<a name="ln303">                            {</a>
+<a name="ln304">                                caller?.Show();</a>
+<a name="ln305">                                CloseOrNot();</a>
+<a name="ln306">                            }</a>
+<a name="ln307">                            else</a>
+<a name="ln308">                                editor.RecorderCallback(null);</a>
+<a name="ln309">                        }</a>
+<a name="ln310">                    };</a>
+<a name="ln311"> </a>
+<a name="ln312">                    Application.Current.MainWindow = recorder;</a>
+<a name="ln313">                    recorder.Show();</a>
+<a name="ln314">                }</a>
+<a name="ln315">            };</a>
+<a name="ln316">        }</a>
+<a name="ln317">    }</a>
+<a name="ln318"> </a>
+<a name="ln319">    public ICommand OpenEditor</a>
+<a name="ln320">    {</a>
+<a name="ln321">        get</a>
+<a name="ln322">        {</a>
+<a name="ln323">            return new RelayCommand</a>
+<a name="ln324">            {</a>
+<a name="ln325">                CanExecutePredicate = a =&gt; true, //TODO: Always let this window opens or check if there's any other recorder active?</a>
+<a name="ln326">                ExecuteAction = a =&gt;</a>
+<a name="ln327">                {</a>
+<a name="ln328">                    var caller = a as Window;</a>
+<a name="ln329"> </a>
+<a name="ln330">                    //TODO: Should it behave the same way as it does after a recording? Always open a new one or simply show all/one that was already opened?</a>
+<a name="ln331">                    ShowEditor(null, a is string[]);</a>
+<a name="ln332"> </a>
+<a name="ln333">                    caller?.Close();</a>
+<a name="ln334">                }</a>
+<a name="ln335">            };</a>
+<a name="ln336">        }</a>
+<a name="ln337">    }</a>
+<a name="ln338"> </a>
+<a name="ln339">    public ICommand OpenOptions</a>
+<a name="ln340">    {</a>
+<a name="ln341">        get</a>
+<a name="ln342">        {</a>
+<a name="ln343">            return new RelayCommand</a>
+<a name="ln344">            {</a>
+<a name="ln345">                CanExecutePredicate = a =&gt; true, //TODO: Always let this window opens or check if there's any other recorder active?</a>
+<a name="ln346">                ExecuteAction = a =&gt;</a>
+<a name="ln347">                {</a>
+<a name="ln348">                    var options = Application.Current.Windows.OfType&lt;Options&gt;().FirstOrDefault();</a>
+<a name="ln349">                    var tab = a as int? ?? 0; //Parameter that selects which tab to be displayed.</a>
+<a name="ln350"> </a>
+<a name="ln351">                    if (options == null)</a>
+<a name="ln352">                    {</a>
+<a name="ln353">                        options = new Options(tab);</a>
+<a name="ln354">                        options.Closed += (sender, args) =&gt;</a>
+<a name="ln355">                        {</a>
+<a name="ln356">                            CloseOrNot();</a>
+<a name="ln357">                        };</a>
+<a name="ln358"> </a>
+<a name="ln359">                        //TODO: Open as dialog or not? Block other windows?</a>
+<a name="ln360">                        options.Show();</a>
+<a name="ln361">                    }</a>
+<a name="ln362">                    else</a>
+<a name="ln363">                    {</a>
+<a name="ln364">                        if (options.WindowState == WindowState.Minimized)</a>
+<a name="ln365">                            options.WindowState = WindowState.Normal;</a>
+<a name="ln366"> </a>
+<a name="ln367">                        options.SelectTab(tab);</a>
+<a name="ln368">                        options.Activate();</a>
+<a name="ln369">                    }</a>
+<a name="ln370">                }</a>
+<a name="ln371">            };</a>
+<a name="ln372">        }</a>
+<a name="ln373">    }</a>
+<a name="ln374"> </a>
+<a name="ln375">    public ICommand OpenFeedback</a>
+<a name="ln376">    {</a>
+<a name="ln377">        get</a>
+<a name="ln378">        {</a>
+<a name="ln379">            return new RelayCommand</a>
+<a name="ln380">            {</a>
+<a name="ln381">                CanExecutePredicate = a =&gt; true, //TODO: Always let this window opens or check if there's any other recorder active?</a>
+<a name="ln382">                ExecuteAction = a =&gt;</a>
+<a name="ln383">                {</a>
+<a name="ln384">                    var feedback = Application.Current.Windows.OfType&lt;Feedback&gt;().FirstOrDefault();</a>
+<a name="ln385"> </a>
+<a name="ln386">                    if (feedback == null)</a>
+<a name="ln387">                    {</a>
+<a name="ln388">                        feedback = new Feedback();</a>
+<a name="ln389">                        feedback.Closed += async (sender, args) =&gt;</a>
+<a name="ln390">                        {</a>
+<a name="ln391">                            await Task.Factory.StartNew(App.MainViewModel.SendFeedback, TaskCreationOptions.LongRunning);</a>
+<a name="ln392"> </a>
+<a name="ln393">                            CloseOrNot();</a>
+<a name="ln394">                        };</a>
+<a name="ln395"> </a>
+<a name="ln396">                        feedback.ShowDialog();</a>
+<a name="ln397">                    }</a>
+<a name="ln398">                    else</a>
+<a name="ln399">                    {</a>
+<a name="ln400">                        if (feedback.WindowState == WindowState.Minimized)</a>
+<a name="ln401">                            feedback.WindowState = WindowState.Normal;</a>
+<a name="ln402"> </a>
+<a name="ln403">                        feedback.Activate();</a>
+<a name="ln404">                    }</a>
+<a name="ln405">                }</a>
+<a name="ln406">            };</a>
+<a name="ln407">        }</a>
+<a name="ln408">    }</a>
+<a name="ln409"> </a>
+<a name="ln410">    public ICommand OpenTroubleshoot</a>
+<a name="ln411">    {</a>
+<a name="ln412">        get</a>
+<a name="ln413">        {</a>
+<a name="ln414">            return new RelayCommand</a>
+<a name="ln415">            {</a>
+<a name="ln416">                CanExecutePredicate = a =&gt; true,</a>
+<a name="ln417">                ExecuteAction = a =&gt;</a>
+<a name="ln418">                {</a>
+<a name="ln419">                    var trouble = Application.Current.Windows.OfType&lt;Troubleshoot&gt;().FirstOrDefault();</a>
+<a name="ln420"> </a>
+<a name="ln421">                    if (trouble == null)</a>
+<a name="ln422">                    {</a>
+<a name="ln423">                        trouble = new Troubleshoot();</a>
+<a name="ln424">                        trouble.Closed += (sender, args) =&gt;</a>
+<a name="ln425">                        {</a>
+<a name="ln426">                            CloseOrNot();</a>
+<a name="ln427">                        };</a>
+<a name="ln428"> </a>
+<a name="ln429">                        trouble.ShowDialog();</a>
+<a name="ln430">                    }</a>
+<a name="ln431">                    else</a>
+<a name="ln432">                    {</a>
+<a name="ln433">                        if (trouble.WindowState == WindowState.Minimized)</a>
+<a name="ln434">                            trouble.WindowState = WindowState.Normal;</a>
+<a name="ln435"> </a>
+<a name="ln436">                        trouble.Activate();</a>
+<a name="ln437">                    }</a>
+<a name="ln438">                }</a>
+<a name="ln439">            };</a>
+<a name="ln440">        }</a>
+<a name="ln441">    }</a>
+<a name="ln442"> </a>
+<a name="ln443">    public ICommand OpenHelp</a>
+<a name="ln444">    {</a>
+<a name="ln445">        get</a>
+<a name="ln446">        {</a>
+<a name="ln447">            return new RelayCommand</a>
+<a name="ln448">            {</a>
+<a name="ln449">                CanExecutePredicate = a =&gt; true,</a>
+<a name="ln450">                ExecuteAction = a =&gt;</a>
+<a name="ln451">                {</a>
+<a name="ln452">                    try</a>
+<a name="ln453">                    {</a>
+<a name="ln454">                        ProcessHelper.StartWithShell(&quot;https://github.com/NickeManarin/ScreenToGif/wiki/Help&quot;);</a>
+<a name="ln455">                    }</a>
+<a name="ln456">                    catch (Exception ex)</a>
+<a name="ln457">                    {</a>
+<a name="ln458">                        LogWriter.Log(ex, &quot;Opening the Help link&quot;);</a>
+<a name="ln459">                    }</a>
+<a name="ln460">                }</a>
+<a name="ln461">            };</a>
+<a name="ln462">        }</a>
+<a name="ln463">    }</a>
+<a name="ln464"> </a>
+<a name="ln465">    public ICommand TrayLeftClick</a>
+<a name="ln466">    {</a>
+<a name="ln467">        get</a>
+<a name="ln468">        {</a>
+<a name="ln469">            return new RelayCommand</a>
+<a name="ln470">            {</a>
+<a name="ln471">                ExecuteAction = a =&gt; Interact(UserSettings.All.LeftClickAction, UserSettings.All.LeftOpenWindow)</a>
+<a name="ln472">            };</a>
+<a name="ln473">        }</a>
+<a name="ln474">    }</a>
+<a name="ln475"> </a>
+<a name="ln476">    public ICommand TrayDoubleLeftClick</a>
+<a name="ln477">    {</a>
+<a name="ln478">        get</a>
+<a name="ln479">        {</a>
+<a name="ln480">            return new RelayCommand</a>
+<a name="ln481">            {</a>
+<a name="ln482">                ExecuteAction = a =&gt; Interact(UserSettings.All.DoubleLeftClickAction, UserSettings.All.DoubleLeftOpenWindow)</a>
+<a name="ln483">            };</a>
+<a name="ln484">        }</a>
+<a name="ln485">    }</a>
+<a name="ln486"> </a>
+<a name="ln487">    public ICommand TrayMiddleClick</a>
+<a name="ln488">    {</a>
+<a name="ln489">        get</a>
+<a name="ln490">        {</a>
+<a name="ln491">            return new RelayCommand</a>
+<a name="ln492">            {</a>
+<a name="ln493">                ExecuteAction = a =&gt; Interact(UserSettings.All.MiddleClickAction, UserSettings.All.MiddleOpenWindow)</a>
+<a name="ln494">            };</a>
+<a name="ln495">        }</a>
+<a name="ln496">    }</a>
+<a name="ln497"> </a>
+<a name="ln498">    public ICommand PromptUpdate</a>
+<a name="ln499">    {</a>
+<a name="ln500">        get</a>
+<a name="ln501">        {</a>
+<a name="ln502">            return new RelayCommand</a>
+<a name="ln503">            {</a>
+<a name="ln504">                ExecuteAction = a =&gt;</a>
+<a name="ln505">                {</a>
+<a name="ln506">                    if (Global.UpdateAvailable == null)</a>
+<a name="ln507">                        return;</a>
+<a name="ln508"> </a>
+<a name="ln509">                    //Try to install the update, closing the app if successful.</a>
+<a name="ln510">                    if (InstallUpdate(true))</a>
+<a name="ln511">                        Application.Current.Shutdown(69);</a>
+<a name="ln512">                }</a>
+<a name="ln513">            };</a>
+<a name="ln514">        }</a>
+<a name="ln515">    }</a>
+<a name="ln516"> </a>
+<a name="ln517">    public ICommand ExitApplication</a>
+<a name="ln518">    {</a>
+<a name="ln519">        get</a>
+<a name="ln520">        {</a>
+<a name="ln521">            return new RelayCommand</a>
+<a name="ln522">            {</a>
+<a name="ln523">                CanExecutePredicate = o =&gt;</a>
+<a name="ln524">                {</a>
+<a name="ln525">                    //TODO: Check if there's anything open or anything happening with editors.</a>
+<a name="ln526">                    return Application.Current?.Windows.OfType&lt;BaseRecorder&gt;().All(a =&gt; a.Stage != RecorderStages.Recording) ?? false;</a>
+<a name="ln527">                },</a>
+<a name="ln528">                ExecuteAction = a =&gt;</a>
+<a name="ln529">                {</a>
+<a name="ln530">                    if (UserSettings.All.NotifyWhileClosingApp &amp;&amp; !Dialog.Ask(LocalizationHelper.Get(&quot;S.Exiting.Title&quot;), LocalizationHelper.Get(&quot;S.Exiting.Instruction&quot;), LocalizationHelper.Get(&quot;S.Exiting.Message&quot;)))</a>
+<a name="ln531">                        return;</a>
+<a name="ln532"> </a>
+<a name="ln533">                    if (UserSettings.All.DeleteCacheWhenClosing)</a>
+<a name="ln534">                        StorageUtils.PurgeCache();</a>
+<a name="ln535"> </a>
+<a name="ln536">                    Application.Current.Shutdown(69);</a>
+<a name="ln537">                }</a>
+<a name="ln538">            };</a>
+<a name="ln539">        }</a>
+<a name="ln540">    }</a>
+<a name="ln541"> </a>
+<a name="ln542">    #endregion</a>
+<a name="ln543"> </a>
+<a name="ln544">    #region Methods</a>
+<a name="ln545"> </a>
+<a name="ln546">    private void ShowEditor(ProjectInfo project = null, bool openMedia = false)</a>
+<a name="ln547">    {</a>
+<a name="ln548">        var editor = Application.Current.Windows.OfType&lt;Editor&gt;().FirstOrDefault(f =&gt; f.Project == null || !f.Project.Any);</a>
+<a name="ln549"> </a>
+<a name="ln550">        if (editor == null)</a>
+<a name="ln551">        {</a>
+<a name="ln552">            editor = new Editor { Project = project };</a>
+<a name="ln553">            editor.Closed += (sender, args) =&gt; CloseOrNot();</a>
+<a name="ln554">            editor.Show();</a>
+<a name="ln555">        }</a>
+<a name="ln556">        else</a>
+<a name="ln557">        {</a>
+<a name="ln558">            //TODO: Three modes for opening the editor:</a>
+<a name="ln559">            //Always open a new window.</a>
+<a name="ln560">            //Open a new window if there's no window without any project loaded.</a>
+<a name="ln561">            //Open a new window if there's no idle window (with a project loaded).</a>
+<a name="ln562"> </a>
+<a name="ln563">            //TODO: Detect if the last state was normal/maximized.</a>
+<a name="ln564">            if (editor.WindowState == WindowState.Minimized)</a>
+<a name="ln565">                editor.WindowState = WindowState.Normal;</a>
+<a name="ln566"> </a>
+<a name="ln567">            if (project != null)</a>
+<a name="ln568">                editor.LoadProject(project, true, false);</a>
+<a name="ln569">            else if (openMedia)</a>
+<a name="ln570">                editor.LoadFromArguments();</a>
+<a name="ln571">        }</a>
+<a name="ln572"> </a>
+<a name="ln573">        Application.Current.MainWindow = editor;</a>
+<a name="ln574">        editor.Activate();</a>
+<a name="ln575">    }</a>
+<a name="ln576"> </a>
+<a name="ln577">    private void CloseOrNot()</a>
+<a name="ln578">    {</a>
+<a name="ln579">        //When closed, check if it's the last window, then close if it's the configured behavior.</a>
+<a name="ln580">        if (UserSettings.All.ShowNotificationIcon &amp;&amp; UserSettings.All.KeepOpen)</a>
+<a name="ln581">            return;</a>
+<a name="ln582"> </a>
+<a name="ln583">        //We only need to check loaded windows that have content, since any special window could be open.</a>
+<a name="ln584">        if (Application.Current.Windows.Cast&lt;Window&gt;().Count(window =&gt; window.HasContent) == 0)</a>
+<a name="ln585">        {</a>
+<a name="ln586">            //Install the available update on closing.</a>
+<a name="ln587">            if (UserSettings.All.InstallUpdates)</a>
+<a name="ln588">                InstallUpdate();</a>
+<a name="ln589"> </a>
+<a name="ln590">            if (UserSettings.All.DeleteCacheWhenClosing)</a>
+<a name="ln591">                StorageUtils.PurgeCache();</a>
+<a name="ln592"> </a>
+<a name="ln593">            Application.Current.Shutdown(2);</a>
+<a name="ln594">        }</a>
+<a name="ln595">    }</a>
+<a name="ln596"> </a>
+<a name="ln597">    private void Interact(int action, int open)</a>
+<a name="ln598">    {</a>
+<a name="ln599">        switch (action)</a>
+<a name="ln600">        {</a>
+<a name="ln601">            case 1: //Open a window.</a>
+<a name="ln602">            {</a>
+<a name="ln603">                switch (open)</a>
+<a name="ln604">                {</a>
+<a name="ln605">                    case 1: //Startup.</a>
+<a name="ln606">                    {</a>
+<a name="ln607">                        OpenLauncher.Execute(null);</a>
+<a name="ln608">                        break;</a>
+<a name="ln609">                    }</a>
+<a name="ln610">                    case 2: //Recorder.</a>
+<a name="ln611">                    {</a>
+<a name="ln612">                        if (!OpenRecorder.CanExecute(null))</a>
+<a name="ln613">                        {</a>
+<a name="ln614">                            var rec = Application.Current.Windows.OfType&lt;BaseRecorder&gt;().FirstOrDefault();</a>
+<a name="ln615"> </a>
+<a name="ln616">                            if (rec != null)</a>
+<a name="ln617">                            {</a>
+<a name="ln618">                                if (rec.WindowState == WindowState.Minimized)</a>
+<a name="ln619">                                    rec.WindowState = WindowState.Normal;</a>
+<a name="ln620"> </a>
+<a name="ln621">                                //Bring to foreground.</a>
+<a name="ln622">                                rec.Activate();</a>
+<a name="ln623">                                return;</a>
+<a name="ln624">                            }</a>
+<a name="ln625">                        }</a>
+<a name="ln626"> </a>
+<a name="ln627">                        OpenRecorder.Execute(null);</a>
+<a name="ln628">                        return;</a>
+<a name="ln629">                    }</a>
+<a name="ln630">                    case 3: //Webcam.</a>
+<a name="ln631">                    {</a>
+<a name="ln632">                        if (!OpenWebcamRecorder.CanExecute(null))</a>
+<a name="ln633">                        {</a>
+<a name="ln634">                            var rec = Application.Current.Windows.OfType&lt;BaseRecorder&gt;().FirstOrDefault();</a>
+<a name="ln635"> </a>
+<a name="ln636">                            if (rec != null)</a>
+<a name="ln637">                            {</a>
+<a name="ln638">                                if (rec.WindowState == WindowState.Minimized)</a>
+<a name="ln639">                                    rec.WindowState = WindowState.Normal;</a>
+<a name="ln640"> </a>
+<a name="ln641">                                //Bring to foreground.</a>
+<a name="ln642">                                rec.Activate();</a>
+<a name="ln643">                                return;</a>
+<a name="ln644">                            }</a>
+<a name="ln645">                        }</a>
+<a name="ln646"> </a>
+<a name="ln647">                        OpenWebcamRecorder.Execute(null);</a>
+<a name="ln648">                        break;</a>
+<a name="ln649">                    }</a>
+<a name="ln650">                    case 4: //Board.</a>
+<a name="ln651">                    {</a>
+<a name="ln652">                        if (!OpenBoardRecorder.CanExecute(null))</a>
+<a name="ln653">                        {</a>
+<a name="ln654">                            var rec = Application.Current.Windows.OfType&lt;BaseRecorder&gt;().FirstOrDefault();</a>
+<a name="ln655"> </a>
+<a name="ln656">                            if (rec != null)</a>
+<a name="ln657">                            {</a>
+<a name="ln658">                                if (rec.WindowState == WindowState.Minimized)</a>
+<a name="ln659">                                    rec.WindowState = WindowState.Normal;</a>
+<a name="ln660"> </a>
+<a name="ln661">                                //Bring to foreground.</a>
+<a name="ln662">                                rec.Activate();</a>
+<a name="ln663">                                return;</a>
+<a name="ln664">                            }</a>
+<a name="ln665">                        }</a>
+<a name="ln666"> </a>
+<a name="ln667">                        OpenBoardRecorder.Execute(null);</a>
+<a name="ln668">                        break;</a>
+<a name="ln669">                    }</a>
+<a name="ln670">                    case 5: //Editor.</a>
+<a name="ln671">                    {</a>
+<a name="ln672">                        OpenEditor.Execute(null);</a>
+<a name="ln673">                        break;</a>
+<a name="ln674">                    }</a>
+<a name="ln675">                }</a>
+<a name="ln676"> </a>
+<a name="ln677">                break;</a>
+<a name="ln678">            }</a>
+<a name="ln679"> </a>
+<a name="ln680">            case 2: //Minimize/restore all windows.</a>
+<a name="ln681">            {</a>
+<a name="ln682">                var all = Application.Current.Windows.OfType&lt;Window&gt;().Where(w =&gt; w.Content != null).ToList();</a>
+<a name="ln683"> </a>
+<a name="ln684">                if (all.Count == 0)</a>
+<a name="ln685">                {</a>
+<a name="ln686">                    Interact(1, open);</a>
+<a name="ln687">                    return;</a>
+<a name="ln688">                }</a>
+<a name="ln689"> </a>
+<a name="ln690">                if (all.Any(n =&gt; n.WindowState != WindowState.Minimized))</a>
+<a name="ln691">                {</a>
+<a name="ln692">                    //Minimize all windows, disabling before to prevent some behaviors.</a>
+<a name="ln693">                    foreach (var f in all)</a>
+<a name="ln694">                        f.IsEnabled = false;</a>
+<a name="ln695"> </a>
+<a name="ln696">                    foreach (var f in all)</a>
+<a name="ln697">                        f.WindowState = WindowState.Minimized;</a>
+<a name="ln698"> </a>
+<a name="ln699">                    foreach (var f in all)</a>
+<a name="ln700">                        f.IsEnabled = true;</a>
+<a name="ln701">                }</a>
+<a name="ln702">                else</a>
+<a name="ln703">                {</a>
+<a name="ln704">                    //Restore all windows.</a>
+<a name="ln705">                    foreach (var window in all)</a>
+<a name="ln706">                        window.WindowState = WindowState.Normal;</a>
+<a name="ln707">                }</a>
+<a name="ln708"> </a>
+<a name="ln709">                break;</a>
+<a name="ln710">            }</a>
+<a name="ln711"> </a>
+<a name="ln712">            case 3: //Minimize all windows.</a>
+<a name="ln713">            {</a>
+<a name="ln714">                var all = Application.Current.Windows.OfType&lt;Window&gt;().Where(w =&gt; w.Content != null).ToList();</a>
+<a name="ln715"> </a>
+<a name="ln716">                if (all.Count == 0)</a>
+<a name="ln717">                {</a>
+<a name="ln718">                    Interact(1, open);</a>
+<a name="ln719">                    return;</a>
+<a name="ln720">                }</a>
+<a name="ln721"> </a>
+<a name="ln722">                foreach (var window in all)</a>
+<a name="ln723">                    window.WindowState = WindowState.Minimized;</a>
+<a name="ln724"> </a>
+<a name="ln725">                break;</a>
+<a name="ln726">            }</a>
+<a name="ln727"> </a>
+<a name="ln728">            case 4: //Restore all windows.</a>
+<a name="ln729">            {</a>
+<a name="ln730">                var all = Application.Current.Windows.OfType&lt;Window&gt;().Where(w =&gt; w.Content != null).ToList();</a>
+<a name="ln731"> </a>
+<a name="ln732">                if (all.Count == 0)</a>
+<a name="ln733">                {</a>
+<a name="ln734">                    Interact(1, open);</a>
+<a name="ln735">                    return;</a>
+<a name="ln736">                }</a>
+<a name="ln737"> </a>
+<a name="ln738">                foreach (var window in all)</a>
+<a name="ln739">                    window.WindowState = WindowState.Normal;</a>
+<a name="ln740"> </a>
+<a name="ln741">                break;</a>
+<a name="ln742">            }</a>
+<a name="ln743">        }</a>
+<a name="ln744">    }</a>
+<a name="ln745"> </a>
+<a name="ln746">    internal void ClearTemporaryFiles()</a>
+<a name="ln747">    {</a>
+<a name="ln748">        try</a>
+<a name="ln749">        {</a>
+<a name="ln750">            if (!UserSettings.All.AutomaticCleanUp || Global.IsCurrentlyDeletingFiles || string.IsNullOrWhiteSpace(UserSettings.All.TemporaryFolderResolved))</a>
+<a name="ln751">                return;</a>
+<a name="ln752"> </a>
+<a name="ln753">            Global.IsCurrentlyDeletingFiles = true;</a>
+<a name="ln754"> </a>
+<a name="ln755">            ClearRecordingCache();</a>
+<a name="ln756">            ClearUpdateCache();</a>
+<a name="ln757">        }</a>
+<a name="ln758">        catch (Exception ex)</a>
+<a name="ln759">        {</a>
+<a name="ln760">            LogWriter.Log(ex, &quot;Automatic clean up&quot;);</a>
+<a name="ln761">        }</a>
+<a name="ln762">        finally</a>
+<a name="ln763">        {</a>
+<a name="ln764">            Global.IsCurrentlyDeletingFiles = false;</a>
+<a name="ln765">            CheckDiskSpace();</a>
+<a name="ln766">        }</a>
+<a name="ln767">    }</a>
+<a name="ln768"> </a>
+<a name="ln769">    private void ClearRecordingCache()</a>
+<a name="ln770">    {</a>
+<a name="ln771">        try</a>
+<a name="ln772">        {</a>
+<a name="ln773">            var path = Path.Combine(UserSettings.All.TemporaryFolderResolved, &quot;ScreenToGif&quot;, &quot;Recording&quot;);</a>
+<a name="ln774"> </a>
+<a name="ln775">            if (!Directory.Exists(path))</a>
+<a name="ln776">                return;</a>
+<a name="ln777"> </a>
+<a name="ln778">            var list = Directory.GetDirectories(path).Select(x =&gt; new DirectoryInfo(x))</a>
+<a name="ln779">                .Where(w =&gt; (DateTime.Now - w.CreationTime).TotalDays &gt; (UserSettings.All.AutomaticCleanUpDays &gt; 0 ? UserSettings.All.AutomaticCleanUpDays : 5)).ToList();</a>
+<a name="ln780"> </a>
+<a name="ln781">            //var list = Directory.GetDirectories(path).Select(x =&gt; new DirectoryInfo(x));</a>
+<a name="ln782"> </a>
+<a name="ln783">            foreach (var folder in list)</a>
+<a name="ln784">            {</a>
+<a name="ln785">                if (MutexList.IsInUse(folder.Name))</a>
+<a name="ln786">                    continue;</a>
+<a name="ln787"> </a>
+<a name="ln788">                Directory.Delete(folder.FullName, true);</a>
+<a name="ln789">            }</a>
+<a name="ln790">        }</a>
+<a name="ln791">        catch (Exception ex)</a>
+<a name="ln792">        {</a>
+<a name="ln793">            LogWriter.Log(ex, &quot;Automatic clean up - Recordings&quot;);</a>
+<a name="ln794">        }</a>
+<a name="ln795">    }</a>
+<a name="ln796"> </a>
+<a name="ln797">    private void ClearUpdateCache()</a>
+<a name="ln798">    {</a>
+<a name="ln799">        try</a>
+<a name="ln800">        {</a>
+<a name="ln801">            var path = Path.Combine(UserSettings.All.TemporaryFolderResolved, &quot;ScreenToGif&quot;, &quot;Updates&quot;);</a>
+<a name="ln802"> </a>
+<a name="ln803">            if (!Directory.Exists(path))</a>
+<a name="ln804">                return;</a>
+<a name="ln805"> </a>
+<a name="ln806">            var list = Directory.EnumerateFiles(path).Select(x =&gt; new FileInfo(x))</a>
+<a name="ln807">                .Where(w =&gt; (DateTime.Now - w.CreationTime).TotalDays &gt; (UserSettings.All.AutomaticCleanUpDays &gt; 0 ? UserSettings.All.AutomaticCleanUpDays : 5)).ToList();</a>
+<a name="ln808"> </a>
+<a name="ln809">            foreach (var file in list)</a>
+<a name="ln810">                File.Delete(file.FullName);</a>
+<a name="ln811">        }</a>
+<a name="ln812">        catch (Exception ex)</a>
+<a name="ln813">        {</a>
+<a name="ln814">            LogWriter.Log(ex, &quot;Automatic clean up - Updates&quot;);</a>
+<a name="ln815">        }</a>
+<a name="ln816">    }</a>
+<a name="ln817"> </a>
+<a name="ln818">    internal void CheckDiskSpace()</a>
+<a name="ln819">    {</a>
+<a name="ln820">        if (string.IsNullOrWhiteSpace(UserSettings.All.TemporaryFolderResolved))</a>
+<a name="ln821">            return;</a>
+<a name="ln822"> </a>
+<a name="ln823">        try</a>
+<a name="ln824">        {</a>
+<a name="ln825">            var isRelative = !string.IsNullOrWhiteSpace(UserSettings.All.TemporaryFolderResolved) &amp;&amp; !Path.IsPathRooted(UserSettings.All.TemporaryFolderResolved);</a>
+<a name="ln826">            var drive = new DriveInfo((isRelative ? Path.GetFullPath(UserSettings.All.TemporaryFolderResolved) : UserSettings.All.TemporaryFolderResolved).Substring(0, 1));</a>
+<a name="ln827"> </a>
+<a name="ln828">            Global.AvailableDiskSpacePercentage = drive.AvailableFreeSpace * 100d / drive.TotalSize; //Get the percentage of space left.</a>
+<a name="ln829">            Global.AvailableDiskSpace = drive.AvailableFreeSpace;</a>
+<a name="ln830"> </a>
+<a name="ln831">            //If there's less than 2GB left.</a>
+<a name="ln832">            if (drive.AvailableFreeSpace &lt; 2_000_000_000)</a>
+<a name="ln833">                Application.Current.Dispatcher?.Invoke(() =&gt; NotificationManager.AddNotification(LocalizationHelper.GetWithFormat(&quot;S.Editor.Warning.LowSpace&quot;, Math.Round(Global.AvailableDiskSpacePercentage, 2)),</a>
+<a name="ln834">                    StatusType.Warning, &quot;disk&quot;, () =&gt; App.MainViewModel.OpenOptions.Execute(Options.TempFilesIndex)));</a>
+<a name="ln835">            else</a>
+<a name="ln836">                Application.Current.Dispatcher?.Invoke(() =&gt; NotificationManager.RemoveNotification(r =&gt; r.Tag == &quot;disk&quot;));</a>
+<a name="ln837">        }</a>
+<a name="ln838">        catch (Exception ex)</a>
+<a name="ln839">        {</a>
+<a name="ln840">            LogWriter.Log(ex, &quot;Error while checking the space left in disk&quot;);</a>
+<a name="ln841">        }</a>
+<a name="ln842">    }</a>
+<a name="ln843"> </a>
+<a name="ln844">    internal void SendFeedback()</a>
+<a name="ln845">    {</a>
+<a name="ln846">        try</a>
+<a name="ln847">        {</a>
+<a name="ln848">            if (string.IsNullOrWhiteSpace(UserSettings.All.TemporaryFolderResolved))</a>
+<a name="ln849">                return;</a>
+<a name="ln850"> </a>
+<a name="ln851">            var path = Path.Combine(UserSettings.All.TemporaryFolderResolved, &quot;ScreenToGif&quot;, &quot;Feedback&quot;);</a>
+<a name="ln852"> </a>
+<a name="ln853">            if (!Directory.Exists(path))</a>
+<a name="ln854">                return;</a>
+<a name="ln855"> </a>
+<a name="ln856">            var list = new DirectoryInfo(path).EnumerateFiles(&quot;*.html&quot;, SearchOption.TopDirectoryOnly);</a>
+<a name="ln857"> </a>
+<a name="ln858">            foreach (var file in list)</a>
+<a name="ln859">            {</a>
+<a name="ln860">                //Get zip with same name as file</a>
+<a name="ln861">                var zip = Path.Combine(file.DirectoryName, file.Name.Replace(&quot;.html&quot;, &quot;.zip&quot;));</a>
+<a name="ln862"> </a>
+<a name="ln863">                List&lt;string&gt; fileList = null;</a>
+<a name="ln864"> </a>
+<a name="ln865">                if (File.Exists(zip))</a>
+<a name="ln866">                    fileList = new List&lt;string&gt; { zip };</a>
+<a name="ln867"> </a>
+<a name="ln868">                if (!FeedbackHelper.Send(File.ReadAllText(file.FullName), fileList))</a>
+<a name="ln869">                    continue;</a>
+<a name="ln870"> </a>
+<a name="ln871">                File.Delete(file.FullName);</a>
+<a name="ln872"> </a>
+<a name="ln873">                if (File.Exists(zip))</a>
+<a name="ln874">                    File.Delete(zip);</a>
+<a name="ln875">            }</a>
+<a name="ln876">        }</a>
+<a name="ln877">        catch (Exception ex)</a>
+<a name="ln878">        {</a>
+<a name="ln879">            LogWriter.Log(ex, &quot;Automatic feedback&quot;);</a>
+<a name="ln880">        }</a>
+<a name="ln881">    }</a>
+<a name="ln882"> </a>
+<a name="ln883">    internal async Task CheckForUpdates(bool forceCheck = false)</a>
+<a name="ln884">    {</a>
+<a name="ln885">        Global.UpdateAvailable = null;</a>
+<a name="ln886"> </a>
+<a name="ln887">#if FULL_MULTI_MSIX_STORE</a>
+<a name="ln888">            return;</a>
+<a name="ln889">#endif</a>
+<a name="ln890"> </a>
+<a name="ln891">        if (!forceCheck &amp;&amp; !UserSettings.All.CheckForUpdates)</a>
+<a name="ln892">            return;</a>
+<a name="ln893"> </a>
+<a name="ln894">        //If the app was installed by Chocolatey, avoid updating via normal means.</a>
+<a name="ln895">        if (await IsChocolateyPackage())</a>
+<a name="ln896">            return;</a>
+<a name="ln897"> </a>
+<a name="ln898">        //Try checking for the update on Github first then fallbacks to Fosshub.</a>
+<a name="ln899">        if (!await CheckOnGithub())</a>
+<a name="ln900">            await CheckOnFosshub();</a>
+<a name="ln901">    }</a>
+<a name="ln902"> </a>
+<a name="ln903">    private async Task&lt;bool&gt; IsChocolateyPackage()</a>
+<a name="ln904">    {</a>
+<a name="ln905">        try</a>
+<a name="ln906">        {</a>
+<a name="ln907">            //Binaries distributed via Chocolatey are of Installer or Portable types.</a>
+<a name="ln908">            if (IdentityHelper.ApplicationType != ApplicationTypes.FullSingle &amp;&amp; IdentityHelper.ApplicationType != ApplicationTypes.DependantSingle)</a>
+<a name="ln909">                return false;</a>
+<a name="ln910"> </a>
+<a name="ln911">            //If Chocolatey is installed and ScreenToGif was installed via its service, it will be listed.</a>
+<a name="ln912">            var choco = await ProcessHelper.Start(&quot;choco list -l screentogif&quot;);</a>
+<a name="ln913"> </a>
+<a name="ln914">            if (!choco.Contains(&quot;screentogif&quot;))</a>
+<a name="ln915">                return false;</a>
+<a name="ln916"> </a>
+<a name="ln917">            //The Portable package gets shimmed when installing via choco.</a>
+<a name="ln918">            //As for the Installer package, I'm letting it to be updated via normal means too (for now).</a>
+<a name="ln919">            var shim = await ProcessHelper.Start(&quot;$a='path to executable: '; (ScreenToGif.exe --shimgen-noop | Select-String $a) -split $a | ForEach-Object Trim&quot;);</a>
+<a name="ln920">            var path = ProcessHelper.GetEntryAssemblyPath();</a>
+<a name="ln921"> </a>
+<a name="ln922">            return shim.Contains(path);</a>
+<a name="ln923">        }</a>
+<a name="ln924">        catch (Exception e)</a>
+<a name="ln925">        {</a>
+<a name="ln926">            LogWriter.Log(e, &quot;Not possible to detect Chocolatey package.&quot;);</a>
+<a name="ln927">            return false;</a>
+<a name="ln928">        }</a>
+<a name="ln929">    }</a>
+<a name="ln930"> </a>
+<a name="ln931">    private async Task&lt;bool&gt; CheckOnGithub()</a>
+<a name="ln932">    {</a>
+<a name="ln933">        try</a>
+<a name="ln934">        {</a>
+<a name="ln935">            #region GraphQL equivalent</a>
+<a name="ln936"> </a>
+<a name="ln937">            //query {</a>
+<a name="ln938">            //    repository(owner: &quot;NickeManarin&quot;, name: &quot;ScreenToGif&quot;) {</a>
+<a name="ln939">            //        releases(first: 1, orderBy: { field: CREATED_AT, direction: DESC}) {</a>
+<a name="ln940">            //            nodes {</a>
+<a name="ln941">            //                name</a>
+<a name="ln942">            //                tagName</a>
+<a name="ln943">            //                createdAt</a>
+<a name="ln944">            //                url</a>
+<a name="ln945">            //                isPrerelease</a>
+<a name="ln946">            //                description</a>
+<a name="ln947">            //                releaseAssets(last: 2) {</a>
+<a name="ln948">            //                    nodes {</a>
+<a name="ln949">            //                        name</a>
+<a name="ln950">            //                        downloadCount</a>
+<a name="ln951">            //                        downloadUrl</a>
+<a name="ln952">            //                        size</a>
+<a name="ln953">            //                    }</a>
+<a name="ln954">            //                }</a>
+<a name="ln955">            //            }</a>
+<a name="ln956">            //        }</a>
+<a name="ln957">            //    }</a>
+<a name="ln958">            //}</a>
+<a name="ln959"> </a>
+<a name="ln960">            #endregion</a>
+<a name="ln961"> </a>
+<a name="ln962">            var proxy = WebHelper.GetProxy();</a>
+<a name="ln963">            var handler = new HttpClientHandler</a>
+<a name="ln964">            {</a>
+<a name="ln965">                Proxy = proxy,</a>
+<a name="ln966">                UseProxy = proxy != null</a>
+<a name="ln967">            };</a>
+<a name="ln968"> </a>
+<a name="ln969">            using var client = new HttpClient(handler);</a>
+<a name="ln970">            client.DefaultRequestHeaders.Add(&quot;User-Agent&quot;, &quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.79 Safari/537.36 Edge/14.14393&quot;);</a>
+<a name="ln971">            using var response = await client.GetAsync(&quot;https://api.github.com/repos/NickeManarin/ScreenToGif/releases/latest&quot;);</a>
+<a name="ln972">            var result = await response.Content.ReadAsStringAsync();</a>
+<a name="ln973"> </a>
+<a name="ln974">            var jsonReader = JsonReaderWriterFactory.CreateJsonReader(Encoding.UTF8.GetBytes(result), new System.Xml.XmlDictionaryReaderQuotas());</a>
+<a name="ln975">            var release = XElement.Load(jsonReader);</a>
+<a name="ln976"> </a>
+<a name="ln977">            var version = Version.Parse(release.XPathSelectElement(&quot;tag_name&quot;)?.Value ?? &quot;0.1&quot;);</a>
+<a name="ln978"> </a>
+<a name="ln979">            if (version.Major == 0 || version &lt;= Assembly.GetExecutingAssembly().GetName().Version)</a>
+<a name="ln980">                return true;</a>
+<a name="ln981"> </a>
+<a name="ln982">            ParseDownloadUrls(release, version);</a>
+<a name="ln983"> </a>
+<a name="ln984">            Application.Current.Dispatcher?.Invoke(() =&gt; NotificationManager.AddNotification(string.Format(LocalizationHelper.Get(&quot;S.Updater.NewRelease.Info&quot;),</a>
+<a name="ln985">                Global.UpdateAvailable.Version), StatusType.Update, &quot;update&quot;, PromptUpdate));</a>
+<a name="ln986"> </a>
+<a name="ln987">            //Download update to be installed when the app closes.</a>
+<a name="ln988">            if (UserSettings.All.InstallUpdates &amp;&amp; Global.UpdateAvailable.HasDownloadLink</a>
+<a name="ln989">                &amp;&amp; (UserSettings.All.DownloadWithMeteredNetwork || !Util.Other.IsMeteredNetwork()))</a>
+<a name="ln990">                await DownloadUpdate();</a>
+<a name="ln991"> </a>
+<a name="ln992">            return true;</a>
+<a name="ln993">        }</a>
+<a name="ln994">        catch (Exception ex)</a>
+<a name="ln995">        {</a>
+<a name="ln996">            LogWriter.Log(ex, &quot;Impossible to check for updates on Github&quot;);</a>
+<a name="ln997">            return false;</a>
+<a name="ln998">        }</a>
+<a name="ln999">        finally</a>
+<a name="ln1000">        {</a>
+<a name="ln1001">            GC.Collect();</a>
+<a name="ln1002">        }</a>
+<a name="ln1003">    }</a>
+<a name="ln1004"> </a>
+<a name="ln1005">    private bool ParseDownloadUrls(XElement release, Version version, bool fromGithub = true)</a>
+<a name="ln1006">    {</a>
+<a name="ln1007">        var moniker = RuntimeInformation.OSArchitecture switch</a>
+<a name="ln1008">        {</a>
+<a name="ln1009">            Architecture.X64 =&gt; &quot;x64&quot;,</a>
+<a name="ln1010">            Architecture.X86 =&gt; &quot;x86&quot;,</a>
+<a name="ln1011">            _ =&gt; &quot;arm64&quot;</a>
+<a name="ln1012">        };</a>
+<a name="ln1013"> </a>
+<a name="ln1014">        switch (IdentityHelper.ApplicationType)</a>
+<a name="ln1015">        {</a>
+<a name="ln1016">            case ApplicationTypes.FullMultiMsix:</a>
+<a name="ln1017">            {</a>
+<a name="ln1018">                //Only get Msix files.</a>
+<a name="ln1019">                //ScreenToGif.2.36.Package.x64.msix</a>
+<a name="ln1020">                //ScreenToGif.2.36.Package.msix</a>
+<a name="ln1021"> </a>
+<a name="ln1022">                var package = (release.Element(&quot;assets&quot;) ?? release.Element(&quot;items&quot;))?.Elements().FirstOrDefault(f =&gt;</a>
+<a name="ln1023">                {</a>
+<a name="ln1024">                    var name = (f.Element(&quot;name&quot;)?.Value ?? f.Element(&quot;title&quot;)?.Value ?? &quot;&quot;).ToLower();</a>
+<a name="ln1025"> </a>
+<a name="ln1026">                    return name.EndsWith(&quot;.package.&quot; + moniker + &quot;.msix&quot;) || name.EndsWith(&quot;package.msix&quot;);</a>
+<a name="ln1027">                });</a>
+<a name="ln1028"> </a>
+<a name="ln1029">                return SetDownloadDetails(fromGithub, version, release, package);</a>
+<a name="ln1030">            }</a>
+<a name="ln1031">            case ApplicationTypes.DependantSingle:</a>
+<a name="ln1032">            {</a>
+<a name="ln1033">                //Get portable or installer packages, light or not.</a>
+<a name="ln1034">                //ScreenToGif.2.36.Light.Portable.x64.zip</a>
+<a name="ln1035">                //ScreenToGif.2.36.Light.Portable.zip</a>
+<a name="ln1036">                //Or</a>
+<a name="ln1037">                //ScreenToGif.2.36.Light.Setup.x64.msi</a>
+<a name="ln1038">                //ScreenToGif.2.36.Light.Setup.msi</a>
+<a name="ln1039"> </a>
+<a name="ln1040">                var portable = (release.Element(&quot;assets&quot;) ?? release.Element(&quot;items&quot;))?.Elements().FirstOrDefault(f =&gt;</a>
+<a name="ln1041">                {</a>
+<a name="ln1042">                    var name = (f.Element(&quot;name&quot;)?.Value ?? f.Element(&quot;title&quot;)?.Value ?? &quot;&quot;).ToLower();</a>
+<a name="ln1043"> </a>
+<a name="ln1044">                    return name.EndsWith(&quot;.light.portable.&quot; + moniker + &quot;.zip&quot;) || name.EndsWith(&quot;.light.portable.zip&quot;);</a>
+<a name="ln1045">                });</a>
+<a name="ln1046">                var installer = (release.Element(&quot;assets&quot;) ?? release.Element(&quot;items&quot;))?.Elements().FirstOrDefault(f =&gt;</a>
+<a name="ln1047">                {</a>
+<a name="ln1048">                    var name = (f.Element(&quot;name&quot;)?.Value ?? f.Element(&quot;title&quot;)?.Value ?? &quot;&quot;).ToLower();</a>
+<a name="ln1049"> </a>
+<a name="ln1050">                    return name.EndsWith(&quot;.light.setup.&quot; + moniker + &quot;.msi&quot;) || name.EndsWith(&quot;.light.setup.msi&quot;);</a>
+<a name="ln1051">                });</a>
+<a name="ln1052"> </a>
+<a name="ln1053">                //If missing light (framework dependent) variant, download full package.</a>
+<a name="ln1054">                if (installer == null)</a>
+<a name="ln1055">                {</a>
+<a name="ln1056">                    portable = (release.Element(&quot;assets&quot;) ?? release.Element(&quot;items&quot;))?.Elements().FirstOrDefault(f =&gt;</a>
+<a name="ln1057">                    {</a>
+<a name="ln1058">                        var name = (f.Element(&quot;name&quot;)?.Value ?? f.Element(&quot;title&quot;)?.Value ?? &quot;&quot;).ToLower();</a>
+<a name="ln1059"> </a>
+<a name="ln1060">                        return name.EndsWith(&quot;.portable.&quot; + moniker + &quot;.zip&quot;) || name.EndsWith(&quot;.portable.zip&quot;);</a>
+<a name="ln1061">                    });</a>
+<a name="ln1062">                    installer = (release.Element(&quot;assets&quot;) ?? release.Element(&quot;items&quot;))?.Elements().FirstOrDefault(f =&gt;</a>
+<a name="ln1063">                    {</a>
+<a name="ln1064">                        var name = (f.Element(&quot;name&quot;)?.Value ?? f.Element(&quot;title&quot;)?.Value ?? &quot;&quot;).ToLower();</a>
+<a name="ln1065"> </a>
+<a name="ln1066">                        return name.EndsWith(&quot;.setup.&quot; + moniker + &quot;.msi&quot;) || name.EndsWith(&quot;.setup.msi&quot;);</a>
+<a name="ln1067">                    });</a>
+<a name="ln1068">                }</a>
+<a name="ln1069"> </a>
+<a name="ln1070">                return SetDownloadDetails(fromGithub, version, release, installer, portable);</a>
+<a name="ln1071">            }</a>
+<a name="ln1072">            default:</a>
+<a name="ln1073">            {</a>
+<a name="ln1074">                //Get portable or installer packages, light or not.</a>
+<a name="ln1075">                //ScreenToGif.2.36.Portable.x64.zip</a>
+<a name="ln1076">                //ScreenToGif.2.36.Portable.zip</a>
+<a name="ln1077">                //Or</a>
+<a name="ln1078">                //ScreenToGif.2.36.Setup.x64.msi</a>
+<a name="ln1079">                //ScreenToGif.2.36.Setup.msi</a>
+<a name="ln1080"> </a>
+<a name="ln1081">                var portable = (release.Element(&quot;assets&quot;) ?? release.Element(&quot;items&quot;))?.Elements().FirstOrDefault(f =&gt;</a>
+<a name="ln1082">                {</a>
+<a name="ln1083">                    var name = (f.Element(&quot;name&quot;)?.Value ?? f.Element(&quot;title&quot;)?.Value ?? &quot;&quot;).ToLower();</a>
+<a name="ln1084"> </a>
+<a name="ln1085">                    return (name.EndsWith(&quot;.portable.&quot; + moniker + &quot;.zip&quot;) || name.EndsWith(&quot;portable.zip&quot;)) &amp;&amp; !name.Contains(&quot;.light.&quot;);</a>
+<a name="ln1086">                });</a>
+<a name="ln1087">                var installer = (release.Element(&quot;assets&quot;) ?? release.Element(&quot;items&quot;))?.Elements().FirstOrDefault(f =&gt;</a>
+<a name="ln1088">                {</a>
+<a name="ln1089">                    var name = (f.Element(&quot;name&quot;)?.Value ?? f.Element(&quot;title&quot;)?.Value ?? &quot;&quot;).ToLower();</a>
+<a name="ln1090"> </a>
+<a name="ln1091">                    return (name.EndsWith(&quot;.setup.&quot; + moniker + &quot;.msi&quot;) || name.EndsWith(&quot;setup.msi&quot;)) &amp;&amp; !name.Contains(&quot;.light.&quot;);</a>
+<a name="ln1092">                });</a>
+<a name="ln1093"> </a>
+<a name="ln1094">                return SetDownloadDetails(fromGithub, version, release, installer, portable);</a>
+<a name="ln1095">            }</a>
+<a name="ln1096">        }</a>
+<a name="ln1097">    }</a>
+<a name="ln1098"> </a>
+<a name="ln1099">    private bool SetDownloadDetails(bool fromGithub, Version version, XElement release, XElement installer, XElement portable = null)</a>
+<a name="ln1100">    {</a>
+<a name="ln1101">        if (installer == null)</a>
+<a name="ln1102">        {</a>
+<a name="ln1103">            Global.UpdateAvailable = new UpdateAvailable</a>
+<a name="ln1104">            {</a>
+<a name="ln1105">                IsFromGithub = fromGithub,</a>
+<a name="ln1106">                Version = version,</a>
+<a name="ln1107">                Description = release.XPathSelectElement(&quot;body&quot;)?.Value ?? &quot;&quot;,</a>
+<a name="ln1108">                MustDownloadManually = true</a>
+<a name="ln1109">            };</a>
+<a name="ln1110"> </a>
+<a name="ln1111">            return false;</a>
+<a name="ln1112">        }</a>
+<a name="ln1113"> </a>
+<a name="ln1114">        if (fromGithub)</a>
+<a name="ln1115">        {</a>
+<a name="ln1116">            Global.UpdateAvailable = new UpdateAvailable</a>
+<a name="ln1117">            {</a>
+<a name="ln1118">                Version = version,</a>
+<a name="ln1119">                Description = release.XPathSelectElement(&quot;body&quot;)?.Value ?? &quot;&quot;,</a>
+<a name="ln1120"> </a>
+<a name="ln1121">                PortableDownloadUrl = portable?.Element(&quot;browser_download_url&quot;)?.Value ?? &quot;&quot;,</a>
+<a name="ln1122">                PortableSize = Convert.ToInt64(portable?.Element(&quot;size&quot;)?.Value ?? &quot;0&quot;),</a>
+<a name="ln1123">                PortableName = portable?.Element(&quot;name&quot;)?.Value ?? &quot;ScreenToGif.zip&quot;,</a>
+<a name="ln1124"> </a>
+<a name="ln1125">                InstallerDownloadUrl = installer.Element(&quot;browser_download_url&quot;)?.Value ?? &quot;&quot;,</a>
+<a name="ln1126">                InstallerSize = Convert.ToInt64(installer.Element(&quot;size&quot;)?.Value ?? &quot;0&quot;),</a>
+<a name="ln1127">                InstallerName = installer.Element(&quot;name&quot;)?.Value ?? &quot;ScreenToGif.Setup.msi&quot;</a>
+<a name="ln1128">            };</a>
+<a name="ln1129"> </a>
+<a name="ln1130">            return true;</a>
+<a name="ln1131">        }</a>
+<a name="ln1132"> </a>
+<a name="ln1133">        Global.UpdateAvailable = new UpdateAvailable</a>
+<a name="ln1134">        {</a>
+<a name="ln1135">            IsFromGithub = false,</a>
+<a name="ln1136">            Version = version,</a>
+<a name="ln1137">            PortableDownloadUrl = portable?.Element(&quot;link&quot;)?.Value ?? &quot;&quot;,</a>
+<a name="ln1138">            InstallerDownloadUrl = installer.Element(&quot;link&quot;)?.Value ?? &quot;&quot;,</a>
+<a name="ln1139">        };</a>
+<a name="ln1140"> </a>
+<a name="ln1141">        return true;</a>
+<a name="ln1142">    }</a>
+<a name="ln1143"> </a>
+<a name="ln1144">    private async Task CheckOnFosshub()</a>
+<a name="ln1145">    {</a>
+<a name="ln1146">        try</a>
+<a name="ln1147">        {</a>
+<a name="ln1148">            var proxy = WebHelper.GetProxy();</a>
+<a name="ln1149">            var handler = new HttpClientHandler</a>
+<a name="ln1150">            {</a>
+<a name="ln1151">                Proxy = proxy,</a>
+<a name="ln1152">                UseProxy = proxy != null,</a>
+<a name="ln1153">            };</a>
+<a name="ln1154"> </a>
+<a name="ln1155">            using var client = new HttpClient(handler);</a>
+<a name="ln1156">            client.DefaultRequestHeaders.Add(&quot;User-Agent&quot;, &quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.79 Safari/537.36 Edge/14.14393&quot;);</a>
+<a name="ln1157">            using var response = await client.GetAsync(&quot;https://www.fosshub.com/feed/5bfc6fce8c9fe8186f809d24.json&quot;);</a>
+<a name="ln1158">            var result = await response.Content.ReadAsStringAsync();</a>
+<a name="ln1159"> </a>
+<a name="ln1160">            var jsonReader = JsonReaderWriterFactory.CreateJsonReader(Encoding.UTF8.GetBytes(result), new System.Xml.XmlDictionaryReaderQuotas());</a>
+<a name="ln1161">            var release = XElement.Load(jsonReader);</a>
+<a name="ln1162"> </a>
+<a name="ln1163">            var version = Version.Parse(release.XPathSelectElement(&quot;release/items&quot;)?.FirstNode?.XPathSelectElement(&quot;version&quot;)?.Value ?? &quot;0.1&quot;);</a>
+<a name="ln1164"> </a>
+<a name="ln1165">            if (version.Major == 0 || version &lt;= Assembly.GetExecutingAssembly().GetName().Version)</a>
+<a name="ln1166">                return;</a>
+<a name="ln1167"> </a>
+<a name="ln1168">            ParseDownloadUrls(release, version);</a>
+<a name="ln1169"> </a>
+<a name="ln1170">            //With Fosshub, the download must be manual.</a>
+<a name="ln1171">            Application.Current.Dispatcher?.Invoke(() =&gt; NotificationManager.AddNotification(string.Format(LocalizationHelper.Get(&quot;S.Updater.NewRelease.Info&quot;), Global.UpdateAvailable.Version),</a>
+<a name="ln1172">                StatusType.Update, &quot;update&quot;, PromptUpdate));</a>
+<a name="ln1173">        }</a>
+<a name="ln1174">        catch (Exception ex)</a>
+<a name="ln1175">        {</a>
+<a name="ln1176">            LogWriter.Log(ex, &quot;Impossible to check for updates on Fosshub&quot;);</a>
+<a name="ln1177">        }</a>
+<a name="ln1178">        finally</a>
+<a name="ln1179">        {</a>
+<a name="ln1180">            GC.Collect();</a>
+<a name="ln1181">        }</a>
+<a name="ln1182">    }</a>
+<a name="ln1183"> </a>
+<a name="ln1184">    internal async Task&lt;bool&gt; DownloadUpdate()</a>
+<a name="ln1185">    {</a>
+<a name="ln1186">        try</a>
+<a name="ln1187">        {</a>
+<a name="ln1188">            lock (UserSettings.Lock)</a>
+<a name="ln1189">            {</a>
+<a name="ln1190">                if (string.IsNullOrWhiteSpace(UserSettings.All.TemporaryFolderResolved) || Global.UpdateAvailable.IsDownloading)</a>
+<a name="ln1191">                    return false;</a>
+<a name="ln1192"> </a>
+<a name="ln1193">                var folder = Path.Combine(UserSettings.All.TemporaryFolderResolved, &quot;ScreenToGif&quot;, &quot;Updates&quot;);</a>
+<a name="ln1194"> </a>
+<a name="ln1195">                if (!Directory.Exists(folder))</a>
+<a name="ln1196">                    Directory.CreateDirectory(folder);</a>
+<a name="ln1197"> </a>
+<a name="ln1198">                Global.UpdateAvailable.ActivePath = Path.Combine(folder, Global.UpdateAvailable.ActiveName);</a>
+<a name="ln1199"> </a>
+<a name="ln1200">                //Check if installer was already downloaded.</a>
+<a name="ln1201">                if (File.Exists(Global.UpdateAvailable.ActivePath))</a>
+<a name="ln1202">                {</a>
+<a name="ln1203">                    //Minor issue, if for some reason, the update has the exact same size, this won't work properly. I would need to check a hash.</a>
+<a name="ln1204">                    if (GetSize(Global.UpdateAvailable.ActivePath) == Global.UpdateAvailable.ActiveSize)</a>
+<a name="ln1205">                        return false;</a>
+<a name="ln1206"> </a>
+<a name="ln1207">                    File.Delete(Global.UpdateAvailable.ActivePath);</a>
+<a name="ln1208">                }</a>
+<a name="ln1209"> </a>
+<a name="ln1210">                Global.UpdateAvailable.IsDownloading = true;</a>
+<a name="ln1211">            }</a>
+<a name="ln1212"> </a>
+<a name="ln1213">            var proxy = WebHelper.GetProxy();</a>
+<a name="ln1214">            var handler = new HttpClientHandler</a>
+<a name="ln1215">            {</a>
+<a name="ln1216">                Proxy = proxy,</a>
+<a name="ln1217">                UseProxy = proxy != null,</a>
+<a name="ln1218">            };</a>
+<a name="ln1219"> </a>
+<a name="ln1220">            //TODO: Use HttpClientFactory</a>
+<a name="ln1221">            //https://www.aspnetmonsters.com/2016/08/2016-08-27-httpclientwrong/</a>
+<a name="ln1222">            //https://marcominerva.wordpress.com/2019/03/13/using-httpclientfactory-with-wpf-on-net-core-3-0/</a>
+<a name="ln1223"> </a>
+<a name="ln1224">            using (var client = new HttpClient(handler))</a>
+<a name="ln1225">            {</a>
+<a name="ln1226">                client.DefaultRequestHeaders.Add(&quot;User-Agent&quot;, &quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.79 Safari/537.36 Edge/14.14393&quot;);</a>
+<a name="ln1227"> </a>
+<a name="ln1228">                var response = await client.GetAsync(Global.UpdateAvailable.ActiveDownloadUrl);</a>
+<a name="ln1229"> </a>
+<a name="ln1230">                if (response.IsSuccessStatusCode)</a>
+<a name="ln1231">                {</a>
+<a name="ln1232">                    var stream = await response.Content.ReadAsStreamAsync();</a>
+<a name="ln1233">                    var fileInfo = new FileInfo(Global.UpdateAvailable.ActivePath);</a>
+<a name="ln1234">                    await using var fileStream = fileInfo.OpenWrite();</a>
+<a name="ln1235">                    await stream.CopyToAsync(fileStream);</a>
+<a name="ln1236">                }</a>
+<a name="ln1237">                else</a>
+<a name="ln1238">                {</a>
+<a name="ln1239">                    throw new FileNotFoundException(&quot;Impossible to download update.&quot;);</a>
+<a name="ln1240">                }</a>
+<a name="ln1241">            }</a>
+<a name="ln1242"> </a>
+<a name="ln1243">            Global.UpdateAvailable.MustDownloadManually = false;</a>
+<a name="ln1244">            Global.UpdateAvailable.TaskCompletionSource?.TrySetResult(true);</a>
+<a name="ln1245">            return true;</a>
+<a name="ln1246">        }</a>
+<a name="ln1247">        catch (Exception ex)</a>
+<a name="ln1248">        {</a>
+<a name="ln1249">            LogWriter.Log(ex, &quot;Impossible to automatically download update&quot;);</a>
+<a name="ln1250">            Global.UpdateAvailable.MustDownloadManually = true;</a>
+<a name="ln1251">            Global.UpdateAvailable.TaskCompletionSource?.TrySetResult(false);</a>
+<a name="ln1252">            return false;</a>
+<a name="ln1253">        }</a>
+<a name="ln1254">        finally</a>
+<a name="ln1255">        {</a>
+<a name="ln1256">            Global.UpdateAvailable.IsDownloading = false;</a>
+<a name="ln1257">        }</a>
+<a name="ln1258">    }</a>
+<a name="ln1259"> </a>
+<a name="ln1260">    internal bool InstallUpdate(bool wasPromptedManually = false)</a>
+<a name="ln1261">    {</a>
+<a name="ln1262">        try</a>
+<a name="ln1263">        {</a>
+<a name="ln1264">            //No new release available.</a>
+<a name="ln1265">            if (Global.UpdateAvailable == null)</a>
+<a name="ln1266">                return false;</a>
+<a name="ln1267"> </a>
+<a name="ln1268">            //TODO: Check if Windows is not turning off.</a>
+<a name="ln1269"> </a>
+<a name="ln1270">            var runAfterwards = false;</a>
+<a name="ln1271"> </a>
+<a name="ln1272">            //Prompt if:</a>
+<a name="ln1273">            //Not configured to download the update automatically OR</a>
+<a name="ln1274">            //Configured to download but set to prompt anyway OR</a>
+<a name="ln1275">            //Update binary detection failed (manual update required) OR</a>
+<a name="ln1276">            //Download not completed (perharps because the notification was triggered by a query on Fosshub).</a>
+<a name="ln1277">            if (UserSettings.All.PromptToInstall || !UserSettings.All.InstallUpdates || string.IsNullOrWhiteSpace(Global.UpdateAvailable.ActivePath) || Global.UpdateAvailable.MustDownloadManually)</a>
+<a name="ln1278">            {</a>
+<a name="ln1279">                var download = new DownloadDialog { WasPromptedManually = wasPromptedManually };</a>
+<a name="ln1280">                var result = download.ShowDialog();</a>
+<a name="ln1281"> </a>
+<a name="ln1282">                if (!result.HasValue || !result.Value)</a>
+<a name="ln1283">                    return false;</a>
+<a name="ln1284"> </a>
+<a name="ln1285">                runAfterwards = download.RunAfterwards;</a>
+<a name="ln1286">            }</a>
+<a name="ln1287"> </a>
+<a name="ln1288">            //Only try to install if the update was downloaded.</a>
+<a name="ln1289">            if (!File.Exists(Global.UpdateAvailable.ActivePath))</a>
+<a name="ln1290">                return false;</a>
+<a name="ln1291"> </a>
+<a name="ln1292">            if (UserSettings.All.PortableUpdate || IdentityHelper.ApplicationType == ApplicationTypes.FullMultiMsix)</a>
+<a name="ln1293">            {</a>
+<a name="ln1294">                //In portable or Msix mode, simply open the zip/msix file and close ScreenToGif.</a>
+<a name="ln1295">                ProcessHelper.StartWithShell(Global.UpdateAvailable.ActivePath);</a>
+<a name="ln1296">                return true;</a>
+<a name="ln1297">            }</a>
+<a name="ln1298"> </a>
+<a name="ln1299">            //Detect installed components.</a>
+<a name="ln1300">            var files = Directory.EnumerateFiles(AppDomain.CurrentDomain.BaseDirectory).ToList();</a>
+<a name="ln1301">            var isInstaller = files.Any(x =&gt; x.ToLowerInvariant().EndsWith(&quot;screentogif.visualelementsmanifest.xml&quot;));</a>
+<a name="ln1302">            var hasGifski = files.Any(x =&gt; x.ToLowerInvariant().EndsWith(&quot;gifski.dll&quot;));</a>
+<a name="ln1303">            var hasDesktopShortcut = File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), &quot;ScreenToGif.lnk&quot;)) ||</a>
+<a name="ln1304">                                     File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonDesktopDirectory), &quot;ScreenToGif.lnk&quot;));</a>
+<a name="ln1305">            var hasMenuShortcut = File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), &quot;Microsoft&quot;, &quot;Windows&quot;, &quot;Start Menu&quot;, &quot;Programs&quot;, &quot;ScreenToGif.lnk&quot;)) ||</a>
+<a name="ln1306">                                  File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), &quot;Microsoft&quot;, &quot;Windows&quot;, &quot;Start Menu&quot;, &quot;Programs&quot;, &quot;ScreenToGif.lnk&quot;));</a>
+<a name="ln1307"> </a>
+<a name="ln1308">            //MsiExec does not like relative paths.</a>
+<a name="ln1309">            var isRelative = !string.IsNullOrWhiteSpace(Global.UpdateAvailable.InstallerPath) &amp;&amp; !Path.IsPathRooted(Global.UpdateAvailable.InstallerPath);</a>
+<a name="ln1310">            var nonRoot = isRelative ? Path.GetFullPath(Global.UpdateAvailable.InstallerPath) : Global.UpdateAvailable.InstallerPath;</a>
+<a name="ln1311"> </a>
+<a name="ln1312">            //msiexec /i PATH INSTALLDIR=&quot;&quot; INSTALLAUTOMATICALLY=yes INSTALLPORTABLE=No ADDLOCAL=Binary</a>
+<a name="ln1313">            //msiexec /a PATH TARGETDIR=&quot;&quot; INSTALLAUTOMATICALLY=yes INSTALLPORTABLE=yes ADDLOCAL=Binary</a>
+<a name="ln1314"> </a>
+<a name="ln1315">            var startInfo = new ProcessStartInfo</a>
+<a name="ln1316">            {</a>
+<a name="ln1317">                FileName = &quot;msiexec&quot;,</a>
+<a name="ln1318">                Arguments = $&quot; {(isInstaller ? &quot;/i&quot; : &quot;/a&quot;)} \&quot;{nonRoot}\&quot;&quot; +</a>
+<a name="ln1319">                            $&quot; {(isInstaller ? &quot;INSTALLDIR&quot; : &quot;TARGETDIR&quot;)}=\&quot;{AppDomain.CurrentDomain.BaseDirectory}\&quot; INSTALLAUTOMATICALLY=yes INSTALLPORTABLE={(isInstaller ? &quot;no&quot; : &quot;yes&quot;)}&quot; +</a>
+<a name="ln1320">                            $&quot; ADDLOCAL=Binary{(isInstaller ? &quot;,Auxiliar&quot; : &quot;&quot;)}{(hasGifski ? &quot;,Gifski&quot; : &quot;&quot;)}&quot; +</a>
+<a name="ln1321">                            $&quot; {(wasPromptedManually &amp;&amp; runAfterwards ? &quot;RUNAFTER=yes&quot; : &quot;&quot;)}&quot; +</a>
+<a name="ln1322">                            (isInstaller ? $&quot; INSTALLDESKTOPSHORTCUT={(hasDesktopShortcut ? &quot;yes&quot; : &quot;no&quot;)} INSTALLSHORTCUT={(hasMenuShortcut ? &quot;yes&quot; : &quot;no&quot;)}&quot; : &quot;&quot;),</a>
+<a name="ln1323">                Verb = UserSettings.All.ForceUpdateAsAdmin ? &quot;runas&quot; : &quot;&quot;</a>
+<a name="ln1324">            };</a>
+<a name="ln1325"> </a>
+<a name="ln1326">            using (var process = new Process { StartInfo = startInfo })</a>
+<a name="ln1327">                process.Start();</a>
+<a name="ln1328"> </a>
+<a name="ln1329">            return true;</a>
+<a name="ln1330">        }</a>
+<a name="ln1331">        catch (Exception ex)</a>
+<a name="ln1332">        {</a>
+<a name="ln1333">            LogWriter.Log(ex, &quot;Impossible to automatically install update&quot;);</a>
+<a name="ln1334"> </a>
+<a name="ln1335">            ErrorDialog.Ok(&quot;ScreenToGif&quot;, &quot;It was not possible to install the update&quot;, ex.Message, ex);</a>
+<a name="ln1336">            return false;</a>
+<a name="ln1337">        }</a>
+<a name="ln1338">    }</a>
+<a name="ln1339"> </a>
+<a name="ln1340">    private long GetSize(string path)</a>
+<a name="ln1341">    {</a>
+<a name="ln1342">        var info = new FileInfo(path);</a>
+<a name="ln1343">        info.Refresh();</a>
+<a name="ln1344"> </a>
+<a name="ln1345">        return info.Length;</a>
+<a name="ln1346">    }</a>
+<a name="ln1347"> </a>
+<a name="ln1348">    #endregion</a>
+<a name="ln1349">}</a>
+<a name="ln1350"> </a>
+<a name="ln1351">internal interface IExtendedCommand&lt;in T, in TR&gt;</a>
+<a name="ln1352">{</a>
+<a name="ln1353">    event EventHandler CanExecuteChanged;</a>
+<a name="ln1354"> </a>
+<a name="ln1355">    bool CanExecute(object parameter);</a>
+<a name="ln1356"> </a>
+<a name="ln1357">    void Execute(T parameter, TR secondParameter = default);</a>
+<a name="ln1358">}</a>
+<a name="ln1359"> </a>
+<a name="ln1360">internal class RelayCommand : ICommand</a>
+<a name="ln1361">{</a>
+<a name="ln1362">    public Predicate&lt;object&gt; CanExecutePredicate { get; set; }</a>
+<a name="ln1363">    public Action&lt;object&gt; ExecuteAction { get; set; }</a>
+<a name="ln1364"> </a>
+<a name="ln1365">    public RelayCommand(Predicate&lt;object&gt; canExecute, Action&lt;object&gt; execute)</a>
+<a name="ln1366">    {</a>
+<a name="ln1367">        CanExecutePredicate = canExecute;</a>
+<a name="ln1368">        ExecuteAction = execute;</a>
+<a name="ln1369">    }</a>
+<a name="ln1370"> </a>
+<a name="ln1371">    public RelayCommand()</a>
+<a name="ln1372">    { }</a>
+<a name="ln1373"> </a>
+<a name="ln1374">    public event EventHandler CanExecuteChanged</a>
+<a name="ln1375">    {</a>
+<a name="ln1376">        add =&gt; CommandManager.RequerySuggested += value;</a>
+<a name="ln1377">        remove =&gt; CommandManager.RequerySuggested -= value;</a>
+<a name="ln1378">    }</a>
+<a name="ln1379"> </a>
+<a name="ln1380">    public bool CanExecute(object parameter)</a>
+<a name="ln1381">    {</a>
+<a name="ln1382">        return CanExecutePredicate == null || CanExecutePredicate(parameter);</a>
+<a name="ln1383">    }</a>
+<a name="ln1384"> </a>
+<a name="ln1385">    public void Execute(object parameter)</a>
+<a name="ln1386">    {</a>
+<a name="ln1387">        ExecuteAction(parameter);</a>
+<a name="ln1388">    }</a>
+<a name="ln1389">}</a>
+<a name="ln1390"> </a>
+<a name="ln1391">internal class AdvancedRelayCommand&lt;T, TR&gt; : IExtendedCommand&lt;T, TR&gt;</a>
+<a name="ln1392">{</a>
+<a name="ln1393">    public Predicate&lt;object&gt; CanExecutePredicate { get; set; }</a>
+<a name="ln1394">    public Action&lt;T, TR&gt; ExecuteAction { get; set; }</a>
+<a name="ln1395"> </a>
+<a name="ln1396">    public AdvancedRelayCommand(Predicate&lt;object&gt; canExecute, Action&lt;T, TR&gt; execute)</a>
+<a name="ln1397">    {</a>
+<a name="ln1398">        CanExecutePredicate = canExecute;</a>
+<a name="ln1399">        ExecuteAction = execute;</a>
+<a name="ln1400">    }</a>
+<a name="ln1401"> </a>
+<a name="ln1402">    public AdvancedRelayCommand()</a>
+<a name="ln1403">    { }</a>
+<a name="ln1404"> </a>
+<a name="ln1405">    public event EventHandler CanExecuteChanged</a>
+<a name="ln1406">    {</a>
+<a name="ln1407">        add =&gt; CommandManager.RequerySuggested += value;</a>
+<a name="ln1408">        remove =&gt; CommandManager.RequerySuggested -= value;</a>
+<a name="ln1409">    }</a>
+<a name="ln1410"> </a>
+<a name="ln1411">    public bool CanExecute(object parameter)</a>
+<a name="ln1412">    {</a>
+<a name="ln1413">        return CanExecutePredicate == null || CanExecutePredicate(parameter);</a>
+<a name="ln1414">    }</a>
+<a name="ln1415"> </a>
+<a name="ln1416">    public void Execute(T parameter, TR secondParamater = default)</a>
+<a name="ln1417">    {</a>
+<a name="ln1418">        ExecuteAction(parameter, secondParamater);</a>
+<a name="ln1419">    }</a>
+<a name="ln1420">}</a>
+<a name="ln1421"> </a>
+<a name="ln1422">internal class ObsoleteAdvancedRelayCommand : RoutedUICommand, ICommand</a>
+<a name="ln1423">{</a>
+<a name="ln1424">    public Predicate&lt;object&gt; CanExecutePredicate { get; set; }</a>
+<a name="ln1425">    public Action&lt;object&gt; ExecuteAction { get; set; }</a>
+<a name="ln1426"> </a>
+<a name="ln1427">    public ObsoleteAdvancedRelayCommand()</a>
+<a name="ln1428">    { }</a>
+<a name="ln1429"> </a>
+<a name="ln1430">    public ObsoleteAdvancedRelayCommand(string text, string name, Type ownerType, InputGestureCollection inputGestures) : base(text, name, ownerType, inputGestures)</a>
+<a name="ln1431">    { }</a>
+<a name="ln1432"> </a>
+<a name="ln1433">    bool ICommand.CanExecute(object parameter)</a>
+<a name="ln1434">    {</a>
+<a name="ln1435">        return CanExecutePredicate == null || CanExecutePredicate(parameter);</a>
+<a name="ln1436">    }</a>
+<a name="ln1437"> </a>
+<a name="ln1438">    void ICommand.Execute(object parameter)</a>
+<a name="ln1439">    {</a>
+<a name="ln1440">        ExecuteAction(parameter);</a>
+<a name="ln1441">    }</a>
+<a name="ln1442"> </a>
+<a name="ln1443">    //public bool CanExecute(object parameter)</a>
+<a name="ln1444">    //{</a>
+<a name="ln1445">    //    return CanExecutePredicate == null || CanExecutePredicate(parameter);</a>
+<a name="ln1446">    //}</a>
+<a name="ln1447"> </a>
+<a name="ln1448">    //public void Execute(object parameter)</a>
+<a name="ln1449">    //{</a>
+<a name="ln1450">    //    ExecuteAction(parameter);</a>
+<a name="ln1451">    //}</a>
+<a name="ln1452">}</a>
+</code></pre>
+<div class="balloon" rel="825"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3063/" target="_blank">V3063</a> A part of conditional expression is always true if it is evaluated: !string.IsNullOrWhiteSpace(UserSettings.All.TemporaryFolderResolved).</p></div>
+<div class="balloon" rel="984"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3156/" target="_blank">V3156</a> The first argument of the 'Format' method is not expected to be null.</p></div>
+<div class="balloon" rel="1171"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3156/" target="_blank">V3156</a> The first argument of the 'Format' method is not expected to be null.</p></div>
+<link rel="stylesheet" href="highlight.css">
+<script src="highlight.pack.js"></script>
+<script src="highlightjs-line-numbers.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script>hljs.initLineNumbersOnLoad();</script>
+<script>
+  $(document).ready(function() {
+      $('.balloon').each(function () {
+          var bl = $(this);
+          var line = bl.attr('rel');
+          var text = $('a[name="ln'+line+'"]').text();
+
+          var space_count = 0;
+          for(var i = 0; i<text.length; i++){
+              var char = text[i];
+              if((char !== ' ')&&(char !== '\t'))break;
+              if(char === '\t')space_count++;
+              space_count++;
+          }
+
+          bl.css('margin-left', space_count*8);
+          $('a[name="ln'+line+'"]').after(bl);
+      });
+
+      window.location = window.location;
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,1533 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>PVS-Studio HTML Report</title>
+<style type="text/css">
+   TABLE {
+    width: 100%;
+   }
+   #col_group, #col_level, #col_code, #col_cwe, #col_sast {
+    text-align: center;
+    white-space: nowrap;
+    width: 0;
+   }
+   #col_file, #col_info, #col_projects {
+    white-space: nowrap;
+    text-align: left;
+    width: 0;
+   }
+   #col_info {
+    width: 120px;
+   }
+   #col_message {
+    text-align: left;
+   }
+  </style>
+<link rel="stylesheet" href="style.css" />
+<script type="text/javascript" src="script.js"></script>
+<script type="text/javascript" src="toggle-cell.js"></script>
+</head>
+<body>
+  <div class="header">
+    <img src="images/logo.png" alt=""/>
+    <h1>PVS-Studio Analysis Results</h1>
+    <br class="clear">
+  </div>
+  <table cellpadding="0" cellspacing="0" border="0" class="infotopic">
+     <tr><th id="col_info">Date:</th><td>04/16/25 20:52:05</td></tr>
+     <tr><th id="col_info">PVS-Studio Version:</th><td>7.36.91321.1771</td></tr>
+     <tr><th id="col_info">Total Warnings (GA):</th><td>158</td></tr>
+     <tr><th id="col_info">Total Warnings (OWASP):</th><td>4</td></tr>
+     <tr><th id="col_info">Fails/Info:</th><td>1</td></tr>
+  </table>
+  <div class="toggle-box">
+    <label>
+      Show full paths
+    <input class="path-toggle toggle-button" type="checkbox" name="toggle-path" onclick="togglePathView()" />
+    </label>
+  </div>
+  <table cellpadding="0" cellspacing="0" border="0" class="sortable" id="sorter">
+    <tr>
+      <th class="gsort">Group</th>
+      <th class="psort">Projects</th>
+      <th>Location</th>
+      <th class="lsort">Level</th>
+      <th class="vsort">Code</th>
+      <th class="rsort">SAST</th>
+      <th>Message</th>
+    </tr>
+    <tr>
+      <td id="col_group"></td>
+      <td id="col_projects"><p></p></td>
+      <td id="col_file"></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/renewal/">Renew</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Your license will expire in 29 days. Click 'Renew' to learn more or contact us via Feedback form on our website. This is an information message. You can continue using the analyzer with your current license. To hide this message, use the '--disableLicenseExpirationCheck' flag.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/CheckmateDetectionLimits_Benchmark.cs_0.html#ln93">CheckmateDetectionLimits_Benchmark.cs:93</a><a target="_blank" class="file-link display-none" href="sources/CheckmateDetectionLimits_Benchmark.cs_0.html#ln93">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\CheckmateDetectionLimits_Benchmark.cs:93</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3063/">V3063</td>
+      <td id="col_sast"></td>
+      <td id="col_message">A part of conditional expression is always true if it is evaluated: iterations &gt; -EvaluationConstants.PositiveCheckmateDetectionLimit.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/EncodeMove_Benchmark.cs_1.html#ln55">EncodeMove_Benchmark.cs:55</a><a target="_blank" class="file-link display-none" href="sources/EncodeMove_Benchmark.cs_1.html#ln55">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\EncodeMove_Benchmark.cs:55</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3010/">V3010</td>
+      <td id="col_sast"></td>
+      <td id="col_message">The return value of function 'EncodeMoveBool' is required to be utilized.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/EncodeMove_Benchmark.cs_1.html#ln56">EncodeMove_Benchmark.cs:56</a><a target="_blank" class="file-link display-none" href="sources/EncodeMove_Benchmark.cs_1.html#ln56">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\EncodeMove_Benchmark.cs:56</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3010/">V3010</td>
+      <td id="col_sast"></td>
+      <td id="col_message">The return value of function 'EncodeMoveBool' is required to be utilized.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/EncodeMove_Benchmark.cs_1.html#ln57">EncodeMove_Benchmark.cs:57</a><a target="_blank" class="file-link display-none" href="sources/EncodeMove_Benchmark.cs_1.html#ln57">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\EncodeMove_Benchmark.cs:57</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3010/">V3010</td>
+      <td id="col_sast"></td>
+      <td id="col_message">The return value of function 'EncodeMoveBool' is required to be utilized.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/EncodeMove_Benchmark.cs_1.html#ln58">EncodeMove_Benchmark.cs:58</a><a target="_blank" class="file-link display-none" href="sources/EncodeMove_Benchmark.cs_1.html#ln58">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\EncodeMove_Benchmark.cs:58</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3010/">V3010</td>
+      <td id="col_sast"></td>
+      <td id="col_message">The return value of function 'EncodeMoveBool' is required to be utilized.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/EncodeMove_Benchmark.cs_1.html#ln59">EncodeMove_Benchmark.cs:59</a><a target="_blank" class="file-link display-none" href="sources/EncodeMove_Benchmark.cs_1.html#ln59">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\EncodeMove_Benchmark.cs:59</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3010/">V3010</td>
+      <td id="col_sast"></td>
+      <td id="col_message">The return value of function 'EncodeMoveBool' is required to be utilized.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/EncodeMove_Benchmark.cs_1.html#ln60">EncodeMove_Benchmark.cs:60</a><a target="_blank" class="file-link display-none" href="sources/EncodeMove_Benchmark.cs_1.html#ln60">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\EncodeMove_Benchmark.cs:60</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3010/">V3010</td>
+      <td id="col_sast"></td>
+      <td id="col_message">The return value of function 'EncodeMoveBool' is required to be utilized.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/EncodeMove_Benchmark.cs_1.html#ln73">EncodeMove_Benchmark.cs:73</a><a target="_blank" class="file-link display-none" href="sources/EncodeMove_Benchmark.cs_1.html#ln73">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\EncodeMove_Benchmark.cs:73</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3010/">V3010</td>
+      <td id="col_sast"></td>
+      <td id="col_message">The return value of function 'EncodeMoveInt' is required to be utilized.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/EncodeMove_Benchmark.cs_1.html#ln74">EncodeMove_Benchmark.cs:74</a><a target="_blank" class="file-link display-none" href="sources/EncodeMove_Benchmark.cs_1.html#ln74">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\EncodeMove_Benchmark.cs:74</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3010/">V3010</td>
+      <td id="col_sast"></td>
+      <td id="col_message">The return value of function 'EncodeMoveInt' is required to be utilized.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/EncodeMove_Benchmark.cs_1.html#ln75">EncodeMove_Benchmark.cs:75</a><a target="_blank" class="file-link display-none" href="sources/EncodeMove_Benchmark.cs_1.html#ln75">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\EncodeMove_Benchmark.cs:75</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3010/">V3010</td>
+      <td id="col_sast"></td>
+      <td id="col_message">The return value of function 'EncodeMoveInt' is required to be utilized.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/EncodeMove_Benchmark.cs_1.html#ln76">EncodeMove_Benchmark.cs:76</a><a target="_blank" class="file-link display-none" href="sources/EncodeMove_Benchmark.cs_1.html#ln76">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\EncodeMove_Benchmark.cs:76</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3010/">V3010</td>
+      <td id="col_sast"></td>
+      <td id="col_message">The return value of function 'EncodeMoveInt' is required to be utilized.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/EncodeMove_Benchmark.cs_1.html#ln77">EncodeMove_Benchmark.cs:77</a><a target="_blank" class="file-link display-none" href="sources/EncodeMove_Benchmark.cs_1.html#ln77">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\EncodeMove_Benchmark.cs:77</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3010/">V3010</td>
+      <td id="col_sast"></td>
+      <td id="col_message">The return value of function 'EncodeMoveInt' is required to be utilized.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/EncodeMove_Benchmark.cs_1.html#ln78">EncodeMove_Benchmark.cs:78</a><a target="_blank" class="file-link display-none" href="sources/EncodeMove_Benchmark.cs_1.html#ln78">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\EncodeMove_Benchmark.cs:78</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3010/">V3010</td>
+      <td id="col_sast"></td>
+      <td id="col_message">The return value of function 'EncodeMoveInt' is required to be utilized.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/FENGeneration_Benchmark.cs_2.html#ln494">FENGeneration_Benchmark.cs:494</a><a target="_blank" class="file-link display-none" href="sources/FENGeneration_Benchmark.cs_2.html#ln494">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\FENGeneration_Benchmark.cs:494</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3117/">V3117</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Constructor parameter 'calculateFen' is not used.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/FENGeneration_Benchmark.cs_2.html#ln836">FENGeneration_Benchmark.cs:836</a><a target="_blank" class="file-link display-none" href="sources/FENGeneration_Benchmark.cs_2.html#ln836">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\FENGeneration_Benchmark.cs:836</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3117/">V3117</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Constructor parameter 'calculateFen' is not used.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/FENGeneration_Benchmark.cs_2.html#ln1182">FENGeneration_Benchmark.cs:1182</a><a target="_blank" class="file-link display-none" href="sources/FENGeneration_Benchmark.cs_2.html#ln1182">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\FENGeneration_Benchmark.cs:1182</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3117/">V3117</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Constructor parameter 'calculateFen' is not used.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/FENGeneration_Benchmark.cs_2.html#ln1528">FENGeneration_Benchmark.cs:1528</a><a target="_blank" class="file-link display-none" href="sources/FENGeneration_Benchmark.cs_2.html#ln1528">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\FENGeneration_Benchmark.cs:1528</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3117/">V3117</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Constructor parameter 'calculateFen' is not used.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/FENGeneration_Benchmark.cs_2.html#ln1874">FENGeneration_Benchmark.cs:1874</a><a target="_blank" class="file-link display-none" href="sources/FENGeneration_Benchmark.cs_2.html#ln1874">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\FENGeneration_Benchmark.cs:1874</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3117/">V3117</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Constructor parameter 'calculateFen' is not used.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/MakeUnmakeMove_implementation_Benchmark.cs_3.html#ln1251">MakeUnmakeMove_implementation_Benchmark.cs:1251</a><a target="_blank" class="file-link display-none" href="sources/MakeUnmakeMove_implementation_Benchmark.cs_3.html#ln1251">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\MakeUnmakeMove_implementation_Benchmark.cs:1251</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3002/">V3002</td>
+      <td id="col_sast"></td>
+      <td id="col_message">The switch statement does not cover all values of the 'SpecialMoveType' enum: DoublePawnPush.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/MakeUnmakeMove_implementation_Benchmark.cs_3.html#ln352">MakeUnmakeMove_implementation_Benchmark.cs:352</a><a target="_blank" class="file-link display-none" href="sources/MakeUnmakeMove_implementation_Benchmark.cs_3.html#ln352">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\MakeUnmakeMove_implementation_Benchmark.cs:352</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3117/">V3117</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Constructor parameter 'nullMove' is not used.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/MakeUnmakeMove_implementation_Benchmark.cs_3.html#ln1579">MakeUnmakeMove_implementation_Benchmark.cs:1579</a><a target="_blank" class="file-link display-none" href="sources/MakeUnmakeMove_implementation_Benchmark.cs_3.html#ln1579">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\MakeUnmakeMove_implementation_Benchmark.cs:1579</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3150/">V3150</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Loop break conditions do not depend on the number of iterations.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/MakeUnmakeMove_implementation_Benchmark.cs_3.html#ln1628">MakeUnmakeMove_implementation_Benchmark.cs:1628</a><a target="_blank" class="file-link display-none" href="sources/MakeUnmakeMove_implementation_Benchmark.cs_3.html#ln1628">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\MakeUnmakeMove_implementation_Benchmark.cs:1628</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3150/">V3150</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Loop break conditions do not depend on the number of iterations.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/MakeUnmakeMove_implementation_Benchmark.cs_3.html#ln1725">MakeUnmakeMove_implementation_Benchmark.cs:1725</a><a target="_blank" class="file-link display-none" href="sources/MakeUnmakeMove_implementation_Benchmark.cs_3.html#ln1725">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\MakeUnmakeMove_implementation_Benchmark.cs:1725</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3150/">V3150</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Loop break conditions do not depend on the number of iterations.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/MakeUnmakeMove_implementation_Benchmark.cs_3.html#ln1733">MakeUnmakeMove_implementation_Benchmark.cs:1733</a><a target="_blank" class="file-link display-none" href="sources/MakeUnmakeMove_implementation_Benchmark.cs_3.html#ln1733">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\MakeUnmakeMove_implementation_Benchmark.cs:1733</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3150/">V3150</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Loop break conditions do not depend on the number of iterations.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/MakeUnmakeMove_integration_Benchmark.cs_4.html#ln355">MakeUnmakeMove_integration_Benchmark.cs:355</a><a target="_blank" class="file-link display-none" href="sources/MakeUnmakeMove_integration_Benchmark.cs_4.html#ln355">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\MakeUnmakeMove_integration_Benchmark.cs:355</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3117/">V3117</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Constructor parameter 'nullMove' is not used.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/MakeUnmakeMove_integration_Benchmark.cs_4.html#ln1441">MakeUnmakeMove_integration_Benchmark.cs:1441</a><a target="_blank" class="file-link display-none" href="sources/MakeUnmakeMove_integration_Benchmark.cs_4.html#ln1441">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\MakeUnmakeMove_integration_Benchmark.cs:1441</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3150/">V3150</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Loop break conditions do not depend on the number of iterations.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/MakeUnmakeMove_integration_Benchmark.cs_4.html#ln1498">MakeUnmakeMove_integration_Benchmark.cs:1498</a><a target="_blank" class="file-link display-none" href="sources/MakeUnmakeMove_integration_Benchmark.cs_4.html#ln1498">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\MakeUnmakeMove_integration_Benchmark.cs:1498</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3150/">V3150</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Loop break conditions do not depend on the number of iterations.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/MakeUnmakeMove_integration_Benchmark.cs_4.html#ln1595">MakeUnmakeMove_integration_Benchmark.cs:1595</a><a target="_blank" class="file-link display-none" href="sources/MakeUnmakeMove_integration_Benchmark.cs_4.html#ln1595">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\MakeUnmakeMove_integration_Benchmark.cs:1595</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3150/">V3150</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Loop break conditions do not depend on the number of iterations.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/MakeUnmakeMove_integration_Benchmark.cs_4.html#ln1603">MakeUnmakeMove_integration_Benchmark.cs:1603</a><a target="_blank" class="file-link display-none" href="sources/MakeUnmakeMove_integration_Benchmark.cs_4.html#ln1603">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\MakeUnmakeMove_integration_Benchmark.cs:1603</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3150/">V3150</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Loop break conditions do not depend on the number of iterations.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/MoveGeneratorArrayVsDictionary_Benchmark.cs_5.html#ln49">MoveGeneratorArrayVsDictionary_Benchmark.cs:49</a><a target="_blank" class="file-link display-none" href="sources/MoveGeneratorArrayVsDictionary_Benchmark.cs_5.html#ln49">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\MoveGeneratorArrayVsDictionary_Benchmark.cs:49</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3120/">V3120</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Potentially infinite loop. The 'bitboard' variable from the loop exit condition does not change its value between iterations.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/MoveGeneratorArrayVsDictionary_Benchmark.cs_5.html#ln74">MoveGeneratorArrayVsDictionary_Benchmark.cs:74</a><a target="_blank" class="file-link display-none" href="sources/MoveGeneratorArrayVsDictionary_Benchmark.cs_5.html#ln74">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\MoveGeneratorArrayVsDictionary_Benchmark.cs:74</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3120/">V3120</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Potentially infinite loop. The 'bitboard' variable from the loop exit condition does not change its value between iterations.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/MoveGeneratorArrayVsDictionary_Benchmark.cs_5.html#ln43">MoveGeneratorArrayVsDictionary_Benchmark.cs:43</a><a target="_blank" class="file-link display-none" href="sources/MoveGeneratorArrayVsDictionary_Benchmark.cs_5.html#ln43">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\MoveGeneratorArrayVsDictionary_Benchmark.cs:43</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3114/">V3114</td>
+      <td id="col_sast"></td>
+      <td id="col_message">IDisposable object 'position' is not disposed before method returns.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/MoveGeneratorArrayVsDictionary_Benchmark.cs_5.html#ln68">MoveGeneratorArrayVsDictionary_Benchmark.cs:68</a><a target="_blank" class="file-link display-none" href="sources/MoveGeneratorArrayVsDictionary_Benchmark.cs_5.html#ln68">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\MoveGeneratorArrayVsDictionary_Benchmark.cs:68</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3114/">V3114</td>
+      <td id="col_sast"></td>
+      <td id="col_message">IDisposable object 'position' is not disposed before method returns.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/MoveGeneratorArrayVsDictionary_Benchmark.cs_5.html#ln49">MoveGeneratorArrayVsDictionary_Benchmark.cs:49</a><a target="_blank" class="file-link display-none" href="sources/MoveGeneratorArrayVsDictionary_Benchmark.cs_5.html#ln49">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\MoveGeneratorArrayVsDictionary_Benchmark.cs:49</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3150/">V3150</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Loop break conditions do not depend on the number of iterations.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/MoveGeneratorArrayVsDictionary_Benchmark.cs_5.html#ln74">MoveGeneratorArrayVsDictionary_Benchmark.cs:74</a><a target="_blank" class="file-link display-none" href="sources/MoveGeneratorArrayVsDictionary_Benchmark.cs_5.html#ln74">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\MoveGeneratorArrayVsDictionary_Benchmark.cs:74</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3150/">V3150</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Loop break conditions do not depend on the number of iterations.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Move_UCIString_Benchmark.cs_6.html#ln110">Move_UCIString_Benchmark.cs:110</a><a target="_blank" class="file-link display-none" href="sources/Move_UCIString_Benchmark.cs_6.html#ln110">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\Move_UCIString_Benchmark.cs:110</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3106/">V3106</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Possibly index is out of bound. The value of 'promotedPiece' index could reach 15.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/MutableReadonlyBitBoard_Benchmark.cs_7.html#ln97">MutableReadonlyBitBoard_Benchmark.cs:97</a><a target="_blank" class="file-link display-none" href="sources/MutableReadonlyBitBoard_Benchmark.cs_7.html#ln97">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\MutableReadonlyBitBoard_Benchmark.cs:97</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3013/">V3013</td>
+      <td id="col_sast"></td>
+      <td id="col_message">It is odd that the body of 'AddMutableByType' function is fully equivalent to the body of 'AddMutableByRef' function (97, line 98).</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/MutableReadonlyBitBoard_Benchmark.cs_7.html#ln99">MutableReadonlyBitBoard_Benchmark.cs:99</a><a target="_blank" class="file-link display-none" href="sources/MutableReadonlyBitBoard_Benchmark.cs_7.html#ln99">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\MutableReadonlyBitBoard_Benchmark.cs:99</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3013/">V3013</td>
+      <td id="col_sast"></td>
+      <td id="col_message">It is odd that the body of 'AddMutableReadonlyByType' function is fully equivalent to the body of 'AddMutableReadonlyByRef' function (99, line 100).</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/PEXT_Benchmark.cs_8.html#ln45">PEXT_Benchmark.cs:45</a><a target="_blank" class="file-link display-none" href="sources/PEXT_Benchmark.cs_8.html#ln45">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\PEXT_Benchmark.cs:45</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3072/">V3072</td>
+      <td id="col_sast"></td>
+      <td id="col_message">The 'PEXTBenchmark_Benchmark' class containing IDisposable members does not itself implement IDisposable. Inspect: _position.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/ParseGame_Benchmark.cs_9.html#ln475">ParseGame_Benchmark.cs:475</a><a target="_blank" class="file-link display-none" href="sources/ParseGame_Benchmark.cs_9.html#ln475">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\ParseGame_Benchmark.cs:475</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3072/">V3072</td>
+      <td id="col_sast"></td>
+      <td id="col_message">The 'OriginalGame' class containing IDisposable members does not itself implement IDisposable. Inspect: _gameInitialPosition, CurrentPosition.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/ParseGame_Benchmark.cs_9.html#ln550">ParseGame_Benchmark.cs:550</a><a target="_blank" class="file-link display-none" href="sources/ParseGame_Benchmark.cs_9.html#ln550">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\ParseGame_Benchmark.cs:550</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3072/">V3072</td>
+      <td id="col_sast"></td>
+      <td id="col_message">The 'ImprovedGame' class containing IDisposable members does not itself implement IDisposable. Inspect: _gameInitialPosition, CurrentPosition.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/ParseGame_Benchmark.cs_9.html#ln631">ParseGame_Benchmark.cs:631</a><a target="_blank" class="file-link display-none" href="sources/ParseGame_Benchmark.cs_9.html#ln631">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\ParseGame_Benchmark.cs:631</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3072/">V3072</td>
+      <td id="col_sast"></td>
+      <td id="col_message">The 'ImprovedGame2' class containing IDisposable members does not itself implement IDisposable. Inspect: _gameInitialPosition, CurrentPosition.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/PawnIslandsBenchmark.cs_10.html#ln122">PawnIslandsBenchmark.cs:122</a><a target="_blank" class="file-link display-none" href="sources/PawnIslandsBenchmark.cs_10.html#ln122">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\PawnIslandsBenchmark.cs:122</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3120/">V3120</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Potentially infinite loop. The 'pawns' variable from the loop exit condition does not change its value between iterations.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/PawnIslandsBenchmark.cs_10.html#ln160">PawnIslandsBenchmark.cs:160</a><a target="_blank" class="file-link display-none" href="sources/PawnIslandsBenchmark.cs_10.html#ln160">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\PawnIslandsBenchmark.cs:160</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3120/">V3120</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Potentially infinite loop. The 'pawns' variable from the loop exit condition does not change its value between iterations.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/PawnIslandsBenchmark.cs_10.html#ln194">PawnIslandsBenchmark.cs:194</a><a target="_blank" class="file-link display-none" href="sources/PawnIslandsBenchmark.cs_10.html#ln194">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\PawnIslandsBenchmark.cs:194</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3120/">V3120</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Potentially infinite loop. The 'pawns' variable from the loop exit condition does not change its value between iterations.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/PawnIslandsBenchmark.cs_10.html#ln210">PawnIslandsBenchmark.cs:210</a><a target="_blank" class="file-link display-none" href="sources/PawnIslandsBenchmark.cs_10.html#ln210">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\PawnIslandsBenchmark.cs:210</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3120/">V3120</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Potentially infinite loop. The 'pawns' variable from the loop exit condition does not change its value between iterations.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/PawnIslandsBenchmark.cs_10.html#ln122">PawnIslandsBenchmark.cs:122</a><a target="_blank" class="file-link display-none" href="sources/PawnIslandsBenchmark.cs_10.html#ln122">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\PawnIslandsBenchmark.cs:122</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3150/">V3150</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Loop break conditions do not depend on the number of iterations.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/PawnIslandsBenchmark.cs_10.html#ln160">PawnIslandsBenchmark.cs:160</a><a target="_blank" class="file-link display-none" href="sources/PawnIslandsBenchmark.cs_10.html#ln160">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\PawnIslandsBenchmark.cs:160</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3150/">V3150</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Loop break conditions do not depend on the number of iterations.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/PawnIslandsBenchmark.cs_10.html#ln194">PawnIslandsBenchmark.cs:194</a><a target="_blank" class="file-link display-none" href="sources/PawnIslandsBenchmark.cs_10.html#ln194">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\PawnIslandsBenchmark.cs:194</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3150/">V3150</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Loop break conditions do not depend on the number of iterations.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/PawnIslandsBenchmark.cs_10.html#ln210">PawnIslandsBenchmark.cs:210</a><a target="_blank" class="file-link display-none" href="sources/PawnIslandsBenchmark.cs_10.html#ln210">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\PawnIslandsBenchmark.cs:210</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3150/">V3150</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Loop break conditions do not depend on the number of iterations.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/PieceAtSquare_Benchmark.cs_11.html#ln67">PieceAtSquare_Benchmark.cs:67</a><a target="_blank" class="file-link display-none" href="sources/PieceAtSquare_Benchmark.cs_11.html#ln67">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\PieceAtSquare_Benchmark.cs:67</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3120/">V3120</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Potentially infinite loop. The 'bb' variable from the loop exit condition does not change its value between iterations.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/PieceAtSquare_Benchmark.cs_11.html#ln93">PieceAtSquare_Benchmark.cs:93</a><a target="_blank" class="file-link display-none" href="sources/PieceAtSquare_Benchmark.cs_11.html#ln93">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\PieceAtSquare_Benchmark.cs:93</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3120/">V3120</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Potentially infinite loop. The 'bb1' variable from the loop exit condition does not change its value between iterations.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/PieceAtSquare_Benchmark.cs_11.html#ln101">PieceAtSquare_Benchmark.cs:101</a><a target="_blank" class="file-link display-none" href="sources/PieceAtSquare_Benchmark.cs_11.html#ln101">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\PieceAtSquare_Benchmark.cs:101</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3120/">V3120</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Potentially infinite loop. The 'bb2' variable from the loop exit condition does not change its value between iterations.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/PieceAtSquare_Benchmark.cs_11.html#ln109">PieceAtSquare_Benchmark.cs:109</a><a target="_blank" class="file-link display-none" href="sources/PieceAtSquare_Benchmark.cs_11.html#ln109">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\PieceAtSquare_Benchmark.cs:109</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3120/">V3120</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Potentially infinite loop. The 'bb3' variable from the loop exit condition does not change its value between iterations.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/PieceAtSquare_Benchmark.cs_11.html#ln117">PieceAtSquare_Benchmark.cs:117</a><a target="_blank" class="file-link display-none" href="sources/PieceAtSquare_Benchmark.cs_11.html#ln117">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\PieceAtSquare_Benchmark.cs:117</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3120/">V3120</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Potentially infinite loop. The 'bb4' variable from the loop exit condition does not change its value between iterations.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/PieceAtSquare_Benchmark.cs_11.html#ln140">PieceAtSquare_Benchmark.cs:140</a><a target="_blank" class="file-link display-none" href="sources/PieceAtSquare_Benchmark.cs_11.html#ln140">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\PieceAtSquare_Benchmark.cs:140</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3120/">V3120</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Potentially infinite loop. The 'bb' variable from the loop exit condition does not change its value between iterations.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/PieceAtSquare_Benchmark.cs_11.html#ln166">PieceAtSquare_Benchmark.cs:166</a><a target="_blank" class="file-link display-none" href="sources/PieceAtSquare_Benchmark.cs_11.html#ln166">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\PieceAtSquare_Benchmark.cs:166</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3120/">V3120</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Potentially infinite loop. The 'bb1' variable from the loop exit condition does not change its value between iterations.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/PieceAtSquare_Benchmark.cs_11.html#ln174">PieceAtSquare_Benchmark.cs:174</a><a target="_blank" class="file-link display-none" href="sources/PieceAtSquare_Benchmark.cs_11.html#ln174">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\PieceAtSquare_Benchmark.cs:174</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3120/">V3120</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Potentially infinite loop. The 'bb2' variable from the loop exit condition does not change its value between iterations.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/PieceAtSquare_Benchmark.cs_11.html#ln182">PieceAtSquare_Benchmark.cs:182</a><a target="_blank" class="file-link display-none" href="sources/PieceAtSquare_Benchmark.cs_11.html#ln182">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\PieceAtSquare_Benchmark.cs:182</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3120/">V3120</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Potentially infinite loop. The 'bb3' variable from the loop exit condition does not change its value between iterations.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/PieceAtSquare_Benchmark.cs_11.html#ln190">PieceAtSquare_Benchmark.cs:190</a><a target="_blank" class="file-link display-none" href="sources/PieceAtSquare_Benchmark.cs_11.html#ln190">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\PieceAtSquare_Benchmark.cs:190</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3120/">V3120</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Potentially infinite loop. The 'bb4' variable from the loop exit condition does not change its value between iterations.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/PieceAtSquare_Benchmark.cs_11.html#ln67">PieceAtSquare_Benchmark.cs:67</a><a target="_blank" class="file-link display-none" href="sources/PieceAtSquare_Benchmark.cs_11.html#ln67">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\PieceAtSquare_Benchmark.cs:67</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3150/">V3150</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Loop break conditions do not depend on the number of iterations.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/PieceAtSquare_Benchmark.cs_11.html#ln93">PieceAtSquare_Benchmark.cs:93</a><a target="_blank" class="file-link display-none" href="sources/PieceAtSquare_Benchmark.cs_11.html#ln93">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\PieceAtSquare_Benchmark.cs:93</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3150/">V3150</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Loop break conditions do not depend on the number of iterations.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/PieceAtSquare_Benchmark.cs_11.html#ln101">PieceAtSquare_Benchmark.cs:101</a><a target="_blank" class="file-link display-none" href="sources/PieceAtSquare_Benchmark.cs_11.html#ln101">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\PieceAtSquare_Benchmark.cs:101</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3150/">V3150</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Loop break conditions do not depend on the number of iterations.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/PieceAtSquare_Benchmark.cs_11.html#ln109">PieceAtSquare_Benchmark.cs:109</a><a target="_blank" class="file-link display-none" href="sources/PieceAtSquare_Benchmark.cs_11.html#ln109">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\PieceAtSquare_Benchmark.cs:109</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3150/">V3150</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Loop break conditions do not depend on the number of iterations.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/PieceAtSquare_Benchmark.cs_11.html#ln117">PieceAtSquare_Benchmark.cs:117</a><a target="_blank" class="file-link display-none" href="sources/PieceAtSquare_Benchmark.cs_11.html#ln117">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\PieceAtSquare_Benchmark.cs:117</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3150/">V3150</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Loop break conditions do not depend on the number of iterations.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/PieceAtSquare_Benchmark.cs_11.html#ln140">PieceAtSquare_Benchmark.cs:140</a><a target="_blank" class="file-link display-none" href="sources/PieceAtSquare_Benchmark.cs_11.html#ln140">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\PieceAtSquare_Benchmark.cs:140</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3150/">V3150</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Loop break conditions do not depend on the number of iterations.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/PieceAtSquare_Benchmark.cs_11.html#ln166">PieceAtSquare_Benchmark.cs:166</a><a target="_blank" class="file-link display-none" href="sources/PieceAtSquare_Benchmark.cs_11.html#ln166">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\PieceAtSquare_Benchmark.cs:166</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3150/">V3150</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Loop break conditions do not depend on the number of iterations.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/PieceAtSquare_Benchmark.cs_11.html#ln174">PieceAtSquare_Benchmark.cs:174</a><a target="_blank" class="file-link display-none" href="sources/PieceAtSquare_Benchmark.cs_11.html#ln174">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\PieceAtSquare_Benchmark.cs:174</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3150/">V3150</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Loop break conditions do not depend on the number of iterations.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/PieceAtSquare_Benchmark.cs_11.html#ln182">PieceAtSquare_Benchmark.cs:182</a><a target="_blank" class="file-link display-none" href="sources/PieceAtSquare_Benchmark.cs_11.html#ln182">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\PieceAtSquare_Benchmark.cs:182</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3150/">V3150</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Loop break conditions do not depend on the number of iterations.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/PieceAtSquare_Benchmark.cs_11.html#ln190">PieceAtSquare_Benchmark.cs:190</a><a target="_blank" class="file-link display-none" href="sources/PieceAtSquare_Benchmark.cs_11.html#ln190">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\PieceAtSquare_Benchmark.cs:190</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3150/">V3150</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Loop break conditions do not depend on the number of iterations.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/SkipLocalsInit_Benchmark.cs_12.html#ln411">SkipLocalsInit_Benchmark.cs:411</a><a target="_blank" class="file-link display-none" href="sources/SkipLocalsInit_Benchmark.cs_12.html#ln411">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\SkipLocalsInit_Benchmark.cs:411</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3060/">V3060</td>
+      <td id="col_sast"></td>
+      <td id="col_message">A value of variable is not modified. Consider inspecting the expression. It is possible that other value should be present instead of '0'.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/SkipLocalsInit_Benchmark.cs_12.html#ln462">SkipLocalsInit_Benchmark.cs:462</a><a target="_blank" class="file-link display-none" href="sources/SkipLocalsInit_Benchmark.cs_12.html#ln462">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\SkipLocalsInit_Benchmark.cs:462</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3060/">V3060</td>
+      <td id="col_sast"></td>
+      <td id="col_message">A value of variable is not modified. Consider inspecting the expression. It is possible that other value should be present instead of '0'.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/SkipLocalsInit_Benchmark.cs_12.html#ln1162">SkipLocalsInit_Benchmark.cs:1162</a><a target="_blank" class="file-link display-none" href="sources/SkipLocalsInit_Benchmark.cs_12.html#ln1162">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\SkipLocalsInit_Benchmark.cs:1162</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3060/">V3060</td>
+      <td id="col_sast"></td>
+      <td id="col_message">A value of variable is not modified. Consider inspecting the expression. It is possible that other value should be present instead of '0'.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/SkipLocalsInit_Benchmark.cs_12.html#ln1213">SkipLocalsInit_Benchmark.cs:1213</a><a target="_blank" class="file-link display-none" href="sources/SkipLocalsInit_Benchmark.cs_12.html#ln1213">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\SkipLocalsInit_Benchmark.cs:1213</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3060/">V3060</td>
+      <td id="col_sast"></td>
+      <td id="col_message">A value of variable is not modified. Consider inspecting the expression. It is possible that other value should be present instead of '0'.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/SkipLocalsInit_Benchmark.cs_12.html#ln1886">SkipLocalsInit_Benchmark.cs:1886</a><a target="_blank" class="file-link display-none" href="sources/SkipLocalsInit_Benchmark.cs_12.html#ln1886">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\SkipLocalsInit_Benchmark.cs:1886</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3060/">V3060</td>
+      <td id="col_sast"></td>
+      <td id="col_message">A value of variable is not modified. Consider inspecting the expression. It is possible that other value should be present instead of '0'.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/SkipLocalsInit_Benchmark.cs_12.html#ln1937">SkipLocalsInit_Benchmark.cs:1937</a><a target="_blank" class="file-link display-none" href="sources/SkipLocalsInit_Benchmark.cs_12.html#ln1937">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\SkipLocalsInit_Benchmark.cs:1937</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3060/">V3060</td>
+      <td id="col_sast"></td>
+      <td id="col_message">A value of variable is not modified. Consider inspecting the expression. It is possible that other value should be present instead of '0'.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/TryParseFromUCIString_Benchmark.cs_13.html#ln170">TryParseFromUCIString_Benchmark.cs:170</a><a target="_blank" class="file-link display-none" href="sources/TryParseFromUCIString_Benchmark.cs_13.html#ln170">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\TryParseFromUCIString_Benchmark.cs:170</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3072/">V3072</td>
+      <td id="col_sast"></td>
+      <td id="col_message">The 'TryParseFromUCIString_Benchmark_Game' class containing IDisposable members does not itself implement IDisposable. Inspect: _gameInitialPosition, CurrentPosition.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/UCI_Benchmark.cs_14.html#ln47">UCI_Benchmark.cs:47</a><a target="_blank" class="file-link display-none" href="sources/UCI_Benchmark.cs_14.html#ln47">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\UCI_Benchmark.cs:47</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3114/">V3114</td>
+      <td id="col_sast"></td>
+      <td id="col_message">IDisposable object 'engine' is not disposed before method returns.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/ZobristPositionHash_Benchmark.cs_15.html#ln124">ZobristPositionHash_Benchmark.cs:124</a><a target="_blank" class="file-link display-none" href="sources/ZobristPositionHash_Benchmark.cs_15.html#ln124">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\ZobristPositionHash_Benchmark.cs:124</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3120/">V3120</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Potentially infinite loop. The 'bitboard' variable from the loop exit condition does not change its value between iterations.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Benchmark</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/ZobristPositionHash_Benchmark.cs_15.html#ln124">ZobristPositionHash_Benchmark.cs:124</a><a target="_blank" class="file-link display-none" href="sources/ZobristPositionHash_Benchmark.cs_15.html#ln124">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Benchmark\ZobristPositionHash_Benchmark.cs:124</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3150/">V3150</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Loop break conditions do not depend on the number of iterations.</td>
+    </tr>
+    <tr>
+      <td id="col_group">OWASP</td>
+      <td id="col_projects"><p>Lynx.Cli</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Runner.cs_16.html#ln44">Runner.cs:44</a><a target="_blank" class="file-link display-none" href="sources/Runner.cs_16.html#ln44">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Cli\Runner.cs:44</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v5621/">V5621</td>
+      <td id="col_sast">OWASP-8.3.5</td>
+      <td id="col_message">Error message contains potentially sensitive data, in 'taskCanceledException.Message', that may be exposed.</td>
+    </tr>
+    <tr>
+      <td id="col_group">OWASP</td>
+      <td id="col_projects"><p>Lynx.Cli</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Runner.cs_16.html#ln49">Runner.cs:49</a><a target="_blank" class="file-link display-none" href="sources/Runner.cs_16.html#ln49">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Cli\Runner.cs:49</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v5621/">V5621</td>
+      <td id="col_sast">OWASP-8.3.5</td>
+      <td id="col_message">Error message contains potentially sensitive data, in 'e.Message', that may be exposed.</td>
+    </tr>
+    <tr>
+      <td id="col_group">OWASP</td>
+      <td id="col_projects"><p>Lynx.Cli</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Runner.cs_16.html#ln57">Runner.cs:57</a><a target="_blank" class="file-link display-none" href="sources/Runner.cs_16.html#ln57">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Cli\Runner.cs:57</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v5621/">V5621</td>
+      <td id="col_sast">OWASP-8.3.5</td>
+      <td id="col_message">Error message contains potentially sensitive data, in 'e.Message', that may be exposed.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.ConstantsGenerator</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/PawnIslandsGenerator.cs_17.html#ln100">PawnIslandsGenerator.cs:100</a><a target="_blank" class="file-link display-none" href="sources/PawnIslandsGenerator.cs_17.html#ln100">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.ConstantsGenerator\PawnIslandsGenerator.cs:100</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3120/">V3120</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Potentially infinite loop. The 'pawns' variable from the loop exit condition does not change its value between iterations.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.ConstantsGenerator</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/PawnIslandsGenerator.cs_17.html#ln100">PawnIslandsGenerator.cs:100</a><a target="_blank" class="file-link display-none" href="sources/PawnIslandsGenerator.cs_17.html#ln100">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.ConstantsGenerator\PawnIslandsGenerator.cs:100</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3150/">V3150</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Loop break conditions do not depend on the number of iterations.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Dev</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Program.cs_18.html#ln775">Program.cs:775</a><a target="_blank" class="file-link display-none" href="sources/Program.cs_18.html#ln775">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Dev\Program.cs:775</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3001/">V3001</td>
+      <td id="col_sast"></td>
+      <td id="col_message">There are identical sub-expressions 'zobristTable[piece, targetSquare]' to the left and to the right of the '^' operator.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Dev</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Program.cs_18.html#ln1201">Program.cs:1201</a><a target="_blank" class="file-link display-none" href="sources/Program.cs_18.html#ln1201">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Dev\Program.cs:1201</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3022/">V3022</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Expression '((Masks.LightSquaresMask &gt;&gt; (int)BoardSquare.h1) &amp; 1) != 0' is always true.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Dev</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Program.cs_18.html#ln1202">Program.cs:1202</a><a target="_blank" class="file-link display-none" href="sources/Program.cs_18.html#ln1202">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Dev\Program.cs:1202</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3022/">V3022</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Expression '(((9 * (int)BoardSquare.h1) + 8) &amp; 8) != 0' is always true.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Dev</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Program.cs_18.html#ln1203">Program.cs:1203</a><a target="_blank" class="file-link display-none" href="sources/Program.cs_18.html#ln1203">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Dev\Program.cs:1203</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3022/">V3022</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Expression '((Masks.LightSquaresMask &gt;&gt; (int)BoardSquare.a1) &amp; 1) != 0' is always false.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Dev</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Program.cs_18.html#ln1204">Program.cs:1204</a><a target="_blank" class="file-link display-none" href="sources/Program.cs_18.html#ln1204">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Dev\Program.cs:1204</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3022/">V3022</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Expression '(((9 * (int)BoardSquare.a1) + 8) &amp; 8) != 0' is always false.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Dev</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Program.cs_18.html#ln277">Program.cs:277</a><a target="_blank" class="file-link display-none" href="sources/Program.cs_18.html#ln277">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Dev\Program.cs:277</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3114/">V3114</td>
+      <td id="col_sast"></td>
+      <td id="col_message">IDisposable object 'position' is not disposed before method returns.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Dev</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Program.cs_18.html#ln301">Program.cs:301</a><a target="_blank" class="file-link display-none" href="sources/Program.cs_18.html#ln301">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Dev\Program.cs:301</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3114/">V3114</td>
+      <td id="col_sast"></td>
+      <td id="col_message">IDisposable object 'position' is not disposed before method returns.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Dev</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Program.cs_18.html#ln312">Program.cs:312</a><a target="_blank" class="file-link display-none" href="sources/Program.cs_18.html#ln312">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Dev\Program.cs:312</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3114/">V3114</td>
+      <td id="col_sast"></td>
+      <td id="col_message">IDisposable object 'position' is not disposed before method returns.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Dev</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Program.cs_18.html#ln324">Program.cs:324</a><a target="_blank" class="file-link display-none" href="sources/Program.cs_18.html#ln324">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Dev\Program.cs:324</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3114/">V3114</td>
+      <td id="col_sast"></td>
+      <td id="col_message">IDisposable object 'position' is not disposed before method returns.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Dev</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Program.cs_18.html#ln330">Program.cs:330</a><a target="_blank" class="file-link display-none" href="sources/Program.cs_18.html#ln330">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Dev\Program.cs:330</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3114/">V3114</td>
+      <td id="col_sast"></td>
+      <td id="col_message">IDisposable object 'position' is not disposed before method returns.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Dev</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Program.cs_18.html#ln343">Program.cs:343</a><a target="_blank" class="file-link display-none" href="sources/Program.cs_18.html#ln343">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Dev\Program.cs:343</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3114/">V3114</td>
+      <td id="col_sast"></td>
+      <td id="col_message">IDisposable object 'position' is not disposed before method returns.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Dev</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Program.cs_18.html#ln353">Program.cs:353</a><a target="_blank" class="file-link display-none" href="sources/Program.cs_18.html#ln353">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Dev\Program.cs:353</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3114/">V3114</td>
+      <td id="col_sast"></td>
+      <td id="col_message">IDisposable object 'position' is not disposed before method returns.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Dev</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Program.cs_18.html#ln370">Program.cs:370</a><a target="_blank" class="file-link display-none" href="sources/Program.cs_18.html#ln370">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Dev\Program.cs:370</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3114/">V3114</td>
+      <td id="col_sast"></td>
+      <td id="col_message">IDisposable object 'position' is not disposed before method returns.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Dev</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Program.cs_18.html#ln376">Program.cs:376</a><a target="_blank" class="file-link display-none" href="sources/Program.cs_18.html#ln376">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Dev\Program.cs:376</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3114/">V3114</td>
+      <td id="col_sast"></td>
+      <td id="col_message">IDisposable object 'position' is not disposed before method returns.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Dev</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Program.cs_18.html#ln502">Program.cs:502</a><a target="_blank" class="file-link display-none" href="sources/Program.cs_18.html#ln502">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Dev\Program.cs:502</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3114/">V3114</td>
+      <td id="col_sast"></td>
+      <td id="col_message">IDisposable object 'position' is not disposed before method returns.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Dev</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Program.cs_18.html#ln505">Program.cs:505</a><a target="_blank" class="file-link display-none" href="sources/Program.cs_18.html#ln505">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Dev\Program.cs:505</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3114/">V3114</td>
+      <td id="col_sast"></td>
+      <td id="col_message">IDisposable object 'position' is not disposed before method returns.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Dev</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Program.cs_18.html#ln508">Program.cs:508</a><a target="_blank" class="file-link display-none" href="sources/Program.cs_18.html#ln508">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Dev\Program.cs:508</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3114/">V3114</td>
+      <td id="col_sast"></td>
+      <td id="col_message">IDisposable object 'game' is not disposed before method returns.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Dev</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Program.cs_18.html#ln509">Program.cs:509</a><a target="_blank" class="file-link display-none" href="sources/Program.cs_18.html#ln509">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Dev\Program.cs:509</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3114/">V3114</td>
+      <td id="col_sast"></td>
+      <td id="col_message">IDisposable object 'reversedGame' is not disposed before method returns.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Dev</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Program.cs_18.html#ln577">Program.cs:577</a><a target="_blank" class="file-link display-none" href="sources/Program.cs_18.html#ln577">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Dev\Program.cs:577</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3114/">V3114</td>
+      <td id="col_sast"></td>
+      <td id="col_message">IDisposable object 'position' is not disposed before method returns.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Dev</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Program.cs_18.html#ln987">Program.cs:987</a><a target="_blank" class="file-link display-none" href="sources/Program.cs_18.html#ln987">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Dev\Program.cs:987</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3114/">V3114</td>
+      <td id="col_sast"></td>
+      <td id="col_message">IDisposable object 'position' is not disposed before method returns.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Dev</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Program.cs_18.html#ln992">Program.cs:992</a><a target="_blank" class="file-link display-none" href="sources/Program.cs_18.html#ln992">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Dev\Program.cs:992</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3114/">V3114</td>
+      <td id="col_sast"></td>
+      <td id="col_message">IDisposable object 'position' is not disposed before method returns.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Dev</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Program.cs_18.html#ln997">Program.cs:997</a><a target="_blank" class="file-link display-none" href="sources/Program.cs_18.html#ln997">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Dev\Program.cs:997</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3114/">V3114</td>
+      <td id="col_sast"></td>
+      <td id="col_message">IDisposable object 'position' is not disposed before method returns.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Dev</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Program.cs_18.html#ln1002">Program.cs:1002</a><a target="_blank" class="file-link display-none" href="sources/Program.cs_18.html#ln1002">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Dev\Program.cs:1002</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3114/">V3114</td>
+      <td id="col_sast"></td>
+      <td id="col_message">IDisposable object 'position' is not disposed before method returns.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Dev</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Program.cs_18.html#ln1007">Program.cs:1007</a><a target="_blank" class="file-link display-none" href="sources/Program.cs_18.html#ln1007">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Dev\Program.cs:1007</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3114/">V3114</td>
+      <td id="col_sast"></td>
+      <td id="col_message">IDisposable object 'position' is not disposed before method returns.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Dev</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Program.cs_18.html#ln1012">Program.cs:1012</a><a target="_blank" class="file-link display-none" href="sources/Program.cs_18.html#ln1012">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Dev\Program.cs:1012</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3114/">V3114</td>
+      <td id="col_sast"></td>
+      <td id="col_message">IDisposable object 'position' is not disposed before method returns.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Dev</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Program.cs_18.html#ln1017">Program.cs:1017</a><a target="_blank" class="file-link display-none" href="sources/Program.cs_18.html#ln1017">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Dev\Program.cs:1017</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3114/">V3114</td>
+      <td id="col_sast"></td>
+      <td id="col_message">IDisposable object 'position' is not disposed before method returns.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Dev</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Program.cs_18.html#ln1025">Program.cs:1025</a><a target="_blank" class="file-link display-none" href="sources/Program.cs_18.html#ln1025">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Dev\Program.cs:1025</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3114/">V3114</td>
+      <td id="col_sast"></td>
+      <td id="col_message">IDisposable object 'position' is not disposed before method returns.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Dev</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Program.cs_18.html#ln1030">Program.cs:1030</a><a target="_blank" class="file-link display-none" href="sources/Program.cs_18.html#ln1030">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Dev\Program.cs:1030</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3114/">V3114</td>
+      <td id="col_sast"></td>
+      <td id="col_message">IDisposable object 'position' is not disposed before method returns.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Dev</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Program.cs_18.html#ln1035">Program.cs:1035</a><a target="_blank" class="file-link display-none" href="sources/Program.cs_18.html#ln1035">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Dev\Program.cs:1035</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3114/">V3114</td>
+      <td id="col_sast"></td>
+      <td id="col_message">IDisposable object 'position' is not disposed before method returns.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Dev</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Program.cs_18.html#ln185">Program.cs:185</a><a target="_blank" class="file-link display-none" href="sources/Program.cs_18.html#ln185">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Dev\Program.cs:185</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3198/">V3198</td>
+      <td id="col_sast"></td>
+      <td id="col_message">The 'occupancy' variable is assigned the '0' value that it already holds.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Dev</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Program.cs_18.html#ln196">Program.cs:196</a><a target="_blank" class="file-link display-none" href="sources/Program.cs_18.html#ln196">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx.Dev\Program.cs:196</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3198/">V3198</td>
+      <td id="col_sast"></td>
+      <td id="col_message">The 'occupancy' variable is assigned the '0' value that it already holds.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/AttackGenerator.cs_19.html#ln350">AttackGenerator.cs:350</a><a target="_blank" class="file-link display-none" href="sources/AttackGenerator.cs_19.html#ln350">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx\AttackGenerator.cs:350</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3060/">V3060</td>
+      <td id="col_sast"></td>
+      <td id="col_message">A value of variable is not modified. Consider inspecting the expression. It is possible that other value should be present instead of '0'.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/AttackGenerator.cs_19.html#ln401">AttackGenerator.cs:401</a><a target="_blank" class="file-link display-none" href="sources/AttackGenerator.cs_19.html#ln401">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx\AttackGenerator.cs:401</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3060/">V3060</td>
+      <td id="col_sast"></td>
+      <td id="col_message">A value of variable is not modified. Consider inspecting the expression. It is possible that other value should be present instead of '0'.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Masks.cs_20.html#ln151">Masks.cs:151</a><a target="_blank" class="file-link display-none" href="sources/Masks.cs_20.html#ln151">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx\Masks.cs:151</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3155/">V3155</td>
+      <td id="col_sast"></td>
+      <td id="col_message">The expression is incorrect or it can be simplified. The 'SetFileRankMask(-1, rank)' expression always evaluates to '0'.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Game.cs_21.html#ln7">Game.cs:7</a><a target="_blank" class="file-link display-none" href="sources/Game.cs_21.html#ln7">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx\Model\Game.cs:7</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3073/">V3073</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Not all IDisposable members are properly disposed. Call 'Dispose' when disposing 'Game' class. Inspect: CurrentPosition, PositionBeforeLastSearch.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Move.cs_22.html#ln358">Move.cs:358</a><a target="_blank" class="file-link display-none" href="sources/Move.cs_22.html#ln358">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx\Model\Move.cs:358</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3106/">V3106</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Possibly index is out of bound. The value of 'promotedPiece' index could reach 15.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Position.cs_23.html#ln459">Position.cs:459</a><a target="_blank" class="file-link display-none" href="sources/Position.cs_23.html#ln459">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx\Model\Position.cs:459</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3002/">V3002</td>
+      <td id="col_sast"></td>
+      <td id="col_message">The switch statement does not cover all values of the 'SpecialMoveType' enum: DoublePawnPush.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/OnlineTablebaseProber.cs_24.html#ln69">OnlineTablebaseProber.cs:69</a><a target="_blank" class="file-link display-none" href="sources/OnlineTablebaseProber.cs_24.html#ln69">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx\OnlineTablebaseProber.cs:69</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3202/">V3202</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Unreachable code detected. The 'case' value 'TablebaseEvaluationCategory.Unknown' is out of range of the match expression 'tablebaseEval.Category'.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Searcher.cs_25.html#ln181">Searcher.cs:181</a><a target="_blank" class="file-link display-none" href="sources/Searcher.cs_25.html#ln181">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx\Searcher.cs:181</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3022/">V3022</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Expression is always true.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Searcher.cs_25.html#ln10">Searcher.cs:10</a><a target="_blank" class="file-link display-none" href="sources/Searcher.cs_25.html#ln10">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx\Searcher.cs:10</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3072/">V3072</td>
+      <td id="col_sast"></td>
+      <td id="col_message">The 'Searcher' class containing IDisposable members does not itself implement IDisposable. Inspect: _mainEngine.</td>
+    </tr>
+    <tr>
+      <td id="col_group">OWASP</td>
+      <td id="col_projects"><p>Lynx</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/UCIHandler.cs_26.html#ln891">UCIHandler.cs:891</a><a target="_blank" class="file-link display-none" href="sources/UCIHandler.cs_26.html#ln891">C:\Users\dimoninbirsk\source\thesis\Lynx\src\Lynx\UCIHandler.cs:891</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v5621/">V5621</td>
+      <td id="col_sast">OWASP-8.3.5</td>
+      <td id="col_message">Error message contains potentially sensitive data, in 'errorMessage', that may be exposed.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Test</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/EvaluationConstantsTest.cs_27.html#ln20">EvaluationConstantsTest.cs:20</a><a target="_blank" class="file-link display-none" href="sources/EvaluationConstantsTest.cs_27.html#ln20">C:\Users\dimoninbirsk\source\thesis\Lynx\tests\Lynx.Test\EvaluationConstantsTest.cs:20</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3155/">V3155</td>
+      <td id="col_sast"></td>
+      <td id="col_message">The expression is incorrect or it can be simplified. Consider inspecting the '1' literal.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Test</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/PositionTest.cs_28.html#ln1009">PositionTest.cs:1009</a><a target="_blank" class="file-link display-none" href="sources/PositionTest.cs_28.html#ln1009">C:\Users\dimoninbirsk\source\thesis\Lynx\tests\Lynx.Test\Model\PositionTest.cs:1009</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3120/">V3120</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Potentially infinite loop. The 'bitboard' variable from the loop exit condition does not change its value between iterations.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Test</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/PositionTest.cs_28.html#ln1027">PositionTest.cs:1027</a><a target="_blank" class="file-link display-none" href="sources/PositionTest.cs_28.html#ln1027">C:\Users\dimoninbirsk\source\thesis\Lynx\tests\Lynx.Test\Model\PositionTest.cs:1027</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3114/">V3114</td>
+      <td id="col_sast"></td>
+      <td id="col_message">IDisposable object 'position' is not disposed before method returns.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Test</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/PositionTest.cs_28.html#ln1009">PositionTest.cs:1009</a><a target="_blank" class="file-link display-none" href="sources/PositionTest.cs_28.html#ln1009">C:\Users\dimoninbirsk\source\thesis\Lynx\tests\Lynx.Test\Model\PositionTest.cs:1009</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3150/">V3150</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Loop break conditions do not depend on the number of iterations.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Test</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/PawnIslandsTest.cs_29.html#ln68">PawnIslandsTest.cs:68</a><a target="_blank" class="file-link display-none" href="sources/PawnIslandsTest.cs_29.html#ln68">C:\Users\dimoninbirsk\source\thesis\Lynx\tests\Lynx.Test\PawnIslandsTest.cs:68</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3120/">V3120</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Potentially infinite loop. The 'pawns' variable from the loop exit condition does not change its value between iterations.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Test</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/PawnIslandsTest.cs_29.html#ln68">PawnIslandsTest.cs:68</a><a target="_blank" class="file-link display-none" href="sources/PawnIslandsTest.cs_29.html#ln68">C:\Users\dimoninbirsk\source\thesis\Lynx\tests\Lynx.Test\PawnIslandsTest.cs:68</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3150/">V3150</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Loop break conditions do not depend on the number of iterations.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Test</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/IsAttackedSquareTest.cs_30.html#ln21">IsAttackedSquareTest.cs:21</a><a target="_blank" class="file-link display-none" href="sources/IsAttackedSquareTest.cs_30.html#ln21">C:\Users\dimoninbirsk\source\thesis\Lynx\tests\Lynx.Test\PregeneratedAttacks\IsAttackedSquareTest.cs:21</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3022/">V3022</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Expression 'position.IsSquareAttacked(square, Side.Black)' is always false.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Test</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/IsAttackedSquareTest.cs_30.html#ln22">IsAttackedSquareTest.cs:22</a><a target="_blank" class="file-link display-none" href="sources/IsAttackedSquareTest.cs_30.html#ln22">C:\Users\dimoninbirsk\source\thesis\Lynx\tests\Lynx.Test\PregeneratedAttacks\IsAttackedSquareTest.cs:22</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3022/">V3022</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Expression 'position.IsSquareAttacked(square, Side.White)' is always false.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Test</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/IsAttackedSquareTest.cs_30.html#ln38">IsAttackedSquareTest.cs:38</a><a target="_blank" class="file-link display-none" href="sources/IsAttackedSquareTest.cs_30.html#ln38">C:\Users\dimoninbirsk\source\thesis\Lynx\tests\Lynx.Test\PregeneratedAttacks\IsAttackedSquareTest.cs:38</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3022/">V3022</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Expression 'position.IsSquareAttacked(square, Side.Black)' is always false.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Test</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/IsAttackedSquareTest.cs_30.html#ln39">IsAttackedSquareTest.cs:39</a><a target="_blank" class="file-link display-none" href="sources/IsAttackedSquareTest.cs_30.html#ln39">C:\Users\dimoninbirsk\source\thesis\Lynx\tests\Lynx.Test\PregeneratedAttacks\IsAttackedSquareTest.cs:39</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3022/">V3022</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Expression 'position.IsSquareAttacked(square, Side.White)' is always false.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Test</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/IsAttackedSquareTest.cs_30.html#ln55">IsAttackedSquareTest.cs:55</a><a target="_blank" class="file-link display-none" href="sources/IsAttackedSquareTest.cs_30.html#ln55">C:\Users\dimoninbirsk\source\thesis\Lynx\tests\Lynx.Test\PregeneratedAttacks\IsAttackedSquareTest.cs:55</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3022/">V3022</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Expression 'position.IsSquareAttacked(square, Side.Black)' is always false.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Test</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/IsAttackedSquareTest.cs_30.html#ln56">IsAttackedSquareTest.cs:56</a><a target="_blank" class="file-link display-none" href="sources/IsAttackedSquareTest.cs_30.html#ln56">C:\Users\dimoninbirsk\source\thesis\Lynx\tests\Lynx.Test\PregeneratedAttacks\IsAttackedSquareTest.cs:56</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3022/">V3022</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Expression 'position.IsSquareAttacked(square, Side.White)' is always false.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Test</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/IsAttackedSquareTest.cs_30.html#ln73">IsAttackedSquareTest.cs:73</a><a target="_blank" class="file-link display-none" href="sources/IsAttackedSquareTest.cs_30.html#ln73">C:\Users\dimoninbirsk\source\thesis\Lynx\tests\Lynx.Test\PregeneratedAttacks\IsAttackedSquareTest.cs:73</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3022/">V3022</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Expression 'position.IsSquareAttacked(square, Side.Black)' is always false.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Test</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/IsAttackedSquareTest.cs_30.html#ln74">IsAttackedSquareTest.cs:74</a><a target="_blank" class="file-link display-none" href="sources/IsAttackedSquareTest.cs_30.html#ln74">C:\Users\dimoninbirsk\source\thesis\Lynx\tests\Lynx.Test\PregeneratedAttacks\IsAttackedSquareTest.cs:74</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3022/">V3022</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Expression 'position.IsSquareAttacked(square, Side.White)' is always false.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Test</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/IsAttackedSquareTest.cs_30.html#ln91">IsAttackedSquareTest.cs:91</a><a target="_blank" class="file-link display-none" href="sources/IsAttackedSquareTest.cs_30.html#ln91">C:\Users\dimoninbirsk\source\thesis\Lynx\tests\Lynx.Test\PregeneratedAttacks\IsAttackedSquareTest.cs:91</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3022/">V3022</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Expression 'position.IsSquareAttacked(square, Side.Black)' is always false.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Test</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/IsAttackedSquareTest.cs_30.html#ln92">IsAttackedSquareTest.cs:92</a><a target="_blank" class="file-link display-none" href="sources/IsAttackedSquareTest.cs_30.html#ln92">C:\Users\dimoninbirsk\source\thesis\Lynx\tests\Lynx.Test\PregeneratedAttacks\IsAttackedSquareTest.cs:92</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3022/">V3022</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Expression 'position.IsSquareAttacked(square, Side.White)' is always false.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Test</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/IsAttackedSquareTest.cs_30.html#ln108">IsAttackedSquareTest.cs:108</a><a target="_blank" class="file-link display-none" href="sources/IsAttackedSquareTest.cs_30.html#ln108">C:\Users\dimoninbirsk\source\thesis\Lynx\tests\Lynx.Test\PregeneratedAttacks\IsAttackedSquareTest.cs:108</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3022/">V3022</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Expression 'position.IsSquareAttacked(square, Side.Black)' is always false.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Test</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/IsAttackedSquareTest.cs_30.html#ln109">IsAttackedSquareTest.cs:109</a><a target="_blank" class="file-link display-none" href="sources/IsAttackedSquareTest.cs_30.html#ln109">C:\Users\dimoninbirsk\source\thesis\Lynx\tests\Lynx.Test\PregeneratedAttacks\IsAttackedSquareTest.cs:109</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3022/">V3022</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Expression 'position.IsSquareAttacked(square, Side.White)' is always false.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Test</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/IsAttackedSquareTest.cs_30.html#ln125">IsAttackedSquareTest.cs:125</a><a target="_blank" class="file-link display-none" href="sources/IsAttackedSquareTest.cs_30.html#ln125">C:\Users\dimoninbirsk\source\thesis\Lynx\tests\Lynx.Test\PregeneratedAttacks\IsAttackedSquareTest.cs:125</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3022/">V3022</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Expression 'position.IsSquareAttacked(square, Side.Black)' is always false.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Test</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/IsAttackedSquareTest.cs_30.html#ln126">IsAttackedSquareTest.cs:126</a><a target="_blank" class="file-link display-none" href="sources/IsAttackedSquareTest.cs_30.html#ln126">C:\Users\dimoninbirsk\source\thesis\Lynx\tests\Lynx.Test\PregeneratedAttacks\IsAttackedSquareTest.cs:126</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3022/">V3022</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Expression 'position.IsSquareAttacked(square, Side.White)' is always false.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Test</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/IsAttackedSquareTest.cs_30.html#ln142">IsAttackedSquareTest.cs:142</a><a target="_blank" class="file-link display-none" href="sources/IsAttackedSquareTest.cs_30.html#ln142">C:\Users\dimoninbirsk\source\thesis\Lynx\tests\Lynx.Test\PregeneratedAttacks\IsAttackedSquareTest.cs:142</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3022/">V3022</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Expression 'position.IsSquareAttacked(square, Side.Black)' is always false.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Test</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/IsAttackedSquareTest.cs_30.html#ln143">IsAttackedSquareTest.cs:143</a><a target="_blank" class="file-link display-none" href="sources/IsAttackedSquareTest.cs_30.html#ln143">C:\Users\dimoninbirsk\source\thesis\Lynx\tests\Lynx.Test\PregeneratedAttacks\IsAttackedSquareTest.cs:143</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3022/">V3022</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Expression 'position.IsSquareAttacked(square, Side.White)' is always false.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Test</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/IsAttackedSquareTest.cs_30.html#ln172">IsAttackedSquareTest.cs:172</a><a target="_blank" class="file-link display-none" href="sources/IsAttackedSquareTest.cs_30.html#ln172">C:\Users\dimoninbirsk\source\thesis\Lynx\tests\Lynx.Test\PregeneratedAttacks\IsAttackedSquareTest.cs:172</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3022/">V3022</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Expression 'position.IsSquareAttacked(square1, Side.Black)' is always false.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Test</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/IsAttackedSquareTest.cs_30.html#ln173">IsAttackedSquareTest.cs:173</a><a target="_blank" class="file-link display-none" href="sources/IsAttackedSquareTest.cs_30.html#ln173">C:\Users\dimoninbirsk\source\thesis\Lynx\tests\Lynx.Test\PregeneratedAttacks\IsAttackedSquareTest.cs:173</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3022/">V3022</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Expression 'position.IsSquareAttacked(square1, Side.White)' is always false.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Test</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/IsAttackedSquareTest.cs_30.html#ln174">IsAttackedSquareTest.cs:174</a><a target="_blank" class="file-link display-none" href="sources/IsAttackedSquareTest.cs_30.html#ln174">C:\Users\dimoninbirsk\source\thesis\Lynx\tests\Lynx.Test\PregeneratedAttacks\IsAttackedSquareTest.cs:174</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3022/">V3022</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Expression 'position.IsSquareAttacked(square2, Side.Black)' is always false.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Test</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/IsAttackedSquareTest.cs_30.html#ln175">IsAttackedSquareTest.cs:175</a><a target="_blank" class="file-link display-none" href="sources/IsAttackedSquareTest.cs_30.html#ln175">C:\Users\dimoninbirsk\source\thesis\Lynx\tests\Lynx.Test\PregeneratedAttacks\IsAttackedSquareTest.cs:175</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3022/">V3022</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Expression 'position.IsSquareAttacked(square2, Side.White)' is always false.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Test</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/IsAttackedSquareTest.cs_30.html#ln204">IsAttackedSquareTest.cs:204</a><a target="_blank" class="file-link display-none" href="sources/IsAttackedSquareTest.cs_30.html#ln204">C:\Users\dimoninbirsk\source\thesis\Lynx\tests\Lynx.Test\PregeneratedAttacks\IsAttackedSquareTest.cs:204</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3022/">V3022</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Expression 'position.IsSquareAttacked(square1, Side.White)' is always false.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Test</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/IsAttackedSquareTest.cs_30.html#ln205">IsAttackedSquareTest.cs:205</a><a target="_blank" class="file-link display-none" href="sources/IsAttackedSquareTest.cs_30.html#ln205">C:\Users\dimoninbirsk\source\thesis\Lynx\tests\Lynx.Test\PregeneratedAttacks\IsAttackedSquareTest.cs:205</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3022/">V3022</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Expression 'position.IsSquareAttacked(square1, Side.Black)' is always false.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Test</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/IsAttackedSquareTest.cs_30.html#ln206">IsAttackedSquareTest.cs:206</a><a target="_blank" class="file-link display-none" href="sources/IsAttackedSquareTest.cs_30.html#ln206">C:\Users\dimoninbirsk\source\thesis\Lynx\tests\Lynx.Test\PregeneratedAttacks\IsAttackedSquareTest.cs:206</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3022/">V3022</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Expression 'position.IsSquareAttacked(square2, Side.White)' is always false.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Test</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/IsAttackedSquareTest.cs_30.html#ln207">IsAttackedSquareTest.cs:207</a><a target="_blank" class="file-link display-none" href="sources/IsAttackedSquareTest.cs_30.html#ln207">C:\Users\dimoninbirsk\source\thesis\Lynx\tests\Lynx.Test\PregeneratedAttacks\IsAttackedSquareTest.cs:207</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3022/">V3022</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Expression 'position.IsSquareAttacked(square2, Side.Black)' is always false.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Test</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/IsAttackedSquareTest.cs_30.html#ln225">IsAttackedSquareTest.cs:225</a><a target="_blank" class="file-link display-none" href="sources/IsAttackedSquareTest.cs_30.html#ln225">C:\Users\dimoninbirsk\source\thesis\Lynx\tests\Lynx.Test\PregeneratedAttacks\IsAttackedSquareTest.cs:225</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3022/">V3022</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Expression 'position.IsSquareAttacked(square, Side.Black)' is always false.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Test</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/IsAttackedSquareTest.cs_30.html#ln226">IsAttackedSquareTest.cs:226</a><a target="_blank" class="file-link display-none" href="sources/IsAttackedSquareTest.cs_30.html#ln226">C:\Users\dimoninbirsk\source\thesis\Lynx\tests\Lynx.Test\PregeneratedAttacks\IsAttackedSquareTest.cs:226</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3022/">V3022</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Expression 'position.IsSquareAttacked(square, Side.White)' is always false.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Test</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/IsAttackedSquareTest.cs_30.html#ln244">IsAttackedSquareTest.cs:244</a><a target="_blank" class="file-link display-none" href="sources/IsAttackedSquareTest.cs_30.html#ln244">C:\Users\dimoninbirsk\source\thesis\Lynx\tests\Lynx.Test\PregeneratedAttacks\IsAttackedSquareTest.cs:244</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3022/">V3022</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Expression 'position.IsSquareAttacked(square, Side.Black)' is always false.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Test</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/IsAttackedSquareTest.cs_30.html#ln245">IsAttackedSquareTest.cs:245</a><a target="_blank" class="file-link display-none" href="sources/IsAttackedSquareTest.cs_30.html#ln245">C:\Users\dimoninbirsk\source\thesis\Lynx\tests\Lynx.Test\PregeneratedAttacks\IsAttackedSquareTest.cs:245</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3022/">V3022</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Expression 'position.IsSquareAttacked(square, Side.White)' is always false.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Test</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/PawnAttacksTest.cs_31.html#ln64">PawnAttacksTest.cs:64</a><a target="_blank" class="file-link display-none" href="sources/PawnAttacksTest.cs_31.html#ln64">C:\Users\dimoninbirsk\source\thesis\Lynx\tests\Lynx.Test\PregeneratedAttacks\PawnAttacksTest.cs:64</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3134/">V3134</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Shift by a possibly negative number -1 will result in shifting the first operand by 6 low-order bits of the second operand.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>Lynx.Test</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/PawnAttacksTest.cs_31.html#ln71">PawnAttacksTest.cs:71</a><a target="_blank" class="file-link display-none" href="sources/PawnAttacksTest.cs_31.html#ln71">C:\Users\dimoninbirsk\source\thesis\Lynx\tests\Lynx.Test\PregeneratedAttacks\PawnAttacksTest.cs:71</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3134/">V3134</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Shift by 64 bits is greater than the size of 'UInt64' type of expression 'attackDiagram'.</td>
+    </tr>
+  </table>
+<script type="text/javascript">
+var sorter=new table.sorter("sorter");
+sorter.init("sorter",0);
+</script>
+</body>
+</html>

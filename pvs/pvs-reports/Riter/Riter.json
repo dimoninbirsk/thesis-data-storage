@@ -1,0 +1,230 @@
+{
+  "version": 3,
+  "warnings": [
+    {
+      "code": "Renew",
+      "cwe": 0,
+      "level": 1,
+      "positions": [
+        {
+          "file": "",
+          "line": 1,
+          "endLine": 1,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 0,
+            "nextLine": 0,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [],
+      "message": "Your license will expire in 29 days. Click 'Renew' to learn more or contact us via Feedback form on our website. This is an information message. You can continue using the analyzer with your current license. To hide this message, use the '--disableLicenseExpirationCheck' flag.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3125",
+      "cwe": 476,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Riter\\tests\\Riter.Tests\\ViewModel\\StateHandlers\\InkEditingModeStateHandlerTests.cs",
+          "line": 18,
+          "endLine": 18,
+          "navigation": {
+            "previousLine": 0,
+            "currentLine": 1320303846,
+            "nextLine": 531279701,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Riter\\tests\\Riter.Tests\\ViewModel\\StateHandlers\\InkEditingModeStateHandlerTests.cs",
+          "line": 13,
+          "endLine": 13
+        }
+      ],
+      "projects": [
+        "Riter.Tests"
+      ],
+      "message": "The 'Application.Current' object was used after it was verified against null. Check lines: 18, 13.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3012",
+      "cwe": 783,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Riter\\tests\\Riter.Tests\\Services\\StrokeHistoryServiceTests.cs",
+          "line": 21,
+          "endLine": 21,
+          "navigation": {
+            "previousLine": -2055693496,
+            "currentLine": -687262167,
+            "nextLine": 155075428,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Riter.Tests"
+      ],
+      "message": "The '?:' operator, regardless of its conditional expression, always returns one and the same value.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3146",
+      "cwe": 476,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Riter\\src\\Riter\\Core\\UI\\SettingPanel.xaml.cs",
+          "line": 21,
+          "endLine": 21,
+          "navigation": {
+            "previousLine": -1621703757,
+            "currentLine": 58714610,
+            "nextLine": -232601206,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Riter"
+      ],
+      "message": "Possible null dereference. The 'FirstOrDefault' can return default null value.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3146",
+      "cwe": 476,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Riter\\src\\Riter\\Core\\UI\\SettingPanel.xaml.cs",
+          "line": 22,
+          "endLine": 22,
+          "navigation": {
+            "previousLine": 58714610,
+            "currentLine": -232601206,
+            "nextLine": -601699254,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Riter"
+      ],
+      "message": "Possible null dereference. The 'FirstOrDefault' can return default null value.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3146",
+      "cwe": 476,
+      "level": 1,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Riter\\src\\Riter\\Core\\UI\\SettingPanel.xaml.cs",
+          "line": 23,
+          "endLine": 23,
+          "navigation": {
+            "previousLine": -232601206,
+            "currentLine": -601699254,
+            "nextLine": 125,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Riter"
+      ],
+      "message": "Possible null dereference. The 'FirstOrDefault' can return default null value.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V5606",
+      "cwe": 1069,
+      "sastId": "OWASP-7.4.2",
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Riter\\src\\Riter\\Core\\UI\\SubPanels\\UpdatePanel.xaml.cs",
+          "line": 40,
+          "endLine": 40,
+          "navigation": {
+            "previousLine": 125,
+            "currentLine": 1094,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Riter"
+      ],
+      "message": "An empty exception handler. Silent suppression of exceptions may hide the presence of bugs or vulnerabilities.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3080",
+      "cwe": 476,
+      "level": 2,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Riter\\src\\Riter\\Services\\StrokeHistoryService.cs",
+          "line": 107,
+          "endLine": 107,
+          "navigation": {
+            "previousLine": -517296379,
+            "currentLine": -1375458726,
+            "nextLine": 123,
+            "columns": 0
+          }
+        }
+      ],
+      "projects": [
+        "Riter"
+      ],
+      "message": "Possible null dereference. Consider inspecting 'lastItem'.",
+      "favorite": false,
+      "falseAlarm": false
+    },
+    {
+      "code": "V3008",
+      "cwe": 563,
+      "level": 3,
+      "positions": [
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Riter\\src\\Riter\\ViewModel\\StateHandlers\\SettingsStatePanelHandler.cs",
+          "line": 22,
+          "endLine": 22,
+          "navigation": {
+            "previousLine": 1258301325,
+            "currentLine": -862410546,
+            "nextLine": 125,
+            "columns": 0
+          }
+        },
+        {
+          "file": "C:\\Users\\dimoninbirsk\\source\\thesis\\Riter\\src\\Riter\\ViewModel\\StateHandlers\\SettingsStatePanelHandler.cs",
+          "line": 20,
+          "endLine": 20
+        }
+      ],
+      "projects": [
+        "Riter"
+      ],
+      "message": "The '_isSettingPanelOpened' variable is assigned values twice successively. Perhaps this is a mistake. Check lines: 22, 20.",
+      "favorite": false,
+      "falseAlarm": false
+    }
+  ]
+}

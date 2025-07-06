@@ -1,0 +1,237 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>PVS-Studio HTML Report</title>
+<style type="text/css">
+   TABLE {
+    width: 100%;
+   }
+   #col_group, #col_level, #col_code, #col_cwe, #col_sast {
+    text-align: center;
+    white-space: nowrap;
+    width: 0;
+   }
+   #col_file, #col_info, #col_projects {
+    white-space: nowrap;
+    text-align: left;
+    width: 0;
+   }
+   #col_info {
+    width: 120px;
+   }
+   #col_message {
+    text-align: left;
+   }
+  </style>
+<link rel="stylesheet" href="style.css" />
+<script type="text/javascript" src="script.js"></script>
+<script type="text/javascript" src="toggle-cell.js"></script>
+</head>
+<body>
+  <div class="header">
+    <img src="images/logo.png" alt=""/>
+    <h1>PVS-Studio Analysis Results</h1>
+    <br class="clear">
+  </div>
+  <table cellpadding="0" cellspacing="0" border="0" class="infotopic">
+     <tr><th id="col_info">Date:</th><td>04/16/25 22:07:15</td></tr>
+     <tr><th id="col_info">PVS-Studio Version:</th><td>7.36.91321.1771</td></tr>
+     <tr><th id="col_info">Total Warnings (GA):</th><td>17</td></tr>
+     <tr><th id="col_info">Total Warnings (OWASP):</th><td>1</td></tr>
+     <tr><th id="col_info">Fails/Info:</th><td>1</td></tr>
+  </table>
+  <div class="toggle-box">
+    <label>
+      Show full paths
+    <input class="path-toggle toggle-button" type="checkbox" name="toggle-path" onclick="togglePathView()" />
+    </label>
+  </div>
+  <table cellpadding="0" cellspacing="0" border="0" class="sortable" id="sorter">
+    <tr>
+      <th class="gsort">Group</th>
+      <th class="psort">Projects</th>
+      <th>Location</th>
+      <th class="lsort">Level</th>
+      <th class="vsort">Code</th>
+      <th class="rsort">SAST</th>
+      <th>Message</th>
+    </tr>
+    <tr>
+      <td id="col_group"></td>
+      <td id="col_projects"><p></p></td>
+      <td id="col_file"></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/renewal/">Renew</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Your license will expire in 29 days. Click 'Renew' to learn more or contact us via Feedback form on our website. This is an information message. You can continue using the analyzer with your current license. To hide this message, use the '--disableLicenseExpirationCheck' flag.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p title="SpreadCheetah, SpreadCheetah.SourceGenerator, SpreadCheetah.SourceGenerator.Test, SpreadCheetah.TestHelpers">SpreadCheetah (...)</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Lock.cs_0.html#ln24">Lock.cs:24</a><a target="_blank" class="file-link display-none" href="sources/Lock.cs_0.html#ln24">C:\Users\dimoninbirsk\.nuget\packages\polyfill\7.13.0\contentFiles\cs\netstandard2.0\Polyfill\Lock.cs:24</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3090/">V3090</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Unsafe locking on 'this' instance in class 'Lock'.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p title="SpreadCheetah, SpreadCheetah.SourceGenerator, SpreadCheetah.SourceGenerator.Test">SpreadCheetah (...)</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Polyfill_Memory_EndsWith.cs_1.html#ln35">Polyfill_Memory_EndsWith.cs:35</a><a target="_blank" class="file-link display-none" href="sources/Polyfill_Memory_EndsWith.cs_1.html#ln35">C:\Users\dimoninbirsk\.nuget\packages\polyfill\7.13.0\contentFiles\cs\netstandard2.0\Polyfill\Polyfill_Memory_EndsWith.cs:35</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3111/">V3111</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Checking value of 'last' for null will always return false when generic type is instantiated with a value type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p title="SpreadCheetah, SpreadCheetah.SourceGenerator, SpreadCheetah.SourceGenerator.Test">SpreadCheetah (...)</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Polyfill_Memory_SpanSplitEnumerator.cs_2.html#ln92">Polyfill_Memory_SpanSplitEnumerator.cs:92</a><a target="_blank" class="file-link display-none" href="sources/Polyfill_Memory_SpanSplitEnumerator.cs_2.html#ln92">C:\Users\dimoninbirsk\.nuget\packages\polyfill\7.13.0\contentFiles\cs\netstandard2.0\Polyfill\Polyfill_Memory_SpanSplitEnumerator.cs:92</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3117/">V3117</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Constructor parameter 'treatAsSingleSeparator' is not used.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>SpreadCheetah.SourceGenerator.Test</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Polyfill_Memory_SpanSplitEnumerator.cs_2.html#ln128">Polyfill_Memory_SpanSplitEnumerator.cs:128</a><a target="_blank" class="file-link display-none" href="sources/Polyfill_Memory_SpanSplitEnumerator.cs_2.html#ln128">C:\Users\dimoninbirsk\.nuget\packages\polyfill\7.13.0\contentFiles\cs\netstandard2.0\Polyfill\Polyfill_Memory_SpanSplitEnumerator.cs:128</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3111/">V3111</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Checking value of '_span[i]' for null will always return false when generic type is instantiated with a value type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p title="SpreadCheetah, SpreadCheetah.SourceGenerator, SpreadCheetah.SourceGenerator.Test">SpreadCheetah (...)</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/Polyfill_Memory_StartsWith.cs_3.html#ln28">Polyfill_Memory_StartsWith.cs:28</a><a target="_blank" class="file-link display-none" href="sources/Polyfill_Memory_StartsWith.cs_3.html#ln28">C:\Users\dimoninbirsk\.nuget\packages\polyfill\7.13.0\contentFiles\cs\netstandard2.0\Polyfill\Polyfill_Memory_StartsWith.cs:28</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3111/">V3111</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Checking value of 'target[0]' for null will always return false when generic type is instantiated with a value type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p title="SpreadCheetah, SpreadCheetah.SourceGenerator, SpreadCheetah.SourceGenerator.Test">SpreadCheetah (...)</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/AppendInterpolatedStringHandler.cs_4.html#ln46">AppendInterpolatedStringHandler.cs:46</a><a target="_blank" class="file-link display-none" href="sources/AppendInterpolatedStringHandler.cs_4.html#ln46">C:\Users\dimoninbirsk\.nuget\packages\polyfill\7.13.0\contentFiles\cs\netstandard2.0\Polyfill\StringInterpolation\AppendInterpolatedStringHandler.cs:46</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3117/">V3117</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Constructor parameters 'literalLength', 'formattedCount' are not used.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p title="SpreadCheetah, SpreadCheetah.SourceGenerator, SpreadCheetah.SourceGenerator.Test">SpreadCheetah (...)</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/AppendInterpolatedStringHandler.cs_4.html#ln58">AppendInterpolatedStringHandler.cs:58</a><a target="_blank" class="file-link display-none" href="sources/AppendInterpolatedStringHandler.cs_4.html#ln58">C:\Users\dimoninbirsk\.nuget\packages\polyfill\7.13.0\contentFiles\cs\netstandard2.0\Polyfill\StringInterpolation\AppendInterpolatedStringHandler.cs:58</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3117/">V3117</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Constructor parameters 'literalLength', 'formattedCount' are not used.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p title="SpreadCheetah, SpreadCheetah.SourceGenerator, SpreadCheetah.SourceGenerator.Test">SpreadCheetah (...)</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/DefaultInterpolatedStringHandler.cs_5.html#ln79">DefaultInterpolatedStringHandler.cs:79</a><a target="_blank" class="file-link display-none" href="sources/DefaultInterpolatedStringHandler.cs_5.html#ln79">C:\Users\dimoninbirsk\.nuget\packages\polyfill\7.13.0\contentFiles\cs\netstandard2.0\Polyfill\StringInterpolation\DefaultInterpolatedStringHandler.cs:79</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3117/">V3117</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Constructor parameters 'literalLength', 'formattedCount' are not used.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p title="SpreadCheetah, SpreadCheetah.SourceGenerator, SpreadCheetah.SourceGenerator.Test">SpreadCheetah (...)</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/DefaultInterpolatedStringHandler.cs_5.html#ln264">DefaultInterpolatedStringHandler.cs:264</a><a target="_blank" class="file-link display-none" href="sources/DefaultInterpolatedStringHandler.cs_5.html#ln264">C:\Users\dimoninbirsk\.nuget\packages\polyfill\7.13.0\contentFiles\cs\netstandard2.0\Polyfill\StringInterpolation\DefaultInterpolatedStringHandler.cs:264</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3111/">V3111</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Checking value of 'value' for null will always return false when generic type is instantiated with a value type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p title="SpreadCheetah, SpreadCheetah.SourceGenerator, SpreadCheetah.SourceGenerator.Test">SpreadCheetah (...)</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/DefaultInterpolatedStringHandler.cs_5.html#ln319">DefaultInterpolatedStringHandler.cs:319</a><a target="_blank" class="file-link display-none" href="sources/DefaultInterpolatedStringHandler.cs_5.html#ln319">C:\Users\dimoninbirsk\.nuget\packages\polyfill\7.13.0\contentFiles\cs\netstandard2.0\Polyfill\StringInterpolation\DefaultInterpolatedStringHandler.cs:319</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3111/">V3111</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Checking value of 'value' for null will always return false when generic type is instantiated with a value type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p title="SpreadCheetah, SpreadCheetah.SourceGenerator, SpreadCheetah.SourceGenerator.Test">SpreadCheetah (...)</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/TaskCompletionSource.cs_6.html#ln125">TaskCompletionSource.cs:125</a><a target="_blank" class="file-link display-none" href="sources/TaskCompletionSource.cs_6.html#ln125">C:\Users\dimoninbirsk\.nuget\packages\polyfill\7.13.0\contentFiles\cs\netstandard2.0\Polyfill\TaskCompletionSource.cs:125</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3167/">V3167</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Parameter of the 'CancellationToken' type is not utilized inside a method. Ignoring the parameter can cause application to be unresponsive to cancellation events.</td>
+    </tr>
+    <tr>
+      <td id="col_group">OWASP</td>
+      <td id="col_projects"><p title="SpreadCheetah, SpreadCheetah.SourceGenerator, SpreadCheetah.SourceGenerator.Test">SpreadCheetah (...)</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/UnreachableException.cs_7.html#ln23">UnreachableException.cs:23</a><a target="_blank" class="file-link display-none" href="sources/UnreachableException.cs_7.html#ln23">C:\Users\dimoninbirsk\.nuget\packages\polyfill\7.13.0\contentFiles\cs\netstandard2.0\Polyfill\UnreachableException.cs:23</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v5607/">V5607</td>
+      <td id="col_sast">OWASP-7.4.2</td>
+      <td id="col_message">Exception classes should be publicly accessible.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>SpreadCheetah.SourceGenerator</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/HashCode.cs_8.html#ln60">HashCode.cs:60</a><a target="_blank" class="file-link display-none" href="sources/HashCode.cs_8.html#ln60">C:\Users\dimoninbirsk\source\thesis\spreadcheetah\SpreadCheetah.SourceGenerator\Helpers\HashCode.cs:60</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3056/">V3056</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Consider reviewing the correctness of 'Prime2' item's usage.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>SpreadCheetah.SourceGenerator</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/HashCode.cs_8.html#ln54">HashCode.cs:54</a><a target="_blank" class="file-link display-none" href="sources/HashCode.cs_8.html#ln54">C:\Users\dimoninbirsk\source\thesis\spreadcheetah\SpreadCheetah.SourceGenerator\Helpers\HashCode.cs:54</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3111/">V3111</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Checking value of 'value' for null will always return false when generic type is instantiated with a value type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>SpreadCheetah.Test</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/FormulaGenerator.cs_9.html#ln31">FormulaGenerator.cs:31</a><a target="_blank" class="file-link display-none" href="sources/FormulaGenerator.cs_9.html#ln31">C:\Users\dimoninbirsk\source\thesis\spreadcheetah\SpreadCheetah.Test\Helpers\FormulaGenerator.cs:31</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3057/">V3057</td>
+      <td id="col_sast"></td>
+      <td id="col_message">The '' constructor could receive the '-1' value while non-negative value is expected. Inspect the second argument.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>SpreadCheetah</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/OADate.cs_10.html#ln49">OADate.cs:49</a><a target="_blank" class="file-link display-none" href="sources/OADate.cs_10.html#ln49">C:\Users\dimoninbirsk\source\thesis\spreadcheetah\SpreadCheetah\Helpers\OADate.cs:49</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3022/">V3022</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Expression 'TryFormatWithFraction(days, millisAfterMidnight, destination, out bytesWritten)' is always true.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>SpreadCheetah</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/OADate.cs_10.html#ln78">OADate.cs:78</a><a target="_blank" class="file-link display-none" href="sources/OADate.cs_10.html#ln78">C:\Users\dimoninbirsk\source\thesis\spreadcheetah\SpreadCheetah\Helpers\OADate.cs:78</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3009/">V3009</td>
+      <td id="col_sast"></td>
+      <td id="col_message">It's odd that this method always returns one and the same value of 'true'.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_projects"><p>SpreadCheetah</p></td>
+      <td id="col_file"><a target="_blank" class="file-link" href="sources/SpreadsheetBuffer.cs_11.html#ln245">SpreadsheetBuffer.cs:245</a><a target="_blank" class="file-link display-none" href="sources/SpreadsheetBuffer.cs_11.html#ln245">C:\Users\dimoninbirsk\source\thesis\spreadcheetah\SpreadCheetah\SpreadsheetBuffer.cs:245</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v3111/">V3111</td>
+      <td id="col_sast"></td>
+      <td id="col_message">Checking value of 'value' for null will always return false when generic type is instantiated with a value type.</td>
+    </tr>
+  </table>
+<script type="text/javascript">
+var sorter=new table.sorter("sorter");
+sorter.init("sorter",0);
+</script>
+</body>
+</html>

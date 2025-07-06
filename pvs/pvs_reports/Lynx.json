@@ -1,0 +1,162 @@
+{
+  "Renew": {
+    "code": "Renew",
+    "cwe": 0,
+    "sastId": null,
+    "level": 1,
+    "count": 1,
+    "example": "Your license will expire in 29 days. Click 'Renew' to learn more or contact us via Feedback form on our website. This is an information message. You can continue using the analyzer with your current license. To hide this message, use the '--disableLicenseExpirationCheck' flag."
+  },
+  "V3120": {
+    "code": "V3120",
+    "cwe": 835,
+    "sastId": null,
+    "level": 1,
+    "count": 20,
+    "example": "Potentially infinite loop. The 'pawns' variable from the loop exit condition does not change its value between iterations."
+  },
+  "V3150": {
+    "code": "V3150",
+    "cwe": 0,
+    "sastId": null,
+    "level": 2,
+    "count": 28,
+    "example": "Loop break conditions do not depend on the number of iterations."
+  },
+  "V3060": {
+    "code": "V3060",
+    "cwe": 682,
+    "sastId": null,
+    "level": 3,
+    "count": 8,
+    "example": "A value of variable is not modified. Consider inspecting the expression. It is possible that other value should be present instead of '0'."
+  },
+  "V3155": {
+    "code": "V3155",
+    "cwe": 682,
+    "sastId": null,
+    "level": 3,
+    "count": 2,
+    "example": "The expression is incorrect or it can be simplified. The 'SetFileRankMask(-1, rank)' expression always evaluates to '0'."
+  },
+  "V3106": {
+    "code": "V3106",
+    "cwe": 125,
+    "sastId": null,
+    "level": 2,
+    "count": 2,
+    "example": "Possibly index is out of bound. The value of 'promotedPiece' index could reach 15."
+  },
+  "V3202": {
+    "code": "V3202",
+    "cwe": 561,
+    "sastId": null,
+    "level": 2,
+    "count": 1,
+    "example": "Unreachable code detected. The 'case' value 'TablebaseEvaluationCategory.Unknown' is out of range of the match expression 'tablebaseEval.Category'."
+  },
+  "V3073": {
+    "code": "V3073",
+    "cwe": 0,
+    "sastId": null,
+    "level": 2,
+    "count": 1,
+    "example": "Not all IDisposable members are properly disposed. Call 'Dispose' when disposing 'Game' class. Inspect: CurrentPosition, PositionBeforeLastSearch."
+  },
+  "V3002": {
+    "code": "V3002",
+    "cwe": 0,
+    "sastId": null,
+    "level": 2,
+    "count": 2,
+    "example": "The switch statement does not cover all values of the 'SpecialMoveType' enum: DoublePawnPush."
+  },
+  "V3072": {
+    "code": "V3072",
+    "cwe": 0,
+    "sastId": null,
+    "level": 2,
+    "count": 6,
+    "example": "The 'Searcher' class containing IDisposable members does not itself implement IDisposable. Inspect: _mainEngine."
+  },
+  "V3022": {
+    "code": "V3022",
+    "cwe": 571,
+    "sastId": null,
+    "level": 1,
+    "count": 33,
+    "example": "Expression is always true."
+  },
+  "V3063": {
+    "code": "V3063",
+    "cwe": 571,
+    "sastId": null,
+    "level": 2,
+    "count": 1,
+    "example": "A part of conditional expression is always true if it is evaluated: iterations > -EvaluationConstants.PositiveCheckmateDetectionLimit."
+  },
+  "V3010": {
+    "code": "V3010",
+    "cwe": 252,
+    "sastId": null,
+    "level": 1,
+    "count": 12,
+    "example": "The return value of function 'EncodeMoveBool' is required to be utilized."
+  },
+  "V3114": {
+    "code": "V3114",
+    "cwe": 404,
+    "sastId": null,
+    "level": 2,
+    "count": 28,
+    "example": "IDisposable object 'position' is not disposed before method returns."
+  },
+  "V3117": {
+    "code": "V3117",
+    "cwe": 0,
+    "sastId": null,
+    "level": 2,
+    "count": 7,
+    "example": "Constructor parameter 'calculateFen' is not used."
+  },
+  "V3013": {
+    "code": "V3013",
+    "cwe": 0,
+    "sastId": null,
+    "level": 3,
+    "count": 2,
+    "example": "It is odd that the body of 'AddMutableByType' function is fully equivalent to the body of 'AddMutableByRef' function (97, line 98)."
+  },
+  "V3198": {
+    "code": "V3198",
+    "cwe": 1164,
+    "sastId": null,
+    "level": 3,
+    "count": 2,
+    "example": "The 'occupancy' variable is assigned the '0' value that it already holds."
+  },
+  "V3001": {
+    "code": "V3001",
+    "cwe": 0,
+    "sastId": null,
+    "level": 1,
+    "count": 1,
+    "example": "There are identical sub-expressions 'zobristTable[piece, targetSquare]' to the left and to the right of the '^' operator."
+  },
+  "V3134": {
+    "code": "V3134",
+    "cwe": 128,
+    "sastId": null,
+    "level": 2,
+    "count": 2,
+    "example": "Shift by a possibly negative number -1 will result in shifting the first operand by 6 low-order bits of the second operand."
+  },
+  "V5621": {
+    "code": "V5621",
+    "cwe": 535,
+    "sastId": "OWASP-8.3.5",
+    "level": 3,
+    "count": 4,
+    "example": "Error message contains potentially sensitive data, in 'errorMessage', that may be exposed."
+  }
+}

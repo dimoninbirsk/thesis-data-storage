@@ -1,0 +1,145 @@
+PVS-Studio Report: SpreadCheetah
+================================================================================
+
+┌─[ID: V3111]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 3
+└─ Occurrences: 7
+
+Common pattern:
+Checking value of ' ' for null will always return false when generic type is instantiated with a value type.
+
+Examples:
+• Checking value of '_span[i]' for null will always return false when generic type is instantiated with a value type.
+• Checking value of 'last' for null will always return false when generic type is instantiated with a value type.
+• Checking value of 'target[0]' for null will always return false when generic type is instantiated with a value type.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3117]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 2
+└─ Occurrences: 4
+
+Common pattern:
+Constructor parameter  not used.
+
+Examples:
+• Constructor parameter 'treatAsSingleSeparator' is not used.
+• Constructor parameters 'literalLength', 'formattedCount' are not used.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: Renew]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 1
+└─ Occurrences: 1
+
+Common pattern:
+Your license will expire in 29 days. Click 'Renew' to learn more or contact us via Feedback form on our website. This is an information message. You can continue using the analyzer with your current license. To hide this message, use the '--disableLicenseExpirationCheck' flag.
+
+Message:
+• Your license will expire in 29 days. Click 'Renew' to learn more or contact us via Feedback form on our website. This is an information message. You can continue using the analyzer with your current license. To hide this message, use the '--disableLicenseExpirationCheck' flag.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3090]
+├─ CWE: 833
+├─ SAST: None
+├─ Level: 3
+└─ Occurrences: 1
+
+Common pattern:
+Unsafe locking on 'this' instance in class 'Lock'.
+
+Message:
+• Unsafe locking on 'this' instance in class 'Lock'.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3167]
+├─ CWE: 0
+├─ SAST: None
+├─ Level: 3
+└─ Occurrences: 1
+
+Common pattern:
+Parameter of the 'CancellationToken' type is not utilized inside a method. Ignoring the parameter can cause application to be unresponsive to cancellation events.
+
+Message:
+• Parameter of the 'CancellationToken' type is not utilized inside a method. Ignoring the parameter can cause application to be unresponsive to cancellation events.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V5607]
+├─ CWE: 544
+├─ SAST: OWASP-7.4.2
+├─ Level: 3
+└─ Occurrences: 1
+
+Common pattern:
+Exception classes should be publicly accessible.
+
+Message:
+• Exception classes should be publicly accessible.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3022]
+├─ CWE: 571
+├─ SAST: None
+├─ Level: 1
+└─ Occurrences: 1
+
+Common pattern:
+Expression 'TryFormatWithFraction(days, millisAfterMidnight, destination, out bytesWritten)' is always true.
+
+Message:
+• Expression 'TryFormatWithFraction(days, millisAfterMidnight, destination, out bytesWritten)' is always true.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3009]
+├─ CWE: 393
+├─ SAST: None
+├─ Level: 2
+└─ Occurrences: 1
+
+Common pattern:
+It's odd that this method always returns one and the same value of 'true'.
+
+Message:
+• It's odd that this method always returns one and the same value of 'true'.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3057]
+├─ CWE: 628
+├─ SAST: None
+├─ Level: 2
+└─ Occurrences: 1
+
+Common pattern:
+The '' constructor could receive the '-1' value while non-negative value is expected. Inspect the second argument.
+
+Message:
+• The '' constructor could receive the '-1' value while non-negative value is expected. Inspect the second argument.
+
+────────────────────────────────────────────────────────────────────────────────
+
+┌─[ID: V3056]
+├─ CWE: 682
+├─ SAST: None
+├─ Level: 3
+└─ Occurrences: 1
+
+Common pattern:
+Consider reviewing the correctness of 'Prime2' item's usage.
+
+Message:
+• Consider reviewing the correctness of 'Prime2' item's usage.
+
+────────────────────────────────────────────────────────────────────────────────

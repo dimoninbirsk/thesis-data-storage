@@ -1,0 +1,12 @@
+Issue Code,Count,CWE,Description
+V3024,30,682,An odd precise comparison: [variable part]
+V5609,5,22,Possible path traversal vulnerability. Potentially tainted data from the 'path' variable is used as path. (+ 2 variants)
+V3100,3,476,NullReferenceException is possible. Unhandled exceptions in destructor lead to termination of runtime. (+ 1 variants)
+V3041,2,682,The expression was implicitly cast from 'int' type to 'float' type. Consider utilizing an explicit type cast to avoid the loss of a fractional part. An example: double A = (double)(X) / Y;.
+V3010,1,252,The return value of function 'Advance' is required to be utilized.
+V3063,1,570,A part of conditional expression is always false if it is evaluated: other.Controllers[i].Connected.
+V5606,1,1069,An empty exception handler. Silent suppression of exceptions may hide the presence of bugs or vulnerabilities.
+V3072,1,,"The 'Page' class containing IDisposable members does not itself implement IDisposable. Inspect: image, atlas."
+V3073,1,,Not all IDisposable members are properly disposed. Call 'Dispose' when disposing 'Batcher' class. Inspect: mesh.
+V3139,1,,Two or more case-branches perform the same actions.
+V3109,1,,The 'interval' sub-expression is present on both sides of the operator. The expression is incorrect or it can be simplified.

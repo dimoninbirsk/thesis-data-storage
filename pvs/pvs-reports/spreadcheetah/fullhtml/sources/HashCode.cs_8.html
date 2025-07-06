@@ -1,0 +1,234 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII" />
+  <title>HashCode.cs</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <script src="../jquery-3.5.1.min.js"></script>
+</head>
+<body>
+<pre><code class = "cs">
+<a name="ln1">using System.ComponentModel;</a>
+<a name="ln2">using System.Diagnostics.CodeAnalysis;</a>
+<a name="ln3">using System.Runtime.CompilerServices;</a>
+<a name="ln4">using System.Runtime.InteropServices;</a>
+<a name="ln5">using System.Security.Cryptography;</a>
+<a name="ln6"> </a>
+<a name="ln7">namespace SpreadCheetah.SourceGenerator.Helpers;</a>
+<a name="ln8"> </a>
+<a name="ln9">/// &lt;summary&gt;</a>
+<a name="ln10">/// Based on the implementation from:</a>
+<a name="ln11">/// https://github.com/CommunityToolkit/dotnet/blob/7b53ae23dfc6a7fb12d0fc058b89b6e948f48448/src/CommunityToolkit.Mvvm.SourceGenerators/Helpers/HashCode.cs</a>
+<a name="ln12">/// &lt;/summary&gt;</a>
+<a name="ln13">[StructLayout(LayoutKind.Auto)]</a>
+<a name="ln14">[ExcludeFromCodeCoverage]</a>
+<a name="ln15">#pragma warning disable CA1066 // Implement IEquatable when overriding Object.Equals</a>
+<a name="ln16">internal struct HashCode</a>
+<a name="ln17">#pragma warning restore CA1066 // Implement IEquatable when overriding Object.Equals</a>
+<a name="ln18">{</a>
+<a name="ln19">    private const uint Prime1 = 2654435761U;</a>
+<a name="ln20">    private const uint Prime2 = 2246822519U;</a>
+<a name="ln21">    private const uint Prime3 = 3266489917U;</a>
+<a name="ln22">    private const uint Prime4 = 668265263U;</a>
+<a name="ln23">    private const uint Prime5 = 374761393U;</a>
+<a name="ln24"> </a>
+<a name="ln25">    private static readonly uint seed = GenerateGlobalSeed();</a>
+<a name="ln26"> </a>
+<a name="ln27">    private uint v1, v2, v3, v4;</a>
+<a name="ln28">    private uint queue1, queue2, queue3;</a>
+<a name="ln29">    private uint length;</a>
+<a name="ln30"> </a>
+<a name="ln31">    /// &lt;summary&gt;</a>
+<a name="ln32">    /// Initializes the default seed.</a>
+<a name="ln33">    /// &lt;/summary&gt;</a>
+<a name="ln34">    /// &lt;returns&gt;A random seed.&lt;/returns&gt;</a>
+<a name="ln35">    private static uint GenerateGlobalSeed()</a>
+<a name="ln36">    {</a>
+<a name="ln37">        byte[] bytes = new byte[4];</a>
+<a name="ln38"> </a>
+<a name="ln39">        using (RandomNumberGenerator generator = RandomNumberGenerator.Create())</a>
+<a name="ln40">        {</a>
+<a name="ln41">            generator.GetBytes(bytes);</a>
+<a name="ln42">        }</a>
+<a name="ln43"> </a>
+<a name="ln44">        return BitConverter.ToUInt32(bytes, 0);</a>
+<a name="ln45">    }</a>
+<a name="ln46"> </a>
+<a name="ln47">    /// &lt;summary&gt;</a>
+<a name="ln48">    /// Adds a single value to the current hash.</a>
+<a name="ln49">    /// &lt;/summary&gt;</a>
+<a name="ln50">    /// &lt;typeparam name=&quot;T&quot;&gt;The type of the value to add into the hash code.&lt;/typeparam&gt;</a>
+<a name="ln51">    /// &lt;param name=&quot;value&quot;&gt;The value to add into the hash code.&lt;/param&gt;</a>
+<a name="ln52">    public void Add&lt;T&gt;(T value)</a>
+<a name="ln53">    {</a>
+<a name="ln54">        Add(value?.GetHashCode() ?? 0);</a>
+<a name="ln55">    }</a>
+<a name="ln56"> </a>
+<a name="ln57">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln58">    private static void Initialize(out uint v1, out uint v2, out uint v3, out uint v4)</a>
+<a name="ln59">    {</a>
+<a name="ln60">        v1 = seed + Prime1 + Prime2;</a>
+<a name="ln61">        v2 = seed + Prime2;</a>
+<a name="ln62">        v3 = seed;</a>
+<a name="ln63">        v4 = seed - Prime1;</a>
+<a name="ln64">    }</a>
+<a name="ln65"> </a>
+<a name="ln66">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln67">    private static uint Round(uint hash, uint input)</a>
+<a name="ln68">    {</a>
+<a name="ln69">        return RotateLeft(hash + input * Prime2, 13) * Prime1;</a>
+<a name="ln70">    }</a>
+<a name="ln71"> </a>
+<a name="ln72">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln73">    private static uint QueueRound(uint hash, uint queuedValue)</a>
+<a name="ln74">    {</a>
+<a name="ln75">        return RotateLeft(hash + queuedValue * Prime3, 17) * Prime4;</a>
+<a name="ln76">    }</a>
+<a name="ln77"> </a>
+<a name="ln78">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln79">    private static uint MixState(uint v1, uint v2, uint v3, uint v4)</a>
+<a name="ln80">    {</a>
+<a name="ln81">        return RotateLeft(v1, 1) + RotateLeft(v2, 7) + RotateLeft(v3, 12) + RotateLeft(v4, 18);</a>
+<a name="ln82">    }</a>
+<a name="ln83"> </a>
+<a name="ln84">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln85">    private static uint MixEmptyState()</a>
+<a name="ln86">    {</a>
+<a name="ln87">        return seed + Prime5;</a>
+<a name="ln88">    }</a>
+<a name="ln89"> </a>
+<a name="ln90">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln91">    private static uint MixFinal(uint hash)</a>
+<a name="ln92">    {</a>
+<a name="ln93">        hash ^= hash &gt;&gt; 15;</a>
+<a name="ln94">        hash *= Prime2;</a>
+<a name="ln95">        hash ^= hash &gt;&gt; 13;</a>
+<a name="ln96">        hash *= Prime3;</a>
+<a name="ln97">        hash ^= hash &gt;&gt; 16;</a>
+<a name="ln98"> </a>
+<a name="ln99">        return hash;</a>
+<a name="ln100">    }</a>
+<a name="ln101"> </a>
+<a name="ln102">    private void Add(int value)</a>
+<a name="ln103">    {</a>
+<a name="ln104">        uint val = (uint)value;</a>
+<a name="ln105">        uint previousLength = length++;</a>
+<a name="ln106">        uint position = previousLength % 4;</a>
+<a name="ln107"> </a>
+<a name="ln108">        if (position == 0)</a>
+<a name="ln109">        {</a>
+<a name="ln110">            queue1 = val;</a>
+<a name="ln111">        }</a>
+<a name="ln112">        else if (position == 1)</a>
+<a name="ln113">        {</a>
+<a name="ln114">            queue2 = val;</a>
+<a name="ln115">        }</a>
+<a name="ln116">        else if (position == 2)</a>
+<a name="ln117">        {</a>
+<a name="ln118">            queue3 = val;</a>
+<a name="ln119">        }</a>
+<a name="ln120">        else</a>
+<a name="ln121">        {</a>
+<a name="ln122">            if (previousLength == 3)</a>
+<a name="ln123">            {</a>
+<a name="ln124">                Initialize(out v1, out v2, out v3, out v4);</a>
+<a name="ln125">            }</a>
+<a name="ln126"> </a>
+<a name="ln127">            v1 = Round(v1, queue1);</a>
+<a name="ln128">            v2 = Round(v2, queue2);</a>
+<a name="ln129">            v3 = Round(v3, queue3);</a>
+<a name="ln130">            v4 = Round(v4, val);</a>
+<a name="ln131">        }</a>
+<a name="ln132">    }</a>
+<a name="ln133"> </a>
+<a name="ln134">    /// &lt;summary&gt;</a>
+<a name="ln135">    /// Gets the resulting hashcode from the current instance.</a>
+<a name="ln136">    /// &lt;/summary&gt;</a>
+<a name="ln137">    /// &lt;returns&gt;The resulting hashcode from the current instance.&lt;/returns&gt;</a>
+<a name="ln138">    public readonly int ToHashCode()</a>
+<a name="ln139">    {</a>
+<a name="ln140">        uint len = this.length;</a>
+<a name="ln141">        uint position = len % 4;</a>
+<a name="ln142">        uint hash = len &lt; 4 ? MixEmptyState() : MixState(v1, v2, v3, v4);</a>
+<a name="ln143"> </a>
+<a name="ln144">        hash += len * 4;</a>
+<a name="ln145"> </a>
+<a name="ln146">        if (position &gt; 0)</a>
+<a name="ln147">        {</a>
+<a name="ln148">            hash = QueueRound(hash, queue1);</a>
+<a name="ln149"> </a>
+<a name="ln150">            if (position &gt; 1)</a>
+<a name="ln151">            {</a>
+<a name="ln152">                hash = QueueRound(hash, queue2);</a>
+<a name="ln153"> </a>
+<a name="ln154">                if (position &gt; 2)</a>
+<a name="ln155">                {</a>
+<a name="ln156">                    hash = QueueRound(hash, queue3);</a>
+<a name="ln157">                }</a>
+<a name="ln158">            }</a>
+<a name="ln159">        }</a>
+<a name="ln160"> </a>
+<a name="ln161">        hash = MixFinal(hash);</a>
+<a name="ln162"> </a>
+<a name="ln163">        return (int)hash;</a>
+<a name="ln164">    }</a>
+<a name="ln165"> </a>
+<a name="ln166">#pragma warning disable CA1065 // Do not raise exceptions in unexpected locations</a>
+<a name="ln167">#pragma warning disable CS0809 // Obsolete member overrides non-obsolete member</a>
+<a name="ln168">#pragma warning disable S3877 // Exceptions should not be thrown from unexpected methods</a>
+<a name="ln169">    [Obsolete(&quot;HashCode is a mutable struct and should not be compared with other HashCodes. Use ToHashCode to retrieve the computed hash code.&quot;, error: true)]</a>
+<a name="ln170">    [EditorBrowsable(EditorBrowsableState.Never)]</a>
+<a name="ln171">    public override readonly int GetHashCode() =&gt; throw new NotSupportedException();</a>
+<a name="ln172"> </a>
+<a name="ln173">    [Obsolete(&quot;HashCode is a mutable struct and should not be compared with other HashCodes.&quot;, error: true)]</a>
+<a name="ln174">    [EditorBrowsable(EditorBrowsableState.Never)]</a>
+<a name="ln175">    public override readonly bool Equals(object? obj) =&gt; throw new NotSupportedException();</a>
+<a name="ln176">#pragma warning restore CA1065 // Do not raise exceptions in unexpected locations</a>
+<a name="ln177">#pragma warning restore CS0809 // Obsolete member overrides non-obsolete member</a>
+<a name="ln178">#pragma warning restore S3877 // Exceptions should not be thrown from unexpected methods</a>
+<a name="ln179"> </a>
+<a name="ln180">    /// &lt;summary&gt;</a>
+<a name="ln181">    /// Rotates the specified value left by the specified number of bits.</a>
+<a name="ln182">    /// Similar in behavior to the x86 instruction ROL.</a>
+<a name="ln183">    /// &lt;/summary&gt;</a>
+<a name="ln184">    /// &lt;param name=&quot;value&quot;&gt;The value to rotate.&lt;/param&gt;</a>
+<a name="ln185">    /// &lt;param name=&quot;offset&quot;&gt;The number of bits to rotate by.</a>
+<a name="ln186">    /// Any value outside the range [0..31] is treated as congruent mod 32.&lt;/param&gt;</a>
+<a name="ln187">    /// &lt;returns&gt;The rotated value.&lt;/returns&gt;</a>
+<a name="ln188">    [MethodImpl(MethodImplOptions.AggressiveInlining)]</a>
+<a name="ln189">    private static uint RotateLeft(uint value, int offset)</a>
+<a name="ln190">    {</a>
+<a name="ln191">        return (value &lt;&lt; offset) | (value &gt;&gt; (32 - offset));</a>
+<a name="ln192">    }</a>
+<a name="ln193">}</a>
+</code></pre>
+<div class="balloon" rel="60"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3056/" target="_blank">V3056</a> Consider reviewing the correctness of 'Prime2' item's usage.</p></div>
+<div class="balloon" rel="54"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v3111/" target="_blank">V3111</a> Checking value of 'value' for null will always return false when generic type is instantiated with a value type.</p></div>
+<link rel="stylesheet" href="highlight.css">
+<script src="highlight.pack.js"></script>
+<script src="highlightjs-line-numbers.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script>hljs.initLineNumbersOnLoad();</script>
+<script>
+  $(document).ready(function() {
+      $('.balloon').each(function () {
+          var bl = $(this);
+          var line = bl.attr('rel');
+          var text = $('a[name="ln'+line+'"]').text();
+
+          var space_count = 0;
+          for(var i = 0; i<text.length; i++){
+              var char = text[i];
+              if((char !== ' ')&&(char !== '\t'))break;
+              if(char === '\t')space_count++;
+              space_count++;
+          }
+
+          bl.css('margin-left', space_count*8);
+          $('a[name="ln'+line+'"]').after(bl);
+      });
+
+      window.location = window.location;
+  });
+</script>
+</body>
+</html>

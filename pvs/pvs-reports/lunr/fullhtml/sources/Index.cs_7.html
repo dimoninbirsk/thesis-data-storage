@@ -1,0 +1,667 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>Index.cs</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <script src="../jquery-3.5.1.min.js"></script>
+</head>
+<body>
+<pre><code class = "cs">
+<a name="ln1">﻿using Lunr.Serialization;</a>
+<a name="ln2">using System;</a>
+<a name="ln3">using System.Collections.Generic;</a>
+<a name="ln4">using System.Globalization;</a>
+<a name="ln5">using System.IO;</a>
+<a name="ln6">using System.Linq;</a>
+<a name="ln7">using System.Runtime.CompilerServices;</a>
+<a name="ln8">using System.Text.Json;</a>
+<a name="ln9">using System.Text.Json.Serialization;</a>
+<a name="ln10">using System.Threading;</a>
+<a name="ln11">using System.Threading.Tasks;</a>
+<a name="ln12"> </a>
+<a name="ln13">namespace Lunr</a>
+<a name="ln14">{</a>
+<a name="ln15">    /// &lt;summary&gt;</a>
+<a name="ln16">    /// An index contains the built index of all documents and provides a query interface</a>
+<a name="ln17">    /// to the index.</a>
+<a name="ln18">    ///</a>
+<a name="ln19">    /// Instances of `Index` can't be created, instead `Builder` should be used to construct new indexes,</a>
+<a name="ln20">    /// or `Index.Load` should be used to load previously built and serialized indexes.</a>
+<a name="ln21">    /// &lt;/summary&gt;</a>
+<a name="ln22">    [JsonConverter(typeof(IndexJsonConverter))]</a>
+<a name="ln23">    public class Index</a>
+<a name="ln24">    {</a>
+<a name="ln25">        /// &lt;summary&gt;</a>
+<a name="ln26">        /// Constructs a new index.</a>
+<a name="ln27">        /// &lt;/summary&gt;</a>
+<a name="ln28">        /// &lt;param name=&quot;invertedIndex&quot;&gt;An index of term/field to document reference.&lt;/param&gt;</a>
+<a name="ln29">        /// &lt;param name=&quot;fieldVectors&quot;&gt;Field vectors&lt;/param&gt;</a>
+<a name="ln30">        /// &lt;param name=&quot;tokenSet&quot;&gt;A set of all corpus tokens.&lt;/param&gt;</a>
+<a name="ln31">        /// &lt;param name=&quot;fields&quot;&gt;The names of indexed document fields.&lt;/param&gt;</a>
+<a name="ln32">        /// &lt;param name=&quot;pipeline&quot;&gt;The pipeline to use for search terms.&lt;/param&gt;</a>
+<a name="ln33">        internal Index(</a>
+<a name="ln34">            InvertedIndex invertedIndex,</a>
+<a name="ln35">            IDictionary&lt;string, Vector&gt; fieldVectors,</a>
+<a name="ln36">            TokenSet tokenSet,</a>
+<a name="ln37">            IEnumerable&lt;string&gt; fields,</a>
+<a name="ln38">            Pipeline pipeline)</a>
+<a name="ln39">        {</a>
+<a name="ln40">            InvertedIndex = invertedIndex;</a>
+<a name="ln41">            FieldVectors = fieldVectors;</a>
+<a name="ln42">            TokenSet = tokenSet;</a>
+<a name="ln43">            Fields = fields;</a>
+<a name="ln44">            Pipeline = pipeline;</a>
+<a name="ln45">        }</a>
+<a name="ln46"> </a>
+<a name="ln47">        /// &lt;summary&gt;</a>
+<a name="ln48">        /// A convenience function for configuring and constructing</a>
+<a name="ln49">        /// a new lunr Index.</a>
+<a name="ln50">        /// </a>
+<a name="ln51">        /// A `Builder` instance is created and the pipeline setup</a>
+<a name="ln52">        /// with a trimmer, stop word filter and stemmer.</a>
+<a name="ln53">        /// </a>
+<a name="ln54">        /// This builder object is yielded to the configuration function</a>
+<a name="ln55">        /// that is passed as a parameter, allowing the list of fields</a>
+<a name="ln56">        /// and other builder parameters to be customized.</a>
+<a name="ln57">        /// </a>
+<a name="ln58">        /// All documents _must_ be added within the passed config function.</a>
+<a name="ln59">        /// &lt;/summary&gt;</a>
+<a name="ln60">        /// &lt;example&gt;</a>
+<a name="ln61">        /// var idx = Index.Build(async builder =&gt;</a>
+<a name="ln62">        /// {</a>
+<a name="ln63">        ///      builder</a>
+<a name="ln64">        ///         .AddField(&quot;title&quot;)</a>
+<a name="ln65">        ///         .AddField(&quot;body&quot;);</a>
+<a name="ln66">        /// </a>
+<a name="ln67">        ///      builder.ReferenceField = &quot;id&quot;;</a>
+<a name="ln68">        /// </a>
+<a name="ln69">        ///      foreach(Document doc in documents)</a>
+<a name="ln70">        ///      {</a>
+<a name="ln71">        ///          builder.add(doc);</a>
+<a name="ln72">        ///      }</a>
+<a name="ln73">        /// });</a>
+<a name="ln74">        /// &lt;/example&gt;</a>
+<a name="ln75">        /// &lt;param name=&quot;trimmer&quot;&gt;An optional trimmer.&lt;/param&gt;</a>
+<a name="ln76">        /// &lt;param name=&quot;stopWordFilter&quot;&gt;An optional stop word filter. Default is English.&lt;/param&gt;</a>
+<a name="ln77">        /// &lt;param name=&quot;stemmer&quot;&gt;An optional stemmer. Default is English.&lt;/param&gt;</a>
+<a name="ln78">        /// &lt;param name=&quot;config&quot;&gt;A Configuration function.&lt;/param&gt;</a>
+<a name="ln79">        /// &lt;param name=&quot;tokenizer&quot;&gt;An optional tokenizer.&lt;/param&gt;</a>
+<a name="ln80">        /// &lt;param name=&quot;registry&quot;&gt;An optional pipeline function registry. The default has the trimmer, stop word filter and stemmer.&lt;/param&gt;</a>
+<a name="ln81">        /// &lt;param name=&quot;indexingPipeline&quot;&gt;An optional indexing pipeline. The default has the trimmer, stop word filter and stemmer.&lt;/param&gt;</a>
+<a name="ln82">        /// &lt;param name=&quot;searchPipeline&quot;&gt;An optional search pipeline. The default has the stemmer.&lt;/param&gt;</a>
+<a name="ln83">        /// &lt;param name=&quot;fields&quot;&gt;An optional list of fields.&lt;/param&gt;</a>
+<a name="ln84">        /// &lt;returns&gt;The index.&lt;/returns&gt;</a>
+<a name="ln85">        public static async ValueTask&lt;Index&gt; Build(</a>
+<a name="ln86">            Func&lt;Builder, Task&gt;? config = null,</a>
+<a name="ln87">            TrimmerBase? trimmer = null,</a>
+<a name="ln88">            StopWordFilterBase? stopWordFilter = null,</a>
+<a name="ln89">            StemmerBase? stemmer = null,</a>
+<a name="ln90">            Tokenizer? tokenizer = null,</a>
+<a name="ln91">            PipelineFunctionRegistry? registry = null,</a>
+<a name="ln92">            IEnumerable&lt;string&gt;? indexingPipeline = null,</a>
+<a name="ln93">            IEnumerable&lt;string&gt;? searchPipeline = null,</a>
+<a name="ln94">            params Field[] fields)</a>
+<a name="ln95">        {</a>
+<a name="ln96">            Pipeline.Function trimmerFunction = (trimmer ?? new Trimmer()).FilterFunction;</a>
+<a name="ln97">            Pipeline.Function filterFunction = (stopWordFilter ?? new EnglishStopWordFilter()).FilterFunction;</a>
+<a name="ln98">            Pipeline.Function stemmerFunction = (stemmer ?? new EnglishStemmer()).StemmerFunction;</a>
+<a name="ln99">            registry ??= new PipelineFunctionRegistry();</a>
+<a name="ln100">            registry.Add(&quot;trimmer&quot;, trimmerFunction);</a>
+<a name="ln101">            registry.Add(&quot;stopWordFilter&quot;, filterFunction);</a>
+<a name="ln102">            registry.Add(&quot;stemmer&quot;, stemmerFunction);</a>
+<a name="ln103"> </a>
+<a name="ln104">            Pipeline idxPipeline = indexingPipeline is null ?</a>
+<a name="ln105">                new Pipeline(registry, trimmerFunction, filterFunction, stemmerFunction) :</a>
+<a name="ln106">                new Pipeline(registry, indexingPipeline.Select(function =&gt; registry[function]).ToArray());</a>
+<a name="ln107">            Pipeline srchPipeline = searchPipeline is null ?</a>
+<a name="ln108">                new Pipeline(registry, stemmerFunction) :</a>
+<a name="ln109">                new Pipeline(registry, searchPipeline.Select(function =&gt; registry[function]).ToArray());</a>
+<a name="ln110"> </a>
+<a name="ln111">            var builder = new Builder(</a>
+<a name="ln112">                indexingPipeline: idxPipeline,</a>
+<a name="ln113">                searchPipeline: srchPipeline,</a>
+<a name="ln114">                tokenizer: tokenizer ?? new Tokenizer(),</a>
+<a name="ln115">                fields: fields);</a>
+<a name="ln116"> </a>
+<a name="ln117">            if (config != null)</a>
+<a name="ln118">            {</a>
+<a name="ln119">                await config(builder).ConfigureAwait(false);</a>
+<a name="ln120">            }</a>
+<a name="ln121"> </a>
+<a name="ln122">            return builder.Build();</a>
+<a name="ln123">        }</a>
+<a name="ln124"> </a>
+<a name="ln125">        /// &lt;summary&gt;</a>
+<a name="ln126">        /// An index of term/field to document reference.</a>
+<a name="ln127">        /// &lt;/summary&gt;</a>
+<a name="ln128">        public InvertedIndex InvertedIndex { get; }</a>
+<a name="ln129"> </a>
+<a name="ln130">        /// &lt;summary&gt;</a>
+<a name="ln131">        /// Field vectors.</a>
+<a name="ln132">        /// &lt;/summary&gt;</a>
+<a name="ln133">        public IDictionary&lt;string, Vector&gt; FieldVectors { get; }</a>
+<a name="ln134"> </a>
+<a name="ln135">        /// &lt;summary&gt;</a>
+<a name="ln136">        /// A set of all corpus tokens.</a>
+<a name="ln137">        /// &lt;/summary&gt;</a>
+<a name="ln138">        public TokenSet TokenSet { get; }</a>
+<a name="ln139"> </a>
+<a name="ln140">        /// &lt;summary&gt;</a>
+<a name="ln141">        /// The names of indexed document fields.</a>
+<a name="ln142">        /// &lt;/summary&gt;</a>
+<a name="ln143">        public IEnumerable&lt;string&gt; Fields { get; }</a>
+<a name="ln144"> </a>
+<a name="ln145">        /// &lt;summary&gt;</a>
+<a name="ln146">        /// The pipeline to use for search terms.</a>
+<a name="ln147">        /// &lt;/summary&gt;</a>
+<a name="ln148">        public Pipeline Pipeline { get; }</a>
+<a name="ln149"> </a>
+<a name="ln150">        /// &lt;summary&gt;</a>
+<a name="ln151">        /// Performs a search against the index using lunr query syntax.</a>
+<a name="ln152">        ///</a>
+<a name="ln153">        /// Results will be returned sorted by their score, the most relevant results</a>
+<a name="ln154">        /// will be returned first.  For details on how the score is calculated, please see</a>
+<a name="ln155">        /// the [scoring guide](https://lunrjs.com/guides/searching.html#scoring|guide).</a>
+<a name="ln156">        ///</a>
+<a name="ln157">        /// For more programmatic querying use `Index.Query`.</a>
+<a name="ln158">        /// &lt;/summary&gt;</a>
+<a name="ln159">        /// &lt;param name=&quot;queryString&quot;&gt;A string containing a lunr query.&lt;/param&gt;</a>
+<a name="ln160">        /// &lt;param name=&quot;culture&quot;&gt;The culture to use to parse the query.&lt;/param&gt;</a>
+<a name="ln161">        /// &lt;param name=&quot;cancellationToken&quot;&gt;A cancellation token.&lt;/param&gt;</a>
+<a name="ln162">        /// &lt;returns&gt;The list of results.&lt;/returns&gt;</a>
+<a name="ln163">        public async IAsyncEnumerable&lt;Result&gt; Search(</a>
+<a name="ln164">            string queryString,</a>
+<a name="ln165">            CultureInfo culture,</a>
+<a name="ln166">            [EnumeratorCancellation] CancellationToken cancellationToken)</a>
+<a name="ln167">        {</a>
+<a name="ln168">            await foreach (Result result in Query(</a>
+<a name="ln169">                query =&gt; new QueryParser(queryString, query, culture).Parse(),</a>
+<a name="ln170">                cancellationToken))</a>
+<a name="ln171">            {</a>
+<a name="ln172">                if (cancellationToken.IsCancellationRequested) yield break;</a>
+<a name="ln173">                yield return result;</a>
+<a name="ln174">            }</a>
+<a name="ln175">        }</a>
+<a name="ln176"> </a>
+<a name="ln177">        /// &lt;summary&gt;</a>
+<a name="ln178">        /// Performs a search against the index using lunr query syntax.</a>
+<a name="ln179">        ///</a>
+<a name="ln180">        /// Results will be returned sorted by their score, the most relevant results</a>
+<a name="ln181">        /// will be returned first.  For details on how the score is calculated, please see</a>
+<a name="ln182">        /// the [scoring guide](https://lunrjs.com/guides/searching.html#scoring|guide).</a>
+<a name="ln183">        ///</a>
+<a name="ln184">        /// For more programmatic querying use `Index.Query`.</a>
+<a name="ln185">        /// &lt;/summary&gt;</a>
+<a name="ln186">        /// &lt;param name=&quot;queryString&quot;&gt;A string containing a lunr query.&lt;/param&gt;</a>
+<a name="ln187">        /// &lt;param name=&quot;cancellationToken&quot;&gt;A cancellation token.&lt;/param&gt;</a>
+<a name="ln188">        /// &lt;returns&gt;The list of results.&lt;/returns&gt;</a>
+<a name="ln189">        public async IAsyncEnumerable&lt;Result&gt; Search(</a>
+<a name="ln190">            string queryString,</a>
+<a name="ln191">            [EnumeratorCancellation] CancellationToken cancellationToken)</a>
+<a name="ln192">        {</a>
+<a name="ln193">            await foreach (Result result in Search(queryString, CultureInfo.CurrentCulture, cancellationToken))</a>
+<a name="ln194">            {</a>
+<a name="ln195">                if (cancellationToken.IsCancellationRequested) yield break;</a>
+<a name="ln196">                yield return result;</a>
+<a name="ln197">            }</a>
+<a name="ln198">        }</a>
+<a name="ln199"> </a>
+<a name="ln200">        /// &lt;summary&gt;</a>
+<a name="ln201">        /// Performs a search against the index using lunr query syntax.</a>
+<a name="ln202">        ///</a>
+<a name="ln203">        /// Results will be returned sorted by their score, the most relevant results</a>
+<a name="ln204">        /// will be returned first.  For details on how the score is calculated, please see</a>
+<a name="ln205">        /// the [scoring guide](https://lunrjs.com/guides/searching.html#scoring|guide).</a>
+<a name="ln206">        ///</a>
+<a name="ln207">        /// For more programmatic querying use `Index.Query`.</a>
+<a name="ln208">        /// &lt;/summary&gt;</a>
+<a name="ln209">        /// &lt;param name=&quot;queryString&quot;&gt;A string containing a lunr query.&lt;/param&gt;</a>
+<a name="ln210">        /// &lt;param name=&quot;culture&quot;&gt;The culture to use to parse the query.&lt;/param&gt;</a>
+<a name="ln211">        /// &lt;returns&gt;The list of results.&lt;/returns&gt;</a>
+<a name="ln212">        public async IAsyncEnumerable&lt;Result&gt; Search(</a>
+<a name="ln213">            string queryString,</a>
+<a name="ln214">            CultureInfo culture)</a>
+<a name="ln215">        {</a>
+<a name="ln216">            await foreach (Result result in Search(queryString, culture, new CancellationToken()))</a>
+<a name="ln217">            {</a>
+<a name="ln218">                yield return result;</a>
+<a name="ln219">            }</a>
+<a name="ln220">        }</a>
+<a name="ln221"> </a>
+<a name="ln222">        /// &lt;summary&gt;</a>
+<a name="ln223">        /// Performs a search against the index using lunr query syntax.</a>
+<a name="ln224">        ///</a>
+<a name="ln225">        /// Results will be returned sorted by their score, the most relevant results</a>
+<a name="ln226">        /// will be returned first.  For details on how the score is calculated, please see</a>
+<a name="ln227">        /// the [scoring guide](https://lunrjs.com/guides/searching.html#scoring|guide).</a>
+<a name="ln228">        ///</a>
+<a name="ln229">        /// For more programmatic querying use `Index.Query`.</a>
+<a name="ln230">        /// &lt;/summary&gt;</a>
+<a name="ln231">        /// &lt;param name=&quot;queryString&quot;&gt;A string containing a lunr query.&lt;/param&gt;</a>
+<a name="ln232">        /// &lt;returns&gt;The list of results.&lt;/returns&gt;</a>
+<a name="ln233">        public async IAsyncEnumerable&lt;Result&gt; Search(string queryString)</a>
+<a name="ln234">        {</a>
+<a name="ln235">            await foreach (Result result in Search(queryString, CultureInfo.CurrentCulture, new CancellationToken()))</a>
+<a name="ln236">            {</a>
+<a name="ln237">                yield return result;</a>
+<a name="ln238">            }</a>
+<a name="ln239">        }</a>
+<a name="ln240"> </a>
+<a name="ln241">        /// &lt;summary&gt;</a>
+<a name="ln242">        /// Performs a query against the index using the `Query` object built</a>
+<a name="ln243">        /// by the provided factory.</a>
+<a name="ln244">        ///</a>
+<a name="ln245">        /// If performing programmatic queries against the index, this method is preferred</a>
+<a name="ln246">        /// over `Index.Search` so as to avoid the additional query parsing overhead.</a>
+<a name="ln247">        ///</a>
+<a name="ln248">        /// A query object is yielded to the supplied function which should be used to</a>
+<a name="ln249">        /// express the query to be run against the index.</a>
+<a name="ln250">        /// &lt;/summary&gt;</a>
+<a name="ln251">        /// &lt;param name=&quot;queryFactory&quot;&gt;A function that builds the query object that gets passed to it.&lt;/param&gt;</a>
+<a name="ln252">        /// &lt;param name=&quot;cancellationToken&quot;&gt;A cancellation token.&lt;/param&gt;</a>
+<a name="ln253">        /// &lt;returns&gt;The results of the query.&lt;/returns&gt;</a>
+<a name="ln254">        public async IAsyncEnumerable&lt;Result&gt; Query(</a>
+<a name="ln255">            Action&lt;Query&gt; queryFactory,</a>
+<a name="ln256">            [EnumeratorCancellation] CancellationToken cancellationToken)</a>
+<a name="ln257">        {</a>
+<a name="ln258">            var results = new List&lt;Result&gt;();</a>
+<a name="ln259">            var query = new Query(Fields);</a>
+<a name="ln260">            var matchingFields = new Dictionary&lt;FieldReference, MatchData&gt;();</a>
+<a name="ln261">            var termFieldCache = new HashSet&lt;string&gt;();</a>
+<a name="ln262">            var requiredMatches = new Dictionary&lt;string, ISet&lt;string&gt;&gt;();</a>
+<a name="ln263">            var prohibitedMatches = new Dictionary&lt;string, ISet&lt;string&gt;&gt;();</a>
+<a name="ln264"> </a>
+<a name="ln265">            // To support field level boosts a query vector is created per</a>
+<a name="ln266">            // field. An empty vector is eagerly created to support negated</a>
+<a name="ln267">            // queries.</a>
+<a name="ln268">            var queryVectors = new Dictionary&lt;string, Vector&gt;();</a>
+<a name="ln269">            foreach (string field in Fields)</a>
+<a name="ln270">            {</a>
+<a name="ln271">                queryVectors[field] = new Vector();</a>
+<a name="ln272">            }</a>
+<a name="ln273"> </a>
+<a name="ln274">            queryFactory(query);</a>
+<a name="ln275"> </a>
+<a name="ln276">            for (int i = 0; i &lt; query.Clauses.Count; i++)</a>
+<a name="ln277">            {</a>
+<a name="ln278">                if (cancellationToken.IsCancellationRequested) yield break;</a>
+<a name="ln279"> </a>
+<a name="ln280">                Clause clause = query.Clauses[i];</a>
+<a name="ln281">                ISet&lt;string&gt; clauseMatches = Set&lt;string&gt;.Empty;</a>
+<a name="ln282"> </a>
+<a name="ln283">                // Unless the pipeline has been disabled for this term, which is</a>
+<a name="ln284">                // the case for terms with wildcards, we need to pass the clause</a>
+<a name="ln285">                // term through the search pipeline. A pipeline returns an array</a>
+<a name="ln286">                // of processed terms. Pipeline functions may expand the passed</a>
+<a name="ln287">                // term, which means we may end up performing multiple index lookups</a>
+<a name="ln288">                // for a single query term.</a>
+<a name="ln289">                await foreach (string term in clause.UsePipeline</a>
+<a name="ln290">                    ? Pipeline.RunString(</a>
+<a name="ln291">                        clause.Term,</a>
+<a name="ln292">                        new TokenMetadata</a>
+<a name="ln293">                        {</a>
+<a name="ln294">                            { &quot;fields&quot;, clause.Fields }</a>
+<a name="ln295">                        },</a>
+<a name="ln296">                        cancellationToken)</a>
+<a name="ln297">                    : new[] { clause.Term }.ToAsyncEnumerable(cancellationToken))</a>
+<a name="ln298">                {</a>
+<a name="ln299"> </a>
+<a name="ln300">                    if (cancellationToken.IsCancellationRequested) yield break;</a>
+<a name="ln301"> </a>
+<a name="ln302">                    // Each term returned from the pipeline needs to use the same query</a>
+<a name="ln303">                    // clause object, e.g. the same boost and or edit distance. The</a>
+<a name="ln304">                    // simplest way to do this is to re-use the clause object but mutate</a>
+<a name="ln305">                    // its term property.</a>
+<a name="ln306">                    clause = clause.WithTerm(term);</a>
+<a name="ln307"> </a>
+<a name="ln308">                    // From the term in the clause we create a token set which will then</a>
+<a name="ln309">                    // be used to intersect the indexes token set to get a list of terms</a>
+<a name="ln310">                    // to lookup in the inverted index.</a>
+<a name="ln311">                    var termTokenSet = TokenSet.FromClause(clause);</a>
+<a name="ln312">                    TokenSet expandedTerms = TokenSet.Intersect(termTokenSet);</a>
+<a name="ln313"> </a>
+<a name="ln314">                    // If a term marked as required does not exist in the tokenSet it is</a>
+<a name="ln315">                    // impossible for the search to return any matches.We set all the field</a>
+<a name="ln316">                    // scoped required matches set to empty and stop examining any further</a>
+<a name="ln317">                    // clauses.</a>
+<a name="ln318">                    if (!expandedTerms.Any() &amp;&amp; clause.Presence == QueryPresence.Required)</a>
+<a name="ln319">                    {</a>
+<a name="ln320">                        foreach (string field in clause.Fields)</a>
+<a name="ln321">                        {</a>
+<a name="ln322">                            if (cancellationToken.IsCancellationRequested) yield break;</a>
+<a name="ln323"> </a>
+<a name="ln324">                            if (!requiredMatches.ContainsKey(field))</a>
+<a name="ln325">                            {</a>
+<a name="ln326">                                requiredMatches.Add(field, Set&lt;string&gt;.Empty);</a>
+<a name="ln327">                            }</a>
+<a name="ln328">                        }</a>
+<a name="ln329"> </a>
+<a name="ln330">                        break;</a>
+<a name="ln331">                    }</a>
+<a name="ln332"> </a>
+<a name="ln333">                    foreach (string expandedTerm in expandedTerms.ToEnumeration())</a>
+<a name="ln334">                    {</a>
+<a name="ln335">                        if (cancellationToken.IsCancellationRequested) yield break;</a>
+<a name="ln336"> </a>
+<a name="ln337">                        // For each term get the posting and termIndex, this is required for building the query vector.</a>
+<a name="ln338">                        InvertedIndexEntry posting = InvertedIndex[expandedTerm];</a>
+<a name="ln339">                        int termIndex = posting.Index;</a>
+<a name="ln340"> </a>
+<a name="ln341">                        foreach (string field in clause.Fields)</a>
+<a name="ln342">                        {</a>
+<a name="ln343">                            if (cancellationToken.IsCancellationRequested) yield break;</a>
+<a name="ln344"> </a>
+<a name="ln345">                            // For each field that this query term is scoped by (by default</a>
+<a name="ln346">                            // all fields are in scope) we need to get all the document refs</a>
+<a name="ln347">                            // that have this term in that field.</a>
+<a name="ln348">                            //</a>
+<a name="ln349">                            // The posting is the entry in the invertedIndex for the matching</a>
+<a name="ln350">                            // term from above.</a>
+<a name="ln351">                            // For each field that this query term is scoped by (by default</a>
+<a name="ln352">                            // all fields are in scope) we need to get all the document refs</a>
+<a name="ln353">                            // that have this term in that field.</a>
+<a name="ln354">                            //</a>
+<a name="ln355">                            // The posting is the entry in the invertedIndex for the matching</a>
+<a name="ln356">                            // term from above.</a>
+<a name="ln357">                            FieldMatches fieldPosting = posting[field];</a>
+<a name="ln358">                            ICollection&lt;string&gt; matchingDocumentRefs = fieldPosting.Keys;</a>
+<a name="ln359">                            string termField = expandedTerm + '/' + field;</a>
+<a name="ln360">                            var matchingDocumentSet = new Set&lt;string&gt;(matchingDocumentRefs);</a>
+<a name="ln361"> </a>
+<a name="ln362">                            // if the presence of this term is required ensure that the matching</a>
+<a name="ln363">                            // documents are added to the set of required matches for this clause.</a>
+<a name="ln364">                            if (clause.Presence == QueryPresence.Required)</a>
+<a name="ln365">                            {</a>
+<a name="ln366">                                clauseMatches = clauseMatches.Union(matchingDocumentSet);</a>
+<a name="ln367"> </a>
+<a name="ln368">                                if (!requiredMatches.ContainsKey(field))</a>
+<a name="ln369">                                {</a>
+<a name="ln370">                                    requiredMatches.Add(field, Set&lt;string&gt;.Complete);</a>
+<a name="ln371">                                }</a>
+<a name="ln372">                            }</a>
+<a name="ln373"> </a>
+<a name="ln374">                            // if the presence of this term is prohibited ensure that the matching</a>
+<a name="ln375">                            // documents are added to the set of prohibited matches for this field,</a>
+<a name="ln376">                            // creating that set if it does not yet exist.</a>
+<a name="ln377">                            if (clause.Presence == QueryPresence.Prohibited)</a>
+<a name="ln378">                            {</a>
+<a name="ln379">                                if (!prohibitedMatches.ContainsKey(field))</a>
+<a name="ln380">                                {</a>
+<a name="ln381">                                    prohibitedMatches.Add(field, Set&lt;string&gt;.Empty);</a>
+<a name="ln382">                                }</a>
+<a name="ln383"> </a>
+<a name="ln384">                                prohibitedMatches[field] = prohibitedMatches[field].Union(matchingDocumentSet);</a>
+<a name="ln385"> </a>
+<a name="ln386">                                // Prohibited matches should not be part of the query vector used for</a>
+<a name="ln387">                                // similarity scoring and no metadata should be extracted so we continue</a>
+<a name="ln388">                                // to the next field.</a>
+<a name="ln389">                                continue;</a>
+<a name="ln390">                            }</a>
+<a name="ln391"> </a>
+<a name="ln392">                            // The query field vector is populated using the termIndex found for</a>
+<a name="ln393">                            // the term and a unit value with the appropriate boost applied.</a>
+<a name="ln394">                            // Using upsert because there could already be an entry in the vector</a>
+<a name="ln395">                            // for the term we are working with.In that case we just add the scores</a>
+<a name="ln396">                            // together.</a>
+<a name="ln397">                            queryVectors[field].Upsert(</a>
+<a name="ln398">                                termIndex,</a>
+<a name="ln399">                                clause.Boost,</a>
+<a name="ln400">                                (a, b) =&gt; a + b);</a>
+<a name="ln401"> </a>
+<a name="ln402">                            // If we've already seen this term, field combo then we've already collected</a>
+<a name="ln403">                            // the matching documents and metadata, no need to go through all that again.</a>
+<a name="ln404">                            if (termFieldCache.Contains(termField)) continue;</a>
+<a name="ln405"> </a>
+<a name="ln406">                            foreach (string matchingDocumentRef in matchingDocumentRefs)</a>
+<a name="ln407">                            {</a>
+<a name="ln408">                                if (cancellationToken.IsCancellationRequested) yield break;</a>
+<a name="ln409"> </a>
+<a name="ln410">                                // All metadata for this term/field/document triple</a>
+<a name="ln411">                                // are then extracted and collected into an instance</a>
+<a name="ln412">                                // of lunr.MatchData ready to be returned in the query</a>
+<a name="ln413">                                // results.</a>
+<a name="ln414">                                var matchingFieldRef = new FieldReference(matchingDocumentRef, field);</a>
+<a name="ln415">                                FieldMatchMetadata metadata = fieldPosting[matchingDocumentRef];</a>
+<a name="ln416">                                </a>
+<a name="ln417">                                if (!matchingFields.TryGetValue(matchingFieldRef, out MatchData? fieldMatch))</a>
+<a name="ln418">                                {</a>
+<a name="ln419">                                    matchingFields.Add(</a>
+<a name="ln420">                                        matchingFieldRef,</a>
+<a name="ln421">                                        new MatchData(expandedTerm, field, metadata));</a>
+<a name="ln422">                                }</a>
+<a name="ln423">                                else</a>
+<a name="ln424">                                {</a>
+<a name="ln425">                                    fieldMatch.Add(expandedTerm, field, metadata);</a>
+<a name="ln426">                                }</a>
+<a name="ln427">                            }</a>
+<a name="ln428"> </a>
+<a name="ln429">                            termFieldCache.Add(termField);</a>
+<a name="ln430">                        }</a>
+<a name="ln431">                    }</a>
+<a name="ln432">                }</a>
+<a name="ln433"> </a>
+<a name="ln434">                // If the presence was required we need to update the requiredMatches field sets.</a>
+<a name="ln435">                // We do this after all fields for the term have collected their matches because</a>
+<a name="ln436">                // the clause terms presence is required in _any_ of the fields not _all_ of the</a>
+<a name="ln437">                // fields.</a>
+<a name="ln438">                if (clause.Presence == QueryPresence.Required)</a>
+<a name="ln439">                {</a>
+<a name="ln440">                    foreach (string field in clause.Fields)</a>
+<a name="ln441">                    {</a>
+<a name="ln442">                        if (cancellationToken.IsCancellationRequested) yield break;</a>
+<a name="ln443"> </a>
+<a name="ln444">                        requiredMatches[field] = requiredMatches[field].Intersect(clauseMatches);</a>
+<a name="ln445">                    }</a>
+<a name="ln446">                }</a>
+<a name="ln447">            }</a>
+<a name="ln448"> </a>
+<a name="ln449">            // Need to combine the field scoped required and prohibited</a>
+<a name="ln450">            // matching documents into a global set of required and prohibited</a>
+<a name="ln451">            // matches.</a>
+<a name="ln452">            ISet&lt;string&gt; allRequiredMatches = Set&lt;string&gt;.Complete;</a>
+<a name="ln453">            ISet&lt;string&gt; allProhibitedMatches = Set&lt;string&gt;.Empty;</a>
+<a name="ln454"> </a>
+<a name="ln455">            foreach (string field in Fields)</a>
+<a name="ln456">            {</a>
+<a name="ln457">                if (cancellationToken.IsCancellationRequested) yield break;</a>
+<a name="ln458"> </a>
+<a name="ln459">                if (requiredMatches.ContainsKey(field))</a>
+<a name="ln460">                {</a>
+<a name="ln461">                    allRequiredMatches = allRequiredMatches.Intersect(requiredMatches[field]);</a>
+<a name="ln462">                }</a>
+<a name="ln463"> </a>
+<a name="ln464">                if (prohibitedMatches.ContainsKey(field))</a>
+<a name="ln465">                {</a>
+<a name="ln466">                    allProhibitedMatches = allProhibitedMatches.Union(prohibitedMatches[field]);</a>
+<a name="ln467">                }</a>
+<a name="ln468">            }</a>
+<a name="ln469"> </a>
+<a name="ln470">            string[] matchingFieldRefs</a>
+<a name="ln471">                = matchingFields.Keys.Select(k =&gt; k.ToString()).ToArray();</a>
+<a name="ln472">            var matches = new Dictionary&lt;string, Result&gt;();</a>
+<a name="ln473"> </a>
+<a name="ln474">            // If the query is negated (contains only prohibited terms)</a>
+<a name="ln475">            // we need to get _all_ fieldRefs currently existing in the</a>
+<a name="ln476">            // index. This is only done when we know that the query is</a>
+<a name="ln477">            // entirely prohibited terms to avoid any cost of getting all</a>
+<a name="ln478">            // fieldRefs unnecessarily.</a>
+<a name="ln479">            //</a>
+<a name="ln480">            // Additionally, blank MatchData must be created to correctly</a>
+<a name="ln481">            // populate the results.</a>
+<a name="ln482">            if (query.IsNegated)</a>
+<a name="ln483">            {</a>
+<a name="ln484">                matchingFieldRefs = FieldVectors.Keys.ToArray();</a>
+<a name="ln485"> </a>
+<a name="ln486">                foreach (string matchingFieldRef in matchingFieldRefs)</a>
+<a name="ln487">                {</a>
+<a name="ln488">                    if (cancellationToken.IsCancellationRequested) yield break;</a>
+<a name="ln489"> </a>
+<a name="ln490">                    var fieldRef = FieldReference.FromString(matchingFieldRef);</a>
+<a name="ln491">                    matchingFields.Add(fieldRef, MatchData.Empty);</a>
+<a name="ln492">                }</a>
+<a name="ln493">            }</a>
+<a name="ln494"> </a>
+<a name="ln495">            foreach (string fieldRefString in matchingFieldRefs)</a>
+<a name="ln496">            {</a>
+<a name="ln497"> </a>
+<a name="ln498">                if (cancellationToken.IsCancellationRequested) yield break;</a>
+<a name="ln499"> </a>
+<a name="ln500">                // Currently we have document fields that match the query, but we</a>
+<a name="ln501">                // need to return documents.The matchData and scores are combined</a>
+<a name="ln502">                // from multiple fields belonging to the same document.</a>
+<a name="ln503">                //</a>
+<a name="ln504">                // Scores are calculated by field, using the query vectors created</a>
+<a name="ln505">                // above, and combined into a final document score using addition.</a>
+<a name="ln506">                var fieldRef = FieldReference.FromString(fieldRefString);</a>
+<a name="ln507">                string docRef = fieldRef.DocumentReference;</a>
+<a name="ln508"> </a>
+<a name="ln509">                if (!allRequiredMatches.Contains(docRef)) continue;</a>
+<a name="ln510">                if (allProhibitedMatches.Contains(docRef)) continue;</a>
+<a name="ln511"> </a>
+<a name="ln512">                Vector fieldVector = FieldVectors[fieldRefString];</a>
+<a name="ln513">                double score = queryVectors[fieldRef.FieldName].Similarity(fieldVector);</a>
+<a name="ln514"> </a>
+<a name="ln515">                if (matches.TryGetValue(docRef, out Result? docMatch))</a>
+<a name="ln516">                {</a>
+<a name="ln517">                    docMatch.Score += score;</a>
+<a name="ln518">                    docMatch.MatchData.Combine(matchingFields[fieldRef]);</a>
+<a name="ln519">                }</a>
+<a name="ln520">                else</a>
+<a name="ln521">                {</a>
+<a name="ln522">                    var match = new Result(</a>
+<a name="ln523">                        documentReference: docRef,</a>
+<a name="ln524">                        score,</a>
+<a name="ln525">                        matchData: matchingFields[fieldRef]</a>
+<a name="ln526">                    );</a>
+<a name="ln527">                    matches.Add(docRef, match);</a>
+<a name="ln528">                    if (cancellationToken.IsCancellationRequested) yield break;</a>
+<a name="ln529">                    results.Add(match);</a>
+<a name="ln530">                }</a>
+<a name="ln531">            }</a>
+<a name="ln532"> </a>
+<a name="ln533">            foreach (Result match in results.OrderByDescending(r =&gt; r.Score))</a>
+<a name="ln534">            {</a>
+<a name="ln535">                if (cancellationToken.IsCancellationRequested) yield break;</a>
+<a name="ln536">                yield return match;</a>
+<a name="ln537">            }</a>
+<a name="ln538">        }</a>
+<a name="ln539"> </a>
+<a name="ln540">        /// &lt;summary&gt;</a>
+<a name="ln541">        /// Performs a query against the index using the `Query` object built</a>
+<a name="ln542">        /// by the provided factory.</a>
+<a name="ln543">        ///</a>
+<a name="ln544">        /// If performing programmatic queries against the index, this method is preferred</a>
+<a name="ln545">        /// over `Index.Search` so as to avoid the additional query parsing overhead.</a>
+<a name="ln546">        ///</a>
+<a name="ln547">        /// A query object is yielded to the supplied function which should be used to</a>
+<a name="ln548">        /// express the query to be run against the index.</a>
+<a name="ln549">        /// &lt;/summary&gt;</a>
+<a name="ln550">        /// &lt;param name=&quot;queryFactory&quot;&gt;A function that builds the query object that gets passed to it.&lt;/param&gt;</a>
+<a name="ln551">        /// &lt;returns&gt;The results of the query.&lt;/returns&gt;</a>
+<a name="ln552">        public async IAsyncEnumerable&lt;Result&gt; Query(Action&lt;Query&gt; queryFactory)</a>
+<a name="ln553">        {</a>
+<a name="ln554">            var cToken = new CancellationToken();</a>
+<a name="ln555">            await foreach (Result result in Query(queryFactory, cToken))</a>
+<a name="ln556">            {</a>
+<a name="ln557">                yield return result;</a>
+<a name="ln558">            }</a>
+<a name="ln559">        }</a>
+<a name="ln560"> </a>
+<a name="ln561">        /// &lt;summary&gt;</a>
+<a name="ln562">        /// Load an index from a JSON stream.</a>
+<a name="ln563">        /// &lt;/summary&gt;</a>
+<a name="ln564">        /// &lt;param name=&quot;utf8json&quot;&gt;The JSON stream&lt;/param&gt;</a>
+<a name="ln565">        /// &lt;param name=&quot;stemmer&quot;&gt;An optional stemmer. English is used if none is provided.&lt;/param&gt;</a>
+<a name="ln566">        /// &lt;param name=&quot;registry&quot;&gt;An optional registry of pipeline functions to use to resolve the persisted pipeline.&lt;/param&gt;</a>
+<a name="ln567">        /// &lt;returns&gt;The index.&lt;/returns&gt;</a>
+<a name="ln568">        public static async ValueTask&lt;Index&gt; LoadFromJsonStream(</a>
+<a name="ln569">            Stream utf8json,</a>
+<a name="ln570">            StemmerBase? stemmer = null,</a>
+<a name="ln571">            PipelineFunctionRegistry? registry = null)</a>
+<a name="ln572">        {</a>
+<a name="ln573">            Index index = (await JsonSerializer.DeserializeAsync&lt;Index&gt;(utf8json).ConfigureAwait(false))!;</a>
+<a name="ln574">            return ProcessDeserializedIndex(stemmer, registry, index);</a>
+<a name="ln575">        }</a>
+<a name="ln576"> </a>
+<a name="ln577">        /// &lt;summary&gt;</a>
+<a name="ln578">        /// Load an index from a JSON string.</a>
+<a name="ln579">        /// &lt;/summary&gt;</a>
+<a name="ln580">        /// &lt;param name=&quot;json&quot;&gt;The JSON string&lt;/param&gt;</a>
+<a name="ln581">        /// &lt;param name=&quot;stemmer&quot;&gt;An optional stemmer. English is used if none is provided.&lt;/param&gt;</a>
+<a name="ln582">        /// &lt;param name=&quot;registry&quot;&gt;An optional registry of pipeline functions to use to resolve the persisted pipeline.&lt;/param&gt;</a>
+<a name="ln583">        /// &lt;returns&gt;The index.&lt;/returns&gt;</a>
+<a name="ln584">        public static Index LoadFromJson(</a>
+<a name="ln585">            string json,</a>
+<a name="ln586">            StemmerBase? stemmer = null,</a>
+<a name="ln587">            PipelineFunctionRegistry? registry = null)</a>
+<a name="ln588">        {</a>
+<a name="ln589">            Index index = JsonSerializer.Deserialize&lt;Index&gt;(json)!;</a>
+<a name="ln590">            return ProcessDeserializedIndex(stemmer, registry, index);</a>
+<a name="ln591">        }</a>
+<a name="ln592"> </a>
+<a name="ln593">        /// &lt;summary&gt;</a>
+<a name="ln594">        /// Persists an index to a stream as JSON.</a>
+<a name="ln595">        /// &lt;/summary&gt;</a>
+<a name="ln596">        /// &lt;param name=&quot;utf8json&quot;&gt;The stream to persist to.&lt;/param&gt;</a>
+<a name="ln597">        /// &lt;param name=&quot;options&quot;&gt;Optional serializer options.&lt;/param&gt;</a>
+<a name="ln598">        public async Task SaveToJsonStream(Stream utf8json, JsonSerializerOptions? options = null)</a>
+<a name="ln599">            =&gt; await JsonSerializer.SerializeAsync(utf8json, this, options).ConfigureAwait(false);</a>
+<a name="ln600"> </a>
+<a name="ln601">        /// &lt;summary&gt;</a>
+<a name="ln602">        /// Persists an index to a stream as JSON.</a>
+<a name="ln603">        /// &lt;/summary&gt;</a>
+<a name="ln604">        /// &lt;param name=&quot;options&quot;&gt;Optional serializer options.&lt;/param&gt;</a>
+<a name="ln605">        public string ToJson(JsonSerializerOptions? options = null)</a>
+<a name="ln606">            =&gt; JsonSerializer.Serialize(this, options);</a>
+<a name="ln607"> </a>
+<a name="ln608">        private static Index ProcessDeserializedIndex(</a>
+<a name="ln609">            StemmerBase? stemmer,</a>
+<a name="ln610">            PipelineFunctionRegistry? registry,</a>
+<a name="ln611">            Index index)</a>
+<a name="ln612">        {</a>
+<a name="ln613">            registry ??= new PipelineFunctionRegistry();</a>
+<a name="ln614">            if (!registry.ContainsKey(&quot;stemmer&quot;))</a>
+<a name="ln615">            {</a>
+<a name="ln616">                Pipeline.Function stemmerFunction = (stemmer ?? new EnglishStemmer()).StemmerFunction;</a>
+<a name="ln617">                registry.Add(&quot;stemmer&quot;, stemmerFunction);</a>
+<a name="ln618">            }</a>
+<a name="ln619">            foreach ((string functionName, Pipeline.Function function) in registry)</a>
+<a name="ln620">            {</a>
+<a name="ln621">                index.Pipeline.RegisterFunction(function, functionName);</a>
+<a name="ln622">            }</a>
+<a name="ln623">            return index;</a>
+<a name="ln624">        }</a>
+<a name="ln625">    }</a>
+<a name="ln626">}</a>
+</code></pre>
+<div class="balloon" rel="573"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v5611/" target="_blank">V5611</a> Possible insecure deserialization. Potentially tainted data in the 'utf8json' variable is used to deserialize an object.</p></div>
+<div class="balloon" rel="589"><p><span style="font-size:18px">&uarr;</span> <a href="https://pvs-studio.com/en/docs/warnings/v5611/" target="_blank">V5611</a> Possible insecure deserialization. Potentially tainted data in the 'json' variable is used to deserialize an object.</p></div>
+<link rel="stylesheet" href="highlight.css">
+<script src="highlight.pack.js"></script>
+<script src="highlightjs-line-numbers.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script>hljs.initLineNumbersOnLoad();</script>
+<script>
+  $(document).ready(function() {
+      $('.balloon').each(function () {
+          var bl = $(this);
+          var line = bl.attr('rel');
+          var text = $('a[name="ln'+line+'"]').text();
+
+          var space_count = 0;
+          for(var i = 0; i<text.length; i++){
+              var char = text[i];
+              if((char !== ' ')&&(char !== '\t'))break;
+              if(char === '\t')space_count++;
+              space_count++;
+          }
+
+          bl.css('margin-left', space_count*8);
+          $('a[name="ln'+line+'"]').after(bl);
+      });
+
+      window.location = window.location;
+  });
+</script>
+</body>
+</html>

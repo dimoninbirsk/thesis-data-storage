@@ -1,0 +1,4 @@
+Key,Type,Severity,File,Line,Message,Effort,Debt,Rule,Tags
+ef226e46-2583-48dc-9ab0-96191a571941,BUG,MAJOR,SoundFlow:Src/Providers/NetworkDataProvider.cs,538,Return 'Task' instead.,15min,15min,csharpsquid:S3168,multi-threading;async-await
+ca734166-ac46-4718-99ff-521dfb47a22a,BUG,MAJOR,SoundFlow:Src/Modifiers/CompressorModifier.cs,89,"Do not check floating point equality with exact values, use a range instead.",5min,5min,csharpsquid:S1244,
+3a4c0f8b-0f48-407d-b0e3-32128baf0a97,BUG,MAJOR,SoundFlow:Src/Providers/NetworkDataProvider.cs,133,Return 'Task' instead.,15min,15min,csharpsquid:S3168,multi-threading;async-await
